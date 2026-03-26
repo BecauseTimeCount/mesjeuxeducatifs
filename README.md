@@ -35,7 +35,7 @@ Astuce : sur tablette/telephone, ajoutez la page a l'ecran d'accueil pour un acc
 ### Option 2 — Hors-ligne
 1. Telechargez le projet (bouton vert **Code** > **Download ZIP**)
 2. Decompressez le dossier
-3. Ouvrez `mes-jeux-educatifs.html` dans un navigateur
+3. Ouvrez `index.html` dans un navigateur
 
 Ca marche aussi sans internet.
 
