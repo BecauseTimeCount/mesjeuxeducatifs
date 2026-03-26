@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Les Syllabes - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #FBE9E7 0%, #FFCCBC 100%);
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* === ECRAN D'ACCUEIL === */
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 15px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .back-to-menu {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #666;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
+        }
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Titre principal */
+        .title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FF7043, #FF8A65, #FF5722, #FF9E80);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Syllabes animees */
+        .animated-letters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .animated-letter {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            font-weight: 900;
+            animation: bounce 2s ease infinite;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+            background: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .animated-letter:nth-child(1) {
+            color: #FF7043;
+            animation-delay: 0s;
+        }
+
+        .animated-letter:nth-child(2) {
+            color: #FF5722;
+            animation-delay: 0.3s;
+        }
+
+        .animated-letter:nth-child(3) {
+            color: #E64A19;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Bouton Jouer */
+        .play-btn {
+            background: linear-gradient(145deg, #FF7043, #E64A19);
+            color: white;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 700;
+            padding: 25px 60px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 112, 67, 0.4),
+                        inset 0 -4px 0 rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .play-btn:hover, .play-btn:active {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 112, 67, 0.5);
+        }
+
+        .play-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Score affiche */
+        .stats-display {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FF7043;
+        }
+
+        /* Mascotte */
+        .mascot {
+            font-size: 4rem;
+            animation: wave 2s ease infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        /* Selection de niveau */
+        .level-select {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+            max-width: 400px;
+        }
+
+        .level-btn {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .level-btn.unlocked {
+            background: linear-gradient(145deg, #FF7043, #E64A19);
+            color: white;
+        }
+
+        .level-btn.unlocked:hover {
+            transform: scale(1.1);
+        }
+
+        .level-btn.locked {
+            background: #ccc;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .level-btn .lock-icon {
+            font-size: 1.2rem;
+        }
+
+        /* === ECRAN DE JEU === */
+        .screen.game-screen {
+            padding: 10px;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Header du jeu */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .home-btn {
+            background: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-btn:hover, .home-btn:active {
+            transform: scale(1.1);
+        }
+
+        .score-display {
+            background: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FFB800;
+        }
+
+        .level-display {
+            background: linear-gradient(145deg, #FF7043, #E64A19);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Zone centrale */
+        .target-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            min-height: 0;
+        }
+
+        .target-emoji {
+            font-size: clamp(80px, 20vw, 130px);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .target-word {
+            font-size: clamp(1.8rem, 7vw, 4rem);
+            font-weight: 900;
+            color: #FF7043;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+            animation: pulse 2s ease infinite;
+            line-height: 1;
+            letter-spacing: clamp(1px, 1vw, 4px);
+            max-width: 90vw;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .target-instruction {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+            color: #5D5D5D;
+            margin-top: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* Decomposition syllabique */
+        .syllable-decomposition {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            min-height: 50px;
+        }
+
+        .syllable-pill {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: clamp(1rem, 3.5vw, 1.8rem);
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+            max-width: 40vw;
+            overflow-wrap: break-word;
+        }
+
+        .syllable-pill.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .syllable-pill.syl-1 { color: #FF7043; border: 3px solid #FF7043; }
+        .syllable-pill.syl-2 { color: #FF5722; border: 3px solid #FF5722; }
+        .syllable-pill.syl-3 { color: #E64A19; border: 3px solid #E64A19; }
+        .syllable-pill.syl-4 { color: #BF360C; border: 3px solid #BF360C; }
+
+        /* Zone de construction (Level 4) */
+        .construction-zone {
+            display: flex;
+            gap: 8px;
+            min-height: 60px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 25px;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+            border: 3px dashed #FF7043;
+            flex-wrap: wrap;
+        }
+
+        .construction-pill {
+            background: linear-gradient(145deg, #FF7043, #E64A19);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 900;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .construction-placeholder {
+            color: #ccc;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .reset-btn {
+            background: white;
+            color: #FF7043;
+            border: 3px solid #FF7043;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .reset-btn:hover {
+            background: #FF7043;
+            color: white;
+        }
+
+        /* Mots cote a cote (Level 5) */
+        .words-pair {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .word-card {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 45vw;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
+        .word-card-emoji {
+            font-size: 3rem;
+        }
+
+        .word-card-text {
+            font-size: clamp(0.9rem, 3.5vw, 1.8rem);
+            font-weight: 900;
+            color: #FF7043;
+            letter-spacing: clamp(0px, 0.5vw, 2px);
+        }
+
+        /* Mascotte encourageante */
+        .game-mascot {
+            position: fixed;
+            bottom: 200px;
+            right: 20px;
+            font-size: 3rem;
+            animation: float 3s ease infinite;
+            z-index: 10;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .mascot-message {
+            position: fixed;
+            bottom: 260px;
+            right: 10px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            max-width: 120px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .mascot-message.show {
+            opacity: 1;
+        }
+
+        /* Zone des choix */
+        .choices-zone {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .choice-btn {
+            min-width: 80px;
+            min-height: 80px;
+            width: clamp(80px, 18vw, 120px);
+            height: clamp(80px, 18vw, 120px);
+            border: none;
+            border-radius: 25px;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 900;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15),
+                        inset 0 -4px 0 rgba(0,0,0,0.1);
+        }
+
+        .choice-btn.syllable-choice {
+            width: auto;
+            min-width: 90px;
+            height: auto;
+            min-height: 70px;
+            padding: 10px 25px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .choice-btn:active {
+            transform: translateY(0);
+        }
+
+        .choice-btn.color-1 { background: #FFB3BA; color: #8B4557; }
+        .choice-btn.color-2 { background: #BAFFC9; color: #4A7C59; }
+        .choice-btn.color-3 { background: #BAE1FF; color: #4A6B8A; }
+        .choice-btn.color-4 { background: #FFE4BA; color: #8B7355; }
+        .choice-btn.color-5 { background: #E2BAFF; color: #6B4A7C; }
+        .choice-btn.color-6 { background: #FFFABA; color: #7C7A4A; }
+
+        .choice-btn.correct {
+            background: #4ECDC4 !important;
+            color: white !important;
+            animation: correctAnswer 0.5s ease;
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .choice-btn.wrong {
+            animation: shake 0.5s ease;
+            opacity: 0.5;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+        }
+
+        .choice-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .choice-btn.used {
+            opacity: 0.3;
+            pointer-events: none;
+            transform: scale(0.9);
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            margin: 5px auto 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF7043, #E64A19);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Message d'encouragement */
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 50px;
+            border-radius: 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .feedback-message.show {
+            opacity: 1;
+        }
+
+        .feedback-message.success {
+            color: #4ECDC4;
+        }
+
+        .feedback-message.retry {
+            color: #FF7043;
+        }
+
+        /* Confettis */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 50;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            animation: confettiFall 3s ease forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* === ECRAN DE FELICITATIONS === */
+        .celebration-screen {
+            background: linear-gradient(180deg, #FFE66D 0%, #FFB347 100%);
+        }
+
+        .celebration-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .celebration-stars {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            animation: starPulse 1s ease infinite;
+        }
+
+        @keyframes starPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .celebration-message {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .continue-btn {
+            background: white;
+            color: #FFB347;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .continue-btn:hover, .continue-btn:active {
+            transform: scale(1.05);
+        }
+
+        .home-from-celebration {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 15px 35px;
+            border: 2px solid white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .home-from-celebration:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Level up animation */
+        .level-up-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .level-up-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .level-up-text {
+            font-size: 3rem;
+            color: #FFE66D;
+            font-weight: 900;
+            animation: levelUpBounce 0.5s ease;
+        }
+
+        @keyframes levelUpBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .level-up-stars {
+            font-size: 4rem;
+            margin-top: 20px;
+        }
+
+        .level-up-desc {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-mascot {
+                display: none;
+            }
+
+            .mascot-message {
+                display: none;
+            }
+
+            .choices-zone {
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .choice-btn {
+                min-width: 70px;
+                min-height: 70px;
+            }
+
+            .choice-btn.syllable-choice {
+                min-width: 80px;
+                min-height: 60px;
+                padding: 8px 18px;
+            }
+
+            .target-emoji {
+                font-size: 60px;
+            }
+
+            .words-pair {
+                gap: 15px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .choices-zone {
+                max-width: 600px;
+                margin: 0 auto 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ecran d'accueil -->
+    <div id="home-screen" class="screen active">
+        <a href="mes-jeux-educatifs.html" class="back-to-menu">← Mes Jeux</a>
+        <div class="mascot">🦜</div>
+        <h1 class="title">Les Syllabes</h1>
+        <div class="animated-letters">
+            <span class="animated-letter">PA</span>
+            <span class="animated-letter">PI</span>
+            <span class="animated-letter">LLON</span>
+        </div>
+        <button class="play-btn" onclick="startGame()">🎮 Jouer</button>
+        <div class="stats-display">
+            <div class="stat-item">
+                <div class="stat-label">Etoiles</div>
+                <div class="stat-value" id="total-stars">0 ⭐</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Niveau</div>
+                <div class="stat-value" id="current-level">1</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Record</div>
+                <div class="stat-value" id="best-score">0 ⭐</div>
+            </div>
+        </div>
+        <div class="level-select" id="level-select"></div>
+    </div>
+
+    <!-- Ecran de jeu -->
+    <div id="game-screen" class="screen game-screen">
+        <div class="game-header">
+            <button class="home-btn" onclick="goHome()">🏠</button>
+            <div class="level-display" id="game-level">Niveau 1</div>
+            <div class="score-display" id="game-score">0 ⭐</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <div class="target-zone" id="target-zone">
+            <!-- Contenu dynamique -->
+        </div>
+
+        <div class="choices-zone" id="choices-zone">
+            <!-- Les boutons de choix seront generes ici -->
+        </div>
+
+        <div class="game-mascot">🦜</div>
+        <div class="mascot-message" id="mascot-message">Tu peux le faire !</div>
+    </div>
+
+    <!-- Ecran de felicitations -->
+    <div id="celebration-screen" class="screen celebration-screen">
+        <div class="celebration-stars">🌟🌟🌟</div>
+        <h2 class="celebration-title">Super Champion !</h2>
+        <div class="celebration-message" id="celebration-message">Tu as reussi !</div>
+        <button class="continue-btn" onclick="continuePlaying()">Continuer 🚀</button>
+        <button class="home-from-celebration" onclick="goHome()">🏠 Accueil</button>
+        <a href="mes-jeux-educatifs.html" class="home-from-celebration" style="margin-top: 10px; display: inline-block; text-decoration: none;">← Mes Jeux</a>
+    </div>
+
+    <!-- Overlay de niveau superieur -->
+    <div class="level-up-overlay" id="level-up-overlay">
+        <div class="level-up-text" id="level-up-text">Niveau 2 !</div>
+        <div class="level-up-stars">⭐🌟⭐</div>
+        <div class="level-up-desc" id="level-up-desc"></div>
+    </div>
+
+    <!-- Conteneur de confettis -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <!-- Message de feedback -->
+    <div class="feedback-message" id="feedback-message"></div>
+
+    <script>
+        // === BASE DE DONNEES DES MOTS ===
+        const WORDS_DB = [
+            {mot: "papa", syllabes: ["pa", "pa"], emoji: "👨"},
+            {mot: "maman", syllabes: ["ma", "man"], emoji: "👩"},
+            {mot: "bateau", syllabes: ["ba", "teau"], emoji: "⛵"},
+            {mot: "maison", syllabes: ["mai", "son"], emoji: "🏠"},
+            {mot: "lapin", syllabes: ["la", "pin"], emoji: "🐰"},
+            {mot: "soleil", syllabes: ["so", "leil"], emoji: "☀️"},
+            {mot: "gateau", syllabes: ["ga", "teau"], emoji: "🎂"},
+            {mot: "voiture", syllabes: ["voi", "ture"], emoji: "🚗"},
+            {mot: "papillon", syllabes: ["pa", "pi", "llon"], emoji: "🦋"},
+            {mot: "chocolat", syllabes: ["cho", "co", "lat"], emoji: "🍫"},
+            {mot: "crocodile", syllabes: ["cro", "co", "dile"], emoji: "🐊"},
+            {mot: "dinosaure", syllabes: ["di", "no", "saure"], emoji: "🦕"},
+            {mot: "escargot", syllabes: ["es", "car", "got"], emoji: "🐌"},
+            {mot: "elephant", syllabes: ["e", "le", "phant"], emoji: "🐘"},
+            {mot: "tomate", syllabes: ["to", "mate"], emoji: "🍅"},
+            {mot: "banane", syllabes: ["ba", "nane"], emoji: "🍌"},
+            {mot: "poisson", syllabes: ["poi", "sson"], emoji: "🐟"},
+            {mot: "chapeau", syllabes: ["cha", "peau"], emoji: "🎩"},
+            {mot: "cadeau", syllabes: ["ca", "deau"], emoji: "🎁"},
+            {mot: "robot", syllabes: ["ro", "bot"], emoji: "🤖"},
+            {mot: "camion", syllabes: ["ca", "mion"], emoji: "🚛"},
+            {mot: "nuage", syllabes: ["nu", "age"], emoji: "☁️"},
+            {mot: "etoile", syllabes: ["e", "toile"], emoji: "⭐"},
+            {mot: "musique", syllabes: ["mu", "sique"], emoji: "🎵"}
+        ];
+
+        // === CONFIGURATION DES NIVEAUX ===
+        const LEVELS = {
+            1: { name: "Compte les syllabes", icon: "1️⃣", questionsCount: 10, unlockThreshold: 7 },
+            2: { name: "Premiere syllabe", icon: "2️⃣", questionsCount: 10, unlockThreshold: 7 },
+            3: { name: "Derniere syllabe", icon: "3️⃣", questionsCount: 10, unlockThreshold: 7 },
+            4: { name: "Recompose le mot", icon: "4️⃣", questionsCount: 8, unlockThreshold: 6 },
+            5: { name: "Syllabe commune", icon: "5️⃣", questionsCount: 8, unlockThreshold: 6 }
+        };
+
+        // === ETAT DU JEU ===
+        let gameState = {
+            currentLevel: 1,
+            currentScore: 0,
+            totalStars: 0,
+            bestScore: 0,
+            unlockedLevels: [1],
+            questionIndex: 0,
+            questionsForRound: [],
+            currentWord: null,
+            currentPair: null,
+            constructionSyllabes: [],
+            isAnswering: false
+        };
+
+        // === AUDIO CONTEXT ===
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioContext) return;
+
+            const now = audioContext.currentTime;
+
+            if (type === 'victory') {
+                playNote(262, now, 0.15);
+                playNote(330, now + 0.15, 0.15);
+                playNote(392, now + 0.3, 0.3);
+            } else if (type === 'encourage') {
+                playNote(440, now, 0.2, 0.3);
+            } else if (type === 'click') {
+                playNote(600, now, 0.05, 0.2);
+            } else if (type === 'levelup') {
+                playNote(262, now, 0.1);
+                playNote(330, now + 0.1, 0.1);
+                playNote(392, now + 0.2, 0.1);
+                playNote(523, now + 0.3, 0.4);
+            }
+        }
+
+        function playNote(frequency, startTime, duration, volume = 0.5) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(volume, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        }
+
+        // === GESTION DU LOCALSTORAGE ===
+        function saveGame() {
+            const saveData = {
+                currentLevel: gameState.currentLevel,
+                totalStars: gameState.totalStars,
+                bestScore: gameState.bestScore,
+                unlockedLevels: gameState.unlockedLevels
+            };
+            localStorage.setItem('lesSyllabes', JSON.stringify(saveData));
+            localStorage.setItem('syllabesScore', gameState.totalStars.toString());
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('lesSyllabes');
+            if (saved) {
+                const data = JSON.parse(saved);
+                gameState.currentLevel = data.currentLevel || 1;
+                gameState.totalStars = data.totalStars || 0;
+                gameState.bestScore = data.bestScore || 0;
+                gameState.unlockedLevels = data.unlockedLevels || [1];
+            }
+            updateHomeStats();
+            renderLevelSelect();
+        }
+
+        function updateHomeStats() {
+            document.getElementById('total-stars').textContent = gameState.totalStars + ' ⭐';
+            document.getElementById('current-level').textContent = gameState.currentLevel;
+            document.getElementById('best-score').textContent = gameState.bestScore + ' ⭐';
+        }
+
+        // === SELECTION DE NIVEAU ===
+        function renderLevelSelect() {
+            const container = document.getElementById('level-select');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.createElement('button');
+                const isUnlocked = gameState.unlockedLevels.includes(i);
+                btn.className = 'level-btn ' + (isUnlocked ? 'unlocked' : 'locked');
+
+                if (isUnlocked) {
+                    btn.textContent = LEVELS[i].icon;
+                    btn.onclick = () => selectLevel(i);
+                } else {
+                    btn.innerHTML = '<span class="lock-icon">🔒</span>';
+                }
+
+                container.appendChild(btn);
+            }
+        }
+
+        function selectLevel(level) {
+            playSound('click');
+            gameState.currentLevel = level;
+            startGame();
+        }
+
+        // === NAVIGATION ENTRE ECRANS ===
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startGame() {
+            initAudio();
+            playSound('click');
+            gameState.currentScore = 0;
+            gameState.questionIndex = 0;
+            gameState.isAnswering = false;
+            prepareQuestions();
+            updateGameUI();
+            showScreen('game-screen');
+            generateNewQuestion();
+        }
+
+        function goHome() {
+            playSound('click');
+            showScreen('home-screen');
+            updateHomeStats();
+            renderLevelSelect();
+        }
+
+        // === PREPARATION DES QUESTIONS ===
+        function prepareQuestions() {
+            const level = LEVELS[gameState.currentLevel];
+            const count = level.questionsCount;
+
+            if (gameState.currentLevel === 5) {
+                // Preparer des paires pour le niveau 5
+                gameState.questionsForRound = generatePairs(count);
+            } else {
+                // Melanger et prendre N mots
+                const shuffled = shuffleArray([...WORDS_DB]);
+                gameState.questionsForRound = shuffled.slice(0, count);
+            }
+        }
+
+        function generatePairs(count) {
+            const pairs = [];
+            const allSyllabes = new Map();
+
+            // Indexer les syllabes
+            WORDS_DB.forEach(word => {
+                word.syllabes.forEach(syl => {
+                    const key = syl.toLowerCase();
+                    if (!allSyllabes.has(key)) allSyllabes.set(key, []);
+                    allSyllabes.get(key).push(word);
+                });
+            });
+
+            // Trouver des paires qui partagent une syllabe
+            const usedPairs = new Set();
+            allSyllabes.forEach((words, syl) => {
+                if (words.length >= 2 && pairs.length < count) {
+                    for (let i = 0; i < words.length - 1 && pairs.length < count; i++) {
+                        for (let j = i + 1; j < words.length && pairs.length < count; j++) {
+                            const key = words[i].mot + '-' + words[j].mot;
+                            if (!usedPairs.has(key)) {
+                                usedPairs.add(key);
+                                pairs.push({
+                                    word1: words[i],
+                                    word2: words[j],
+                                    commonSyllabe: syl
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+
+            return shuffleArray(pairs).slice(0, count);
+        }
+
+        // === FISHER-YATES SHUFFLE ===
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // === GENERATION DE QUESTION ===
+        function generateNewQuestion() {
+            const level = gameState.currentLevel;
+            const levelConfig = LEVELS[level];
+
+            if (gameState.questionIndex >= levelConfig.questionsCount) {
+                showLevelComplete();
+                return;
+            }
+
+            gameState.isAnswering = false;
+            updateProgress();
+
+            switch(level) {
+                case 1: generateLevel1(); break;
+                case 2: generateLevel2(); break;
+                case 3: generateLevel3(); break;
+                case 4: generateLevel4(); break;
+                case 5: generateLevel5(); break;
+            }
+        }
+
+        function updateProgress() {
+            const levelConfig = LEVELS[gameState.currentLevel];
+            const pct = (gameState.questionIndex / levelConfig.questionsCount) * 100;
+            document.getElementById('progress-fill').style.width = pct + '%';
+        }
+
+        // === NIVEAU 1 : COMPTE LES SYLLABES ===
+        function generateLevel1() {
+            const word = gameState.questionsForRound[gameState.questionIndex];
+            gameState.currentWord = word;
+
+            const targetZone = document.getElementById('target-zone');
+            targetZone.innerHTML = `
+                <div class="target-emoji">${word.emoji}</div>
+                <div class="target-word">${word.mot.toUpperCase()}</div>
+                <div class="target-instruction">Combien de syllabes ?</div>
+                <div class="syllable-decomposition" id="syllable-decomposition"></div>
+            `;
+
+            const choicesZone = document.getElementById('choices-zone');
+            choicesZone.innerHTML = '';
+
+            [1, 2, 3, 4].forEach((num, index) => {
+                const btn = document.createElement('button');
+                btn.className = `choice-btn color-${(index % 6) + 1}`;
+                btn.textContent = num;
+                btn.onclick = () => checkLevel1Answer(num, btn);
+                choicesZone.appendChild(btn);
+            });
+
+            animateChoices();
+        }
+
+        function checkLevel1Answer(num, button) {
+            if (gameState.isAnswering) return;
+            gameState.isAnswering = true;
+
+            const word = gameState.currentWord;
+            const correct = word.syllabes.length;
+
+            // Toujours montrer la decomposition
+            showDecomposition(word);
+
+            if (num === correct) {
+                handleCorrectAnswer(button);
+            } else {
+                handleWrongAnswer(button, correct.toString());
+            }
+        }
+
+        function showDecomposition(word) {
+            const container = document.getElementById('syllable-decomposition');
+            if (!container) return;
+            container.innerHTML = '';
+
+            word.syllabes.forEach((syl, i) => {
+                const pill = document.createElement('span');
+                pill.className = `syllable-pill syl-${(i % 4) + 1}`;
+                pill.textContent = syl.toUpperCase();
+                container.appendChild(pill);
+
+                if (i < word.syllabes.length - 1) {
+                    const sep = document.createElement('span');
+                    sep.style.cssText = 'font-size: 2rem; font-weight: 900; color: #999; align-self: center;';
+                    sep.textContent = '-';
+                    sep.style.opacity = '0';
+                    sep.style.transition = 'opacity 0.3s ease';
+                    container.appendChild(sep);
+
+                    setTimeout(() => { sep.style.opacity = '1'; }, (i + 1) * 200);
+                }
+
+                setTimeout(() => { pill.classList.add('show'); }, (i + 1) * 200);
+            });
+        }
+
+        // === NIVEAU 2 : PREMIERE SYLLABE ===
+        function generateLevel2() {
+            const word = gameState.questionsForRound[gameState.questionIndex];
+            gameState.currentWord = word;
+
+            const targetZone = document.getElementById('target-zone');
+            targetZone.innerHTML = `
+                <div class="target-emoji">${word.emoji}</div>
+                <div class="target-word">${word.mot.toUpperCase()}</div>
+                <div class="target-instruction">Quelle est la premiere syllabe ?</div>
+                <div class="syllable-decomposition" id="syllable-decomposition"></div>
+            `;
+
+            const correctSyllabe = word.syllabes[0].toUpperCase();
+            const distractors = getDistractorSyllabes(correctSyllabe, 3);
+            const choices = shuffleArray([correctSyllabe, ...distractors]);
+
+            renderSyllableChoices(choices, (chosen, btn) => checkLevel2Answer(chosen, btn));
+        }
+
+        function checkLevel2Answer(chosen, button) {
+            if (gameState.isAnswering) return;
+            gameState.isAnswering = true;
+
+            const word = gameState.currentWord;
+            const correct = word.syllabes[0].toUpperCase();
+
+            if (chosen === correct) {
+                handleCorrectAnswer(button);
+                highlightFirstSyllable(word);
+            } else {
+                handleWrongAnswer(button, correct);
+            }
+        }
+
+        function highlightFirstSyllable(word) {
+            const container = document.getElementById('syllable-decomposition');
+            if (!container) return;
+            container.innerHTML = '';
+
+            word.syllabes.forEach((syl, i) => {
+                const pill = document.createElement('span');
+                pill.className = `syllable-pill syl-${(i % 4) + 1} show`;
+                pill.textContent = syl.toUpperCase();
+                if (i === 0) {
+                    pill.style.transform = 'scale(1.2)';
+                    pill.style.boxShadow = '0 0 20px rgba(255, 112, 67, 0.5)';
+                }
+                container.appendChild(pill);
+            });
+        }
+
+        // === NIVEAU 3 : DERNIERE SYLLABE ===
+        function generateLevel3() {
+            const word = gameState.questionsForRound[gameState.questionIndex];
+            gameState.currentWord = word;
+
+            const targetZone = document.getElementById('target-zone');
+            targetZone.innerHTML = `
+                <div class="target-emoji">${word.emoji}</div>
+                <div class="target-word">${word.mot.toUpperCase()}</div>
+                <div class="target-instruction">Quelle est la derniere syllabe ?</div>
+                <div class="syllable-decomposition" id="syllable-decomposition"></div>
+            `;
+
+            const lastIndex = word.syllabes.length - 1;
+            const correctSyllabe = word.syllabes[lastIndex].toUpperCase();
+            const distractors = getDistractorSyllabes(correctSyllabe, 3);
+            const choices = shuffleArray([correctSyllabe, ...distractors]);
+
+            renderSyllableChoices(choices, (chosen, btn) => checkLevel3Answer(chosen, btn));
+        }
+
+        function checkLevel3Answer(chosen, button) {
+            if (gameState.isAnswering) return;
+            gameState.isAnswering = true;
+
+            const word = gameState.currentWord;
+            const lastIndex = word.syllabes.length - 1;
+            const correct = word.syllabes[lastIndex].toUpperCase();
+
+            if (chosen === correct) {
+                handleCorrectAnswer(button);
+                highlightLastSyllable(word);
+            } else {
+                handleWrongAnswer(button, correct);
+            }
+        }
+
+        function highlightLastSyllable(word) {
+            const container = document.getElementById('syllable-decomposition');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const lastIndex = word.syllabes.length - 1;
+            word.syllabes.forEach((syl, i) => {
+                const pill = document.createElement('span');
+                pill.className = `syllable-pill syl-${(i % 4) + 1} show`;
+                pill.textContent = syl.toUpperCase();
+                if (i === lastIndex) {
+                    pill.style.transform = 'scale(1.2)';
+                    pill.style.boxShadow = '0 0 20px rgba(255, 112, 67, 0.5)';
+                }
+                container.appendChild(pill);
+            });
+        }
+
+        // === NIVEAU 4 : RECOMPOSE LE MOT ===
+        function generateLevel4() {
+            const word = gameState.questionsForRound[gameState.questionIndex];
+            gameState.currentWord = word;
+            gameState.constructionSyllabes = [];
+
+            const targetZone = document.getElementById('target-zone');
+            targetZone.innerHTML = `
+                <div class="target-emoji">${word.emoji}</div>
+                <div class="target-instruction">Recompose le mot !</div>
+                <div class="construction-zone" id="construction-zone">
+                    <span class="construction-placeholder">Clique les syllabes dans l'ordre</span>
+                </div>
+                <button class="reset-btn" onclick="resetConstruction()">🔄 Recommencer</button>
+            `;
+
+            const scrambled = shuffleArray([...word.syllabes].map(s => s.toUpperCase()));
+
+            renderSyllableChoices(scrambled, (chosen, btn) => checkLevel4Answer(chosen, btn), true);
+        }
+
+        function checkLevel4Answer(chosen, button) {
+            if (gameState.isAnswering) return;
+
+            const word = gameState.currentWord;
+            const expectedIndex = gameState.constructionSyllabes.length;
+            const expected = word.syllabes[expectedIndex].toUpperCase();
+
+            if (chosen === expected) {
+                playSound('click');
+                gameState.constructionSyllabes.push(chosen);
+                button.classList.add('used');
+
+                updateConstructionZone();
+
+                // Verifier si le mot est complet
+                if (gameState.constructionSyllabes.length === word.syllabes.length) {
+                    gameState.isAnswering = true;
+                    handleCorrectAnswer(null);
+                }
+            } else {
+                // Mauvais ordre : shake et reset
+                playSound('encourage');
+                button.classList.add('wrong');
+                setTimeout(() => { button.classList.remove('wrong'); }, 500);
+
+                const zone = document.getElementById('construction-zone');
+                zone.style.animation = 'shake 0.5s ease';
+                setTimeout(() => { zone.style.animation = ''; }, 500);
+
+                showFeedback('Pas dans cet ordre !', 'retry');
+                showMascotMessage('Essaie encore !');
+
+                // Reset apres un court delai
+                setTimeout(() => resetConstruction(), 800);
+            }
+        }
+
+        function updateConstructionZone() {
+            const zone = document.getElementById('construction-zone');
+            if (gameState.constructionSyllabes.length === 0) {
+                zone.innerHTML = '<span class="construction-placeholder">Clique les syllabes dans l\'ordre</span>';
+            } else {
+                zone.innerHTML = gameState.constructionSyllabes.map(syl =>
+                    `<span class="construction-pill">${syl}</span>`
+                ).join('');
+            }
+        }
+
+        function resetConstruction() {
+            gameState.constructionSyllabes = [];
+            updateConstructionZone();
+
+            // Reactiver tous les boutons
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.classList.remove('used', 'wrong');
+            });
+        }
+
+        // === NIVEAU 5 : SYLLABE COMMUNE ===
+        function generateLevel5() {
+            const pair = gameState.questionsForRound[gameState.questionIndex];
+            if (!pair) {
+                showLevelComplete();
+                return;
+            }
+            gameState.currentPair = pair;
+
+            const targetZone = document.getElementById('target-zone');
+            targetZone.innerHTML = `
+                <div class="target-instruction">Quelle syllabe est dans les deux mots ?</div>
+                <div class="words-pair">
+                    <div class="word-card">
+                        <div class="word-card-emoji">${pair.word1.emoji}</div>
+                        <div class="word-card-text">${pair.word1.mot.toUpperCase()}</div>
+                    </div>
+                    <div class="word-card">
+                        <div class="word-card-emoji">${pair.word2.emoji}</div>
+                        <div class="word-card-text">${pair.word2.mot.toUpperCase()}</div>
+                    </div>
+                </div>
+            `;
+
+            const correctSyllabe = pair.commonSyllabe.toUpperCase();
+            const distractors = getDistractorSyllabes(correctSyllabe, 3, [
+                ...pair.word1.syllabes.map(s => s.toUpperCase()),
+                ...pair.word2.syllabes.map(s => s.toUpperCase())
+            ]);
+            const choices = shuffleArray([correctSyllabe, ...distractors]);
+
+            renderSyllableChoices(choices, (chosen, btn) => checkLevel5Answer(chosen, btn));
+        }
+
+        function checkLevel5Answer(chosen, button) {
+            if (gameState.isAnswering) return;
+            gameState.isAnswering = true;
+
+            const correct = gameState.currentPair.commonSyllabe.toUpperCase();
+
+            if (chosen === correct) {
+                handleCorrectAnswer(button);
+            } else {
+                handleWrongAnswer(button, correct);
+            }
+        }
+
+        // === UTILITAIRES SYLLABES ===
+        function getDistractorSyllabes(correct, count, exclude = []) {
+            const allSyllabes = new Set();
+            WORDS_DB.forEach(word => {
+                word.syllabes.forEach(syl => allSyllabes.add(syl.toUpperCase()));
+            });
+
+            const excludeSet = new Set([correct, ...exclude.map(s => s.toUpperCase())]);
+            const available = [...allSyllabes].filter(s => !excludeSet.has(s));
+            const shuffled = shuffleArray(available);
+            return shuffled.slice(0, count);
+        }
+
+        function renderSyllableChoices(choices, callback, forConstruction = false) {
+            const choicesZone = document.getElementById('choices-zone');
+            choicesZone.innerHTML = '';
+
+            choices.forEach((syl, index) => {
+                const btn = document.createElement('button');
+                btn.className = `choice-btn syllable-choice color-${(index % 6) + 1}`;
+                btn.textContent = syl;
+                btn.onclick = () => callback(syl, btn);
+                choicesZone.appendChild(btn);
+            });
+
+            animateChoices();
+        }
+
+        function animateChoices() {
+            const choicesZone = document.getElementById('choices-zone');
+            choicesZone.querySelectorAll('.choice-btn').forEach((btn, i) => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'scale(0)';
+                setTimeout(() => {
+                    btn.style.transition = 'all 0.3s ease';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'scale(1)';
+                }, i * 100);
+            });
+        }
+
+        // === GESTION DES REPONSES ===
+        function handleCorrectAnswer(button) {
+            playSound('victory');
+
+            if (button) {
+                button.classList.add('correct');
+            }
+
+            // Desactiver tous les boutons
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.classList.add('disabled');
+            });
+
+            gameState.currentScore++;
+            gameState.totalStars++;
+
+            if (gameState.currentScore > gameState.bestScore) {
+                gameState.bestScore = gameState.currentScore;
+            }
+
+            updateGameUI();
+            saveGame();
+            launchConfetti();
+            showFeedback('Bravo ! 🎉', 'success');
+            showMascotMessage(getEncouragementMessage());
+
+            gameState.questionIndex++;
+
+            setTimeout(() => {
+                generateNewQuestion();
+            }, 1800);
+        }
+
+        function handleWrongAnswer(button, correctAnswer) {
+            playSound('encourage');
+
+            button.classList.add('wrong');
+
+            setTimeout(() => {
+                button.classList.remove('wrong');
+                button.classList.add('disabled');
+            }, 500);
+
+            showFeedback('Essaie encore ! 💪', 'retry');
+            showMascotMessage('Tu peux le faire !');
+
+            // Montrer la bonne reponse et passer apres un delai
+            setTimeout(() => {
+                // Mettre en evidence la bonne reponse
+                document.querySelectorAll('.choice-btn').forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                    btn.classList.add('disabled');
+                });
+
+                // Montrer la decomposition si applicable
+                if (gameState.currentWord && (gameState.currentLevel === 1)) {
+                    showDecomposition(gameState.currentWord);
+                }
+
+                gameState.questionIndex++;
+
+                setTimeout(() => {
+                    generateNewQuestion();
+                }, 1500);
+            }, 1000);
+        }
+
+        // === FIN DE NIVEAU ===
+        function showLevelComplete() {
+            const levelConfig = LEVELS[gameState.currentLevel];
+            const threshold = levelConfig.unlockThreshold;
+            const passed = gameState.currentScore >= threshold;
+
+            if (passed && gameState.currentLevel < 5) {
+                const nextLevel = gameState.currentLevel + 1;
+                if (!gameState.unlockedLevels.includes(nextLevel)) {
+                    gameState.unlockedLevels.push(nextLevel);
+                    saveGame();
+                    showLevelUp(nextLevel);
+                    return;
+                }
+            }
+
+            // Afficher celebration
+            const msg = passed
+                ? `${gameState.currentScore} / ${levelConfig.questionsCount} - Bravo !`
+                : `${gameState.currentScore} / ${levelConfig.questionsCount} - Continue a t'entrainer !`;
+
+            document.getElementById('celebration-message').textContent = msg;
+            showScreen('celebration-screen');
+            launchConfetti();
+            launchConfetti();
+            playSound(passed ? 'levelup' : 'encourage');
+        }
+
+        function showLevelUp(nextLevel) {
+            playSound('levelup');
+
+            const overlay = document.getElementById('level-up-overlay');
+            document.getElementById('level-up-text').textContent = 'Niveau ' + nextLevel + ' !';
+            document.getElementById('level-up-desc').textContent = LEVELS[nextLevel].name;
+            overlay.classList.add('show');
+
+            launchConfetti();
+            launchConfetti();
+
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                // Montrer celebration
+                document.getElementById('celebration-message').textContent =
+                    `${gameState.currentScore} / ${LEVELS[gameState.currentLevel].questionsCount} - Super !`;
+                showScreen('celebration-screen');
+                launchConfetti();
+            }, 2500);
+        }
+
+        function continuePlaying() {
+            playSound('click');
+            // Passer au niveau suivant si debloque, sinon rejouer le meme
+            if (gameState.currentLevel < 5 && gameState.unlockedLevels.includes(gameState.currentLevel + 1)) {
+                gameState.currentLevel = gameState.currentLevel + 1;
+            }
+            startGame();
+        }
+
+        // === MISE A JOUR DE L'UI ===
+        function updateGameUI() {
+            document.getElementById('game-score').textContent = gameState.currentScore + ' ⭐';
+            document.getElementById('game-level').textContent = LEVELS[gameState.currentLevel].name;
+        }
+
+        // === CONFETTIS ===
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FF7043', '#FF5722', '#E64A19', '#FFE66D', '#4ECDC4', '#A78BFA'];
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    container.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        // === FEEDBACK ET MESSAGES ===
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback-message');
+            feedback.textContent = message;
+            feedback.className = 'feedback-message show ' + type;
+
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 1000);
+        }
+
+        function showMascotMessage(message) {
+            const mascotMsg = document.getElementById('mascot-message');
+            mascotMsg.textContent = message;
+            mascotMsg.classList.add('show');
+
+            setTimeout(() => {
+                mascotMsg.classList.remove('show');
+            }, 2000);
+        }
+
+        function getEncouragementMessage() {
+            const messages = [
+                'Super !', 'Genial !', 'Excellent !', 'Bravo !',
+                'Fantastique !', 'Tu es fort !', 'Continue !', 'Wahou !',
+                'Magnifique !', 'Champion !'
+            ];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        // === INITIALISATION ===
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGame();
+
+            document.addEventListener('click', () => {
+                initAudio();
+            }, { once: true });
+
+            document.addEventListener('touchstart', () => {
+                initAudio();
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>

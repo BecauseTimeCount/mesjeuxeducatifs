@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mes Jeux Educatifs</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            overflow: auto;
+            background: linear-gradient(
+                135deg,
+                #ff9a9e 0%,
+                #fecfef 20%,
+                #fecfef 20%,
+                #a1c4fd 40%,
+                #c2e9fb 60%,
+                #d4fc79 80%,
+                #96e6a1 100%
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .main-title {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .greeting {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .greeting-name {
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* ===== PROFILE BAR ===== */
+        .profile-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-btn {
+            background: white;
+            border: 3px solid transparent;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #555;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-btn.active {
+            border-color: #3498db;
+            color: #3498db;
+            background: #EBF5FB;
+        }
+
+        .profile-btn.add-profile {
+            background: rgba(255,255,255,0.6);
+            border: 3px dashed #aaa;
+            color: #888;
+        }
+
+        .profile-btn.add-profile:hover {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        /* ===== PROFILE FORM (create/edit) ===== */
+        .profile-form {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .profile-form.visible {
+            display: flex;
+        }
+
+        .profile-form-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .profile-form-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .profile-form-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-family: 'Nunito', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .profile-form-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            padding: 12px 22px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover { transform: scale(1.05); }
+
+        .btn-cancel {
+            background: #eee;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 15px;
+            color: #666;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-cancel:hover { transform: scale(1.05); }
+
+        /* ===== TOTAL SCORE ===== */
+        .total-score-section {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .total-score-label {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .total-score-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #f1c40f;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .total-score-stars {
+            font-size: 1.5rem;
+        }
+
+        /* ===== GAMES GRID ===== */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border: 4px solid transparent;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--card-color);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            border-color: var(--card-color);
+        }
+
+        .game-card.lettres { --card-color: #e74c3c; }
+        .game-card.calculs { --card-color: #3498db; }
+        .game-card.images { --card-color: #2ecc71; }
+        .game-card.temps { --card-color: #9b59b6; }
+        .game-card.mots-images { --card-color: #00BCD4; }
+        .game-card.syllabes { --card-color: #FF7043; }
+        .game-card.logique { --card-color: #5C6BC0; }
+        .game-card.sudoku { --card-color: #E91E63; }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .game-card:nth-child(1) .game-icon { --delay: 0s; }
+        .game-card:nth-child(2) .game-icon { --delay: 0.2s; }
+        .game-card:nth-child(3) .game-icon { --delay: 0.4s; }
+        .game-card:nth-child(4) .game-icon { --delay: 0.6s; }
+        .game-card:nth-child(5) .game-icon { --delay: 0.8s; }
+        .game-card:nth-child(6) .game-icon { --delay: 1.0s; }
+        .game-card:nth-child(7) .game-icon { --delay: 1.2s; }
+        .game-card:nth-child(8) .game-icon { --delay: 1.4s; }
+        .game-card:nth-child(9) .game-icon { --delay: 1.6s; }
+
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .game-description {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .game-score {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+            display: inline-block;
+        }
+
+        .game-score span {
+            color: #f1c40f;
+        }
+
+        /* ===== SETTINGS BUTTON ===== */
+        .settings-toggle {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Nunito', sans-serif;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .settings-toggle:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* ===== SETTINGS PANEL ===== */
+        .settings-panel {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            max-width: 500px;
+            width: 100%;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .settings-panel.visible {
+            display: block;
+        }
+
+        .settings-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .reset-game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reset-game-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+
+        .reset-game-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .btn-reset {
+            background: #fee;
+            border: 2px solid #e74c3c;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: #e74c3c;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .btn-reset-all {
+            background: #e74c3c;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-reset-all:hover {
+            background: #c0392b;
+            transform: scale(1.02);
+        }
+
+        .btn-delete-profile {
+            background: white;
+            border: 2px solid #e74c3c;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-delete-profile:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* ===== CONFIRM DIALOG ===== */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .confirm-overlay.visible {
+            display: flex;
+        }
+
+        .confirm-box {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        .confirm-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-confirm-yes {
+            background: #e74c3c;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-confirm-no {
+            background: #eee;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 15px;
+            color: #666;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+        }
+
+        /* ===== FLOATING DECORATIONS ===== */
+        .decoration {
+            position: fixed;
+            font-size: 3rem;
+            opacity: 0.3;
+            pointer-events: none;
+            animation: floatDecor 6s ease-in-out infinite;
+        }
+
+        .decoration:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .decoration:nth-child(2) { top: 20%; right: 8%; animation-delay: 1s; }
+        .decoration:nth-child(3) { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .decoration:nth-child(4) { bottom: 25%; right: 5%; animation-delay: 3s; }
+        .decoration:nth-child(5) { top: 50%; left: 3%; animation-delay: 4s; }
+        .decoration:nth-child(6) { top: 40%; right: 3%; animation-delay: 5s; }
+
+        @keyframes floatDecor {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 2000;
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-card {
+                padding: 25px 15px;
+            }
+
+            .game-icon {
+                font-size: 3.5rem;
+            }
+
+            .decoration {
+                display: none;
+            }
+
+            .settings-panel {
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorations -->
+    <div class="decoration">⭐</div>
+    <div class="decoration">🎈</div>
+    <div class="decoration">🌈</div>
+    <div class="decoration">✨</div>
+    <div class="decoration">🎯</div>
+    <div class="decoration">🏆</div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="main-title">🎮 MES JEUX EDUCATIFS 🎮</h1>
+        <p class="greeting" id="greeting">Bonjour <span class="greeting-name" id="playerName">petit joueur</span> !</p>
+    </header>
+
+    <!-- Profile Bar -->
+    <div class="profile-bar" id="profileBar">
+        <!-- Profile buttons rendered by JS -->
+    </div>
+
+    <!-- Profile Form (create/edit) -->
+    <div class="profile-form" id="profileForm">
+        <label class="profile-form-label" id="profileFormLabel">Nouveau joueur</label>
+        <div class="profile-form-row">
+            <input type="text" class="profile-form-input" id="profileNameInput" placeholder="Prenom..." maxlength="20">
+            <button class="btn-primary" onclick="saveProfile()">OK !</button>
+        </div>
+        <button class="btn-cancel" onclick="hideProfileForm()">Annuler</button>
+    </div>
+
+    <!-- Total Score -->
+    <section class="total-score-section">
+        <div class="total-score-label">Score total de tous les jeux</div>
+        <div class="total-score-value">
+            <span class="total-score-stars">⭐</span>
+            <span id="totalScore">0</span>
+        </div>
+    </section>
+
+    <!-- Games Grid -->
+    <main class="games-grid">
+        <a href="trouve-la-lettre.html" class="game-card lettres">
+            <span class="game-icon">🔤</span>
+            <h2 class="game-title">Trouve la Lettre</h2>
+            <p class="game-description">Apprends l'alphabet en retrouvant les lettres !</p>
+            <div class="game-score">⭐ <span id="scoreLettres">0</span></div>
+        </a>
+
+        <a href="calcul-aventure.html" class="game-card calculs">
+            <span class="game-icon">🔢</span>
+            <h2 class="game-title">Calcul Aventure</h2>
+            <p class="game-description">Deviens un champion des additions et soustractions !</p>
+            <div class="game-score">⭐ <span id="scoreCalculs">0</span></div>
+        </a>
+
+        <a href="premiere-lettre.html" class="game-card images">
+            <span class="game-icon">🖼️</span>
+            <h2 class="game-title">Premiere Lettre</h2>
+            <p class="game-description">Trouve la premiere lettre des images !</p>
+            <div class="game-score">⭐ <span id="scoreImages">0</span></div>
+        </a>
+
+        <a href="le-temps-qui-passe.html" class="game-card temps">
+            <span class="game-icon">🕐</span>
+            <h2 class="game-title">Le Temps qui Passe</h2>
+            <p class="game-description">Decouvre les heures et les moments de la journee !</p>
+            <div class="game-score">⭐ <span id="scoreTemps">0</span></div>
+        </a>
+
+        <a href="mots-et-images.html" class="game-card mots-images">
+            <span class="game-icon">📖</span>
+            <h2 class="game-title">Mots et Images</h2>
+            <p class="game-description">Associe les mots a leurs images !</p>
+            <div class="game-score">⭐ <span id="scoreMotsImages">0</span></div>
+        </a>
+
+        <a href="les-syllabes.html" class="game-card syllabes">
+            <span class="game-icon">🔊</span>
+            <h2 class="game-title">Les Syllabes</h2>
+            <p class="game-description">Decouvre les syllabes et recompose les mots !</p>
+            <div class="game-score">⭐ <span id="scoreSyllabes">0</span></div>
+        </a>
+
+        <a href="suite-logique.html" class="game-card logique">
+            <span class="game-icon">🧠</span>
+            <h2 class="game-title">Suite Logique</h2>
+            <p class="game-description">Trouve la suite et developpe ta logique !</p>
+            <div class="game-score">⭐ <span id="scoreLogique">0</span></div>
+        </a>
+
+        <a href="sudoku-des-petits.html" class="game-card sudoku">
+            <span class="game-icon">🧩</span>
+            <h2 class="game-title">Sudoku des Petits</h2>
+            <p class="game-description">Complete les grilles avec ta reflexion !</p>
+            <div class="game-score">⭐ <span id="scoreSudoku">0</span></div>
+        </a>
+    </main>
+
+    <!-- Settings Toggle -->
+    <button class="settings-toggle" onclick="toggleSettings()">⚙️ Parametres</button>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-title">⚙️ Parametres</div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Remettre a zero un jeu</div>
+            <div class="reset-game-list">
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🔤 Trouve la Lettre</span>
+                    <button class="btn-reset" onclick="confirmResetGame('lettres')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🔢 Calcul Aventure</span>
+                    <button class="btn-reset" onclick="confirmResetGame('calculs')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🖼️ Premiere Lettre</span>
+                    <button class="btn-reset" onclick="confirmResetGame('images')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🕐 Le Temps qui Passe</span>
+                    <button class="btn-reset" onclick="confirmResetGame('temps')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">📖 Mots et Images</span>
+                    <button class="btn-reset" onclick="confirmResetGame('motsImages')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🔊 Les Syllabes</span>
+                    <button class="btn-reset" onclick="confirmResetGame('syllabes')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🧠 Suite Logique</span>
+                    <button class="btn-reset" onclick="confirmResetGame('logique')">Reset</button>
+                </div>
+                <div class="reset-game-row">
+                    <span class="reset-game-name">🧩 Sudoku des Petits</span>
+                    <button class="btn-reset" onclick="confirmResetGame('sudoku')">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Actions globales</div>
+            <button class="btn-reset-all" onclick="confirmResetAll()">Remettre TOUT a zero</button>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Profil</div>
+            <button class="btn-delete-profile" id="btnDeleteProfile" onclick="confirmDeleteProfile()">Supprimer ce profil</button>
+        </div>
+    </div>
+
+    <!-- Confirm Dialog -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <div class="confirm-text" id="confirmText">Es-tu sur ?</div>
+            <div class="confirm-buttons">
+                <button class="btn-confirm-yes" id="btnConfirmYes">Oui</button>
+                <button class="btn-confirm-no" onclick="hideConfirm()">Non</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        Fait avec ❤️ pour apprendre en s'amusant
+    </footer>
+
+    <script>
+        // ===== GAME KEYS MAPPING =====
+        // Each game has: a full state key (JSON) and a score key (simple integer string)
+        const GAMES = {
+            lettres:    { stateKey: 'trouveLaLettre',  scoreKey: 'lettresScore',        displayId: 'scoreLettres' },
+            calculs:    { stateKey: 'calculAventure',   scoreKey: 'calculScore',          displayId: 'scoreCalculs' },
+            images:     { stateKey: 'premiereLettre',   scoreKey: 'premiereLettreScore',  displayId: 'scoreImages' },
+            temps:      { stateKey: 'tempsQuiPasse',    scoreKey: 'tempsScore',           displayId: 'scoreTemps' },
+            motsImages: { stateKey: 'motsEtImages',     scoreKey: 'motsImagesScore',      displayId: 'scoreMotsImages' },
+            syllabes:   { stateKey: 'lesSyllabes',      scoreKey: 'syllabesScore',        displayId: 'scoreSyllabes' },
+            logique:    { stateKey: 'suiteLogique',      scoreKey: 'logiqueScore',         displayId: 'scoreLogique' },
+            sudoku:     { stateKey: 'sudokuDesPetits',   scoreKey: 'sudokuScore',          displayId: 'scoreSudoku' }
+        };
+
+        // All localStorage keys that belong to games (for backup/restore)
+        function getAllGameKeys() {
+            const keys = ['playerName'];
+            Object.values(GAMES).forEach(g => {
+                keys.push(g.stateKey, g.scoreKey);
+            });
+            return keys;
+        }
+
+        // ===== PROFILE SYSTEM =====
+        // Profiles are stored as:
+        //   jayjay_profiles = [{id: "abc123", name: "JayJay"}, ...]
+        //   jayjay_active = "abc123"
+        //   jayjay_profile_abc123 = JSON blob of all game localStorage data
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        function getProfiles() {
+            const raw = localStorage.getItem('jayjay_profiles');
+            return raw ? JSON.parse(raw) : [];
+        }
+
+        function setProfiles(profiles) {
+            localStorage.setItem('jayjay_profiles', JSON.stringify(profiles));
+        }
+
+        function getActiveProfileId() {
+            return localStorage.getItem('jayjay_active') || null;
+        }
+
+        function setActiveProfileId(id) {
+            localStorage.setItem('jayjay_active', id);
+        }
+
+        // Save current game data into a profile backup
+        function backupCurrentData(profileId) {
+            const data = {};
+            getAllGameKeys().forEach(key => {
+                const val = localStorage.getItem(key);
+                if (val !== null) data[key] = val;
+            });
+            localStorage.setItem('jayjay_profile_' + profileId, JSON.stringify(data));
+        }
+
+        // Restore a profile's data into the game keys
+        function restoreProfileData(profileId) {
+            // Clear current game keys
+            getAllGameKeys().forEach(key => localStorage.removeItem(key));
+
+            const raw = localStorage.getItem('jayjay_profile_' + profileId);
+            if (raw) {
+                const data = JSON.parse(raw);
+                Object.entries(data).forEach(([key, val]) => {
+                    localStorage.setItem(key, val);
+                });
+            }
+        }
+
+        function switchToProfile(profileId) {
+            const currentId = getActiveProfileId();
+
+            // Save current profile's data (if there is one)
+            if (currentId) {
+                backupCurrentData(currentId);
+            }
+
+            // Restore new profile's data
+            restoreProfileData(profileId);
+            setActiveProfileId(profileId);
+
+            // Update UI
+            const profiles = getProfiles();
+            const profile = profiles.find(p => p.id === profileId);
+            if (profile) {
+                document.getElementById('playerName').textContent = profile.name;
+                localStorage.setItem('playerName', profile.name);
+            }
+
+            renderProfileBar();
+            loadScores();
+            hideSettings();
+        }
+
+        function showProfileForm(editMode) {
+            const form = document.getElementById('profileForm');
+            const input = document.getElementById('profileNameInput');
+            const label = document.getElementById('profileFormLabel');
+
+            if (editMode) {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                const current = profiles.find(p => p.id === activeId);
+                label.textContent = 'Modifier le prenom';
+                input.value = current ? current.name : '';
+                form.dataset.mode = 'edit';
+            } else {
+                label.textContent = 'Nouveau joueur';
+                input.value = '';
+                form.dataset.mode = 'create';
+            }
+
+            form.classList.add('visible');
+            input.focus();
+        }
+
+        function hideProfileForm() {
+            document.getElementById('profileForm').classList.remove('visible');
+        }
+
+        function saveProfile() {
+            const input = document.getElementById('profileNameInput');
+            const name = input.value.trim();
+            if (!name) return;
+
+            const form = document.getElementById('profileForm');
+            const profiles = getProfiles();
+
+            if (form.dataset.mode === 'edit') {
+                // Edit existing profile name
+                const activeId = getActiveProfileId();
+                const profile = profiles.find(p => p.id === activeId);
+                if (profile) {
+                    profile.name = name;
+                    setProfiles(profiles);
+                    localStorage.setItem('playerName', name);
+                    document.getElementById('playerName').textContent = name;
+                }
+            } else {
+                // Create new profile
+                const currentId = getActiveProfileId();
+                if (currentId) {
+                    backupCurrentData(currentId);
+                }
+
+                const newId = generateId();
+                profiles.push({ id: newId, name: name });
+                setProfiles(profiles);
+
+                // Clear game data for fresh profile
+                getAllGameKeys().forEach(key => localStorage.removeItem(key));
+                localStorage.setItem('playerName', name);
+
+                setActiveProfileId(newId);
+                document.getElementById('playerName').textContent = name;
+                createConfetti();
+            }
+
+            hideProfileForm();
+            renderProfileBar();
+            loadScores();
+        }
+
+        function renderProfileBar() {
+            const bar = document.getElementById('profileBar');
+            const profiles = getProfiles();
+            const activeId = getActiveProfileId();
+
+            let html = '';
+
+            profiles.forEach(p => {
+                const isActive = p.id === activeId;
+                html += `<button class="profile-btn ${isActive ? 'active' : ''}" onclick="switchToProfile('${p.id}')">${p.name}</button>`;
+            });
+
+            // Edit current name button
+            if (activeId) {
+                html += `<button class="profile-btn" onclick="showProfileForm(true)" title="Modifier le prenom">✏️</button>`;
+            }
+
+            // Add new profile button
+            html += `<button class="profile-btn add-profile" onclick="showProfileForm(false)">+ Ajouter</button>`;
+
+            bar.innerHTML = html;
+
+            // Update delete button visibility
+            const deleteBtn = document.getElementById('btnDeleteProfile');
+            if (deleteBtn) {
+                deleteBtn.style.display = profiles.length > 1 ? 'block' : 'none';
+            }
+        }
+
+        // ===== MIGRATION: handle existing data without profiles =====
+        function migrateIfNeeded() {
+            const profiles = getProfiles();
+            if (profiles.length === 0) {
+                // First time with profile system — create a profile from existing data
+                const existingName = localStorage.getItem('playerName') || '';
+                const newId = generateId();
+
+                if (existingName) {
+                    // Backup existing data under new profile
+                    const data = {};
+                    getAllGameKeys().forEach(key => {
+                        const val = localStorage.getItem(key);
+                        if (val !== null) data[key] = val;
+                    });
+                    localStorage.setItem('jayjay_profile_' + newId, JSON.stringify(data));
+                    setProfiles([{ id: newId, name: existingName }]);
+                    setActiveProfileId(newId);
+                } else {
+                    // No existing data — show form to create first profile
+                    setProfiles([]);
+                    showProfileForm(false);
+                }
+            }
+        }
+
+        // ===== SCORE MANAGEMENT =====
+        function loadScores() {
+            let total = 0;
+            Object.values(GAMES).forEach(game => {
+                const score = parseInt(localStorage.getItem(game.scoreKey)) || 0;
+                const el = document.getElementById(game.displayId);
+                if (el) el.textContent = score;
+                total += score;
+            });
+            document.getElementById('totalScore').textContent = total;
+        }
+
+        // ===== RESET FUNCTIONS =====
+        function resetGame(gameId) {
+            const game = GAMES[gameId];
+            if (!game) return;
+            localStorage.removeItem(game.stateKey);
+            localStorage.removeItem(game.scoreKey);
+            loadScores();
+
+            // Also update backup
+            const activeId = getActiveProfileId();
+            if (activeId) backupCurrentData(activeId);
+
+            showToast('Score remis a zero !');
+        }
+
+        function resetAllGames() {
+            Object.values(GAMES).forEach(game => {
+                localStorage.removeItem(game.stateKey);
+                localStorage.removeItem(game.scoreKey);
+            });
+            loadScores();
+
+            const activeId = getActiveProfileId();
+            if (activeId) backupCurrentData(activeId);
+
+            showToast('Tous les scores remis a zero !');
+        }
+
+        function deleteCurrentProfile() {
+            const profiles = getProfiles();
+            const activeId = getActiveProfileId();
+            if (profiles.length <= 1) return; // Can't delete last profile
+
+            // Remove profile data
+            localStorage.removeItem('jayjay_profile_' + activeId);
+
+            // Remove from list
+            const remaining = profiles.filter(p => p.id !== activeId);
+            setProfiles(remaining);
+
+            // Switch to first remaining profile
+            switchToProfile(remaining[0].id);
+            showToast('Profil supprime !');
+        }
+
+        // ===== CONFIRM DIALOGS =====
+        let pendingAction = null;
+
+        function showConfirm(message, action) {
+            document.getElementById('confirmText').textContent = message;
+            document.getElementById('confirmOverlay').classList.add('visible');
+            pendingAction = action;
+            document.getElementById('btnConfirmYes').onclick = () => {
+                hideConfirm();
+                if (pendingAction) pendingAction();
+                pendingAction = null;
+            };
+        }
+
+        function hideConfirm() {
+            document.getElementById('confirmOverlay').classList.remove('visible');
+            pendingAction = null;
+        }
+
+        function confirmResetGame(gameId) {
+            const names = {
+                lettres: 'Trouve la Lettre', calculs: 'Calcul Aventure', images: 'Premiere Lettre',
+                temps: 'Le Temps qui Passe', motsImages: 'Mots et Images',
+                syllabes: 'Les Syllabes', logique: 'Suite Logique', sudoku: 'Sudoku des Petits'
+            };
+            showConfirm('Remettre a zero "' + names[gameId] + '" ?', () => resetGame(gameId));
+        }
+
+        function confirmResetAll() {
+            showConfirm('Remettre TOUS les scores a zero ?', resetAllGames);
+        }
+
+        function confirmDeleteProfile() {
+            const profiles = getProfiles();
+            const activeId = getActiveProfileId();
+            const current = profiles.find(p => p.id === activeId);
+            const name = current ? current.name : 'ce profil';
+            showConfirm('Supprimer le profil "' + name + '" et toutes ses donnees ?', deleteCurrentProfile);
+        }
+
+        // ===== SETTINGS PANEL =====
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('visible');
+        }
+
+        function hideSettings() {
+            document.getElementById('settingsPanel').classList.remove('visible');
+        }
+
+        // ===== TOAST =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2000);
+        }
+
+        // ===== CONFETTI EFFECT =====
+        function createConfetti() {
+            const colors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#e67e22'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.cssText = `
+                        position: fixed;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background-color: ${colors[Math.floor(Math.random() * colors.length)]};
+                        left: ${Math.random() * 100}vw;
+                        top: -20px;
+                        pointer-events: none;
+                        animation: confettiFall 3s linear forwards;
+                        z-index: 1000;
+                    `;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        const confettiStyle = document.createElement('style');
+        confettiStyle.textContent = `
+            @keyframes confettiFall {
+                0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(confettiStyle);
+
+        // ===== ENTER KEY SUPPORT =====
+        document.getElementById('profileNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveProfile();
+        });
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            migrateIfNeeded();
+
+            const profiles = getProfiles();
+            const activeId = getActiveProfileId();
+
+            if (profiles.length > 0 && activeId) {
+                const active = profiles.find(p => p.id === activeId);
+                if (active) {
+                    document.getElementById('playerName').textContent = active.name;
+                }
+            }
+
+            renderProfileBar();
+            loadScores();
+
+            // Refresh scores periodically
+            setInterval(loadScores, 2000);
+        });
+
+        // Reload scores when page becomes visible
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) loadScores();
+        });
+    </script>
+</body>
+</html>

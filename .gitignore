@@ -1,0 +1,4 @@
+.playwright-mcp/
+*.png
+.DS_Store
+Thumbs.db
