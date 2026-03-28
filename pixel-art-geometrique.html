@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pixel Art Geometrique - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1A237E 0%, #9FA8DA 100%);
+            min-height: 100vh;
+            overflow: auto;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #1A237E;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #fff;
+        }
+
+        /* ===== WELCOME ===== */
+        .welcome-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .welcome-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 48px;
+            border: 3px solid transparent;
+        }
+
+        .level-card:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        .level-card.completed {
+            border-color: #FFD700;
+        }
+
+        .level-card-emoji {
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            margin-bottom: 8px;
+        }
+
+        .level-card-title {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 800;
+            color: #1A237E;
+            margin-bottom: 4px;
+        }
+
+        .level-card-desc {
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            color: #666;
+            font-weight: 600;
+        }
+
+        .level-card-stars {
+            margin-top: 8px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: #FFD700;
+        }
+
+        .lock-icon {
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+
+        .total-stars-display {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 20px;
+        }
+
+        /* ===== GAME SCREEN ===== */
+        .game-header {
+            text-align: center;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .game-title {
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA000);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .round-info {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+
+        .stars-count {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #FFD700;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* ===== GRIDS AREA ===== */
+        .grids-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 15px;
+        }
+
+        .grid-section {
+            text-align: center;
+        }
+
+        .grid-label {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .pixel-grid {
+            display: inline-grid;
+            gap: 2px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .pixel-cell {
+            width: clamp(36px, 8vw, 50px);
+            height: clamp(36px, 8vw, 50px);
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+            min-width: 36px;
+            min-height: 36px;
+        }
+
+        .pixel-cell:hover {
+            transform: scale(1.05);
+        }
+
+        .pixel-cell.model-cell {
+            cursor: default;
+        }
+
+        .pixel-cell.model-cell:hover {
+            transform: none;
+        }
+
+        /* ===== COLOR PALETTE ===== */
+        .palette {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+            max-width: 400px;
+        }
+
+        .color-btn {
+            width: clamp(40px, 10vw, 50px);
+            height: clamp(40px, 10vw, 50px);
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 40px;
+            min-height: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .color-btn:hover, .color-btn.active {
+            transform: scale(1.15);
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .action-btn {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #1A237E;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            min-height: 48px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(145deg, #FFD700, #FFA000);
+            color: #fff;
+        }
+
+        .action-btn.clear-btn {
+            background: linear-gradient(145deg, #ef5350, #d32f2f);
+            color: #fff;
+        }
+
+        /* ===== RESULT SCREEN ===== */
+        .result-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: clamp(20px, 5vw, 40px);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .result-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #1A237E;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .result-stars {
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: 15px;
+        }
+
+        .accuracy-display {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 800;
+            color: #1A237E;
+            margin-bottom: 5px;
+        }
+
+        .accuracy-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        /* ===== PUZZLE SELECT ===== */
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 15px;
+        }
+
+        .puzzle-card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            border: 3px solid transparent;
+        }
+
+        .puzzle-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .puzzle-card.done {
+            border-color: #4CAF50;
+        }
+
+        .puzzle-card-name {
+            font-weight: 700;
+            color: #1A237E;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
+        .puzzle-card-star {
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+
+        /* ===== FREE MODE GALLERY ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 10px;
+        }
+
+        .gallery-item {
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-mini-grid {
+            display: inline-grid;
+            gap: 1px;
+        }
+
+        .gallery-mini-cell {
+            width: 8px;
+            height: 8px;
+        }
+
+        .gallery-item-label {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* ===== CELEBRATION ===== */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 200;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .pop-in {
+            animation: popIn 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-emoji">&#127912;</div>
+        <div class="welcome-title">Pixel Art<br>Geometrique</div>
+        <div class="welcome-subtitle">Reproduis des formes en pixels !</div>
+        <div class="total-stars-display" id="total-stars">&#11088; 0 etoile(s)</div>
+        <div class="level-grid" id="level-grid"></div>
+    </div>
+
+    <!-- PUZZLE SELECT SCREEN -->
+    <div id="puzzle-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title" id="puzzle-level-title"></div>
+        </div>
+        <div class="puzzle-grid" id="puzzle-grid"></div>
+        <button class="action-btn" onclick="showScreen('welcome-screen'); playSound('click');">&#8592; Retour</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title" id="game-level-title"></div>
+            <div class="round-info" id="round-info"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="stars-count" id="stars-count"></div>
+        </div>
+        <div class="grids-container" id="grids-container">
+            <div class="grid-section">
+                <div class="grid-label">Modele</div>
+                <div class="pixel-grid" id="model-grid"></div>
+            </div>
+            <div class="grid-section">
+                <div class="grid-label">Ton dessin</div>
+                <div class="pixel-grid" id="player-grid"></div>
+            </div>
+        </div>
+        <div class="palette" id="palette"></div>
+        <div class="action-buttons">
+            <button class="action-btn clear-btn" onclick="clearPlayerGrid()">Effacer tout</button>
+            <button class="action-btn primary" onclick="checkAnswer()">Verifier &#10003;</button>
+        </div>
+    </div>
+
+    <!-- FREE MODE SCREEN -->
+    <div id="free-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title">&#127912; Cree ton Art !</div>
+            <div class="round-info">Grille 8x8 - Laisse parler ta creativite</div>
+        </div>
+        <div class="grids-container">
+            <div class="grid-section">
+                <div class="pixel-grid" id="free-grid"></div>
+            </div>
+        </div>
+        <div class="palette" id="free-palette"></div>
+        <div class="action-buttons">
+            <button class="action-btn clear-btn" onclick="clearFreeGrid()">Effacer tout</button>
+            <button class="action-btn primary" onclick="saveFreeArt()">Sauvegarder &#128190;</button>
+            <button class="action-btn" onclick="showScreen('welcome-screen'); playSound('click');">&#8592; Retour</button>
+        </div>
+        <div style="margin-top:15px;color:#fff;font-weight:700;font-size:clamp(1rem,3vw,1.2rem);">Mes creations</div>
+        <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div class="result-container pop-in">
+            <div class="result-emoji" id="result-emoji"></div>
+            <div class="result-title" id="result-title"></div>
+            <div class="accuracy-display" id="accuracy-display"></div>
+            <div class="accuracy-label">de precision</div>
+            <div class="result-stars" id="result-stars"></div>
+            <div class="result-text" id="result-text"></div>
+            <div class="action-buttons">
+                <button class="action-btn" id="result-next-btn" onclick="nextPuzzle()">Suivant &#9654;</button>
+                <button class="action-btn" onclick="backToLevelPuzzles()">Autres puzzles</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUDIO =====
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                gain.gain.value = 0.15;
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.frequency.value = 600;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start(now); osc.stop(now + 0.15);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.value = 523;
+                    osc.frequency.setValueAtTime(523, now);
+                    osc.frequency.setValueAtTime(659, now + 0.12);
+                    osc.frequency.setValueAtTime(784, now + 0.24);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if (type === 'star') {
+                    osc.type = 'sine';
+                    osc.frequency.value = 880;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                    osc.start(now); osc.stop(now + 0.6);
+                } else if (type === 'paint') {
+                    osc.type = 'sine';
+                    osc.frequency.value = 440 + Math.random() * 200;
+                    gain.gain.value = 0.06;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now); osc.stop(now + 0.08);
+                } else if (type === 'win') {
+                    osc.type = 'triangle';
+                    [523, 659, 784, 1047].forEach((f, i) => {
+                        osc.frequency.setValueAtTime(f, now + i * 0.15);
+                    });
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                    osc.start(now); osc.stop(now + 0.8);
+                }
+            } catch(e) {}
+        }
+
+        // ===== STATE =====
+        const COLORS = [
+            { name: 'Rouge', hex: '#F44336' },
+            { name: 'Bleu', hex: '#2196F3' },
+            { name: 'Jaune', hex: '#FFEB3B' },
+            { name: 'Vert', hex: '#4CAF50' },
+            { name: 'Orange', hex: '#FF9800' },
+            { name: 'Violet', hex: '#9C27B0' },
+            { name: 'Noir', hex: '#333333' },
+            { name: 'Blanc', hex: '#FFFFFF' }
+        ];
+
+        let selectedColor = COLORS[0].hex;
+        let currentLevel = 0;
+        let currentPuzzle = 0;
+        let playerGrid = [];
+        let stars = 0;
+        let isPainting = false;
+
+        let state = JSON.parse(localStorage.getItem('pixelArtGeometrique') || 'null') || {
+            levelsCompleted: [false, false, false, false],
+            puzzleStars: { 0: {}, 1: {}, 2: {}, 3: {} },
+            totalStars: 0
+        };
+
+        let freeArtworks = JSON.parse(localStorage.getItem('pixelArtFreeCreations') || '[]');
+
+        function saveState() {
+            state.totalStars = 0;
+            for (let l = 0; l < 4; l++) {
+                const ps = state.puzzleStars[l] || {};
+                for (const k of Object.keys(ps)) {
+                    state.totalStars += ps[k];
+                }
+            }
+            localStorage.setItem('pixelArtGeometrique', JSON.stringify(state));
+            localStorage.setItem('pixelArtScore', state.totalStars.toString());
+        }
+
+        // ===== PUZZLES DATA =====
+        const W = '#FFFFFF';
+        const R = '#F44336';
+        const B = '#2196F3';
+        const Y = '#FFEB3B';
+        const G = '#4CAF50';
+        const O = '#FF9800';
+        const V = '#9C27B0';
+        const K = '#333333';
+
+        const LEVELS = [
+            {
+                name: 'Formes Simples',
+                emoji: '&#9632;',
+                desc: 'Grille 5x5',
+                gridSize: 5,
+                puzzles: [
+                    { name: 'Carre', grid: [
+                        [W,W,W,W,W],[W,K,K,K,W],[W,K,K,K,W],[W,K,K,K,W],[W,W,W,W,W]
+                    ]},
+                    { name: 'Rectangle', grid: [
+                        [W,W,W,W,W],[W,K,K,K,K],[W,K,K,K,K],[W,W,W,W,W],[W,W,W,W,W]
+                    ]},
+                    { name: 'L', grid: [
+                        [K,W,W,W,W],[K,W,W,W,W],[K,W,W,W,W],[K,K,K,W,W],[W,W,W,W,W]
+                    ]},
+                    { name: 'T', grid: [
+                        [K,K,K,K,K],[W,W,K,W,W],[W,W,K,W,W],[W,W,K,W,W],[W,W,W,W,W]
+                    ]},
+                    { name: 'Croix', grid: [
+                        [W,W,K,W,W],[W,W,K,W,W],[K,K,K,K,K],[W,W,K,W,W],[W,W,K,W,W]
+                    ]},
+                    { name: 'Diagonale', grid: [
+                        [K,W,W,W,W],[W,K,W,W,W],[W,W,K,W,W],[W,W,W,K,W],[W,W,W,W,K]
+                    ]}
+                ]
+            },
+            {
+                name: 'Figures Geometriques',
+                emoji: '&#9650;',
+                desc: 'Grille 6x6',
+                gridSize: 6,
+                puzzles: [
+                    { name: 'Triangle', grid: [
+                        [W,W,K,W,W,W],[W,W,K,K,W,W],[W,K,W,K,W,W],[W,K,W,W,K,W],[K,K,K,K,K,W],[W,W,W,W,W,W]
+                    ]},
+                    { name: 'Losange', grid: [
+                        [W,W,K,W,W,W],[W,K,W,K,W,W],[K,W,W,W,K,W],[W,K,W,K,W,W],[W,W,K,W,W,W],[W,W,W,W,W,W]
+                    ]},
+                    { name: 'Fleche', grid: [
+                        [W,W,K,W,W,W],[W,K,K,K,W,W],[K,K,K,K,K,W],[W,W,K,W,W,W],[W,W,K,W,W,W],[W,W,K,W,W,W]
+                    ]},
+                    { name: 'Hexagone', grid: [
+                        [W,K,K,K,W,W],[K,W,W,W,K,W],[K,W,W,W,K,W],[K,W,W,W,K,W],[W,K,K,K,W,W],[W,W,W,W,W,W]
+                    ]},
+                    { name: 'Escalier', grid: [
+                        [K,W,W,W,W,W],[K,K,W,W,W,W],[W,K,K,W,W,W],[W,W,K,K,W,W],[W,W,W,K,K,W],[W,W,W,W,K,K]
+                    ]},
+                    { name: 'Zigzag', grid: [
+                        [K,K,W,W,W,W],[W,K,W,W,W,W],[W,K,K,W,W,W],[W,W,K,W,W,W],[W,W,K,K,W,W],[W,W,W,K,K,W]
+                    ]}
+                ]
+            },
+            {
+                name: 'Dessins',
+                emoji: '&#127968;',
+                desc: 'Grille 7x7 couleurs',
+                gridSize: 7,
+                puzzles: [
+                    { name: 'Maison', grid: [
+                        [W,W,W,R,W,W,W],[W,W,R,R,R,W,W],[W,R,R,R,R,R,W],[W,O,O,O,O,O,W],[W,O,W,K,W,O,W],[W,O,W,K,W,O,W],[W,O,O,O,O,O,W]
+                    ]},
+                    { name: 'Arbre', grid: [
+                        [W,W,W,G,W,W,W],[W,W,G,G,G,W,W],[W,G,G,G,G,G,W],[W,W,G,G,G,W,W],[W,W,W,O,W,W,W],[W,W,W,O,W,W,W],[W,W,W,O,W,W,W]
+                    ]},
+                    { name: 'Bateau', grid: [
+                        [W,W,W,W,K,W,W],[W,W,W,K,R,W,W],[W,W,W,K,W,W,W],[W,O,O,K,O,O,W],[B,O,O,O,O,O,B],[W,B,B,B,B,B,W],[W,W,B,B,B,W,W]
+                    ]},
+                    { name: 'Voiture', grid: [
+                        [W,W,W,W,W,W,W],[W,W,B,B,B,W,W],[W,B,B,B,B,B,W],[R,R,R,R,R,R,R],[R,R,R,R,R,R,R],[W,K,W,W,W,K,W],[W,W,W,W,W,W,W]
+                    ]},
+                    { name: 'Fusee', grid: [
+                        [W,W,W,R,W,W,W],[W,W,R,K,R,W,W],[W,W,K,B,K,W,W],[W,W,K,B,K,W,W],[W,R,K,K,K,R,W],[W,W,O,W,O,W,W],[W,W,Y,W,Y,W,W]
+                    ]}
+                ]
+            },
+            {
+                name: 'Cree ton Art',
+                emoji: '&#127912;',
+                desc: 'Mode libre 8x8',
+                gridSize: 8,
+                free: true,
+                puzzles: []
+            }
+        ];
+
+        // ===== SCREEN MANAGEMENT =====
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ===== WELCOME SCREEN =====
+        function renderWelcome() {
+            const grid = document.getElementById('level-grid');
+            grid.innerHTML = '';
+            const totalEl = document.getElementById('total-stars');
+
+            let totalStars = 0;
+            for (let l = 0; l < 4; l++) {
+                const ps = state.puzzleStars[l] || {};
+                for (const k of Object.keys(ps)) totalStars += ps[k];
+            }
+            totalEl.innerHTML = `&#11088; ${totalStars} etoile(s)`;
+
+            LEVELS.forEach((level, i) => {
+                const card = document.createElement('div');
+                card.className = 'level-card';
+
+                const unlocked = i === 0 || state.levelsCompleted[i - 1] || i === 3;
+                if (!unlocked) card.classList.add('locked');
+
+                const ps = state.puzzleStars[i] || {};
+                const starsCount = Object.values(ps).reduce((a, b) => a + b, 0);
+                const allDone = !level.free && level.puzzles.length > 0 && Object.keys(ps).length === level.puzzles.length;
+                if (allDone) card.classList.add('completed');
+
+                card.innerHTML = `
+                    <div class="level-card-emoji">${level.emoji}</div>
+                    <div class="level-card-title">${level.name}</div>
+                    <div class="level-card-desc">${level.desc}</div>
+                    ${!unlocked ? '<div class="lock-icon">&#128274;</div>' : ''}
+                    ${starsCount > 0 ? `<div class="level-card-stars">${'&#11088;'.repeat(starsCount)}</div>` : ''}
+                `;
+
+                if (unlocked) {
+                    card.onclick = () => {
+                        playSound('click');
+                        if (level.free) {
+                            startFreeMode();
+                        } else {
+                            currentLevel = i;
+                            showPuzzleSelect(i);
+                        }
+                    };
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== PUZZLE SELECT =====
+        function showPuzzleSelect(levelIdx) {
+            const level = LEVELS[levelIdx];
+            document.getElementById('puzzle-level-title').textContent = level.name;
+            const grid = document.getElementById('puzzle-grid');
+            grid.innerHTML = '';
+
+            level.puzzles.forEach((puzzle, i) => {
+                const card = document.createElement('div');
+                card.className = 'puzzle-card';
+                const ps = state.puzzleStars[levelIdx] || {};
+                if (ps[i] !== undefined) card.classList.add('done');
+
+                card.innerHTML = `
+                    <div class="puzzle-card-name">${puzzle.name}</div>
+                    <div class="puzzle-card-star">${ps[i] ? '&#11088;' : '&#9723;'}</div>
+                `;
+
+                card.onclick = () => {
+                    playSound('click');
+                    currentPuzzle = i;
+                    startPuzzle(levelIdx, i);
+                };
+
+                grid.appendChild(card);
+            });
+
+            showScreen('puzzle-screen');
+        }
+
+        // ===== GAME =====
+        function startPuzzle(levelIdx, puzzleIdx) {
+            currentLevel = levelIdx;
+            currentPuzzle = puzzleIdx;
+            const level = LEVELS[levelIdx];
+            const puzzle = level.puzzles[puzzleIdx];
+            const size = level.gridSize;
+
+            document.getElementById('game-level-title').textContent = `${level.name} - ${puzzle.name}`;
+            document.getElementById('round-info').textContent = `Puzzle ${puzzleIdx + 1} / ${level.puzzles.length}`;
+            document.getElementById('progress-fill').style.width = `${((puzzleIdx + 1) / level.puzzles.length) * 100}%`;
+
+            const ps = state.puzzleStars[levelIdx] || {};
+            const starsTotal = Object.values(ps).reduce((a, b) => a + b, 0);
+            document.getElementById('stars-count').innerHTML = `&#11088; ${starsTotal}`;
+
+            // Build model grid
+            const modelGrid = document.getElementById('model-grid');
+            modelGrid.innerHTML = '';
+            modelGrid.style.gridTemplateColumns = `repeat(${size}, clamp(36px, 8vw, 50px))`;
+
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'pixel-cell model-cell';
+                    cell.style.background = puzzle.grid[r][c];
+                    modelGrid.appendChild(cell);
+                }
+            }
+
+            // Build player grid
+            playerGrid = [];
+            const pGrid = document.getElementById('player-grid');
+            pGrid.innerHTML = '';
+            pGrid.style.gridTemplateColumns = `repeat(${size}, clamp(36px, 8vw, 50px))`;
+
+            for (let r = 0; r < size; r++) {
+                playerGrid[r] = [];
+                for (let c = 0; c < size; c++) {
+                    playerGrid[r][c] = '#FFFFFF';
+                    const cell = document.createElement('div');
+                    cell.className = 'pixel-cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.style.background = '#FFFFFF';
+
+                    cell.addEventListener('pointerdown', (e) => {
+                        e.preventDefault();
+                        isPainting = true;
+                        paintCell(r, c, cell);
+                    });
+                    cell.addEventListener('pointerenter', (e) => {
+                        if (isPainting) paintCell(r, c, cell);
+                    });
+
+                    pGrid.appendChild(cell);
+                }
+            }
+
+            renderPalette('palette');
+            showScreen('game-screen');
+        }
+
+        document.addEventListener('pointerup', () => { isPainting = false; });
+        document.addEventListener('pointercancel', () => { isPainting = false; });
+
+        function paintCell(r, c, cell) {
+            playerGrid[r][c] = selectedColor;
+            cell.style.background = selectedColor;
+            playSound('paint');
+        }
+
+        function renderPalette(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            COLORS.forEach(color => {
+                const btn = document.createElement('div');
+                btn.className = 'color-btn' + (color.hex === selectedColor ? ' active' : '');
+                btn.style.background = color.hex;
+                if (color.hex === '#FFFFFF') {
+                    btn.style.border = '3px solid #ccc';
+                }
+                btn.title = color.name;
+                btn.onclick = () => {
+                    selectedColor = color.hex;
+                    container.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    playSound('click');
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function clearPlayerGrid() {
+            playSound('click');
+            const size = LEVELS[currentLevel].gridSize;
+            const pGrid = document.getElementById('player-grid');
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    playerGrid[r][c] = '#FFFFFF';
+                }
+            }
+            pGrid.querySelectorAll('.pixel-cell').forEach(cell => {
+                cell.style.background = '#FFFFFF';
+            });
+        }
+
+        function checkAnswer() {
+            const level = LEVELS[currentLevel];
+            const puzzle = level.puzzles[currentPuzzle];
+            const size = level.gridSize;
+            let correct = 0;
+            let total = 0;
+
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    total++;
+                    if (normalizeColor(playerGrid[r][c]) === normalizeColor(puzzle.grid[r][c])) {
+                        correct++;
+                    }
+                }
+            }
+
+            const accuracy = Math.round((correct / total) * 100);
+            const earned = accuracy >= 80 ? 1 : 0;
+
+            if (!state.puzzleStars[currentLevel]) state.puzzleStars[currentLevel] = {};
+            const prev = state.puzzleStars[currentLevel][currentPuzzle] || 0;
+            if (earned > prev) state.puzzleStars[currentLevel][currentPuzzle] = earned;
+
+            // Check level completion
+            const allDone = Object.keys(state.puzzleStars[currentLevel]).length === level.puzzles.length;
+            if (allDone) state.levelsCompleted[currentLevel] = true;
+
+            saveState();
+            showResult(accuracy, earned);
+        }
+
+        function normalizeColor(hex) {
+            if (!hex) return '#ffffff';
+            hex = hex.toUpperCase();
+            // Map close colors
+            const map = {
+                '#FFF': '#FFFFFF', '#000': '#333333'
+            };
+            return map[hex] || hex;
+        }
+
+        function showResult(accuracy, earned) {
+            let emoji, title, text;
+            if (accuracy === 100) {
+                emoji = '&#127775;'; title = 'PARFAIT !'; text = 'Chaque pixel est a sa place !';
+                playSound('win');
+            } else if (accuracy >= 80) {
+                emoji = '&#11088;'; title = 'Super travail !'; text = 'Tu as gagne une etoile !';
+                playSound('star');
+            } else {
+                emoji = '&#128170;'; title = 'Continue !'; text = 'Regarde bien le modele et reessaie.';
+                playSound('correct');
+            }
+
+            document.getElementById('result-emoji').innerHTML = emoji;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('accuracy-display').textContent = accuracy + '%';
+            document.getElementById('result-text').textContent = text;
+            document.getElementById('result-stars').innerHTML = earned ? '&#11088;' : '&#9723;';
+
+            const hasNext = currentPuzzle < LEVELS[currentLevel].puzzles.length - 1;
+            document.getElementById('result-next-btn').style.display = hasNext ? '' : 'none';
+
+            showScreen('result-screen');
+            if (accuracy >= 80) launchConfetti();
+        }
+
+        function nextPuzzle() {
+            playSound('click');
+            if (currentPuzzle < LEVELS[currentLevel].puzzles.length - 1) {
+                startPuzzle(currentLevel, currentPuzzle + 1);
+            }
+        }
+
+        function backToLevelPuzzles() {
+            playSound('click');
+            showPuzzleSelect(currentLevel);
+        }
+
+        // ===== FREE MODE =====
+        let freeGrid = [];
+
+        function startFreeMode() {
+            const size = 8;
+            freeGrid = [];
+            const grid = document.getElementById('free-grid');
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(${size}, clamp(36px, 8vw, 50px))`;
+
+            for (let r = 0; r < size; r++) {
+                freeGrid[r] = [];
+                for (let c = 0; c < size; c++) {
+                    freeGrid[r][c] = '#FFFFFF';
+                    const cell = document.createElement('div');
+                    cell.className = 'pixel-cell';
+                    cell.style.background = '#FFFFFF';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+
+                    cell.addEventListener('pointerdown', (e) => {
+                        e.preventDefault();
+                        isPainting = true;
+                        freeGrid[r][c] = selectedColor;
+                        cell.style.background = selectedColor;
+                        playSound('paint');
+                    });
+                    cell.addEventListener('pointerenter', () => {
+                        if (isPainting) {
+                            freeGrid[r][c] = selectedColor;
+                            cell.style.background = selectedColor;
+                        }
+                    });
+
+                    grid.appendChild(cell);
+                }
+            }
+
+            renderPalette('free-palette');
+            renderGallery();
+            showScreen('free-screen');
+        }
+
+        function clearFreeGrid() {
+            playSound('click');
+            freeGrid.forEach((row, r) => row.forEach((_, c) => { freeGrid[r][c] = '#FFFFFF'; }));
+            document.getElementById('free-grid').querySelectorAll('.pixel-cell').forEach(cell => {
+                cell.style.background = '#FFFFFF';
+            });
+        }
+
+        function saveFreeArt() {
+            playSound('star');
+            const artwork = {
+                grid: freeGrid.map(row => [...row]),
+                date: new Date().toLocaleDateString('fr-FR'),
+                id: Date.now()
+            };
+            freeArtworks.push(artwork);
+            if (freeArtworks.length > 12) freeArtworks.shift();
+            localStorage.setItem('pixelArtFreeCreations', JSON.stringify(freeArtworks));
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('gallery-grid');
+            container.innerHTML = '';
+
+            freeArtworks.forEach(art => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+
+                const miniGrid = document.createElement('div');
+                miniGrid.className = 'gallery-mini-grid';
+                miniGrid.style.gridTemplateColumns = `repeat(8, 8px)`;
+
+                art.grid.forEach(row => {
+                    row.forEach(color => {
+                        const cell = document.createElement('div');
+                        cell.className = 'gallery-mini-cell';
+                        cell.style.background = color;
+                        miniGrid.appendChild(cell);
+                    });
+                });
+
+                const label = document.createElement('div');
+                label.className = 'gallery-item-label';
+                label.textContent = art.date;
+
+                item.appendChild(miniGrid);
+                item.appendChild(label);
+
+                item.onclick = () => {
+                    playSound('click');
+                    // Load into free grid
+                    const grid = document.getElementById('free-grid');
+                    const cells = grid.querySelectorAll('.pixel-cell');
+                    art.grid.forEach((row, r) => {
+                        row.forEach((color, c) => {
+                            freeGrid[r][c] = color;
+                            cells[r * 8 + c].style.background = color;
+                        });
+                    });
+                };
+
+                container.appendChild(item);
+            });
+        }
+
+        // ===== CONFETTI =====
+        function launchConfetti() {
+            const colors = ['#FFD700', '#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#9C27B0'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    confetti.style.width = (6 + Math.random() * 8) + 'px';
+                    confetti.style.height = (6 + Math.random() * 8) + 'px';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        // ===== INIT =====
+        renderWelcome();
+    </script>
+</body>
+</html>

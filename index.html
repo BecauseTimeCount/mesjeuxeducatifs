@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Mes Jeux Educatifs</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3498db">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Jeux Educatifs">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
@@ -855,6 +861,60 @@
                 title: 'Le Chef d\'Orchestre', icon: '🎵', color: '#4A148C',
                 description: 'Decouvre le rythme et les instruments !',
                 href: 'le-chef-dorchestre.html', category: 'explorer'
+            },
+            helloEnglish: {
+                stateKey: 'helloEnglish', scoreKey: 'helloEnglishScore',
+                title: 'Hello English!', icon: '🇬🇧', color: '#1565C0',
+                description: 'Decouvre l\'anglais : couleurs, nombres, animaux !',
+                href: 'hello-english.html', category: 'autres'
+            },
+            barSchemas: {
+                stateKey: 'leBarASchemas', scoreKey: 'barSchemasScore',
+                title: 'Le Bar a Schemas', icon: '📊', color: '#00796B',
+                description: 'Resous des problemes avec des schemas !',
+                href: 'le-bar-a-schemas.html', category: 'maths'
+            },
+            quiParle: {
+                stateKey: 'quiParle', scoreKey: 'quiParleScore',
+                title: 'Qui Parle ?', icon: '🔍', color: '#1B5E20',
+                description: 'Comprends les textes et trouve qui parle !',
+                href: 'qui-parle.html', category: 'francais'
+            },
+            machinePhrases: {
+                stateKey: 'laMachineAPhrases', scoreKey: 'machinePhrasesScore',
+                title: 'La Machine a Phrases', icon: '⚙️', color: '#E65100',
+                description: 'Construis des phrases et trie les mots !',
+                href: 'la-machine-a-phrases.html', category: 'francais'
+            },
+            miroirPixel: {
+                stateKey: 'leMiroirPixel', scoreKey: 'miroirPixelScore',
+                title: 'Le Miroir Pixel', icon: '🪞', color: '#4527A0',
+                description: 'Complete le symetrique et reproduis des motifs !',
+                href: 'le-miroir-pixel.html', category: 'maths'
+            },
+            pixelArt: {
+                stateKey: 'pixelArtGeometrique', scoreKey: 'pixelArtScore',
+                title: 'Pixel Art Geometrique', icon: '🎨', color: '#1A237E',
+                description: 'Reproduis des figures geometriques en pixels !',
+                href: 'pixel-art-geometrique.html', category: 'maths'
+            },
+            atelierCouleurs: {
+                stateKey: 'lAtelierDesCouleurs', scoreKey: 'atelierCouleursScore',
+                title: 'L\'Atelier des Couleurs', icon: '🖌️', color: '#BF360C',
+                description: 'Melange les couleurs et peins !',
+                href: 'latelier-des-couleurs.html', category: 'autres'
+            },
+            colourCatcher: {
+                stateKey: 'colourCatcher', scoreKey: 'colourCatcherScore',
+                title: 'Colour Catcher', icon: '🎈', color: '#0D47A1',
+                description: 'Attrape les ballons en anglais !',
+                href: 'colour-catcher.html', category: 'autres'
+            },
+            simonSays: {
+                stateKey: 'simonSays', scoreKey: 'simonSaysScore',
+                title: 'Simon Says', icon: '🙋', color: '#2E7D32',
+                description: 'Jacques a dit... en anglais !',
+                href: 'simon-says.html', category: 'autres'
             }
         };
 
@@ -864,7 +924,8 @@
             francais: { label: 'Francais', icon: '📚' },
             maths:    { label: 'Maths', icon: '🔢' },
             explorer: { label: 'Explorer le Monde', icon: '🌍' },
-            logique:  { label: 'Logique', icon: '🧠' }
+            logique:  { label: 'Logique', icon: '🧠' },
+            autres:   { label: 'Anglais & Arts', icon: '🌐' }
         };
 
         let activeCategory = 'tous';
@@ -1279,6 +1340,11 @@
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) loadScores();
         });
+
+        // ===== PWA SERVICE WORKER =====
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>La Machine a Phrases</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+body {
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E65100, #FFE0B2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  padding: clamp(10px, 3vw, 24px);
+}
+.back-btn {
+  position: fixed; top: clamp(10px, 2vw, 18px); left: clamp(10px, 2vw, 18px);
+  background: rgba(255,255,255,0.92); border: none; border-radius: 16px;
+  padding: clamp(8px, 1.5vw, 14px) clamp(14px, 2.5vw, 22px);
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  font-size: clamp(14px, 2.5vw, 20px); color: #BF360C;
+  cursor: pointer; box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  z-index: 100; min-height: 48px; min-width: 48px;
+  display: flex; align-items: center; transition: transform 0.15s;
+}
+.back-btn:hover { transform: scale(1.05); }
+.back-btn:active { transform: scale(0.97); }
+
+header {
+  text-align: center; margin-top: clamp(50px, 8vw, 80px); margin-bottom: clamp(10px, 2vw, 20px);
+}
+.mascot { font-size: clamp(48px, 10vw, 80px); display: block; margin-bottom: 6px; }
+h1 {
+  font-size: clamp(24px, 5vw, 42px); font-weight: 800; color: #fff;
+  text-shadow: 2px 3px 6px rgba(0,0,0,0.2);
+}
+.score-bar {
+  background: rgba(255,255,255,0.25); border-radius: 30px; padding: clamp(6px,1vw,10px) clamp(16px,3vw,28px);
+  font-size: clamp(14px,2.5vw,20px); font-weight: 700; color: #fff;
+  margin-bottom: clamp(10px,2vw,18px);
+}
+
+/* Level select */
+#level-select { display: flex; flex-wrap: wrap; gap: clamp(10px,2vw,18px); justify-content: center; max-width: 700px; }
+.level-card {
+  background: #fff; border-radius: 20px; padding: clamp(16px,3vw,28px);
+  width: clamp(140px, 42vw, 300px); text-align: center; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: transform 0.15s;
+  min-height: 48px;
+}
+.level-card:hover { transform: scale(1.04); }
+.level-card:active { transform: scale(0.97); }
+.level-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(0.5); }
+.level-card .lv-icon { font-size: clamp(32px,6vw,50px); display: block; margin-bottom: 6px; }
+.level-card .lv-title { font-weight: 800; font-size: clamp(14px,2.5vw,18px); color: #BF360C; }
+.level-card .lv-desc { font-size: clamp(11px,2vw,14px); color: #666; margin-top: 4px; }
+.level-card .lv-stars { font-size: clamp(16px,3vw,22px); margin-top: 6px; }
+
+/* Game area */
+#game-area { display: none; width: 100%; max-width: 700px; text-align: center; }
+.progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.3); border-radius: 10px; margin-bottom: clamp(8px,1.5vw,14px); overflow: hidden; }
+.progress-fill { height: 100%; background: #fff; border-radius: 10px; transition: width 0.4s ease; }
+.question-label {
+  font-size: clamp(16px,3vw,24px); font-weight: 700; color: #fff;
+  margin-bottom: clamp(10px,2vw,18px); text-shadow: 1px 2px 4px rgba(0,0,0,0.15);
+  min-height: 48px; display: flex; align-items: center; justify-content: center;
+}
+.game-content { background: #fff; border-radius: 24px; padding: clamp(16px,3vw,28px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: clamp(10px,2vw,16px); }
+
+/* Level 1 — Construis la Phrase */
+.sentence-zone {
+  min-height: 56px; border: 3px dashed #E65100; border-radius: 16px;
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin-bottom: 16px;
+  align-items: center; justify-content: center;
+}
+.sentence-zone .word-chip { background: #FFF3E0; border: 2px solid #E65100; }
+.word-pool { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.word-chip {
+  background: #FFF3E0; border: 2px solid #FFB74D; border-radius: 14px;
+  padding: clamp(8px,1.5vw,14px) clamp(14px,2.5vw,22px);
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  font-size: clamp(16px,3vw,22px); color: #BF360C;
+  cursor: pointer; min-height: 48px; min-width: 48px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.12s, opacity 0.2s;
+}
+.word-chip:hover { transform: scale(1.06); }
+.word-chip:active { transform: scale(0.95); }
+.word-chip.used { opacity: 0.3; pointer-events: none; }
+
+/* Level 2 — Tri des Mots */
+.big-word {
+  font-size: clamp(28px,6vw,48px); font-weight: 800; color: #BF360C; margin: clamp(10px,2vw,20px) 0;
+}
+.bins { display: flex; gap: clamp(8px,2vw,16px); justify-content: center; flex-wrap: wrap; }
+.bin {
+  border-radius: 18px; padding: clamp(14px,2.5vw,22px) clamp(20px,4vw,36px);
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: clamp(15px,2.8vw,22px); color: #fff; border: none; cursor: pointer;
+  min-height: 56px; min-width: 90px; transition: transform 0.12s;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+.bin:hover { transform: scale(1.06); }
+.bin:active { transform: scale(0.95); }
+.bin-nom { background: #1565C0; }
+.bin-verbe { background: #C62828; }
+.bin-det { background: #2E7D32; }
+
+/* Level 3 — Singulier / Pluriel */
+.sp-prompt { font-size: clamp(20px,4vw,32px); font-weight: 800; color: #BF360C; margin: clamp(8px,1.5vw,16px) 0; }
+.sp-options { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.sp-btn {
+  background: #FFF3E0; border: 3px solid #FFB74D; border-radius: 16px;
+  padding: clamp(12px,2vw,18px) clamp(24px,4vw,48px);
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  font-size: clamp(17px,3vw,24px); color: #BF360C; cursor: pointer;
+  min-height: 52px; min-width: 200px; transition: transform 0.12s;
+}
+.sp-btn:hover { transform: scale(1.04); }
+.sp-btn:active { transform: scale(0.96); }
+
+/* Level 4 — Machine Folle */
+.slots { display: flex; gap: clamp(6px,1.5vw,14px); justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+.slot-col {
+  background: #FFF3E0; border: 3px solid #FFB74D; border-radius: 16px;
+  width: clamp(90px, 28vw, 200px); padding: 10px 6px; text-align: center;
+  min-height: 100px; display: flex; flex-direction: column; align-items: center;
+}
+.slot-col .slot-label { font-size: clamp(11px,2vw,14px); font-weight: 800; color: #E65100; margin-bottom: 6px; }
+.slot-col .slot-value {
+  font-size: clamp(16px,3vw,24px); font-weight: 800; color: #BF360C;
+  margin: 6px 0; min-height: 36px; display: flex; align-items: center; justify-content: center;
+}
+.slot-arrows { display: flex; gap: 6px; }
+.slot-arrow {
+  background: #E65100; color: #fff; border: none; border-radius: 10px;
+  width: 40px; height: 40px; font-size: 20px; font-weight: 800; cursor: pointer;
+  min-height: 48px; min-width: 48px; display: flex; align-items: center; justify-content: center;
+  transition: transform 0.1s;
+}
+.slot-arrow:hover { transform: scale(1.1); }
+.slot-arrow:active { transform: scale(0.92); }
+
+/* Common buttons */
+.btn-validate {
+  background: #E65100; color: #fff; border: none; border-radius: 16px;
+  padding: clamp(12px,2vw,18px) clamp(28px,5vw,48px);
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: clamp(16px,3vw,22px); cursor: pointer;
+  min-height: 52px; transition: transform 0.12s;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+}
+.btn-validate:hover { transform: scale(1.05); }
+.btn-validate:active { transform: scale(0.96); }
+.btn-validate:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+/* Feedback overlay */
+.feedback {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  display: none; align-items: center; justify-content: center;
+  z-index: 200; background: rgba(0,0,0,0.25);
+}
+.feedback.show { display: flex; }
+.feedback-box {
+  background: #fff; border-radius: 28px; padding: clamp(24px,5vw,44px);
+  text-align: center; box-shadow: 0 6px 30px rgba(0,0,0,0.2);
+  animation: popIn 0.35s ease;
+  max-width: 90vw;
+}
+@keyframes popIn { 0% { transform: scale(0.5); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+.feedback-icon { font-size: clamp(48px,10vw,72px); }
+.feedback-text { font-size: clamp(18px,3.5vw,28px); font-weight: 800; color: #BF360C; margin-top: 8px; }
+
+/* End screen */
+#end-screen { display: none; text-align: center; }
+.end-box { background: #fff; border-radius: 28px; padding: clamp(24px,5vw,44px); box-shadow: 0 6px 30px rgba(0,0,0,0.15); }
+.end-box .end-stars { font-size: clamp(36px,8vw,60px); }
+.end-box .end-msg { font-size: clamp(18px,3.5vw,28px); font-weight: 800; color: #BF360C; margin: 10px 0; }
+.end-box .end-score { font-size: clamp(14px,2.5vw,20px); color: #666; margin-bottom: 14px; }
+.btn-menu {
+  background: #E65100; color: #fff; border: none; border-radius: 16px;
+  padding: 14px 32px; font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: clamp(15px,2.5vw,20px); cursor: pointer; min-height: 52px;
+  margin: 6px; transition: transform 0.12s;
+}
+.btn-menu:hover { transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">&#8592; Mes Jeux</a>
+
+<header>
+  <span class="mascot">&#9881;&#65039;</span>
+  <h1>La Machine a Phrases</h1>
+</header>
+
+<div class="score-bar" id="score-bar">Score total : 0</div>
+
+<div id="level-select"></div>
+
+<div id="game-area">
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="question-label" id="question-label"></div>
+  <div class="game-content" id="game-content"></div>
+</div>
+
+<div id="end-screen">
+  <div class="end-box">
+    <div class="end-stars" id="end-stars"></div>
+    <div class="end-msg" id="end-msg"></div>
+    <div class="end-score" id="end-score"></div>
+    <button class="btn-menu" onclick="showMenu()">Retour aux niveaux</button>
+  </div>
+</div>
+
+<div class="feedback" id="feedback">
+  <div class="feedback-box">
+    <div class="feedback-icon" id="fb-icon"></div>
+    <div class="feedback-text" id="fb-text"></div>
+  </div>
+</div>
+
+<script>
+// ========== Audio ==========
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function ensureAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+function playTone(freq, dur, type='sine') {
+  ensureAudio();
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.18, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + dur);
+}
+function sndCorrect() { playTone(523,0.12); setTimeout(()=>playTone(659,0.12),100); setTimeout(()=>playTone(784,0.2),200); }
+function sndWrong() { playTone(330,0.15,'triangle'); setTimeout(()=>playTone(262,0.25,'triangle'),120); }
+function sndClick() { playTone(440,0.06); }
+function sndSpin() { playTone(600+Math.random()*200, 0.05, 'square'); }
+function sndWin() { [523,587,659,698,784].forEach((f,i)=>setTimeout(()=>playTone(f,0.18),i*110)); }
+
+// ========== State ==========
+const STATE_KEY = 'laMachineAPhrases';
+const SCORE_KEY = 'machinePhrasesScore';
+let state, totalScore;
+
+function loadState() {
+  try { state = JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch(e) { state = {}; }
+  if (!state.levels) state.levels = [0,0,0,0]; // 0=locked/nostar, stars earned
+  state.levels[0] = Math.max(state.levels[0], 0); // level 1 always unlocked (0 means unlocked no stars)
+  totalScore = parseInt(localStorage.getItem(SCORE_KEY)) || 0;
+}
+function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(state)); localStorage.setItem(SCORE_KEY, totalScore); }
+function isUnlocked(lv) { if (lv === 0) return true; return state.levels[lv-1] >= 1; }
+
+// ========== Levels meta ==========
+const LEVELS = [
+  { title: 'Construis la Phrase', icon: '&#128295;', desc: 'Mets les mots dans le bon ordre', count: 10 },
+  { title: 'Le Tri des Mots', icon: '&#128230;', desc: 'Nom, Verbe ou Determinant ?', count: 10 },
+  { title: 'Singulier &#8596; Pluriel', icon: '&#128257;', desc: 'Transforme les mots !', count: 10 },
+  { title: 'La Machine Folle', icon: '&#9881;&#65039;', desc: 'Fabrique des phrases qui marchent !', count: 8 },
+];
+
+// ========== Show menu ==========
+function showMenu() {
+  loadState();
+  document.getElementById('level-select').style.display = 'flex';
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('end-screen').style.display = 'none';
+  document.getElementById('score-bar').textContent = 'Score total : ' + totalScore;
+  const el = document.getElementById('level-select');
+  el.innerHTML = '';
+  LEVELS.forEach((lv, i) => {
+    const unlocked = isUnlocked(i);
+    const stars = state.levels[i] || 0;
+    const card = document.createElement('div');
+    card.className = 'level-card' + (unlocked ? '' : ' locked');
+    card.innerHTML = `<span class="lv-icon">${unlocked ? lv.icon : '&#128274;'}</span>
+      <div class="lv-title">${lv.title}</div>
+      <div class="lv-desc">${lv.desc}</div>
+      <div class="lv-stars">${stars >= 1 ? '&#11088;'.repeat(Math.min(stars,3)) : ''}</div>`;
+    if (unlocked) card.onclick = () => { sndClick(); startLevel(i); };
+    el.appendChild(card);
+  });
+}
+
+// ========== Game engine ==========
+let currentLevel, questions, qi, levelScore, levelTotal;
+
+function startLevel(lv) {
+  currentLevel = lv;
+  qi = 0; levelScore = 0;
+  questions = generateQuestions(lv);
+  levelTotal = questions.length;
+  document.getElementById('level-select').style.display = 'none';
+  document.getElementById('end-screen').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  const pct = (qi / levelTotal) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('question-label').textContent = `Question ${qi+1} / ${levelTotal}`;
+  const gc = document.getElementById('game-content');
+  gc.innerHTML = '';
+  switch(currentLevel) {
+    case 0: renderLevel1(gc); break;
+    case 1: renderLevel2(gc); break;
+    case 2: renderLevel3(gc); break;
+    case 3: renderLevel4(gc); break;
+  }
+}
+
+function handleAnswer(correct) {
+  if (correct) {
+    levelScore++;
+    totalScore++;
+    saveState();
+    document.getElementById('score-bar').textContent = 'Score total : ' + totalScore;
+    sndCorrect();
+    showFeedback(true);
+  } else {
+    sndWrong();
+    showFeedback(false);
+  }
+}
+
+function showFeedback(correct) {
+  const fb = document.getElementById('feedback');
+  const msgs = correct
+    ? ['Super !', 'Bravo !', 'Genial !', 'Parfait !', 'Excellent !']
+    : ['Essaie encore !', 'Presque !', 'Pas tout a fait...', 'Continue !'];
+  document.getElementById('fb-icon').textContent = correct ? ['&#127881;','&#11088;','&#127942;','&#128079;'][Math.random()*4|0].replace(/&#(\d+);/g,(_,c)=>String.fromCodePoint(c)) : '&#128170;'.replace(/&#(\d+);/g,(_,c)=>String.fromCodePoint(c));
+  // Simpler approach:
+  document.getElementById('fb-icon').innerHTML = correct ? ['&#127881;','&#11088;','&#127942;','&#128079;'][Math.random()*4|0] : '&#128170;';
+  document.getElementById('fb-text').textContent = msgs[Math.random()*msgs.length|0];
+  fb.classList.add('show');
+  setTimeout(() => {
+    fb.classList.remove('show');
+    if (correct) {
+      qi++;
+      if (qi >= levelTotal) endLevel(); else showQuestion();
+    } else {
+      // stay on same question, re-render for levels that need it
+      showQuestion();
+    }
+  }, correct ? 1100 : 1300);
+}
+
+function endLevel() {
+  sndWin();
+  const stars = levelScore >= levelTotal ? 3 : levelScore >= levelTotal * 0.7 ? 2 : levelScore >= 1 ? 1 : 0;
+  state.levels[currentLevel] = Math.max(state.levels[currentLevel] || 0, stars);
+  // Unlock next
+  if (stars >= 1 && currentLevel < 3) {
+    if (!state.levels[currentLevel+1]) state.levels[currentLevel+1] = 0;
+    // mark as unlocked by ensuring prev has stars
+  }
+  saveState();
+  document.getElementById('game-area').style.display = 'none';
+  const es = document.getElementById('end-screen');
+  es.style.display = 'block';
+  document.getElementById('end-stars').innerHTML = '&#11088;'.repeat(stars) + '&#9734;'.repeat(3-stars);
+  document.getElementById('end-msg').textContent = stars === 3 ? 'Parfait !' : stars === 2 ? 'Tres bien !' : stars >= 1 ? 'Bien joue !' : 'Continue !';
+  document.getElementById('end-score').textContent = `${levelScore} / ${levelTotal} bonnes reponses`;
+}
+
+// ========== Shuffle helper ==========
+function shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// ========== LEVEL 1: Construis la Phrase ==========
+function generateQuestions(lv) {
+  switch(lv) {
+    case 0: return genLevel1();
+    case 1: return genLevel2();
+    case 2: return genLevel3();
+    case 3: return genLevel4();
+  }
+}
+
+function genLevel1() {
+  const sentences = [
+    ['Le','chat','joue','.'],
+    ['La','fille','mange','.'],
+    ['Un','chien','court','.'],
+    ['Le','garcon','saute','.'],
+    ['La','vache','dort','.'],
+    ['Un','oiseau','chante','.'],
+    ['Le','papa','cuisine','.'],
+    ['La','maman','regarde','.'],
+    ['Un','lapin','mange','.'],
+    ['Le','bebe','rit','.'],
+    ['La','poule','picore','.'],
+    ['Un','chat','dort','.'],
+  ];
+  return shuffle(sentences).slice(0, 10);
+}
+
+function renderLevel1(gc) {
+  const q = questions[qi];
+  const zone = document.createElement('div');
+  zone.className = 'sentence-zone';
+  zone.id = 'sentence-zone';
+  gc.appendChild(zone);
+
+  const pool = document.createElement('div');
+  pool.className = 'word-pool';
+  pool.id = 'word-pool';
+  const shuffled = shuffle([...q]);
+
+  let selected = [];
+
+  shuffled.forEach((w, idx) => {
+    const chip = document.createElement('button');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    chip.dataset.idx = idx;
+    chip.onclick = () => {
+      sndClick();
+      chip.classList.add('used');
+      selected.push(w);
+      const sc = document.createElement('button');
+      sc.className = 'word-chip';
+      sc.textContent = w;
+      sc.onclick = () => {
+        sndClick();
+        sc.remove();
+        selected = selected.filter((_, i) => {
+          // remove first occurrence
+          const si = selected.indexOf(w);
+          return true;
+        });
+        // rebuild selected
+        selected = [];
+        zone.querySelectorAll('.word-chip').forEach(c => selected.push(c.textContent));
+        selected = Array.from(zone.querySelectorAll('.word-chip')).map(c => c.textContent);
+        sc.remove();
+        selected = Array.from(zone.querySelectorAll('.word-chip')).map(c => c.textContent);
+        chip.classList.remove('used');
+      };
+      zone.appendChild(sc);
+    };
+    pool.appendChild(chip);
+  });
+  gc.appendChild(pool);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-validate';
+  btn.textContent = 'Verifier !';
+  btn.onclick = () => {
+    const built = Array.from(zone.querySelectorAll('.word-chip')).map(c => c.textContent);
+    const correct = built.length === q.length && built.every((w,i) => w === q[i]);
+    handleAnswer(correct);
+  };
+  gc.appendChild(btn);
+}
+
+// ========== LEVEL 2: Tri des Mots ==========
+function genLevel2() {
+  const words = [
+    {w:'le',t:'det'},{w:'un',t:'det'},{w:'la',t:'det'},{w:'une',t:'det'},{w:'des',t:'det'},
+    {w:'chat',t:'nom'},{w:'pomme',t:'nom'},{w:'livre',t:'nom'},{w:'vache',t:'nom'},
+    {w:'mange',t:'verbe'},{w:'joue',t:'verbe'},{w:'court',t:'verbe'},{w:'saute',t:'verbe'},{w:'dort',t:'verbe'},{w:'regarde',t:'verbe'},
+  ];
+  return shuffle(words).slice(0, 10);
+}
+
+function renderLevel2(gc) {
+  const q = questions[qi];
+  const bw = document.createElement('div');
+  bw.className = 'big-word';
+  bw.textContent = q.w;
+  gc.appendChild(bw);
+
+  const bins = document.createElement('div');
+  bins.className = 'bins';
+  [{label:'Nom',cls:'bin-nom',type:'nom'},{label:'Verbe',cls:'bin-verbe',type:'verbe'},{label:'Determinant',cls:'bin-det',type:'det'}].forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'bin ' + b.cls;
+    btn.textContent = b.label;
+    btn.onclick = () => handleAnswer(q.t === b.type);
+    bins.appendChild(btn);
+  });
+  gc.appendChild(bins);
+}
+
+// ========== LEVEL 3: Singulier <-> Pluriel ==========
+function genLevel3() {
+  const pairs = [
+    {sing:'un chat', plur:'des chats'},
+    {sing:'une pomme', plur:'des pommes'},
+    {sing:'un livre', plur:'des livres'},
+    {sing:'un chien', plur:'des chiens'},
+    {sing:'une vache', plur:'des vaches'},
+    {sing:'un jeu', plur:'des jeux'},
+    {sing:'un animal', plur:'des animaux'},
+    {sing:'un gateau', plur:'des gateaux'},
+    {sing:'un oiseau', plur:'des oiseaux'},
+    {sing:'un chapeau', plur:'des chapeaux'},
+    {sing:'une fleur', plur:'des fleurs'},
+    {sing:'un bateau', plur:'des bateaux'},
+  ];
+  const qs = [];
+  const picked = shuffle(pairs).slice(0, 6);
+  // Half sing->plur, half plur->sing
+  picked.forEach((p, i) => {
+    if (i < 3) {
+      qs.push({ prompt: p.sing, answer: p.plur, dir: 'plur' });
+    } else {
+      qs.push({ prompt: p.plur, answer: p.sing, dir: 'sing' });
+    }
+  });
+  // Add more to reach 10
+  const extra = shuffle(pairs.filter(p => !picked.includes(p))).slice(0, 4);
+  extra.forEach((p, i) => {
+    qs.push(i < 2 ? { prompt: p.sing, answer: p.plur, dir: 'plur' } : { prompt: p.plur, answer: p.sing, dir: 'sing' });
+  });
+  return shuffle(qs).slice(0, 10);
+}
+
+function renderLevel3(gc) {
+  const q = questions[qi];
+  const dir = q.dir === 'plur' ? 'Mets au pluriel :' : 'Mets au singulier :';
+  const lbl = document.createElement('div');
+  lbl.style.cssText = 'font-size:clamp(13px,2.3vw,17px);color:#666;margin-bottom:6px;font-weight:600;';
+  lbl.textContent = dir;
+  gc.appendChild(lbl);
+
+  const prompt = document.createElement('div');
+  prompt.className = 'sp-prompt';
+  prompt.textContent = q.prompt;
+  gc.appendChild(prompt);
+
+  // Generate options: correct + 2 distractors
+  const opts = [q.answer];
+  const allPairs = [
+    'des chats','des pommes','des livres','des chiens','des vaches','des jeux','des animaux','des gateaux','des oiseaux','des chapeaux','des fleurs','des bateaux',
+    'un chat','une pomme','un livre','un chien','une vache','un jeu','un animal','un gateau','un oiseau','un chapeau','une fleur','un bateau'
+  ];
+  const distractors = shuffle(allPairs.filter(x => x !== q.answer && x !== q.prompt)).slice(0,2);
+  opts.push(...distractors);
+  shuffle(opts);
+
+  const optsDiv = document.createElement('div');
+  optsDiv.className = 'sp-options';
+  opts.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'sp-btn';
+    btn.textContent = o;
+    btn.onclick = () => handleAnswer(o === q.answer);
+    optsDiv.appendChild(btn);
+  });
+  gc.appendChild(optsDiv);
+}
+
+// ========== LEVEL 4: La Machine Folle ==========
+const SUBJECTS = [
+  {text:'Le chat', num:'s'}, {text:'Les chats', num:'p'},
+  {text:'La fille', num:'s'}, {text:'Les filles', num:'p'},
+  {text:'Le garcon', num:'s'}, {text:'Les garcons', num:'p'},
+  {text:'Un chien', num:'s'}, {text:'Des chiens', num:'p'},
+];
+const VERBS = [
+  {s:'mange', p:'mangent'}, {s:'joue', p:'jouent'}, {s:'court', p:'courent'},
+  {s:'saute', p:'sautent'}, {s:'dort', p:'dorment'}, {s:'regarde', p:'regardent'},
+];
+const COMPLEMENTS = ['une pomme', 'dans le jardin', 'avec joie', 'tres vite', 'ce matin', 'la balle'];
+
+function genLevel4() {
+  // 8 rounds
+  return Array.from({length:8}, () => ({}));
+}
+
+let slotIdx = [0, 0, 0];
+
+function renderLevel4(gc) {
+  slotIdx = [Math.random()*SUBJECTS.length|0, Math.random()*VERBS.length|0, Math.random()*COMPLEMENTS.length|0];
+  const slots = document.createElement('div');
+  slots.className = 'slots';
+
+  const labels = ['Sujet', 'Verbe', 'Complement'];
+  const getVal = (col, idx) => {
+    if (col === 0) return SUBJECTS[idx].text;
+    if (col === 1) {
+      const sub = SUBJECTS[slotIdx[0]];
+      const v = VERBS[idx];
+      return sub.num === 'p' ? v.p : v.s;
+    }
+    return COMPLEMENTS[idx];
+  };
+  const getLists = [SUBJECTS, VERBS, COMPLEMENTS];
+
+  for (let c = 0; c < 3; c++) {
+    const col = document.createElement('div');
+    col.className = 'slot-col';
+    col.innerHTML = `<div class="slot-label">${labels[c]}</div>`;
+    const val = document.createElement('div');
+    val.className = 'slot-value';
+    val.id = 'slot-val-' + c;
+    col.appendChild(val);
+
+    const arrows = document.createElement('div');
+    arrows.className = 'slot-arrows';
+    const up = document.createElement('button');
+    up.className = 'slot-arrow';
+    up.innerHTML = '&#9650;';
+    up.onclick = () => { sndSpin(); slotIdx[c] = (slotIdx[c] + 1) % getLists[c].length; updateSlots(); };
+    const down = document.createElement('button');
+    down.className = 'slot-arrow';
+    down.innerHTML = '&#9660;';
+    down.onclick = () => { sndSpin(); slotIdx[c] = (slotIdx[c] - 1 + getLists[c].length) % getLists[c].length; updateSlots(); };
+    arrows.appendChild(up);
+    arrows.appendChild(down);
+    col.appendChild(arrows);
+    slots.appendChild(col);
+  }
+  gc.appendChild(slots);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-validate';
+  btn.id = 'validate-l4';
+  btn.textContent = 'Valider la phrase !';
+  btn.onclick = () => {
+    const sub = SUBJECTS[slotIdx[0]];
+    const verb = VERBS[slotIdx[1]];
+    const verbForm = sub.num === 'p' ? verb.p : verb.s;
+    // Check: displayed verb must match agreement
+    const displayedVerb = document.getElementById('slot-val-1').textContent;
+    const correct = displayedVerb === verbForm;
+    handleAnswer(correct);
+  };
+  gc.appendChild(btn);
+
+  updateSlots();
+}
+
+function updateSlots() {
+  const sub = SUBJECTS[slotIdx[0]];
+  document.getElementById('slot-val-0').textContent = sub.text;
+  // Show the raw verb form as user picks — they must find the right combo
+  const verb = VERBS[slotIdx[1]];
+  // Show both forms and let them pick? No — show form based on current subject for feedback
+  // Actually for the game to work, we show the verb conjugation matching the subject
+  // But the child needs to verify it's correct. Let's show raw verb and they validate agreement.
+  // Better approach: show the verb as-is (singular form) and user must match subject number
+  // Simplest: always show the singular form, child must pair singular subject with it
+  // Actually let's just show the verb in the form matching current subject, and randomly
+  // sometimes mismatch to create wrong combos.
+
+  // New approach: column 1 shows verb in a fixed form (alternating s/p per index),
+  // so child must scroll subject to match.
+  // Let's show verb independently: even index=singular, odd index=plural form
+  const verbDisplay = slotIdx[1] % 2 === 0 ? verb.s : verb.p;
+  document.getElementById('slot-val-1').textContent = verbDisplay;
+  document.getElementById('slot-val-2').textContent = COMPLEMENTS[slotIdx[2]];
+}
+
+// ========== Init ==========
+loadState();
+showMenu();
+</script>
+</body>
+</html>
