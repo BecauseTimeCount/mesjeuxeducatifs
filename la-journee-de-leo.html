@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>La Journee de Leo - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            background: linear-gradient(180deg, #F57C00 0%, #FFE0B2 100%);
+        }
+
+        /* === SCREENS === */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            padding: 15px;
+            animation: fadeIn 0.4s ease;
+            overflow: auto;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === BACK BUTTON === */
+        .back-to-menu {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #666;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        /* === HOME SCREEN === */
+        .home-screen {
+            justify-content: center;
+            background: linear-gradient(180deg, #F57C00 0%, #FFE0B2 100%);
+        }
+
+        .mascot {
+            font-size: clamp(3rem, 12vw, 5rem);
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .title {
+            font-size: clamp(1.8rem, 7vw, 3rem);
+            font-weight: 800;
+            text-align: center;
+            color: #E65100;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+            margin: 10px 0;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stat-badge {
+            background: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #F57C00;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 360px;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .level-btn {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 15px 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-height: 48px;
+            border-top: 4px solid #F57C00;
+        }
+
+        .level-btn:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .level-btn .icon { font-size: clamp(1.5rem, 5vw, 2rem); }
+        .level-btn .label { font-size: clamp(0.7rem, 2.2vw, 0.9rem); font-weight: 700; color: #333; text-align: center; }
+        .level-btn .stars { font-size: clamp(0.7rem, 2vw, 0.8rem); color: #FFB800; }
+
+        .play-btn {
+            background: linear-gradient(135deg, #F57C00, #FF9800);
+            border: none;
+            padding: 16px 50px;
+            border-radius: 30px;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(245,124,0,0.4);
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+            margin-top: 10px;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245,124,0,0.5);
+        }
+
+        /* === GAME SCREEN === */
+        .game-screen {
+            justify-content: flex-start;
+            padding-top: 70px;
+            transition: background 0.5s ease;
+        }
+
+        .sky-morning { background: linear-gradient(180deg, #87CEEB 0%, #E3F2FD 100%); }
+        .sky-noon { background: linear-gradient(180deg, #FFD54F 0%, #FFF9C4 100%); }
+        .sky-afternoon { background: linear-gradient(180deg, #FFB74D 0%, #FFE0B2 100%); }
+        .sky-evening { background: linear-gradient(180deg, #1A237E 0%, #5C6BC0 100%); }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 15px;
+        }
+
+        .progress-text {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: white;
+            background: rgba(0,0,0,0.2);
+            padding: 6px 14px;
+            border-radius: 15px;
+        }
+
+        .stars-count {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: #FFD700;
+            background: rgba(0,0,0,0.2);
+            padding: 6px 14px;
+            border-radius: 15px;
+        }
+
+        .leo-face {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .question-text {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            background: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 25px;
+            padding: 20px 30px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            margin-bottom: 20px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .activity-emoji {
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .activity-name {
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            font-weight: 700;
+            color: #555;
+        }
+
+        /* === LEVEL 1: TIME OF DAY CHOICES === */
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .choice-btn {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 18px;
+            padding: 14px 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-height: 48px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .choice-btn .choice-icon {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+
+        .choice-btn .choice-label {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #555;
+        }
+
+        .choice-btn.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+            animation: popCorrect 0.4s ease;
+        }
+
+        .choice-btn.hint {
+            border-color: #FF9800;
+            background: #FFF3E0;
+            animation: pulse 0.6s ease;
+        }
+
+        @keyframes popCorrect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .feedback-text {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            color: #4CAF50;
+            margin-top: 12px;
+            min-height: 30px;
+            text-align: center;
+        }
+
+        /* === LEVEL 2: CLOCK CHOICES === */
+        .clocks-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 500px;
+        }
+
+        .clock-option {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-height: 48px;
+            padding: 10px;
+            border-radius: 18px;
+            border: 3px solid transparent;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .clock-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        .clock-option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+
+        .clock-option.hint {
+            border-color: #FF9800;
+            background: #FFF3E0;
+        }
+
+        .clock-face {
+            width: clamp(70px, 18vw, 100px);
+            height: clamp(70px, 18vw, 100px);
+            border-radius: 50%;
+            border: 4px solid #333;
+            position: relative;
+            background: white;
+        }
+
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .clock-marker {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #999;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+        }
+
+        .hour-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 4px;
+            height: 28%;
+            background: #333;
+            border-radius: 2px;
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(0deg);
+            z-index: 3;
+        }
+
+        .clock-label {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: #555;
+        }
+
+        /* === LEVEL 3: TIMELINE === */
+        .timeline-container {
+            width: 100%;
+            max-width: 700px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+
+        .timeline {
+            display: flex;
+            align-items: center;
+            min-width: 600px;
+            height: 80px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .timeline-bar {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 6px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 3px;
+            transform: translateY(-50%);
+        }
+
+        .timeline-slot {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            min-width: 60px;
+            min-height: 48px;
+            justify-content: center;
+        }
+
+        .timeline-hour {
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            font-weight: 700;
+            color: #555;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #F57C00;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-slot.filled .timeline-dot {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .timeline-slot.active {
+            transform: scale(1.1);
+        }
+
+        .timeline-slot.active .timeline-dot {
+            background: #FF9800;
+            border-color: #FF9800;
+            box-shadow: 0 0 10px rgba(255,152,0,0.5);
+        }
+
+        .placed-emoji {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            position: absolute;
+            top: -28px;
+        }
+
+        .activity-cards-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .draggable-card {
+            background: white;
+            border-radius: 15px;
+            padding: 10px 14px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            min-height: 48px;
+            min-width: 48px;
+        }
+
+        .draggable-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .draggable-card.selected {
+            border-color: #FF9800;
+            background: #FFF3E0;
+            transform: scale(1.05);
+        }
+
+        .draggable-card.placed {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .draggable-card .card-emoji {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+        }
+
+        .draggable-card .card-label {
+            font-size: clamp(0.6rem, 1.8vw, 0.8rem);
+            font-weight: 700;
+            color: #555;
+        }
+
+        /* === LEVEL 4: STORY ORDER === */
+        .story-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .scrambled-cards {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 15px;
+            padding: 10px 14px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            min-height: 48px;
+            min-width: 60px;
+        }
+
+        .story-card.selected {
+            border-color: #FF9800;
+            background: #FFF3E0;
+        }
+
+        .story-card.used {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .story-card .card-emoji {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+
+        .story-card .card-label {
+            font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+            font-weight: 700;
+            color: #555;
+        }
+
+        .order-slots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .order-slot {
+            width: clamp(55px, 14vw, 75px);
+            height: clamp(55px, 14vw, 75px);
+            border: 3px dashed #ccc;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+        }
+
+        .order-slot.active {
+            border-color: #FF9800;
+            background: #FFF3E0;
+        }
+
+        .order-slot.filled {
+            border-style: solid;
+            border-color: #4CAF50;
+            background: white;
+        }
+
+        .order-slot .slot-number {
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            font-weight: 700;
+            color: #999;
+        }
+
+        .order-slot .slot-emoji {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+        }
+
+        /* Connector phase */
+        .connector-phase {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .transition-pair {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .transition-item {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+        }
+
+        .connector-blank {
+            background: white;
+            border: 3px dashed #FF9800;
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #FF9800;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+        }
+
+        .connector-blank.filled {
+            border-style: solid;
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .connector-choices {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .connector-btn {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 10px 18px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+        }
+
+        .connector-btn:hover {
+            transform: translateY(-2px);
+            border-color: #FF9800;
+        }
+
+        .connector-btn.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+            color: #4CAF50;
+        }
+
+        .connector-btn.used {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* === CELEBRATION SCREEN === */
+        .celebration-screen {
+            justify-content: center;
+            background: linear-gradient(180deg, #FFF9C4 0%, #FFE0B2 100%);
+        }
+
+        .celebration-stars {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            margin-bottom: 10px;
+            animation: bounce 1s ease infinite;
+        }
+
+        .celebration-title {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 800;
+            color: #F57C00;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .celebration-message {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 600;
+            color: #555;
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 350px;
+        }
+
+        .celebration-btn {
+            background: linear-gradient(135deg, #F57C00, #FF9800);
+            border: none;
+            padding: 14px 40px;
+            border-radius: 25px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(245,124,0,0.4);
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+            margin: 5px;
+        }
+
+        .celebration-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* === CONFETTI === */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall 3s ease forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* === RESPONSIVE ADJUSTMENTS === */
+        @media (max-width: 340px) {
+            .choices-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .choice-btn { padding: 10px 6px; }
+            .levels-grid { gap: 8px; }
+            .level-btn { padding: 10px 6px; }
+            .clocks-grid { gap: 8px; }
+            .clock-face {
+                width: 65px !important;
+                height: 65px !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .game-screen { padding-top: 80px; }
+            .activity-card { padding: 25px 40px; }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .home-screen { justify-content: flex-start; padding-top: 15px; }
+            .mascot { font-size: 2rem; }
+            .title { font-size: 1.5rem; margin: 5px 0; }
+            .stats-bar { margin: 8px 0; }
+            .levels-grid { margin: 8px 0; }
+            .game-screen { padding-top: 55px; }
+            .leo-face { font-size: 2rem; margin-bottom: 5px; }
+            .activity-card { padding: 10px 20px; margin-bottom: 10px; }
+            .question-text { padding: 8px 16px; margin-bottom: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HOME SCREEN -->
+    <div id="home-screen" class="screen home-screen active">
+        <a href="index.html" class="back-to-menu">&larr; Mes Jeux</a>
+        <div class="mascot">&#x1F9D2;</div>
+        <h1 class="title">La Journee de Leo</h1>
+        <div class="stats-bar">
+            <div class="stat-badge" id="total-stars-display">&#x2B50; 0 etoiles</div>
+        </div>
+        <div class="levels-grid">
+            <button class="level-btn" id="level-btn-1" onclick="selectLevel(1)">
+                <span class="icon">&#x1F305;</span>
+                <span class="label">Matin, Midi ou Soir ?</span>
+                <span class="stars" id="best-1">&#x2B50; 0/10</span>
+            </button>
+            <button class="level-btn locked" id="level-btn-2" onclick="selectLevel(2)">
+                <span class="icon">&#x1F570;</span>
+                <span class="label">Quelle heure ?</span>
+                <span class="stars" id="best-2">&#x2B50; 0/10</span>
+            </button>
+            <button class="level-btn locked" id="level-btn-3" onclick="selectLevel(3)">
+                <span class="icon">&#x1F4C5;</span>
+                <span class="label">La Frise de Leo</span>
+                <span class="stars" id="best-3">&#x2B50; 0/6</span>
+            </button>
+            <button class="level-btn locked" id="level-btn-4" onclick="selectLevel(4)">
+                <span class="icon">&#x1F4D6;</span>
+                <span class="label">Raconte la Journee</span>
+                <span class="stars" id="best-4">&#x2B50; 0/6</span>
+            </button>
+        </div>
+        <button class="play-btn" id="play-btn" onclick="startGame()">Jouer !</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen game-screen">
+        <a href="index.html" class="back-to-menu">&larr; Mes Jeux</a>
+        <div class="game-header">
+            <span class="progress-text" id="progress-text">1/10</span>
+            <span class="stars-count" id="session-stars">&#x2B50; 0</span>
+        </div>
+        <div class="leo-face" id="leo-face">&#x1F9D2;</div>
+        <div class="question-text" id="question-text"></div>
+        <div id="game-content"></div>
+        <div class="feedback-text" id="feedback-text"></div>
+    </div>
+
+    <!-- CELEBRATION SCREEN -->
+    <div id="celebration-screen" class="screen celebration-screen">
+        <div class="celebration-stars" id="celeb-stars">&#x2B50;&#x2B50;&#x2B50;</div>
+        <h2 class="celebration-title" id="celeb-title">Super !</h2>
+        <div class="celebration-message" id="celeb-message"></div>
+        <button class="celebration-btn" onclick="goHome()">&#x1F3E0; Accueil</button>
+        <a href="index.html" class="celebration-btn" style="text-decoration: none; display: inline-block; margin-top: 5px;">&larr; Mes Jeux</a>
+    </div>
+
+    <!-- CONFETTI CONTAINER -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <script>
+        // === STATE ===
+        const gameState = {
+            currentLevel: 1,
+            totalStars: 0,
+            bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+            unlockedLevels: [1],
+            currentRound: 0,
+            starsThisSession: 0,
+            currentQuestion: 0,
+            questions: [],
+            selectedCard: null,
+            placedItems: {},
+            phase: 'order', // for level 4
+            orderedCards: [],
+            connectorIndex: 0
+        };
+
+        // === ACTIVITIES DATA ===
+        const activitiesLevel1 = [
+            { emoji: '&#x1F963;', name: 'Petit-dejeuner', answer: 'Matin' },
+            { emoji: '&#x1F3EB;', name: 'Ecole', answer: 'Matin' },
+            { emoji: '&#x1F37D;', name: 'Dejeuner', answer: 'Midi' },
+            { emoji: '&#x1F3AE;', name: 'Recreation', answer: 'Apres-midi' },
+            { emoji: '&#x1F6C1;', name: 'Bain', answer: 'Soir' },
+            { emoji: '&#x1F4D6;', name: 'Histoire', answer: 'Soir' },
+            { emoji: '&#x1F634;', name: 'Dodo', answer: 'Soir' },
+            { emoji: '&#x1F950;', name: 'Gouter', answer: 'Apres-midi' },
+            { emoji: '&#x1F392;', name: 'Aller a l\'ecole', answer: 'Matin' },
+            { emoji: '&#x1F319;', name: 'Bonne nuit', answer: 'Soir' },
+            { emoji: '&#x1F9B7;', name: 'Brosser les dents', answer: 'Matin' },
+            { emoji: '&#x1F4FA;', name: 'Dessin anime', answer: 'Apres-midi' },
+            { emoji: '&#x1F35D;', name: 'Diner', answer: 'Soir' },
+            { emoji: '&#x2600;', name: 'Se reveiller', answer: 'Matin' },
+            { emoji: '&#x1F3C3;', name: 'Sport', answer: 'Apres-midi' },
+            { emoji: '&#x1F3A8;', name: 'Dessin', answer: 'Apres-midi' }
+        ];
+
+        const activitiesLevel2 = [
+            { emoji: '&#x1F963;', name: 'Petit-dejeuner', hour: 7 },
+            { emoji: '&#x1F392;', name: 'Ecole', hour: 8 },
+            { emoji: '&#x1F3AE;', name: 'Recreation', hour: 10 },
+            { emoji: '&#x1F37D;', name: 'Dejeuner', hour: 12 },
+            { emoji: '&#x1F950;', name: 'Gouter', hour: 16 },
+            { emoji: '&#x1F6C1;', name: 'Bain', hour: 19 },
+            { emoji: '&#x1F35D;', name: 'Diner', hour: 19 },
+            { emoji: '&#x1F4D6;', name: 'Histoire', hour: 20 },
+            { emoji: '&#x1F634;', name: 'Dodo', hour: 21 }
+        ];
+
+        const timelineRounds = [
+            [
+                { emoji: '&#x1F963;', name: 'Petit-dej', hour: 7 },
+                { emoji: '&#x1F392;', name: 'Ecole', hour: 8 },
+                { emoji: '&#x1F37D;', name: 'Dejeuner', hour: 12 },
+                { emoji: '&#x1F950;', name: 'Gouter', hour: 16 },
+                { emoji: '&#x1F6C1;', name: 'Bain', hour: 19 },
+                { emoji: '&#x1F634;', name: 'Dodo', hour: 21 }
+            ],
+            [
+                { emoji: '&#x2600;', name: 'Reveil', hour: 7 },
+                { emoji: '&#x1F3EB;', name: 'Ecole', hour: 8 },
+                { emoji: '&#x1F3AE;', name: 'Recreation', hour: 10 },
+                { emoji: '&#x1F37D;', name: 'Dejeuner', hour: 12 },
+                { emoji: '&#x1F35D;', name: 'Diner', hour: 19 },
+                { emoji: '&#x1F4D6;', name: 'Histoire', hour: 20 }
+            ],
+            [
+                { emoji: '&#x1F9B7;', name: 'Dents', hour: 7 },
+                { emoji: '&#x1F963;', name: 'Petit-dej', hour: 7 },
+                { emoji: '&#x1F3EB;', name: 'Ecole', hour: 8 },
+                { emoji: '&#x1F950;', name: 'Gouter', hour: 16 },
+                { emoji: '&#x1F6C1;', name: 'Bain', hour: 19 },
+                { emoji: '&#x1F634;', name: 'Dodo', hour: 21 }
+            ]
+        ];
+
+        const storyRounds = [
+            [
+                { emoji: '&#x2600;', name: 'Reveil', order: 1 },
+                { emoji: '&#x1F963;', name: 'Petit-dej', order: 2 },
+                { emoji: '&#x1F3EB;', name: 'Ecole', order: 3 },
+                { emoji: '&#x1F37D;', name: 'Dejeuner', order: 4 },
+                { emoji: '&#x1F950;', name: 'Gouter', order: 5 },
+                { emoji: '&#x1F634;', name: 'Dodo', order: 6 }
+            ],
+            [
+                { emoji: '&#x1F9B7;', name: 'Dents', order: 1 },
+                { emoji: '&#x1F392;', name: 'Ecole', order: 2 },
+                { emoji: '&#x1F3AE;', name: 'Recreation', order: 3 },
+                { emoji: '&#x1F35D;', name: 'Diner', order: 4 },
+                { emoji: '&#x1F4D6;', name: 'Histoire', order: 5 },
+                { emoji: '&#x1F319;', name: 'Bonne nuit', order: 6 }
+            ]
+        ];
+
+        const connectors = ["D'abord", "Ensuite", "Puis", "Apres", "Enfin"];
+
+        const timeOfDayChoices = [
+            { label: 'Matin', icon: '&#x1F305;' },
+            { label: 'Midi', icon: '&#x2600;' },
+            { label: 'Apres-midi', icon: '&#x1F324;' },
+            { label: 'Soir', icon: '&#x1F319;' }
+        ];
+
+        const positiveMessages = [
+            'Bravo !', 'Super !', 'Genial !', 'Excellent !', 'Magnifique !',
+            'Tres bien !', 'Parfait !', 'Formidable !', 'Champion !', 'Fantastique !'
+        ];
+
+        const encourageMessages = [
+            'Essaie encore !', 'Tu vas y arriver !', 'Presque !', 'Continue !'
+        ];
+
+        // === AUDIO ===
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioContext) return;
+            const now = audioContext.currentTime;
+            switch(type) {
+                case 'pop':
+                    playNote(800, now, 0.05, 0.3, 'sine');
+                    break;
+                case 'correct':
+                    playNote(523, now, 0.15, 0.4);
+                    playNote(659, now + 0.15, 0.15, 0.4);
+                    playNote(784, now + 0.3, 0.3, 0.4);
+                    break;
+                case 'encourage':
+                    playNote(400, now, 0.15, 0.2, 'triangle');
+                    playNote(500, now + 0.15, 0.15, 0.2, 'triangle');
+                    break;
+                case 'click':
+                    playNote(600, now, 0.05, 0.2);
+                    break;
+                case 'victory':
+                    playNote(523, now, 0.1, 0.4);
+                    playNote(659, now + 0.1, 0.1, 0.4);
+                    playNote(784, now + 0.2, 0.1, 0.4);
+                    playNote(1047, now + 0.3, 0.4, 0.5);
+                    break;
+                case 'place':
+                    playNote(700, now, 0.08, 0.3);
+                    playNote(900, now + 0.08, 0.1, 0.3);
+                    break;
+            }
+        }
+
+        function playNote(freq, start, duration, volume = 0.5, type = 'sine') {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.frequency.value = freq;
+            osc.type = type;
+            gain.gain.setValueAtTime(volume, start);
+            gain.gain.exponentialRampToValueAtTime(0.01, start + duration);
+            osc.start(start);
+            osc.stop(start + duration);
+        }
+
+        // === SCREEN MANAGEMENT ===
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function goHome() {
+            showScreen('home-screen');
+            updateHomeDisplay();
+        }
+
+        // === SAVE / LOAD ===
+        function saveGame() {
+            localStorage.setItem('laJourneeDeLeo', JSON.stringify({
+                currentLevel: gameState.currentLevel,
+                totalStars: gameState.totalStars,
+                bestScores: gameState.bestScores,
+                unlockedLevels: gameState.unlockedLevels
+            }));
+            localStorage.setItem('journeeLeoScore', gameState.totalStars.toString());
+        }
+
+        function loadGame() {
+            try {
+                const saved = localStorage.getItem('laJourneeDeLeo');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    gameState.currentLevel = data.currentLevel || 1;
+                    gameState.totalStars = data.totalStars || 0;
+                    gameState.bestScores = data.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+                    gameState.unlockedLevels = data.unlockedLevels || [1];
+                }
+            } catch(e) {
+                console.log('No saved game found');
+            }
+        }
+
+        // === HOME DISPLAY ===
+        function updateHomeDisplay() {
+            document.getElementById('total-stars-display').innerHTML = '&#x2B50; ' + gameState.totalStars + ' etoiles';
+            document.getElementById('best-1').innerHTML = '&#x2B50; ' + gameState.bestScores[1] + '/10';
+            document.getElementById('best-2').innerHTML = '&#x2B50; ' + gameState.bestScores[2] + '/10';
+            document.getElementById('best-3').innerHTML = '&#x2B50; ' + gameState.bestScores[3] + '/6';
+            document.getElementById('best-4').innerHTML = '&#x2B50; ' + gameState.bestScores[4] + '/6';
+
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById('level-btn-' + i);
+                if (gameState.unlockedLevels.includes(i)) {
+                    btn.classList.remove('locked');
+                } else {
+                    btn.classList.add('locked');
+                }
+            }
+        }
+
+        function selectLevel(level) {
+            if (!gameState.unlockedLevels.includes(level)) return;
+            playSound('click');
+            gameState.currentLevel = level;
+            // Highlight selected
+            document.querySelectorAll('.level-btn').forEach(b => b.style.borderTopColor = '#F57C00');
+            document.getElementById('level-btn-' + level).style.borderTopColor = '#4CAF50';
+        }
+
+        // === START GAME ===
+        function startGame() {
+            playSound('click');
+            gameState.starsThisSession = 0;
+            gameState.currentQuestion = 0;
+            gameState.currentRound = 0;
+            gameState.selectedCard = null;
+            gameState.placedItems = {};
+            gameState.orderedCards = [];
+            gameState.connectorIndex = 0;
+            gameState.phase = 'order';
+
+            showScreen('game-screen');
+
+            switch(gameState.currentLevel) {
+                case 1: startLevel1(); break;
+                case 2: startLevel2(); break;
+                case 3: startLevel3(); break;
+                case 4: startLevel4(); break;
+            }
+        }
+
+        // === LEVEL 1: Matin, Midi ou Soir? ===
+        function startLevel1() {
+            const shuffled = shuffle([...activitiesLevel1]);
+            gameState.questions = shuffled.slice(0, 10);
+            gameState.currentQuestion = 0;
+            showLevel1Question();
+        }
+
+        function showLevel1Question() {
+            if (gameState.currentQuestion >= gameState.questions.length) {
+                endSession();
+                return;
+            }
+
+            const q = gameState.questions[gameState.currentQuestion];
+            const skyClass = getSkyClass(q.answer);
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.className = 'screen game-screen active ' + skyClass;
+
+            document.getElementById('progress-text').textContent = (gameState.currentQuestion + 1) + '/' + gameState.questions.length;
+            document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+            document.getElementById('leo-face').innerHTML = '&#x1F914;';
+            document.getElementById('question-text').innerHTML = q.emoji + ' ' + q.name + '<br>C\'est quand ?';
+            document.getElementById('feedback-text').textContent = '';
+
+            let html = '<div class="choices-grid">';
+            timeOfDayChoices.forEach(c => {
+                html += '<button class="choice-btn" onclick="checkLevel1Answer(\'' + c.label + '\', this)">';
+                html += '<span class="choice-icon">' + c.icon + '</span>';
+                html += '<span class="choice-label">' + c.label + '</span>';
+                html += '</button>';
+            });
+            html += '</div>';
+            document.getElementById('game-content').innerHTML = html;
+        }
+
+        function checkLevel1Answer(answer, btn) {
+            const q = gameState.questions[gameState.currentQuestion];
+            const allBtns = document.querySelectorAll('.choice-btn');
+
+            if (answer === q.answer) {
+                playSound('correct');
+                btn.classList.add('correct');
+                document.getElementById('leo-face').innerHTML = '&#x1F60A;';
+                document.getElementById('feedback-text').textContent = randomFrom(positiveMessages);
+                gameState.starsThisSession++;
+                document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+                allBtns.forEach(b => b.style.pointerEvents = 'none');
+                setTimeout(() => {
+                    gameState.currentQuestion++;
+                    showLevel1Question();
+                }, 1200);
+            } else {
+                playSound('encourage');
+                btn.style.opacity = '0.4';
+                btn.style.pointerEvents = 'none';
+                document.getElementById('feedback-text').textContent = randomFrom(encourageMessages);
+                // Show hint on correct answer
+                allBtns.forEach(b => {
+                    const label = b.querySelector('.choice-label').textContent;
+                    if (label === q.answer) {
+                        b.classList.add('hint');
+                    }
+                });
+            }
+        }
+
+        // === LEVEL 2: Quelle heure? ===
+        function startLevel2() {
+            const shuffled = shuffle([...activitiesLevel2]);
+            gameState.questions = shuffled.slice(0, 10);
+            gameState.currentQuestion = 0;
+            showLevel2Question();
+        }
+
+        function showLevel2Question() {
+            if (gameState.currentQuestion >= gameState.questions.length) {
+                endSession();
+                return;
+            }
+
+            const q = gameState.questions[gameState.currentQuestion];
+            const skyClass = getSkyClassFromHour(q.hour);
+            document.getElementById('game-screen').className = 'screen game-screen active ' + skyClass;
+
+            document.getElementById('progress-text').textContent = (gameState.currentQuestion + 1) + '/' + gameState.questions.length;
+            document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+            document.getElementById('leo-face').innerHTML = '&#x1F914;';
+            document.getElementById('question-text').innerHTML = q.emoji + ' ' + q.name + '<br>A quelle heure ?';
+            document.getElementById('feedback-text').textContent = '';
+
+            // Generate 3 clock options: correct + 2 wrong
+            const correctHour = q.hour;
+            let wrongHours = [];
+            const allHours = [7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21];
+            const filtered = allHours.filter(h => h !== correctHour);
+            const shuffledH = shuffle(filtered);
+            wrongHours = shuffledH.slice(0, 2);
+
+            const options = shuffle([correctHour, ...wrongHours]);
+
+            let html = '<div class="clocks-grid">';
+            options.forEach(h => {
+                html += '<div class="clock-option" onclick="checkLevel2Answer(' + h + ', ' + correctHour + ', this)">';
+                html += buildClockHTML(h);
+                html += '<span class="clock-label">' + h + 'h</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+            document.getElementById('game-content').innerHTML = html;
+        }
+
+        function buildClockHTML(hour) {
+            const displayHour = hour > 12 ? hour - 12 : hour;
+            const angle = (displayHour % 12) * 30;
+
+            let html = '<div class="clock-face">';
+            html += '<div class="clock-center"></div>';
+
+            // 12 hour markers
+            for (let i = 0; i < 12; i++) {
+                const a = i * 30;
+                const rad = (a - 90) * Math.PI / 180;
+                const r = 42; // percentage from center
+                const x = 50 + r * Math.cos(rad);
+                const y = 50 + r * Math.sin(rad);
+                html += '<div class="clock-marker" style="left:' + x + '%;top:' + y + '%;transform:translate(-50%,-50%)"></div>';
+            }
+
+            html += '<div class="hour-hand" style="transform: translateX(-50%) rotate(' + angle + 'deg)"></div>';
+            html += '</div>';
+            return html;
+        }
+
+        function checkLevel2Answer(selected, correct, el) {
+            const allOptions = document.querySelectorAll('.clock-option');
+
+            if (selected === correct) {
+                playSound('correct');
+                el.classList.add('correct');
+                document.getElementById('leo-face').innerHTML = '&#x1F60A;';
+                document.getElementById('feedback-text').textContent = randomFrom(positiveMessages) + ' C\'est ' + correct + 'h !';
+                gameState.starsThisSession++;
+                document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+                allOptions.forEach(o => o.style.pointerEvents = 'none');
+                setTimeout(() => {
+                    gameState.currentQuestion++;
+                    showLevel2Question();
+                }, 1400);
+            } else {
+                playSound('encourage');
+                el.style.opacity = '0.4';
+                el.style.pointerEvents = 'none';
+                document.getElementById('feedback-text').textContent = randomFrom(encourageMessages);
+                allOptions.forEach(o => {
+                    const label = o.querySelector('.clock-label').textContent;
+                    if (label === correct + 'h') {
+                        o.classList.add('hint');
+                    }
+                });
+            }
+        }
+
+        // === LEVEL 3: La Frise de Leo ===
+        function startLevel3() {
+            gameState.currentRound = 0;
+            gameState.starsThisSession = 0;
+            showLevel3Round();
+        }
+
+        function showLevel3Round() {
+            if (gameState.currentRound >= timelineRounds.length) {
+                endSession();
+                return;
+            }
+
+            const round = timelineRounds[gameState.currentRound];
+            gameState.placedItems = {};
+            gameState.selectedCard = null;
+
+            document.getElementById('game-screen').className = 'screen game-screen active sky-morning';
+            document.getElementById('progress-text').textContent = 'Frise ' + (gameState.currentRound + 1) + '/' + timelineRounds.length;
+            document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+            document.getElementById('leo-face').innerHTML = '&#x1F914;';
+            document.getElementById('question-text').textContent = 'Place chaque activite au bon moment !';
+            document.getElementById('feedback-text').textContent = '';
+
+            // Timeline hours from 7 to 21
+            const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+
+            let html = '<div class="timeline-container">';
+            html += '<div class="timeline">';
+            html += '<div class="timeline-bar"></div>';
+            hours.forEach(h => {
+                html += '<div class="timeline-slot" data-hour="' + h + '" onclick="placeOnTimeline(' + h + ', this)">';
+                html += '<span class="placed-emoji" id="placed-' + h + '"></span>';
+                html += '<span class="timeline-hour">' + h + 'h</span>';
+                html += '<div class="timeline-dot"></div>';
+                html += '</div>';
+            });
+            html += '</div></div>';
+
+            // Activity cards (shuffled)
+            const shuffledCards = shuffle([...round]);
+            html += '<div class="activity-cards-row" id="cards-row">';
+            shuffledCards.forEach((a, i) => {
+                html += '<div class="draggable-card" id="card-' + i + '" data-hour="' + a.hour + '" data-emoji="' + a.emoji + '" data-index="' + i + '" onclick="selectCard(' + i + ')">';
+                html += '<div class="card-emoji">' + a.emoji + '</div>';
+                html += '<div class="card-label">' + a.name + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+
+            document.getElementById('game-content').innerHTML = html;
+        }
+
+        function selectCard(index) {
+            playSound('click');
+            const card = document.getElementById('card-' + index);
+            if (card.classList.contains('placed')) return;
+
+            // Deselect previous
+            document.querySelectorAll('.draggable-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            gameState.selectedCard = index;
+
+            // Highlight timeline slots
+            document.querySelectorAll('.timeline-slot').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.timeline-slot:not(.filled)').forEach(s => s.classList.add('active'));
+        }
+
+        function placeOnTimeline(hour, slot) {
+            if (gameState.selectedCard === null) return;
+
+            const card = document.getElementById('card-' + gameState.selectedCard);
+            const cardHour = parseInt(card.dataset.hour);
+            const cardEmoji = card.dataset.emoji;
+
+            if (hour === cardHour) {
+                playSound('place');
+                card.classList.add('placed');
+                card.classList.remove('selected');
+                slot.classList.add('filled');
+                slot.classList.remove('active');
+                document.getElementById('placed-' + hour).innerHTML = cardEmoji;
+                gameState.starsThisSession++;
+                document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+                document.getElementById('leo-face').innerHTML = '&#x1F60A;';
+                document.getElementById('feedback-text').textContent = randomFrom(positiveMessages);
+                gameState.selectedCard = null;
+
+                document.querySelectorAll('.timeline-slot').forEach(s => s.classList.remove('active'));
+
+                // Check if round complete
+                const round = timelineRounds[gameState.currentRound];
+                const placedCount = document.querySelectorAll('.draggable-card.placed').length;
+                if (placedCount >= round.length) {
+                    setTimeout(() => {
+                        gameState.currentRound++;
+                        showLevel3Round();
+                    }, 1200);
+                }
+            } else {
+                playSound('encourage');
+                document.getElementById('feedback-text').textContent = randomFrom(encourageMessages);
+                document.getElementById('leo-face').innerHTML = '&#x1F914;';
+                slot.classList.add('hint');
+                setTimeout(() => slot.classList.remove('hint'), 800);
+            }
+        }
+
+        // === LEVEL 4: Raconte la Journee ===
+        function startLevel4() {
+            gameState.currentRound = 0;
+            gameState.starsThisSession = 0;
+            gameState.phase = 'order';
+            showLevel4Round();
+        }
+
+        function showLevel4Round() {
+            if (gameState.currentRound >= storyRounds.length) {
+                endSession();
+                return;
+            }
+
+            gameState.phase = 'order';
+            gameState.orderedCards = [];
+            gameState.connectorIndex = 0;
+
+            const round = storyRounds[gameState.currentRound];
+            document.getElementById('game-screen').className = 'screen game-screen active sky-morning';
+            document.getElementById('progress-text').textContent = 'Histoire ' + (gameState.currentRound + 1) + '/' + storyRounds.length;
+            document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+            document.getElementById('leo-face').innerHTML = '&#x1F914;';
+            document.getElementById('question-text').textContent = 'Remets les images dans l\'ordre de la journee !';
+            document.getElementById('feedback-text').textContent = '';
+
+            const shuffledCards = shuffle([...round]);
+
+            let html = '<div class="story-container">';
+
+            // Order slots
+            html += '<div class="order-slots" id="order-slots">';
+            for (let i = 0; i < 6; i++) {
+                html += '<div class="order-slot" id="slot-' + i + '" onclick="placeInSlot(' + i + ')">';
+                html += '<span class="slot-number">' + (i + 1) + '</span>';
+                html += '<span class="slot-emoji" id="slot-emoji-' + i + '"></span>';
+                html += '</div>';
+            }
+            html += '</div>';
+
+            // Scrambled cards
+            html += '<div class="scrambled-cards" id="scrambled-cards">';
+            shuffledCards.forEach((c, i) => {
+                html += '<div class="story-card" id="story-' + i + '" data-order="' + c.order + '" data-emoji="' + c.emoji + '" data-name="' + c.name + '" onclick="selectStoryCard(' + i + ')">';
+                html += '<div class="card-emoji">' + c.emoji + '</div>';
+                html += '<div class="card-label">' + c.name + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+
+            html += '</div>';
+            document.getElementById('game-content').innerHTML = html;
+        }
+
+        function selectStoryCard(index) {
+            if (gameState.phase !== 'order') return;
+            playSound('click');
+            const card = document.getElementById('story-' + index);
+            if (card.classList.contains('used')) return;
+
+            document.querySelectorAll('.story-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            gameState.selectedCard = index;
+        }
+
+        function placeInSlot(slotIndex) {
+            if (gameState.phase !== 'order') return;
+            if (gameState.selectedCard === null) return;
+
+            const slot = document.getElementById('slot-' + slotIndex);
+            if (slot.classList.contains('filled')) return;
+
+            const card = document.getElementById('story-' + gameState.selectedCard);
+            const expectedOrder = slotIndex + 1;
+            const cardOrder = parseInt(card.dataset.order);
+
+            if (cardOrder === expectedOrder) {
+                playSound('place');
+                slot.classList.add('filled');
+                document.getElementById('slot-emoji-' + slotIndex).innerHTML = card.dataset.emoji;
+                slot.querySelector('.slot-number').style.display = 'none';
+                card.classList.add('used');
+                card.classList.remove('selected');
+                gameState.orderedCards.push({ emoji: card.dataset.emoji, name: card.dataset.name });
+                gameState.starsThisSession++;
+                document.getElementById('session-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+                document.getElementById('leo-face').innerHTML = '&#x1F60A;';
+                document.getElementById('feedback-text').textContent = randomFrom(positiveMessages);
+                gameState.selectedCard = null;
+
+                // Check if all placed
+                const usedCount = document.querySelectorAll('.story-card.used').length;
+                if (usedCount >= 6) {
+                    setTimeout(() => {
+                        startConnectorPhase();
+                    }, 1000);
+                }
+            } else {
+                playSound('encourage');
+                document.getElementById('feedback-text').textContent = randomFrom(encourageMessages);
+                document.getElementById('leo-face').innerHTML = '&#x1F914;';
+            }
+        }
+
+        function startConnectorPhase() {
+            gameState.phase = 'connectors';
+            gameState.connectorIndex = 0;
+
+            document.getElementById('question-text').textContent = 'Choisis les bons mots pour raconter !';
+            document.getElementById('leo-face').innerHTML = '&#x1F914;';
+            document.getElementById('feedback-text').textContent = '';
+
+            showConnectorQuestion();
+        }
+
+        function showConnectorQuestion() {
+            if (gameState.connectorIndex >= 5) {
+                // All connectors done, next round
+                setTimeout(() => {
+                    gameState.currentRound++;
+                    showLevel4Round();
+                }, 1200);
+                return;
+            }
+
+            const idx = gameState.connectorIndex;
+            const correctConnector = connectors[idx];
+
+            let html = '<div class="connector-phase">';
+
+            // Show the story so far with transitions
+            html += '<div style="margin-bottom:15px;">';
+            for (let i = 0; i < gameState.orderedCards.length; i++) {
+                if (i > 0 && i <= idx) {
+                    // Already filled connector
+                    html += '<div class="transition-pair">';
+                    html += '<span class="connector-blank filled">' + connectors[i - 1] + '</span>';
+                    html += '<span class="transition-item">' + gameState.orderedCards[i].emoji + ' ' + gameState.orderedCards[i].name + '</span>';
+                    html += '</div>';
+                } else if (i === idx + 1) {
+                    // Current blank
+                    html += '<div class="transition-pair">';
+                    html += '<span class="connector-blank" id="current-blank">???</span>';
+                    html += '<span class="transition-item">' + gameState.orderedCards[i].emoji + ' ' + gameState.orderedCards[i].name + '</span>';
+                    html += '</div>';
+                } else if (i === 0) {
+                    html += '<div class="transition-pair">';
+                    html += '<span class="transition-item">' + gameState.orderedCards[i].emoji + ' ' + gameState.orderedCards[i].name + '</span>';
+                    html += '</div>';
+                }
+            }
+            html += '</div>';
+
+            // Connector choices (shuffle available ones)
+            const remaining = connectors.filter((c, i) => i >= idx);
+            const choices = shuffle([...remaining]).slice(0, Math.min(3, remaining.length));
+            if (!choices.includes(correctConnector)) {
+                choices[0] = correctConnector;
+                shuffle(choices);
+            }
+
+            html += '<div class="connector-choices">';
+            choices.forEach(c => {
+                html += '<button class="connector-btn" onclick="checkConnector(\'' + c.replace("'", "\\'") + '\', this)">' + c + '</button>';
+            });
+            html += '</div>';
+
+            html += '</div>';
+            document.getElementById('game-content').innerHTML = html;
+        }
+
+        function checkConnector(chosen, btn) {
+            const correct = connectors[gameState.connectorIndex];
+
+            if (chosen === correct) {
+                playSound('correct');
+                btn.classList.add('correct');
+                document.getElementById('leo-face').innerHTML = '&#x1F60A;';
+                document.getElementById('feedback-text').textContent = randomFrom(positiveMessages);
+                const blank = document.getElementById('current-blank');
+                if (blank) {
+                    blank.textContent = correct;
+                    blank.classList.add('filled');
+                }
+                document.querySelectorAll('.connector-btn').forEach(b => b.style.pointerEvents = 'none');
+
+                gameState.connectorIndex++;
+                setTimeout(() => {
+                    showConnectorQuestion();
+                }, 1000);
+            } else {
+                playSound('encourage');
+                btn.style.opacity = '0.4';
+                btn.style.pointerEvents = 'none';
+                document.getElementById('feedback-text').textContent = randomFrom(encourageMessages);
+            }
+        }
+
+        // === END SESSION ===
+        function endSession() {
+            const level = gameState.currentLevel;
+            const stars = gameState.starsThisSession;
+
+            // Update best score
+            if (stars > gameState.bestScores[level]) {
+                gameState.bestScores[level] = stars;
+            }
+
+            gameState.totalStars += stars;
+
+            // Unlock next level if scored at least 6/10 or 4/6
+            const threshold = (level <= 2) ? 6 : 4;
+            if (stars >= threshold && level < 4) {
+                const nextLevel = level + 1;
+                if (!gameState.unlockedLevels.includes(nextLevel)) {
+                    gameState.unlockedLevels.push(nextLevel);
+                }
+            }
+
+            saveGame();
+
+            // Show celebration
+            showCelebration(stars, level);
+        }
+
+        function showCelebration(stars, level) {
+            playSound('victory');
+            showScreen('celebration-screen');
+
+            const maxStars = (level <= 2) ? 10 : 6;
+            let starEmojis = '';
+            for (let i = 0; i < Math.min(stars, 5); i++) starEmojis += '&#x2B50;';
+            document.getElementById('celeb-stars').innerHTML = starEmojis || '&#x2B50;';
+
+            let title = 'Super !';
+            if (stars >= maxStars) title = 'Parfait !';
+            else if (stars >= maxStars * 0.7) title = 'Bravo !';
+            else title = 'Bien joue !';
+
+            document.getElementById('celeb-title').textContent = title;
+            document.getElementById('celeb-message').innerHTML =
+                'Tu as gagne <strong>' + stars + ' etoiles</strong> !' +
+                (stars >= (level <= 2 ? 6 : 4) && level < 4 ? '<br>Nouveau niveau debloque !' : '');
+
+            launchConfetti();
+        }
+
+        // === CONFETTI ===
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF', '#FF9800', '#E040FB', '#448AFF'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                const size = 6 + Math.random() * 8;
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                container.appendChild(confetti);
+            }
+            setTimeout(() => { container.innerHTML = ''; }, 4000);
+        }
+
+        // === UTILITIES ===
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function randomFrom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function getSkyClass(timeOfDay) {
+            switch(timeOfDay) {
+                case 'Matin': return 'sky-morning';
+                case 'Midi': return 'sky-noon';
+                case 'Apres-midi': return 'sky-afternoon';
+                case 'Soir': return 'sky-evening';
+                default: return 'sky-morning';
+            }
+        }
+
+        function getSkyClassFromHour(hour) {
+            if (hour <= 11) return 'sky-morning';
+            if (hour <= 13) return 'sky-noon';
+            if (hour <= 17) return 'sky-afternoon';
+            return 'sky-evening';
+        }
+
+        // === INIT ===
+        loadGame();
+        updateHomeDisplay();
+    </script>
+</body>
+</html>

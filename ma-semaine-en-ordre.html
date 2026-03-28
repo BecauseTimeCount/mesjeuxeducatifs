@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Ma Semaine en Ordre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+        }
+
+        body {
+            background: linear-gradient(135deg, #8E24AA 0%, #CE93D8 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ===== SCREENS ===== */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: clamp(10px, 2vw, 20px);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-btn {
+            position: absolute;
+            top: clamp(8px, 2vw, 15px);
+            left: clamp(8px, 2vw, 15px);
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #6A1B9A;
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.2s;
+            min-height: 48px;
+        }
+
+        .back-btn:hover { transform: translateY(-2px); }
+
+        /* ===== HOME SCREEN ===== */
+        .home-screen {
+            justify-content: center;
+            gap: clamp(12px, 3vh, 25px);
+        }
+
+        .mascot {
+            font-size: clamp(3rem, 10vw, 5rem);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .title {
+            font-size: clamp(1.4rem, 5vw, 2.2rem);
+            font-weight: 800;
+            color: white;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stat-badge {
+            background: rgba(255,255,255,0.95);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #6A1B9A;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #FFD54F, #FFB300);
+            border: none;
+            padding: 18px 50px;
+            border-radius: 30px;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            color: #4E342E;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255,179,0,0.4);
+            transition: all 0.2s;
+            min-height: 56px;
+        }
+
+        .play-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,179,0,0.5); }
+        .play-btn:active { transform: translateY(0); }
+
+        /* ===== LEVEL SELECT ===== */
+        .level-select-screen {
+            padding-top: clamp(60px, 8vh, 80px);
+            gap: clamp(10px, 2vh, 20px);
+        }
+
+        .level-title {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: white;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(10px, 2vw, 15px);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: 20px;
+            padding: clamp(12px, 2vw, 20px);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+        }
+
+        .level-card:hover:not(.locked) { transform: translateY(-3px); }
+        .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
+
+        .level-card .icon { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+        .level-card .label { font-size: clamp(0.8rem, 2.5vw, 1rem); font-weight: 700; color: #333; text-align: center; }
+        .level-card .stars-info { font-size: clamp(0.7rem, 2vw, 0.85rem); color: #FFB800; font-weight: 700; }
+        .level-card .lock-icon { font-size: 1.5rem; }
+
+        /* ===== GAME SCREEN ===== */
+        .game-screen {
+            padding-top: clamp(8px, 1.5vh, 15px);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: clamp(5px, 1vh, 10px);
+            flex-shrink: 0;
+        }
+
+        .game-back-btn {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .score-badge {
+            background: rgba(255,255,255,0.95);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            color: #FFB800;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 600px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin-bottom: clamp(5px, 1vh, 10px);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD54F, #FF6F00);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* ===== MASCOT BUBBLE ===== */
+        .mascot-bubble {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: clamp(8px, 1.5vw, 14px) clamp(14px, 3vw, 24px);
+            margin-bottom: clamp(5px, 1vh, 12px);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 600px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .mascot-bubble .mascot-small { font-size: clamp(1.5rem, 4vw, 2rem); }
+
+        .mascot-bubble .message {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 600;
+            color: #4A148C;
+            line-height: 1.3;
+        }
+
+        /* ===== SOURCE ITEMS ===== */
+        .source-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(6px, 1.5vw, 10px);
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: clamp(8px, 1.5vh, 15px);
+            flex-shrink: 0;
+        }
+
+        .source-item {
+            background: white;
+            border: 3px solid #E0E0E0;
+            border-radius: 15px;
+            padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 18px);
+            font-size: clamp(0.8rem, 2.8vw, 1.1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .source-item:hover:not(.placed):not(.selected) {
+            transform: translateY(-2px);
+            border-color: #CE93D8;
+        }
+
+        .source-item.selected {
+            border-color: #FFB300;
+            background: #FFF8E1;
+            box-shadow: 0 0 20px rgba(255,179,0,0.5);
+            transform: scale(1.05);
+        }
+
+        .source-item.placed {
+            opacity: 0.3;
+            cursor: default;
+            transform: none;
+        }
+
+        .source-item.shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        /* ===== SLOTS ===== */
+        .slots-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(6px, 1.5vw, 10px);
+            max-width: 600px;
+            width: 100%;
+            flex: 1;
+            align-content: flex-start;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        .slot {
+            border: 3px dashed rgba(255,255,255,0.5);
+            border-radius: 15px;
+            padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 18px);
+            min-height: 48px;
+            min-width: clamp(60px, 15vw, 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .slot .slot-number {
+            font-size: clamp(0.75rem, 2.2vw, 0.95rem);
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .slot:hover:not(.filled) {
+            border-color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .slot.highlight {
+            border-color: #FFD54F;
+            background: rgba(255,213,79,0.15);
+            box-shadow: 0 0 15px rgba(255,213,79,0.3);
+        }
+
+        .slot.filled {
+            border: 3px solid #4CAF50;
+            background: rgba(255,255,255,0.95);
+            cursor: default;
+        }
+
+        .slot.filled .slot-label {
+            font-size: clamp(0.8rem, 2.8vw, 1.1rem);
+            font-weight: 700;
+            color: #2E7D32;
+        }
+
+        .slot.filled .check {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slot.pop {
+            animation: slotPop 0.4s ease;
+        }
+
+        @keyframes slotPop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* ===== LEVEL 3 SEASONS ===== */
+        .season-group {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: clamp(10px, 2vw, 15px);
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: clamp(8px, 1.5vh, 12px);
+        }
+
+        .season-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .season-emoji { font-size: clamp(1.5rem, 4vw, 2rem); }
+
+        .season-name {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 800;
+            color: white;
+        }
+
+        .season-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .season-slot {
+            border: 2px dashed rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 6px 12px;
+            min-height: 40px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .season-slot .slot-hint {
+            font-size: clamp(0.65rem, 2vw, 0.8rem);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .season-slot:hover:not(.filled) {
+            border-color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .season-slot.highlight {
+            border-color: #FFD54F;
+            background: rgba(255,213,79,0.15);
+        }
+
+        .season-slot.filled {
+            border: 2px solid #4CAF50;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .season-slot.filled .slot-label {
+            font-size: clamp(0.75rem, 2.3vw, 0.9rem);
+            font-weight: 700;
+            color: #2E7D32;
+        }
+
+        /* ===== LEVEL 4 QUIZ ===== */
+        .quiz-question {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: clamp(15px, 3vw, 25px);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: clamp(10px, 2vh, 20px);
+        }
+
+        .quiz-question .q-text {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            font-weight: 700;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .quiz-question .q-text strong {
+            color: #8E24AA;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 1.5vh, 12px);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .quiz-option {
+            background: rgba(255,255,255,0.95);
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: clamp(12px, 2vw, 18px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            min-height: 48px;
+            text-align: center;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            transform: translateY(-2px);
+            border-color: #CE93D8;
+        }
+
+        .quiz-option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+            color: #2E7D32;
+            animation: slotPop 0.4s ease;
+        }
+
+        .quiz-option.wrong {
+            animation: shake 0.5s ease;
+            opacity: 0.5;
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+        }
+
+        /* ===== CELEBRATION SCREEN ===== */
+        .celebration-screen {
+            justify-content: center;
+            gap: clamp(15px, 3vh, 25px);
+        }
+
+        .celebration-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .celebration-title {
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            font-weight: 800;
+            color: white;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .celebration-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .stars-display {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .star-icon {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            animation: starPop 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .celebration-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .celebration-btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+        }
+
+        .celebration-btn:hover { transform: translateY(-2px); }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #FFD54F, #FFB300);
+            color: #4E342E;
+            box-shadow: 0 4px 15px rgba(255,179,0,0.4);
+        }
+
+        .btn-menu {
+            background: rgba(255,255,255,0.9);
+            color: #6A1B9A;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* ===== CONFETTI ===== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 350px) {
+            .source-item {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+                min-height: 42px;
+            }
+            .slot {
+                padding: 6px 8px;
+                min-width: 50px;
+                min-height: 42px;
+            }
+            .levels-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .home-screen {
+                gap: 8px;
+            }
+            .mascot { font-size: 2.5rem; }
+            .source-area { margin-bottom: 5px; }
+            .mascot-bubble { margin-bottom: 5px; padding: 6px 12px; }
+            .game-header { margin-bottom: 3px; }
+            .progress-bar-container { margin-bottom: 3px; }
+            .slots-area { gap: 4px; }
+        }
+
+        @media (min-width: 768px) {
+            .source-area { gap: 12px; }
+            .slots-area { gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HOME SCREEN ===== -->
+<div id="homeScreen" class="screen home-screen active">
+    <a href="index.html" class="back-btn">&#8592; Mes Jeux</a>
+    <div class="mascot">&#x1F4C5;</div>
+    <div class="title">Ma Semaine en Ordre</div>
+    <div class="subtitle">Apprends les jours, les mois et les saisons !</div>
+    <div class="stats-row">
+        <div class="stat-badge" id="homeStars">&#11088; 0 etoiles</div>
+        <div class="stat-badge" id="homeBest">&#127942; Meilleur : 0</div>
+    </div>
+    <button class="play-btn" onclick="showLevelSelect()">Jouer !</button>
+</div>
+
+<!-- ===== LEVEL SELECT ===== -->
+<div id="levelSelectScreen" class="screen level-select-screen">
+    <button class="game-back-btn" onclick="showHome()" style="position:absolute;top:clamp(8px,2vw,15px);left:clamp(8px,2vw,15px);">&#8592;</button>
+    <div class="level-title">Choisis un niveau</div>
+    <div class="levels-grid" id="levelsGrid"></div>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div id="gameScreen" class="screen game-screen">
+    <div class="game-header">
+        <button class="game-back-btn" onclick="showLevelSelect()">&#8592;</button>
+        <div class="score-badge" id="gameBadge">&#11088; 0</div>
+    </div>
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="mascot-bubble" id="mascotBubble">
+        <span class="mascot-small">&#x1F4C5;</span>
+        <span class="message" id="mascotMessage">C'est parti !</span>
+    </div>
+    <div id="gameContent"></div>
+</div>
+
+<!-- ===== CELEBRATION SCREEN ===== -->
+<div id="celebrationScreen" class="screen celebration-screen">
+    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="celebration-emoji">&#127881;</div>
+    <div class="celebration-title" id="celTitle">Bravo !</div>
+    <div class="celebration-subtitle" id="celSubtitle">Tu as reussi !</div>
+    <div class="stars-display" id="starsDisplay"></div>
+    <div class="celebration-buttons">
+        <button class="celebration-btn btn-continue" id="celContinue" onclick="continueAfterCelebration()">Continuer</button>
+        <button class="celebration-btn btn-menu" onclick="showLevelSelect()">Menu</button>
+    </div>
+</div>
+
+<script>
+// ===== STATE =====
+const gameState = {
+    currentLevel: 1,
+    totalStars: 0,
+    bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+    unlockedLevels: [1],
+    currentRound: 0,
+    correctInRow: 0,
+    starsThisSession: 0,
+    totalRoundsInLevel: 0
+};
+
+const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+const MONTHS = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+const SEASONS = [
+    { name: 'Printemps', emoji: '\u{1F338}', months: ['Mars', 'Avril', 'Mai'] },
+    { name: 'Ete', emoji: '\u{2600}\u{FE0F}', months: ['Juin', 'Juillet', 'Aout'] },
+    { name: 'Automne', emoji: '\u{1F342}', months: ['Septembre', 'Octobre', 'Novembre'] },
+    { name: 'Hiver', emoji: '\u{2744}\u{FE0F}', months: ['Decembre', 'Janvier', 'Fevrier'] }
+];
+
+const LEVELS = [
+    { id: 1, name: 'Les Jours', icon: '\u{1F4C6}', rounds: 5, color: '#4CAF50' },
+    { id: 2, name: 'Les Mois', icon: '\u{1F4C5}', rounds: 3, color: '#FF9800' },
+    { id: 3, name: 'Les Saisons', icon: '\u{1F33B}', rounds: 1, color: '#2196F3' },
+    { id: 4, name: 'Avant / Apres', icon: '\u{2753}', rounds: 10, color: '#E91E63' }
+];
+
+const ENCOURAGEMENTS = [
+    'Super !', 'Genial !', 'Bravo !', 'Tres bien !', 'Excellent !',
+    'Fantastique !', 'Magnifique !', 'Continue !', 'Tu es fort !', 'Parfait !'
+];
+
+const RETRY_MESSAGES = [
+    'Essaie encore !', 'Presque !', 'Pas tout a fait, recommence !',
+    'Tu y es presque !', 'Encore un essai !', 'Reflechis bien !'
+];
+
+let selectedItem = null;
+let placedItems = {};
+let quizAnswered = false;
+let roundCorrectCount = 0;
+
+// ===== AUDIO =====
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function getAudioCtx() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    return audioCtx;
+}
+
+function playTone(freq, duration, type) {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (duration || 0.2));
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + (duration || 0.2));
+    } catch(e) {}
+}
+
+function playCorrect() {
+    playTone(523, 0.1, 'sine');
+    setTimeout(() => playTone(659, 0.1, 'sine'), 100);
+    setTimeout(() => playTone(784, 0.2, 'sine'), 200);
+}
+
+function playWrong() {
+    playTone(300, 0.15, 'triangle');
+    setTimeout(() => playTone(250, 0.2, 'triangle'), 150);
+}
+
+function playSelect() {
+    playTone(600, 0.08, 'sine');
+}
+
+function playCelebration() {
+    const notes = [523, 587, 659, 698, 784, 880, 988, 1047];
+    notes.forEach((n, i) => {
+        setTimeout(() => playTone(n, 0.15, 'sine'), i * 80);
+    });
+}
+
+// ===== SAVE / LOAD =====
+function saveGame() {
+    localStorage.setItem('maSemaineEnOrdre', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels
+    }));
+    localStorage.setItem('semaineScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('maSemaineEnOrdre'));
+        if (saved) {
+            gameState.totalStars = saved.totalStars || 0;
+            gameState.bestScores = saved.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+            gameState.unlockedLevels = saved.unlockedLevels || [1];
+            gameState.currentLevel = saved.currentLevel || 1;
+        }
+    } catch(e) {}
+}
+
+// ===== SCREENS =====
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function showHome() {
+    updateHomeStats();
+    showScreen('homeScreen');
+}
+
+function updateHomeStats() {
+    document.getElementById('homeStars').textContent = '\u2B50 ' + gameState.totalStars + ' etoile' + (gameState.totalStars > 1 ? 's' : '');
+    const best = Math.max(...Object.values(gameState.bestScores));
+    document.getElementById('homeBest').textContent = '\u{1F3C6} Meilleur : ' + best;
+}
+
+function showLevelSelect() {
+    updateLevelGrid();
+    showScreen('levelSelectScreen');
+}
+
+function updateLevelGrid() {
+    const grid = document.getElementById('levelsGrid');
+    grid.innerHTML = '';
+    LEVELS.forEach(level => {
+        const locked = !gameState.unlockedLevels.includes(level.id);
+        const card = document.createElement('button');
+        card.className = 'level-card' + (locked ? ' locked' : '');
+        card.style.borderTop = '4px solid ' + level.color;
+
+        const best = gameState.bestScores[level.id] || 0;
+        card.innerHTML =
+            '<span class="icon">' + (locked ? '\u{1F512}' : level.icon) + '</span>' +
+            '<span class="label">' + level.name + '</span>' +
+            (locked ? '' : '<span class="stars-info">\u2B50 ' + best + '</span>');
+
+        if (!locked) {
+            card.onclick = function() { startLevel(level.id); };
+        }
+        grid.appendChild(card);
+    });
+}
+
+// ===== START LEVEL =====
+function startLevel(levelId) {
+    gameState.currentLevel = levelId;
+    gameState.currentRound = 0;
+    gameState.starsThisSession = 0;
+    gameState.correctInRow = 0;
+    roundCorrectCount = 0;
+
+    const level = LEVELS[levelId - 1];
+    gameState.totalRoundsInLevel = level.rounds;
+
+    showScreen('gameScreen');
+    updateGameBadge();
+    nextRound();
+}
+
+function updateGameBadge() {
+    document.getElementById('gameBadge').textContent = '\u2B50 ' + gameState.starsThisSession;
+}
+
+function updateProgress() {
+    const pct = gameState.totalRoundsInLevel > 0
+        ? (gameState.currentRound / gameState.totalRoundsInLevel) * 100
+        : 0;
+    document.getElementById('progressBar').style.width = Math.min(pct, 100) + '%';
+}
+
+function setMascotMessage(msg) {
+    document.getElementById('mascotMessage').textContent = msg;
+}
+
+function randomFrom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ===== NEXT ROUND =====
+function nextRound() {
+    gameState.currentRound++;
+    updateProgress();
+    selectedItem = null;
+    placedItems = {};
+    quizAnswered = false;
+    roundCorrectCount = 0;
+
+    const level = gameState.currentLevel;
+
+    if (gameState.currentRound > gameState.totalRoundsInLevel) {
+        finishLevel();
+        return;
+    }
+
+    if (level === 1) buildOrderingRound(DAYS, 'Mets les jours dans le bon ordre !');
+    else if (level === 2) buildOrderingRound(MONTHS, 'Mets les mois dans le bon ordre !');
+    else if (level === 3) buildSeasonsRound();
+    else if (level === 4) buildQuizRound();
+}
+
+// ===== LEVEL 1 & 2: ORDERING =====
+function buildOrderingRound(items, msg) {
+    setMascotMessage(msg);
+    const content = document.getElementById('gameContent');
+
+    const shuffled = shuffle([...items]);
+
+    let html = '<div class="source-area" id="sourceArea">';
+    shuffled.forEach((item, i) => {
+        html += '<button class="source-item" data-value="' + item + '" data-index="' + i + '" onclick="selectSourceItem(this)">' + item + '</button>';
+    });
+    html += '</div>';
+
+    html += '<div class="slots-area" id="slotsArea">';
+    items.forEach((_, i) => {
+        html += '<div class="slot" data-position="' + i + '" onclick="placeInSlot(this)">' +
+            '<span class="slot-number">' + (i + 1) + '</span></div>';
+    });
+    html += '</div>';
+
+    content.innerHTML = html;
+}
+
+function selectSourceItem(el) {
+    if (el.classList.contains('placed')) return;
+
+    if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        selectedItem = null;
+        unhighlightSlots();
+        return;
+    }
+
+    document.querySelectorAll('.source-item.selected').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedItem = el;
+    highlightSlots();
+    playSelect();
+}
+
+function highlightSlots() {
+    document.querySelectorAll('.slot:not(.filled)').forEach(s => s.classList.add('highlight'));
+    document.querySelectorAll('.season-slot:not(.filled)').forEach(s => s.classList.add('highlight'));
+}
+
+function unhighlightSlots() {
+    document.querySelectorAll('.slot.highlight').forEach(s => s.classList.remove('highlight'));
+    document.querySelectorAll('.season-slot.highlight').forEach(s => s.classList.remove('highlight'));
+}
+
+function placeInSlot(slotEl) {
+    if (!selectedItem || slotEl.classList.contains('filled')) return;
+
+    const value = selectedItem.getAttribute('data-value');
+    const position = parseInt(slotEl.getAttribute('data-position'));
+
+    let correctOrder;
+    if (gameState.currentLevel === 1) correctOrder = DAYS;
+    else if (gameState.currentLevel === 2) correctOrder = MONTHS;
+    else return;
+
+    if (correctOrder[position] === value) {
+        // Correct
+        slotEl.classList.add('filled');
+        slotEl.classList.add('pop');
+        slotEl.innerHTML = '<span class="slot-label">' + value + '</span><span class="check">\u2713</span>';
+
+        selectedItem.classList.add('placed');
+        selectedItem.classList.remove('selected');
+        selectedItem = null;
+        unhighlightSlots();
+
+        placedItems[position] = value;
+        roundCorrectCount++;
+        gameState.starsThisSession++;
+        gameState.totalStars++;
+        updateGameBadge();
+        playCorrect();
+        setMascotMessage(randomFrom(ENCOURAGEMENTS));
+        saveGame();
+
+        // Check if all placed
+        if (Object.keys(placedItems).length === correctOrder.length) {
+            setTimeout(() => nextRound(), 1000);
+        }
+    } else {
+        // Wrong - bounce back
+        const item = selectedItem;
+        item.classList.remove('selected');
+        item.classList.add('shake');
+        selectedItem = null;
+        unhighlightSlots();
+        playWrong();
+        setMascotMessage(randomFrom(RETRY_MESSAGES));
+        setTimeout(() => item.classList.remove('shake'), 500);
+    }
+}
+
+// ===== LEVEL 3: SEASONS =====
+function buildSeasonsRound() {
+    setMascotMessage('Place chaque mois dans sa saison !');
+    const content = document.getElementById('gameContent');
+
+    const allMonths = [];
+    SEASONS.forEach(s => s.months.forEach(m => allMonths.push(m)));
+    const shuffled = shuffle([...allMonths]);
+
+    let html = '<div class="source-area" id="sourceArea">';
+    shuffled.forEach((m, i) => {
+        html += '<button class="source-item" data-value="' + m + '" data-index="' + i + '" onclick="selectSourceItem(this)">' + m + '</button>';
+    });
+    html += '</div>';
+
+    html += '<div class="slots-area" id="slotsArea" style="flex-direction:column;align-items:center;">';
+    SEASONS.forEach((season, si) => {
+        html += '<div class="season-group">';
+        html += '<div class="season-header"><span class="season-emoji">' + season.emoji + '</span><span class="season-name">' + season.name + '</span></div>';
+        html += '<div class="season-slots">';
+        season.months.forEach((m, mi) => {
+            html += '<div class="season-slot" data-season="' + si + '" data-month="' + m + '" onclick="placeInSeasonSlot(this)">' +
+                '<span class="slot-hint">?</span></div>';
+        });
+        html += '</div></div>';
+    });
+    html += '</div>';
+
+    content.innerHTML = html;
+}
+
+function placeInSeasonSlot(slotEl) {
+    if (!selectedItem || slotEl.classList.contains('filled')) return;
+
+    const value = selectedItem.getAttribute('data-value');
+    const expectedMonth = slotEl.getAttribute('data-month');
+
+    if (value === expectedMonth) {
+        slotEl.classList.add('filled');
+        slotEl.innerHTML = '<span class="slot-label">' + value + '</span>';
+
+        selectedItem.classList.add('placed');
+        selectedItem.classList.remove('selected');
+        selectedItem = null;
+        unhighlightSlots();
+
+        roundCorrectCount++;
+        gameState.starsThisSession++;
+        gameState.totalStars++;
+        updateGameBadge();
+        playCorrect();
+        setMascotMessage(randomFrom(ENCOURAGEMENTS));
+        saveGame();
+
+        // Check if all 12 placed
+        const filledCount = document.querySelectorAll('.season-slot.filled').length;
+        if (filledCount === 12) {
+            setTimeout(() => nextRound(), 1000);
+        }
+    } else {
+        const item = selectedItem;
+        item.classList.remove('selected');
+        item.classList.add('shake');
+        selectedItem = null;
+        unhighlightSlots();
+        playWrong();
+        setMascotMessage(randomFrom(RETRY_MESSAGES));
+        setTimeout(() => item.classList.remove('shake'), 500);
+    }
+}
+
+// ===== LEVEL 4: QUIZ =====
+function buildQuizRound() {
+    const content = document.getElementById('gameContent');
+    quizAnswered = false;
+
+    // Generate question
+    const questionType = Math.random() < 0.5 ? 'after' : 'before';
+    const useMonths = Math.random() < 0.5;
+
+    let list, label;
+    if (useMonths) {
+        list = MONTHS;
+        label = 'mois';
+    } else {
+        list = DAYS;
+        label = 'jour';
+    }
+
+    const idx = Math.floor(Math.random() * list.length);
+    const item = list[idx];
+    let correctIdx, questionText;
+
+    if (questionType === 'after') {
+        correctIdx = (idx + 1) % list.length;
+        questionText = 'Quel ' + label + ' vient <strong>APRES</strong> ' + item + ' ?';
+    } else {
+        correctIdx = (idx - 1 + list.length) % list.length;
+        questionText = 'Quel ' + label + ' vient <strong>AVANT</strong> ' + item + ' ?';
+    }
+
+    const correct = list[correctIdx];
+
+    // Generate 2 wrong answers
+    const wrongs = [];
+    while (wrongs.length < 2) {
+        const ri = Math.floor(Math.random() * list.length);
+        const candidate = list[ri];
+        if (candidate !== correct && !wrongs.includes(candidate)) {
+            wrongs.push(candidate);
+        }
+    }
+
+    const options = shuffle([correct, ...wrongs]);
+
+    setMascotMessage('Reflechis bien !');
+
+    let html = '<div class="quiz-question"><div class="q-text">' + questionText + '</div></div>';
+    html += '<div class="quiz-options">';
+    options.forEach(opt => {
+        html += '<button class="quiz-option" data-value="' + opt + '" data-correct="' + correct + '" onclick="answerQuiz(this)">' + opt + '</button>';
+    });
+    html += '</div>';
+
+    content.innerHTML = html;
+}
+
+function answerQuiz(el) {
+    if (quizAnswered) return;
+
+    const value = el.getAttribute('data-value');
+    const correct = el.getAttribute('data-correct');
+
+    if (value === correct) {
+        quizAnswered = true;
+        el.classList.add('correct');
+        document.querySelectorAll('.quiz-option').forEach(o => o.classList.add('disabled'));
+
+        gameState.starsThisSession++;
+        gameState.totalStars++;
+        updateGameBadge();
+        playCorrect();
+        setMascotMessage(randomFrom(ENCOURAGEMENTS));
+        saveGame();
+
+        setTimeout(() => nextRound(), 1200);
+    } else {
+        el.classList.add('wrong');
+        el.classList.add('disabled');
+        playWrong();
+        setMascotMessage(randomFrom(RETRY_MESSAGES));
+        // Don't set quizAnswered, let them try other options
+    }
+}
+
+// ===== FINISH LEVEL =====
+function finishLevel() {
+    const stars = gameState.starsThisSession;
+    const level = gameState.currentLevel;
+
+    if (stars > (gameState.bestScores[level] || 0)) {
+        gameState.bestScores[level] = stars;
+    }
+
+    // Unlock next level
+    if (level < 4 && !gameState.unlockedLevels.includes(level + 1)) {
+        gameState.unlockedLevels.push(level + 1);
+    }
+
+    saveGame();
+    showCelebration(stars, level);
+}
+
+function showCelebration(stars, level) {
+    showScreen('celebrationScreen');
+    playCelebration();
+
+    const messages = [
+        'Tu connais bien les jours !',
+        'Les mois n\'ont plus de secret !',
+        'Les saisons, c\'est facile !',
+        'Tu es un champion du temps !'
+    ];
+
+    document.getElementById('celTitle').textContent = 'Bravo !';
+    document.getElementById('celSubtitle').textContent = messages[level - 1] || 'Tres bien !';
+
+    // Stars display
+    const display = document.getElementById('starsDisplay');
+    display.innerHTML = '';
+    const starCount = Math.min(stars, 15); // Cap visual display
+    for (let i = 0; i < starCount; i++) {
+        const span = document.createElement('span');
+        span.className = 'star-icon';
+        span.textContent = '\u2B50';
+        span.style.animationDelay = (i * 0.1) + 's';
+        display.appendChild(span);
+    }
+    if (stars > 15) {
+        const more = document.createElement('span');
+        more.className = 'star-icon';
+        more.textContent = '+' + (stars - 15);
+        more.style.animationDelay = '1.5s';
+        more.style.fontSize = 'clamp(1rem, 3vw, 1.5rem)';
+        more.style.color = 'white';
+        more.style.fontWeight = '800';
+        display.appendChild(more);
+    }
+
+    // Continue button logic
+    const continueBtn = document.getElementById('celContinue');
+    if (level < 4 && gameState.unlockedLevels.includes(level + 1)) {
+        continueBtn.style.display = 'inline-block';
+        continueBtn.textContent = 'Niveau suivant';
+    } else if (level === 4) {
+        continueBtn.style.display = 'inline-block';
+        continueBtn.textContent = 'Rejouer';
+    } else {
+        continueBtn.style.display = 'inline-block';
+        continueBtn.textContent = 'Continuer';
+    }
+
+    // Confetti
+    spawnConfetti();
+}
+
+function continueAfterCelebration() {
+    const level = gameState.currentLevel;
+    if (level < 4) {
+        startLevel(level + 1);
+    } else {
+        startLevel(1);
+    }
+}
+
+// ===== CONFETTI =====
+function spawnConfetti() {
+    const container = document.getElementById('confettiContainer');
+    container.innerHTML = '';
+    const colors = ['#FFD54F', '#FF7043', '#66BB6A', '#42A5F5', '#AB47BC', '#EC407A', '#FFA726'];
+
+    for (let i = 0; i < 60; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 8 + 6) + 'px';
+        piece.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(piece);
+    }
+
+    setTimeout(() => { container.innerHTML = ''; }, 4000);
+}
+
+// ===== UTILS =====
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// ===== INIT =====
+loadGame();
+updateHomeStats();
+</script>
+</body>
+</html>
