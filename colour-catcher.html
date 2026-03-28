@@ -539,14 +539,17 @@ function endLevel(){
   const maxScore = LEVELS[currentLevel - 1].rounds * (currentLevel === 4 ? 15 : 10);
   const pct = roundScore / maxScore;
   const starCount = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : 1;
-  lcTitle.textContent = 'Niveau termine !';
+  const passed = pct >= 0.6;
+  lcTitle.textContent = passed ? 'Niveau termine !' : 'Bien essaye !';
   lcStars.textContent = '\u2B50'.repeat(starCount);
-  lcMsg.textContent = `Score du niveau : ${roundScore} points`;
-  if(currentLevel < 4 && currentLevel >= state.unlocked){
+  lcMsg.textContent = passed
+    ? `Score du niveau : ${roundScore} points — Bravo, niveau suivant debloque !`
+    : `Score du niveau : ${roundScore} points — Continue a t'entrainer, tu vas y arriver !`;
+  if(passed && currentLevel < 4 && currentLevel >= state.unlocked){
     state.unlocked = currentLevel + 1;
     saveState();
   }
-  lcNext.classList.toggle('hidden', currentLevel >= 4);
+  lcNext.classList.toggle('hidden', currentLevel >= 4 || !passed);
   lcOverlay.classList.remove('hidden');
 }
 

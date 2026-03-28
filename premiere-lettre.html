@@ -1136,8 +1136,6 @@
             disableAllButtons();
 
             gameState.score++;
-            gameState.totalStars++;
-            gameState.levelStars[gameState.selectedLevel]++;
 
             // Animation emoji
             document.getElementById('emoji-display').classList.add('jump');
@@ -1236,10 +1234,14 @@
             const score = gameState.score;
             const level = gameState.selectedLevel;
 
-            // Mettre à jour le meilleur score
-            if (score > gameState.bestScores[level]) {
+            // Mettre à jour le meilleur score (only add the delta to totalStars/levelStars)
+            const prevBest = gameState.bestScores[level] || 0;
+            if (score > prevBest) {
+                gameState.totalStars += (score - prevBest);
+                gameState.levelStars[level] = (gameState.levelStars[level] || 0) + (score - prevBest);
                 gameState.bestScores[level] = score;
             }
+            saveGame();
 
             // Déterminer le message et emoji
             let emoji, title, message;

@@ -669,7 +669,7 @@
             currentLevel: 1,
             currentScore: 0,
             totalStars: 0,
-            bestScore: 0,
+            bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
             unlockedLevels: [1],
             questionIndex: 0,
             subQuestionIndex: 0,
@@ -732,7 +732,7 @@
             const saveData = {
                 currentLevel: gameState.currentLevel,
                 totalStars: gameState.totalStars,
-                bestScore: gameState.bestScore,
+                bestScores: gameState.bestScores,
                 unlockedLevels: gameState.unlockedLevels
             };
             localStorage.setItem('quiParle', JSON.stringify(saveData));
@@ -745,7 +745,7 @@
                 const data = JSON.parse(saved);
                 gameState.currentLevel = data.currentLevel || 1;
                 gameState.totalStars = data.totalStars || 0;
-                gameState.bestScore = data.bestScore || 0;
+                gameState.bestScores = data.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
                 gameState.unlockedLevels = data.unlockedLevels || [1];
             }
             updateHomeStats();
@@ -755,7 +755,8 @@
         function updateHomeStats() {
             document.getElementById('total-stars').textContent = gameState.totalStars + ' ⭐';
             document.getElementById('current-level').textContent = gameState.currentLevel;
-            document.getElementById('best-score').textContent = gameState.bestScore + ' ⭐';
+            const bestOverall = Math.max(...Object.values(gameState.bestScores));
+            document.getElementById('best-score').textContent = bestOverall + ' ⭐';
         }
 
         // === LEVEL SELECT ===
@@ -981,8 +982,11 @@
             const score = gameState.currentScore;
             const threshold = cfg.unlockThreshold;
 
-            gameState.totalStars += score;
-            if (score > gameState.bestScore) gameState.bestScore = score;
+            const prevBest = gameState.bestScores[level] || 0;
+            if (score > prevBest) {
+                gameState.totalStars += (score - prevBest);
+                gameState.bestScores[level] = score;
+            }
 
             if (score >= threshold && level < 4) {
                 if (!gameState.unlockedLevels.includes(level + 1)) {

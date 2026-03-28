@@ -1626,12 +1626,12 @@
             const stars = gameState.starsThisSession;
             const passed = stars >= threshold;
 
-            // Update best score
-            if (stars > (gameState.bestScores[gameState.currentLevel] || 0)) {
+            // Update best score (delta only)
+            const prevBest = gameState.bestScores[gameState.currentLevel] || 0;
+            if (stars > prevBest) {
+                gameState.totalStars += (stars - prevBest);
                 gameState.bestScores[gameState.currentLevel] = stars;
             }
-
-            gameState.totalStars += stars;
 
             // Unlock next level
             if (passed && gameState.currentLevel < 4) {

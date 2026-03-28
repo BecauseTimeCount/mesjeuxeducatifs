@@ -943,7 +943,8 @@
             currentWord: null,
             currentPair: null,
             constructionSyllabes: [],
-            isAnswering: false
+            isAnswering: false,
+            attempts: 0
         };
 
         // === AUDIO CONTEXT ===
@@ -1149,6 +1150,7 @@
             }
 
             gameState.isAnswering = false;
+            gameState.attempts = 0;
             updateProgress();
 
             switch(level) {
@@ -1544,6 +1546,7 @@
         }
 
         function handleWrongAnswer(button, correctAnswer) {
+            gameState.attempts++;
             playSound('encourage');
 
             button.classList.add('wrong');
@@ -1553,30 +1556,37 @@
                 button.classList.add('disabled');
             }, 500);
 
-            showFeedback('Essaie encore ! 💪', 'retry');
-            showMascotMessage('Tu peux le faire !');
-
-            // Montrer la bonne reponse et passer apres un delai
-            setTimeout(() => {
-                // Mettre en evidence la bonne reponse
-                document.querySelectorAll('.choice-btn').forEach(btn => {
-                    if (btn.textContent === correctAnswer) {
-                        btn.classList.add('correct');
-                    }
-                    btn.classList.add('disabled');
-                });
-
-                // Montrer la decomposition si applicable
-                if (gameState.currentWord && (gameState.currentLevel === 1)) {
-                    showDecomposition(gameState.currentWord);
-                }
-
-                gameState.questionIndex++;
+            if (gameState.attempts < 2) {
+                // 1ere erreur : laisser retenter
+                showFeedback('Essaie encore ! 💪', 'retry');
+                showMascotMessage('Tu peux le faire !');
+                gameState.isAnswering = false;
+            } else {
+                // 2eme erreur : montrer la bonne reponse et passer a la suite
+                showFeedback('Pas grave, regarde ! 👀', 'retry');
+                showMascotMessage('On continue !');
 
                 setTimeout(() => {
-                    generateNewQuestion();
-                }, 1500);
-            }, 1000);
+                    // Mettre en evidence la bonne reponse
+                    document.querySelectorAll('.choice-btn').forEach(btn => {
+                        if (btn.textContent === correctAnswer) {
+                            btn.classList.add('correct');
+                        }
+                        btn.classList.add('disabled');
+                    });
+
+                    // Montrer la decomposition si applicable
+                    if (gameState.currentWord && (gameState.currentLevel === 1)) {
+                        showDecomposition(gameState.currentWord);
+                    }
+
+                    gameState.questionIndex++;
+
+                    setTimeout(() => {
+                        generateNewQuestion();
+                    }, 1500);
+                }, 1000);
+            }
         }
 
         // === FIN DE NIVEAU ===

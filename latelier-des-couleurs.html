@@ -823,18 +823,21 @@ function runLevel4() {
 // ─── End Level ───
 function endLevel(lvlId, correct, total) {
   playSound('win');
-  if (!state.levelsCompleted.includes(lvlId)) {
+  const passed = total === 0 || correct >= Math.ceil(total * 0.6);
+  if (passed && !state.levelsCompleted.includes(lvlId)) {
     state.levelsCompleted.push(lvlId);
     saveState();
   }
 
   const stars = correct === total ? '⭐⭐⭐' : correct >= Math.ceil(total * 0.7) ? '⭐⭐' : '⭐';
-  const msg = correct === total ? 'Score parfait !' : 'Bien joue !';
+  const msg = passed
+    ? (correct === total ? 'Score parfait !' : 'Bien joue !')
+    : 'Continue a t\'entrainer, tu vas y arriver !';
 
   const area = document.getElementById('gameArea');
   let btnsHTML =
     '<button class="action-btn" onclick="startLevel(' + lvlId + ')">Rejouer</button>';
-  if (lvlId < 4 && isUnlocked(lvlId + 1)) {
+  if (passed && lvlId < 4 && isUnlocked(lvlId + 1)) {
     btnsHTML += '<button class="action-btn" onclick="startLevel(' + (lvlId + 1) + ')">Niveau suivant</button>';
   }
   btnsHTML += '<button class="action-btn" style="background:linear-gradient(135deg,#FF9800,#FFB74D);" onclick="renderMenu()">Menu</button>';

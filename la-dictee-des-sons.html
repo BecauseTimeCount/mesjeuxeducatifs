@@ -1253,13 +1253,12 @@ function finishLevel() {
     const stars = gameState.starsThisSession;
     const total = LEVELS[level].totalQuestions;
 
-    // Update best score
-    if (stars > gameState.bestScores[level]) {
+    // Update best score (only add the delta to totalStars)
+    const prevBest = gameState.bestScores[level] || 0;
+    if (stars > prevBest) {
+        gameState.totalStars += (stars - prevBest);
         gameState.bestScores[level] = stars;
     }
-
-    // Add to total (only the new stars beyond previous best, or all if first time)
-    gameState.totalStars += stars;
 
     // Unlock next level if scored >= 6/10 (or 5/8 for level 4)
     const threshold = level === 4 ? 5 : 6;

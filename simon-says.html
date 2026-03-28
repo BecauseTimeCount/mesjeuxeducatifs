@@ -1034,19 +1034,22 @@ function finishLevel(levelId, score, total) {
   var prevStars = state.levels[levelId].stars;
   if (stars > prevStars) state.levels[levelId].stars = stars;
 
-  // Unlock next level
-  if (levelId < 4 && !state.levels[levelId + 1].unlocked) {
+  // Unlock next level only if score >= 60%
+  var passed = pct >= 0.6;
+  if (passed && levelId < 4 && !state.levels[levelId + 1].unlocked) {
     state.levels[levelId + 1].unlocked = true;
   }
 
   saveState();
 
   var starsHtml = '\u2B50'.repeat(stars) + '\u2606'.repeat(3 - stars);
+  var feedbackMsg = passed ? randomPositive() : 'Continue a t\'entrainer, tu vas y arriver !';
+  var feedbackIcon = passed ? '\uD83C\uDF89' : '\uD83D\uDCAA';
   var ga = document.getElementById('gameArea');
   ga.innerHTML =
     '<div class="complete-screen">' +
-      '<div class="big-icon">\uD83C\uDF89</div>' +
-      '<div class="msg">' + randomPositive() + '</div>' +
+      '<div class="big-icon">' + feedbackIcon + '</div>' +
+      '<div class="msg">' + feedbackMsg + '</div>' +
       '<div class="subtitle">' + score + ' / ' + total + ' reussi' + (score > 1 ? 's' : '') + '</div>' +
       '<div class="stars-earned">' + starsHtml + '</div>' +
       (stars > prevStars ? '<div class="subtitle">Nouveau record !</div>' : '') +

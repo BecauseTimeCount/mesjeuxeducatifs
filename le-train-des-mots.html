@@ -1397,13 +1397,12 @@
         const level = gameState.currentLevel;
         const stars = gameState.starsThisSession;
 
-        // Update best score
-        if (stars > (gameState.bestScores[level] || 0)) {
+        // Update best score (only add the delta to totalStars)
+        const prevBest = gameState.bestScores[level] || 0;
+        if (stars > prevBest) {
+            gameState.totalStars += (stars - prevBest);
             gameState.bestScores[level] = stars;
         }
-
-        // Add to total
-        gameState.totalStars += stars;
 
         // Unlock next level if scored enough (at least half the words)
         const maxWords = LEVEL_WORD_COUNT[level];

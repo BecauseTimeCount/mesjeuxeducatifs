@@ -960,6 +960,7 @@
             currentScore: 0,
             totalStars: 0,
             bestScore: 0,
+            bestScores: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
             unlockedLevel: 1,
             puzzleIndex: 0,
             puzzleOrder: [],
@@ -1022,6 +1023,7 @@
                 currentLevel: gameState.currentLevel,
                 totalStars: gameState.totalStars,
                 bestScore: gameState.bestScore,
+                bestScores: gameState.bestScores,
                 unlockedLevel: gameState.unlockedLevel
             };
             localStorage.setItem('suiteLogique', JSON.stringify(saveData));
@@ -1035,6 +1037,7 @@
                 gameState.currentLevel = data.currentLevel || 1;
                 gameState.totalStars = data.totalStars || 0;
                 gameState.bestScore = data.bestScore || 0;
+                gameState.bestScores = data.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
                 gameState.unlockedLevel = data.unlockedLevel || 1;
             }
             updateHomeStats();
@@ -1431,7 +1434,6 @@
             });
 
             gameState.currentScore++;
-            gameState.totalStars++;
             gameState.correctInLevel++;
             gameState.answeredInLevel++;
 
@@ -1474,13 +1476,25 @@
         function endLevel() {
             const level = LEVELS[gameState.currentLevel];
             const passed = gameState.correctInLevel >= level.threshold;
+            const score = gameState.correctInLevel;
+
+            // Update best score (delta only)
+            const prevBest = gameState.bestScores[gameState.currentLevel] || 0;
+            if (score > prevBest) {
+                gameState.totalStars += (score - prevBest);
+                gameState.bestScores[gameState.currentLevel] = score;
+            }
 
             if (passed) {
                 // Debloquer le niveau suivant
                 if (gameState.currentLevel < 6 && gameState.unlockedLevel <= gameState.currentLevel) {
                     gameState.unlockedLevel = gameState.currentLevel + 1;
                 }
-                saveGame();
+            }
+
+            saveGame();
+
+            if (passed) {
 
                 document.getElementById('celebration-message').textContent =
                     gameState.correctInLevel + '/' + level.total + ' bonnes reponses ! \u{1F31F}';

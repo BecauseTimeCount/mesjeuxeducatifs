@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jayjay-v4';
+const CACHE_NAME = 'jayjay-v5';
 const ASSETS = [
   '/',
   '/index.html',

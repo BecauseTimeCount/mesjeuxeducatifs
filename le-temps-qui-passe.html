@@ -739,7 +739,7 @@
 
         // === STORAGE ===
         function saveState() {
-            localStorage.setItem('leTempsQuiPasse', JSON.stringify({
+            localStorage.setItem('tempsQuiPasse', JSON.stringify({
                 unlockedLevel: state.unlockedLevel,
                 completedLevels: state.completedLevels
             }));
@@ -748,7 +748,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('leTempsQuiPasse');
+            const saved = localStorage.getItem('tempsQuiPasse');
             if (saved) {
                 const data = JSON.parse(saved);
                 state.unlockedLevel = data.unlockedLevel || 1;
