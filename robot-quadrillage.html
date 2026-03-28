@@ -973,11 +973,11 @@
             document.getElementById('game-stars-display').textContent = '⭐'.repeat(gameState.starsThisSession);
             document.getElementById('cmd-max').textContent = currentPuzzleData.maxMoves;
 
-            renderGrid();
             renderCommandQueue();
             setMessage('Place les fleches et appuie sur GO !', '');
             setButtonsEnabled(true);
             showScreen('game-screen');
+            renderGrid();
         }
 
         function resetPuzzle() {
@@ -1035,6 +1035,7 @@
             }
 
             // Place robot as overlay
+            grid.style.position = 'relative';
             let robotEl = document.getElementById('robot-el');
             if (robotEl) robotEl.remove();
             robotEl = document.createElement('div');
@@ -1043,15 +1044,12 @@
             robotEl.textContent = '🤖';
             const cellEl = document.getElementById(`cell-${robotPos[0]}-${robotPos[1]}`);
             if (cellEl) {
-                const rect = cellEl.getBoundingClientRect();
-                const gridRect = grid.getBoundingClientRect();
                 robotEl.style.position = 'absolute';
                 robotEl.style.width = cellEl.offsetWidth + 'px';
                 robotEl.style.height = cellEl.offsetHeight + 'px';
-                robotEl.style.left = (cellEl.offsetLeft) + 'px';
-                robotEl.style.top = (cellEl.offsetTop) + 'px';
+                robotEl.style.left = cellEl.offsetLeft + 'px';
+                robotEl.style.top = cellEl.offsetTop + 'px';
             }
-            grid.style.position = 'relative';
             grid.appendChild(robotEl);
         }
 
