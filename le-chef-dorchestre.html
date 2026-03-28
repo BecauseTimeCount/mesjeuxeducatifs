@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le Chef d'Orchestre - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 40%, #CE93D8 100%);
+            min-height: 100vh;
+            overflow: auto;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #4A148C;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #fff;
+        }
+
+        /* ===== WELCOME SCREEN ===== */
+        .welcome-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .welcome-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 48px;
+            border: 3px solid transparent;
+        }
+
+        .level-card:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        .level-card.completed {
+            border-color: #FFD700;
+        }
+
+        .level-card-emoji {
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            margin-bottom: 8px;
+        }
+
+        .level-card-title {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 800;
+            color: #4A148C;
+            margin-bottom: 4px;
+        }
+
+        .level-card-desc {
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            color: #666;
+            font-weight: 600;
+        }
+
+        .level-card-stars {
+            margin-top: 8px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: #FFD700;
+        }
+
+        .lock-icon {
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+
+        .total-stars-display {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 20px;
+        }
+
+        /* ===== GAME SCREENS ===== */
+        .game-header {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-title {
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA000);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .round-info {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+
+        .stars-count {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #FFD700;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* ===== STAGE / ANIMAL BUTTONS ===== */
+        .stage {
+            background: rgba(0,0,0,0.2);
+            border-radius: 25px;
+            padding: clamp(15px, 4vw, 30px);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 15px;
+        }
+
+        .animals-row {
+            display: flex;
+            justify-content: center;
+            gap: clamp(10px, 3vw, 20px);
+            flex-wrap: wrap;
+        }
+
+        .animal-btn {
+            width: clamp(65px, 18vw, 100px);
+            height: clamp(65px, 18vw, 100px);
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Nunito', sans-serif;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .animal-btn:active {
+            transform: scale(0.95);
+        }
+
+        .animal-btn .animal-emoji {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            line-height: 1;
+        }
+
+        .animal-btn .animal-name {
+            font-size: clamp(0.55rem, 1.8vw, 0.7rem);
+            color: #fff;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .animal-btn.active {
+            border-color: #FFD700;
+            background: rgba(255,215,0,0.3);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.2);
+            animation: pulseGlow 0.5s ease;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+            50% { box-shadow: 0 0 30px rgba(255,215,0,0.6), 0 0 50px rgba(255,215,0,0.3); }
+            100% { box-shadow: 0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.2); }
+        }
+
+        .animal-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .animal-btn.correct-flash {
+            border-color: #4CAF50;
+            background: rgba(76,175,80,0.3);
+            box-shadow: 0 0 20px rgba(76,175,80,0.5);
+        }
+
+        .animal-btn.wrong-flash {
+            border-color: #FF9800;
+            background: rgba(255,152,0,0.3);
+            box-shadow: 0 0 20px rgba(255,152,0,0.5);
+        }
+
+        /* ===== MESSAGE BANNER ===== */
+        .message-banner {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: #fff;
+            text-align: center;
+            margin: 10px 0;
+            min-height: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .message-banner.your-turn {
+            color: #FFD700;
+            animation: pulseText 1s ease infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ===== BEAT GRID (Level 2) ===== */
+        .beat-grid {
+            display: flex;
+            justify-content: center;
+            gap: clamp(8px, 2.5vw, 15px);
+            margin: 15px 0;
+        }
+
+        .beat-dot {
+            width: clamp(40px, 12vw, 60px);
+            height: clamp(40px, 12vw, 60px);
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            transition: all 0.2s ease;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .beat-dot.filled {
+            background: #FFD700;
+            border-color: #FFA000;
+            color: #4A148C;
+        }
+
+        .beat-dot.empty {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.4);
+        }
+
+        .beat-dot.current {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
+        }
+
+        .beat-dot.hit {
+            background: #4CAF50;
+            border-color: #388E3C;
+        }
+
+        .beat-dot.miss {
+            background: #FF9800;
+            border-color: #F57C00;
+        }
+
+        .drum-btn {
+            width: clamp(100px, 30vw, 150px);
+            height: clamp(100px, 30vw, 150px);
+            border-radius: 50%;
+            border: 5px solid #FFD700;
+            background: linear-gradient(145deg, rgba(255,215,0,0.3), rgba(255,152,0,0.3));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-family: 'Nunito', sans-serif;
+            margin: 15px 0;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .drum-btn:active {
+            transform: scale(0.92);
+            background: linear-gradient(145deg, rgba(255,215,0,0.5), rgba(255,152,0,0.5));
+        }
+
+        .drum-btn .drum-emoji {
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+        }
+
+        .drum-btn .drum-label {
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* ===== VOLUME BUTTONS (Level 3) ===== */
+        .volume-choices {
+            display: flex;
+            gap: clamp(15px, 4vw, 25px);
+            margin: 15px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .volume-btn {
+            background: rgba(255,255,255,0.15);
+            border: 3px solid rgba(255,255,255,0.4);
+            border-radius: 20px;
+            padding: clamp(15px, 4vw, 25px) clamp(20px, 5vw, 35px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            min-width: 48px;
+            min-height: 48px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .volume-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .volume-btn:active {
+            transform: scale(0.95);
+        }
+
+        .volume-btn .vol-emoji {
+            font-size: clamp(2rem, 6vw, 3rem);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .volume-btn .vol-label {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .volume-btn.selected-correct {
+            border-color: #4CAF50;
+            background: rgba(76,175,80,0.3);
+        }
+
+        .volume-btn.selected-wrong {
+            border-color: #FF9800;
+            background: rgba(255,152,0,0.3);
+        }
+
+        .sound-label {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        /* ===== REPLAY BUTTON ===== */
+        .replay-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 15px;
+            padding: 10px 20px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .replay-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ===== ACTION BUTTON ===== */
+        .action-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            border: none;
+            border-radius: 20px;
+            padding: 15px 40px;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+            font-weight: 800;
+            color: #4A148C;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,160,0,0.3);
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+            margin: 10px 0;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,160,0,0.4);
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== FEEDBACK OVERLAY ===== */
+        .feedback-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            background: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-overlay.show {
+            display: flex;
+        }
+
+        .feedback-card {
+            background: #fff;
+            border-radius: 25px;
+            padding: clamp(25px, 6vw, 40px);
+            text-align: center;
+            max-width: min(90%, 400px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .feedback-emoji {
+            font-size: clamp(3rem, 10vw, 4rem);
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #4A148C;
+            margin-bottom: 10px;
+        }
+
+        .feedback-sub {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* ===== LEVEL COMPLETE ===== */
+        .result-stars {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            color: #FFD700;
+            margin: 10px 0;
+        }
+
+        .result-score {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #4A148C;
+            font-weight: 700;
+        }
+
+        /* ===== FLOATING NOTES ===== */
+        .floating-notes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-note {
+            position: absolute;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            opacity: 0.15;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.15; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ===== QUESTION TEXT ===== */
+        .question-text {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .ab-labels {
+            display: flex;
+            gap: clamp(30px, 10vw, 80px);
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .ab-label {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .ab-choices {
+            display: flex;
+            gap: clamp(15px, 4vw, 25px);
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .ab-btn {
+            background: rgba(255,255,255,0.15);
+            border: 3px solid rgba(255,255,255,0.4);
+            border-radius: 20px;
+            padding: clamp(15px, 4vw, 25px) clamp(25px, 7vw, 45px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            min-width: 48px;
+            min-height: 48px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .ab-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .ab-btn .ab-btn-letter {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 800;
+            color: #FFD700;
+            display: block;
+        }
+
+        .ab-btn .ab-btn-sub {
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+        }
+
+        .ab-btn.selected-correct {
+            border-color: #4CAF50;
+            background: rgba(76,175,80,0.3);
+        }
+
+        .ab-btn.selected-wrong {
+            border-color: #FF9800;
+            background: rgba(255,152,0,0.3);
+        }
+
+        /* ===== GALAXY FOLD ===== */
+        @media (max-width: 300px) {
+            .animal-btn {
+                width: 55px;
+                height: 55px;
+            }
+            .animal-btn .animal-emoji {
+                font-size: 1.5rem;
+            }
+            .animal-btn .animal-name {
+                font-size: 0.5rem;
+            }
+            .stage {
+                padding: 10px;
+            }
+            .beat-dot {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                min-height: 38px;
+                font-size: 1rem;
+            }
+            .drum-btn {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating music notes background -->
+<div class="floating-notes" id="floatingNotes"></div>
+
+<!-- Back button -->
+<a href="index.html" class="back-to-menu" aria-label="Retour aux jeux">&#8592; Mes Jeux</a>
+
+<!-- ============================== -->
+<!-- WELCOME SCREEN                 -->
+<!-- ============================== -->
+<div class="screen active" id="screenWelcome">
+    <div class="welcome-emoji">🎵</div>
+    <h1 class="welcome-title">Le Chef d'Orchestre</h1>
+    <p class="welcome-subtitle">Decouvre la musique avec tes amis animaux !</p>
+    <div class="total-stars-display" id="totalStarsDisplay">Total : 0 ⭐</div>
+    <div class="level-grid" id="levelGrid"></div>
+</div>
+
+<!-- ============================== -->
+<!-- GAME SCREEN                    -->
+<!-- ============================== -->
+<div class="screen" id="screenGame">
+    <div class="game-header">
+        <h2 class="game-title" id="gameTitle"></h2>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="round-info" id="roundInfo"></div>
+        <div class="stars-count" id="starsCount"></div>
+    </div>
+
+    <!-- Level 1: Ecoute et Repete -->
+    <div id="level1Content" style="display:none; width:100%; max-width:500px; text-align:center;">
+        <div class="message-banner" id="l1Message">Ecoute bien...</div>
+        <div class="stage">
+            <div class="animals-row" id="l1Animals"></div>
+        </div>
+    </div>
+
+    <!-- Level 2: Le Rythme -->
+    <div id="level2Content" style="display:none; width:100%; max-width:500px; text-align:center;">
+        <div class="message-banner" id="l2Message">Ecoute le rythme...</div>
+        <div class="beat-grid" id="beatGrid"></div>
+        <div class="drum-btn" id="drumBtn" style="margin:15px auto;">
+            <span class="drum-emoji">🐻</span>
+            <span class="drum-label">Tambour</span>
+        </div>
+    </div>
+
+    <!-- Level 3: Fort ou Doux -->
+    <div id="level3Content" style="display:none; width:100%; max-width:500px; text-align:center;">
+        <div class="message-banner" id="l3Message">Ecoute les deux sons...</div>
+        <div class="ab-labels" id="abLabels">
+            <span class="ab-label">Son A</span>
+            <span class="ab-label">Son B</span>
+        </div>
+        <div class="question-text" id="l3Question"></div>
+        <div class="ab-choices" id="l3Choices"></div>
+        <button class="replay-btn" id="l3Replay" style="margin:10px auto;">🔄 Reecouter</button>
+    </div>
+
+    <!-- Level 4: Quel Instrument -->
+    <div id="level4Content" style="display:none; width:100%; max-width:500px; text-align:center;">
+        <div class="message-banner" id="l4Message">Quel animal joue ?</div>
+        <div class="stage">
+            <div class="animals-row" id="l4Animals"></div>
+        </div>
+        <button class="replay-btn" id="l4Replay" style="margin:10px auto;">🔄 Reecouter</button>
+    </div>
+</div>
+
+<!-- ============================== -->
+<!-- FEEDBACK OVERLAY               -->
+<!-- ============================== -->
+<div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-card">
+        <div class="feedback-emoji" id="feedbackEmoji"></div>
+        <div class="feedback-text" id="feedbackText"></div>
+        <div class="feedback-sub" id="feedbackSub"></div>
+        <div class="result-stars" id="resultStars" style="display:none;"></div>
+        <div class="result-score" id="resultScore" style="display:none;"></div>
+        <button class="action-btn" id="feedbackBtn">Continuer</button>
+    </div>
+</div>
+
+<script>
+// ============================================
+// STATE
+// ============================================
+const ANIMALS = [
+    { id: 'bear', emoji: '🐻', name: 'Ours' },
+    { id: 'cat', emoji: '🐱', name: 'Chat' },
+    { id: 'frog', emoji: '🐸', name: 'Grenouille' },
+    { id: 'bird', emoji: '🐦', name: 'Oiseau' }
+];
+
+const LEVELS = [
+    { id: 1, title: 'Ecoute et Repete', emoji: '👂', desc: 'Reproduis la sequence', rounds: 10 },
+    { id: 2, title: 'Le Rythme', emoji: '🥁', desc: 'Tape le bon rythme', rounds: 8 },
+    { id: 3, title: 'Fort ou Doux', emoji: '🔊', desc: 'Compare les sons', rounds: 10 },
+    { id: 4, title: 'Quel Instrument ?', emoji: '🎶', desc: 'Reconnais le son', rounds: 10 }
+];
+
+const POSITIVE_MESSAGES = [
+    'Bravo !', 'Super !', 'Genial !', 'Magnifique !', 'Excellent !',
+    'Bien joue !', 'Formidable !', 'Fantastique !', 'Tres bien !', 'Parfait !'
+];
+
+const ENCOURAGE_MESSAGES = [
+    'Presque !', 'Essaie encore !', 'Continue !', 'Pas loin !'
+];
+
+let audioContext = null;
+let gameState = {
+    currentLevel: 0,
+    totalStars: 0,
+    bestScores: [0, 0, 0, 0],
+    unlockedLevels: [true, false, false, false]
+};
+
+let currentGame = {
+    level: 0,
+    round: 0,
+    maxRounds: 0,
+    stars: 0,
+    sequence: [],
+    playerSequence: [],
+    isPlaying: false,
+    canInteract: false,
+    // Level 2
+    beatPattern: [],
+    playerBeats: [],
+    beatStartTime: 0,
+    bpm: 100,
+    // Level 3
+    questionType: '',
+    correctAnswer: '',
+    soundAParams: null,
+    soundBParams: null,
+    // Level 4
+    correctAnimal: '',
+    melodyNotes: []
+};
+
+// ============================================
+// AUDIO
+// ============================================
+function initAudio() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+}
+
+function playAnimalSound(animal, volume, pitch) {
+    if (!audioContext) initAudio();
+    volume = volume !== undefined ? volume : 0.5;
+    pitch = pitch !== undefined ? pitch : 1.0;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    const t = audioContext.currentTime;
+
+    switch (animal) {
+        case 'bear':
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(80 * pitch, t);
+            osc.frequency.exponentialRampToValueAtTime(40 * pitch, t + 0.2);
+            gain.gain.setValueAtTime(volume, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+            osc.start(t);
+            osc.stop(t + 0.3);
+            break;
+        case 'cat':
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(700 * pitch, t);
+            gain.gain.setValueAtTime(volume, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+            osc.start(t);
+            osc.stop(t + 0.5);
+            break;
+        case 'frog':
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(300 * pitch, t);
+            gain.gain.setValueAtTime(volume * 0.3, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+            osc.start(t);
+            osc.stop(t + 0.15);
+            break;
+        case 'bird':
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800 * pitch, t);
+            osc.frequency.linearRampToValueAtTime(1200 * pitch, t + 0.3);
+            osc.frequency.linearRampToValueAtTime(900 * pitch, t + 0.6);
+            gain.gain.setValueAtTime(volume * 0.4, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+            osc.start(t);
+            osc.stop(t + 0.7);
+            break;
+    }
+}
+
+function getSoundDuration(animal) {
+    switch (animal) {
+        case 'bear': return 350;
+        case 'cat': return 550;
+        case 'frog': return 200;
+        case 'bird': return 750;
+        default: return 400;
+    }
+}
+
+function playSuccessSound() {
+    if (!audioContext) initAudio();
+    const t = audioContext.currentTime;
+    [523.25, 659.25, 783.99].forEach(function(freq, i) {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t + i * 0.12);
+        gain.gain.setValueAtTime(0.2, t + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.12 + 0.3);
+        osc.start(t + i * 0.12);
+        osc.stop(t + i * 0.12 + 0.3);
+    });
+}
+
+// ============================================
+// SAVE / LOAD
+// ============================================
+function saveGame() {
+    localStorage.setItem('leChefDOrchestre', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels
+    }));
+    localStorage.setItem('orchestreScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        var saved = localStorage.getItem('leChefDOrchestre');
+        if (saved) {
+            var data = JSON.parse(saved);
+            gameState.currentLevel = data.currentLevel || 0;
+            gameState.totalStars = data.totalStars || 0;
+            gameState.bestScores = data.bestScores || [0, 0, 0, 0];
+            gameState.unlockedLevels = data.unlockedLevels || [true, false, false, false];
+        }
+    } catch (e) {
+        // ignore
+    }
+}
+
+// ============================================
+// SCREENS
+// ============================================
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+}
+
+function showWelcome() {
+    showScreen('screenWelcome');
+    renderLevelGrid();
+    document.getElementById('totalStarsDisplay').textContent = 'Total : ' + gameState.totalStars + ' \u2B50';
+}
+
+function renderLevelGrid() {
+    var grid = document.getElementById('levelGrid');
+    grid.innerHTML = '';
+    LEVELS.forEach(function(lv, i) {
+        var card = document.createElement('div');
+        card.className = 'level-card';
+        var unlocked = gameState.unlockedLevels[i];
+        var best = gameState.bestScores[i];
+        if (!unlocked) card.classList.add('locked');
+        if (best > 0 && best >= Math.floor(lv.rounds * 0.6)) card.classList.add('completed');
+
+        var starsHtml = '';
+        if (unlocked && best > 0) {
+            starsHtml = '<div class="level-card-stars">' + best + '/' + lv.rounds + ' \u2B50</div>';
+        }
+        var lockHtml = !unlocked ? '<div class="lock-icon">🔒</div>' : '';
+
+        card.innerHTML =
+            '<div class="level-card-emoji">' + lv.emoji + '</div>' +
+            '<div class="level-card-title">' + lv.title + '</div>' +
+            '<div class="level-card-desc">' + lv.desc + '</div>' +
+            starsHtml + lockHtml;
+
+        if (unlocked) {
+            card.addEventListener('click', function() {
+                initAudio();
+                startLevel(i);
+            });
+        }
+        grid.appendChild(card);
+    });
+}
+
+// ============================================
+// FEEDBACK
+// ============================================
+function showFeedback(emoji, text, sub, isLevelEnd, callback) {
+    var ov = document.getElementById('feedbackOverlay');
+    document.getElementById('feedbackEmoji').textContent = emoji;
+    document.getElementById('feedbackText').textContent = text;
+    document.getElementById('feedbackSub').textContent = sub || '';
+    var starsEl = document.getElementById('resultStars');
+    var scoreEl = document.getElementById('resultScore');
+    starsEl.style.display = 'none';
+    scoreEl.style.display = 'none';
+
+    if (isLevelEnd) {
+        starsEl.style.display = 'block';
+        scoreEl.style.display = 'block';
+        var stars = currentGame.stars;
+        var max = currentGame.maxRounds;
+        var starStr = '';
+        for (var s = 0; s < max; s++) starStr += s < stars ? '\u2B50' : '\u2606';
+        starsEl.textContent = starStr;
+        scoreEl.textContent = stars + ' / ' + max;
+        document.getElementById('feedbackBtn').textContent = 'Retour';
+    } else {
+        document.getElementById('feedbackBtn').textContent = 'Continuer';
+    }
+
+    ov.classList.add('show');
+
+    document.getElementById('feedbackBtn').onclick = function() {
+        ov.classList.remove('show');
+        if (callback) callback();
+    };
+}
+
+function quickFeedback(correct) {
+    if (correct) {
+        playSuccessSound();
+    }
+}
+
+// ============================================
+// START LEVEL
+// ============================================
+function startLevel(levelIndex) {
+    var lv = LEVELS[levelIndex];
+    currentGame.level = levelIndex;
+    currentGame.round = 0;
+    currentGame.maxRounds = lv.rounds;
+    currentGame.stars = 0;
+    currentGame.canInteract = false;
+    currentGame.isPlaying = false;
+
+    showScreen('screenGame');
+    document.getElementById('gameTitle').textContent = lv.emoji + ' ' + lv.title;
+
+    // Hide all level contents
+    for (var c = 1; c <= 4; c++) {
+        document.getElementById('level' + c + 'Content').style.display = 'none';
+    }
+    document.getElementById('level' + (levelIndex + 1) + 'Content').style.display = 'block';
+
+    updateHUD();
+
+    switch (levelIndex) {
+        case 0: initLevel1(); break;
+        case 1: initLevel2(); break;
+        case 2: initLevel3(); break;
+        case 3: initLevel4(); break;
+    }
+}
+
+function updateHUD() {
+    var round = currentGame.round;
+    var max = currentGame.maxRounds;
+    document.getElementById('progressFill').style.width = (round / max * 100) + '%';
+    document.getElementById('roundInfo').textContent = 'Question ' + (round + 1) + ' / ' + max;
+    document.getElementById('starsCount').textContent = currentGame.stars + ' \u2B50';
+}
+
+function endLevel() {
+    var lvIdx = currentGame.level;
+    var stars = currentGame.stars;
+    var max = currentGame.maxRounds;
+
+    // Update best score
+    if (stars > gameState.bestScores[lvIdx]) {
+        var diff = stars - gameState.bestScores[lvIdx];
+        gameState.bestScores[lvIdx] = stars;
+        gameState.totalStars += diff;
+    }
+
+    // Unlock next level if at least 60% correct
+    if (stars >= Math.floor(max * 0.6) && lvIdx < 3) {
+        gameState.unlockedLevels[lvIdx + 1] = true;
+    }
+
+    saveGame();
+
+    var emoji, text;
+    if (stars === max) {
+        emoji = '🏆';
+        text = 'Parfait !';
+    } else if (stars >= Math.floor(max * 0.7)) {
+        emoji = '🌟';
+        text = 'Tres bien !';
+    } else if (stars >= Math.floor(max * 0.5)) {
+        emoji = '👏';
+        text = 'Bien joue !';
+    } else {
+        emoji = '💪';
+        text = 'Continue comme ca !';
+    }
+
+    showFeedback(emoji, text, stars + ' etoiles sur ' + max, true, function() {
+        showWelcome();
+    });
+}
+
+function nextRound() {
+    currentGame.round++;
+    if (currentGame.round >= currentGame.maxRounds) {
+        endLevel();
+        return;
+    }
+    updateHUD();
+    switch (currentGame.level) {
+        case 0: playLevel1Round(); break;
+        case 1: playLevel2Round(); break;
+        case 2: playLevel3Round(); break;
+        case 3: playLevel4Round(); break;
+    }
+}
+
+// ============================================
+// LEVEL 1: ECOUTE ET REPETE
+// ============================================
+function initLevel1() {
+    var row = document.getElementById('l1Animals');
+    row.innerHTML = '';
+    ANIMALS.forEach(function(a) {
+        var btn = document.createElement('button');
+        btn.className = 'animal-btn';
+        btn.dataset.animal = a.id;
+        btn.innerHTML = '<span class="animal-emoji">' + a.emoji + '</span><span class="animal-name">' + a.name + '</span>';
+        btn.addEventListener('click', function() { onLevel1Tap(a.id); });
+        row.appendChild(btn);
+    });
+    playLevel1Round();
+}
+
+function playLevel1Round() {
+    var round = currentGame.round;
+    var seqLen = round < 3 ? 2 : (round < 6 ? 3 : 4);
+    currentGame.sequence = [];
+    for (var i = 0; i < seqLen; i++) {
+        currentGame.sequence.push(ANIMALS[Math.floor(Math.random() * 4)].id);
+    }
+    currentGame.playerSequence = [];
+    currentGame.canInteract = false;
+
+    var msg = document.getElementById('l1Message');
+    msg.textContent = 'Ecoute bien...';
+    msg.classList.remove('your-turn');
+
+    setAnimalsDisabled('l1Animals', true);
+
+    // Play the sequence
+    var delay = 600;
+    currentGame.sequence.forEach(function(animalId, idx) {
+        setTimeout(function() {
+            flashAnimal('l1Animals', animalId);
+            playAnimalSound(animalId);
+        }, delay + idx * 800);
+    });
+
+    // After sequence, enable interaction
+    setTimeout(function() {
+        msg.textContent = 'A toi !';
+        msg.classList.add('your-turn');
+        currentGame.canInteract = true;
+        setAnimalsDisabled('l1Animals', false);
+    }, delay + currentGame.sequence.length * 800 + 300);
+}
+
+function onLevel1Tap(animalId) {
+    if (!currentGame.canInteract) return;
+    var idx = currentGame.playerSequence.length;
+    playAnimalSound(animalId);
+    flashAnimal('l1Animals', animalId);
+    currentGame.playerSequence.push(animalId);
+
+    if (animalId === currentGame.sequence[idx]) {
+        // Correct so far
+        if (currentGame.playerSequence.length === currentGame.sequence.length) {
+            // Sequence complete
+            currentGame.canInteract = false;
+            currentGame.stars++;
+            quickFeedback(true);
+            var msg = document.getElementById('l1Message');
+            msg.textContent = randomFrom(POSITIVE_MESSAGES);
+            updateHUD();
+            setTimeout(function() { nextRound(); }, 1200);
+        }
+    } else {
+        // Wrong
+        currentGame.canInteract = false;
+        flashAnimalWrong('l1Animals', animalId);
+        var msg = document.getElementById('l1Message');
+        msg.textContent = randomFrom(ENCOURAGE_MESSAGES);
+        msg.classList.remove('your-turn');
+
+        // Show correct sequence
+        setTimeout(function() {
+            msg.textContent = 'C\'etait :';
+            currentGame.sequence.forEach(function(aid, si) {
+                setTimeout(function() {
+                    flashAnimal('l1Animals', aid);
+                    playAnimalSound(aid);
+                }, si * 600);
+            });
+            setTimeout(function() { nextRound(); }, currentGame.sequence.length * 600 + 800);
+        }, 800);
+    }
+}
+
+function flashAnimal(containerId, animalId) {
+    var container = document.getElementById(containerId);
+    var btn = container.querySelector('[data-animal="' + animalId + '"]');
+    if (!btn) return;
+    btn.classList.add('active');
+    setTimeout(function() { btn.classList.remove('active'); }, 400);
+}
+
+function flashAnimalCorrect(containerId, animalId) {
+    var container = document.getElementById(containerId);
+    var btn = container.querySelector('[data-animal="' + animalId + '"]');
+    if (!btn) return;
+    btn.classList.add('correct-flash');
+    setTimeout(function() { btn.classList.remove('correct-flash'); }, 500);
+}
+
+function flashAnimalWrong(containerId, animalId) {
+    var container = document.getElementById(containerId);
+    var btn = container.querySelector('[data-animal="' + animalId + '"]');
+    if (!btn) return;
+    btn.classList.add('wrong-flash');
+    setTimeout(function() { btn.classList.remove('wrong-flash'); }, 500);
+}
+
+function setAnimalsDisabled(containerId, disabled) {
+    var container = document.getElementById(containerId);
+    container.querySelectorAll('.animal-btn').forEach(function(btn) {
+        if (disabled) btn.classList.add('disabled');
+        else btn.classList.remove('disabled');
+    });
+}
+
+// ============================================
+// LEVEL 2: LE RYTHME
+// ============================================
+function initLevel2() {
+    document.getElementById('drumBtn').addEventListener('click', onDrumTap);
+    playLevel2Round();
+}
+
+function playLevel2Round() {
+    // Generate a beat pattern (4 beats, at least 2 filled)
+    var pattern = [];
+    var filled = 0;
+    while (filled < 2) {
+        pattern = [];
+        filled = 0;
+        for (var i = 0; i < 4; i++) {
+            var val = Math.random() > 0.35 ? 1 : 0;
+            pattern.push(val);
+            if (val) filled++;
+        }
+    }
+    currentGame.beatPattern = pattern;
+    currentGame.playerBeats = [];
+    currentGame.canInteract = false;
+
+    var msg = document.getElementById('l2Message');
+    msg.textContent = 'Ecoute le rythme...';
+    msg.classList.remove('your-turn');
+
+    renderBeatGrid(pattern, []);
+    playBeatPattern(pattern, function() {
+        msg.textContent = 'A toi !';
+        msg.classList.add('your-turn');
+        currentGame.canInteract = true;
+        currentGame.beatStartTime = Date.now();
+        currentGame.playerBeats = [];
+    });
+}
+
+function renderBeatGrid(pattern, playerHits) {
+    var grid = document.getElementById('beatGrid');
+    grid.innerHTML = '';
+    pattern.forEach(function(val, i) {
+        var dot = document.createElement('div');
+        dot.className = 'beat-dot';
+        if (val === 1) {
+            dot.classList.add('filled');
+            dot.textContent = '\u25CF';
+        } else {
+            dot.classList.add('empty');
+            dot.textContent = '\u25CB';
+        }
+        if (playerHits && playerHits[i] !== undefined) {
+            dot.classList.add(playerHits[i] ? 'hit' : 'miss');
+        }
+        grid.appendChild(dot);
+    });
+}
+
+function playBeatPattern(pattern, callback) {
+    var beatMs = 600; // 100 BPM
+    pattern.forEach(function(val, i) {
+        setTimeout(function() {
+            if (val === 1) {
+                playAnimalSound('bear', 0.5);
+                highlightBeat(i);
+            }
+        }, i * beatMs);
+    });
+    setTimeout(function() {
+        if (callback) callback();
+    }, pattern.length * beatMs + 300);
+}
+
+function highlightBeat(index) {
+    var dots = document.getElementById('beatGrid').querySelectorAll('.beat-dot');
+    if (dots[index]) {
+        dots[index].classList.add('current');
+        setTimeout(function() { dots[index].classList.remove('current'); }, 300);
+    }
+}
+
+function onDrumTap() {
+    if (!currentGame.canInteract) return;
+    playAnimalSound('bear', 0.5);
+
+    var beatMs = 600;
+    var elapsed = Date.now() - currentGame.beatStartTime;
+    currentGame.playerBeats.push(elapsed);
+
+    // Animate drum
+    var drum = document.getElementById('drumBtn');
+    drum.style.transform = 'scale(0.9)';
+    setTimeout(function() { drum.style.transform = ''; }, 100);
+
+    // Check if player has tapped enough times (count filled beats)
+    var expectedTaps = currentGame.beatPattern.filter(function(v) { return v === 1; }).length;
+    if (currentGame.playerBeats.length >= expectedTaps) {
+        currentGame.canInteract = false;
+        evaluateRhythm();
+    }
+}
+
+function evaluateRhythm() {
+    var beatMs = 600;
+    var tolerance = 300;
+    var pattern = currentGame.beatPattern;
+
+    // Expected tap times (relative to start)
+    var expectedTimes = [];
+    pattern.forEach(function(val, i) {
+        if (val === 1) expectedTimes.push(i * beatMs);
+    });
+
+    var hits = [];
+    var correctCount = 0;
+    var playerTaps = currentGame.playerBeats;
+
+    // Check each expected beat against player taps
+    var results = new Array(4);
+    var tapIdx = 0;
+    pattern.forEach(function(val, i) {
+        if (val === 1) {
+            var expectedTime = i * beatMs;
+            var actualTime = playerTaps[tapIdx] || 0;
+            var diff = Math.abs(actualTime - expectedTime);
+            results[i] = diff <= tolerance;
+            if (results[i]) correctCount++;
+            tapIdx++;
+        }
+    });
+
+    renderBeatGrid(pattern, results);
+
+    var msg = document.getElementById('l2Message');
+    // If most beats correct, award star
+    if (correctCount >= expectedTimes.length * 0.6) {
+        currentGame.stars++;
+        msg.textContent = randomFrom(POSITIVE_MESSAGES);
+        quickFeedback(true);
+    } else {
+        msg.textContent = randomFrom(ENCOURAGE_MESSAGES);
+    }
+    msg.classList.remove('your-turn');
+    updateHUD();
+
+    setTimeout(function() { nextRound(); }, 1500);
+}
+
+// ============================================
+// LEVEL 3: FORT OU DOUX
+// ============================================
+function initLevel3() {
+    document.getElementById('l3Replay').addEventListener('click', function() {
+        if (!currentGame.isPlaying) playLevel3Sounds();
+    });
+    playLevel3Round();
+}
+
+function playLevel3Round() {
+    var questionTypes = ['volume', 'volume', 'pitch_high', 'pitch_low'];
+    var qType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+    // Mix it up more after round 5
+    if (currentGame.round >= 5) {
+        qType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+    }
+    currentGame.questionType = qType;
+    currentGame.canInteract = false;
+
+    var animals = ['bear', 'cat', 'frog', 'bird'];
+    var animalA = animals[Math.floor(Math.random() * 4)];
+    var animalB = animals[Math.floor(Math.random() * 4)];
+
+    var question, correctAnswer;
+
+    if (qType === 'volume') {
+        var louder = Math.random() > 0.5 ? 'A' : 'B';
+        currentGame.soundAParams = { animal: animalA, volume: louder === 'A' ? 0.8 : 0.15, pitch: 1.0 };
+        currentGame.soundBParams = { animal: animalB, volume: louder === 'B' ? 0.8 : 0.15, pitch: 1.0 };
+        question = 'Quel son etait le plus FORT ?';
+        correctAnswer = louder;
+    } else if (qType === 'pitch_high') {
+        var higher = Math.random() > 0.5 ? 'A' : 'B';
+        currentGame.soundAParams = { animal: 'cat', volume: 0.5, pitch: higher === 'A' ? 1.5 : 0.7 };
+        currentGame.soundBParams = { animal: 'cat', volume: 0.5, pitch: higher === 'B' ? 1.5 : 0.7 };
+        question = 'Quel son etait le plus AIGU ?';
+        correctAnswer = higher;
+    } else {
+        var lower = Math.random() > 0.5 ? 'A' : 'B';
+        currentGame.soundAParams = { animal: 'bear', volume: 0.5, pitch: lower === 'A' ? 0.6 : 1.4 };
+        currentGame.soundBParams = { animal: 'bear', volume: 0.5, pitch: lower === 'B' ? 0.6 : 1.4 };
+        question = 'Quel son etait le plus GRAVE ?';
+        correctAnswer = lower;
+    }
+
+    currentGame.correctAnswer = correctAnswer;
+    document.getElementById('l3Question').textContent = question;
+    document.getElementById('l3Message').textContent = 'Ecoute les deux sons...';
+    document.getElementById('l3Message').classList.remove('your-turn');
+
+    // Render A/B buttons
+    var choices = document.getElementById('l3Choices');
+    choices.innerHTML = '';
+    ['A', 'B'].forEach(function(letter) {
+        var btn = document.createElement('button');
+        btn.className = 'ab-btn';
+        btn.innerHTML = '<span class="ab-btn-letter">' + letter + '</span><span class="ab-btn-sub">Son ' + letter + '</span>';
+        btn.addEventListener('click', function() { onLevel3Answer(letter, btn); });
+        choices.appendChild(btn);
+    });
+
+    playLevel3Sounds();
+}
+
+function playLevel3Sounds() {
+    currentGame.isPlaying = true;
+    var msg = document.getElementById('l3Message');
+    msg.textContent = 'Son A...';
+
+    var pA = currentGame.soundAParams;
+    playAnimalSound(pA.animal, pA.volume, pA.pitch);
+
+    var durationA = getSoundDuration(pA.animal) + 400;
+    setTimeout(function() {
+        msg.textContent = 'Son B...';
+        var pB = currentGame.soundBParams;
+        playAnimalSound(pB.animal, pB.volume, pB.pitch);
+
+        var durationB = getSoundDuration(pB.animal) + 300;
+        setTimeout(function() {
+            msg.textContent = 'A toi !';
+            msg.classList.add('your-turn');
+            currentGame.canInteract = true;
+            currentGame.isPlaying = false;
+        }, durationB);
+    }, durationA);
+}
+
+function onLevel3Answer(letter, btn) {
+    if (!currentGame.canInteract) return;
+    currentGame.canInteract = false;
+
+    var correct = letter === currentGame.correctAnswer;
+    var msg = document.getElementById('l3Message');
+
+    if (correct) {
+        btn.classList.add('selected-correct');
+        currentGame.stars++;
+        msg.textContent = randomFrom(POSITIVE_MESSAGES);
+        quickFeedback(true);
+    } else {
+        btn.classList.add('selected-wrong');
+        msg.textContent = randomFrom(ENCOURAGE_MESSAGES);
+        // Highlight correct
+        var btns = document.getElementById('l3Choices').querySelectorAll('.ab-btn');
+        btns.forEach(function(b) {
+            if (b.querySelector('.ab-btn-letter').textContent === currentGame.correctAnswer) {
+                b.classList.add('selected-correct');
+            }
+        });
+    }
+    msg.classList.remove('your-turn');
+    updateHUD();
+
+    setTimeout(function() { nextRound(); }, 1500);
+}
+
+// ============================================
+// LEVEL 4: QUEL INSTRUMENT
+// ============================================
+function initLevel4() {
+    var row = document.getElementById('l4Animals');
+    row.innerHTML = '';
+    ANIMALS.forEach(function(a) {
+        var btn = document.createElement('button');
+        btn.className = 'animal-btn';
+        btn.dataset.animal = a.id;
+        btn.innerHTML = '<span class="animal-emoji">' + a.emoji + '</span><span class="animal-name">' + a.name + '</span>';
+        btn.addEventListener('click', function() { onLevel4Tap(a.id, btn); });
+        row.appendChild(btn);
+    });
+
+    document.getElementById('l4Replay').addEventListener('click', function() {
+        if (!currentGame.isPlaying) playLevel4Sound();
+    });
+
+    playLevel4Round();
+}
+
+function playLevel4Round() {
+    currentGame.canInteract = false;
+    currentGame.isPlaying = false;
+
+    var animal = ANIMALS[Math.floor(Math.random() * 4)];
+    currentGame.correctAnimal = animal.id;
+
+    // Last 5 rounds: 2-note melodies
+    if (currentGame.round >= 5) {
+        var second = ANIMALS[Math.floor(Math.random() * 4)];
+        // For identification, the correct one is the FIRST note
+        currentGame.melodyNotes = [animal.id, animal.id];
+    } else {
+        currentGame.melodyNotes = [animal.id];
+    }
+
+    var msg = document.getElementById('l4Message');
+    msg.textContent = 'Ecoute...';
+    msg.classList.remove('your-turn');
+
+    setAnimalsDisabled('l4Animals', true);
+
+    // Reset any previous highlights
+    document.getElementById('l4Animals').querySelectorAll('.animal-btn').forEach(function(b) {
+        b.classList.remove('correct-flash', 'wrong-flash', 'selected-correct', 'selected-wrong');
+    });
+
+    setTimeout(function() {
+        playLevel4Sound();
+    }, 500);
+}
+
+function playLevel4Sound() {
+    currentGame.isPlaying = true;
+    var notes = currentGame.melodyNotes;
+    notes.forEach(function(animalId, i) {
+        setTimeout(function() {
+            playAnimalSound(animalId);
+        }, i * 800);
+    });
+    setTimeout(function() {
+        currentGame.isPlaying = false;
+        currentGame.canInteract = true;
+        setAnimalsDisabled('l4Animals', false);
+        var msg = document.getElementById('l4Message');
+        msg.textContent = 'Quel animal joue ?';
+        msg.classList.add('your-turn');
+    }, notes.length * 800 + 200);
+}
+
+function onLevel4Tap(animalId, btn) {
+    if (!currentGame.canInteract) return;
+    currentGame.canInteract = false;
+
+    playAnimalSound(animalId);
+    var msg = document.getElementById('l4Message');
+
+    if (animalId === currentGame.correctAnimal) {
+        flashAnimalCorrect('l4Animals', animalId);
+        currentGame.stars++;
+        msg.textContent = randomFrom(POSITIVE_MESSAGES);
+        quickFeedback(true);
+    } else {
+        flashAnimalWrong('l4Animals', animalId);
+        flashAnimalCorrect('l4Animals', currentGame.correctAnimal);
+        var correctName = ANIMALS.find(function(a) { return a.id === currentGame.correctAnimal; }).name;
+        msg.textContent = 'C\'etait ' + correctName + ' !';
+    }
+    msg.classList.remove('your-turn');
+    setAnimalsDisabled('l4Animals', true);
+    updateHUD();
+
+    setTimeout(function() { nextRound(); }, 1500);
+}
+
+// ============================================
+// HELPERS
+// ============================================
+function randomFrom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function createFloatingNotes() {
+    var container = document.getElementById('floatingNotes');
+    var notes = ['\u266A', '\u266B', '\u266C', '\u2669'];
+    for (var i = 0; i < 12; i++) {
+        var note = document.createElement('div');
+        note.className = 'floating-note';
+        note.textContent = notes[Math.floor(Math.random() * notes.length)];
+        note.style.left = Math.random() * 100 + '%';
+        note.style.animationDelay = Math.random() * 8 + 's';
+        note.style.animationDuration = (6 + Math.random() * 6) + 's';
+        container.appendChild(note);
+    }
+}
+
+// ============================================
+// INIT
+// ============================================
+function init() {
+    loadGame();
+    createFloatingNotes();
+    showWelcome();
+
+    // Ensure audio context on first touch
+    document.addEventListener('click', function() {
+        initAudio();
+    }, { once: true });
+}
+
+init();
+</script>
+</body>
+</html>

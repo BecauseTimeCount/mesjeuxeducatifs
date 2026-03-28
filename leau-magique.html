@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>L'Eau Magique - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #0277BD 0%, #B3E5FC 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* === ECRANS === */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: clamp(10px, 3vw, 20px);
+            padding-top: clamp(50px, 8vh, 70px);
+            animation: fadeIn 0.4s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === BOUTON RETOUR === */
+        .back-btn {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #0277BD;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-btn:hover { transform: scale(1.05); background: #fff; }
+
+        /* === ACCUEIL === */
+        .title {
+            font-size: clamp(1.8rem, 7vw, 3.2rem);
+            font-weight: 800;
+            text-align: center;
+            color: #fff;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+            margin-bottom: 5px;
+        }
+
+        .mascot {
+            font-size: clamp(3.5rem, 12vw, 5.5rem);
+            animation: mascotBounce 2.5s ease infinite;
+            filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.2));
+            margin-bottom: 5px;
+        }
+
+        @keyframes mascotBounce {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            25% { transform: translateY(-12px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(-5deg); }
+            75% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: clamp(15px, 3vh, 25px);
+            font-weight: 600;
+        }
+
+        .total-stars-display {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: clamp(15px, 3vh, 25px);
+        }
+
+        /* === NIVEAUX === */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(10px, 2vw, 18px);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: clamp(15px, 3vw, 22px);
+            padding: clamp(14px, 3vw, 22px);
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(4px, 1vw, 8px);
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card:hover:not(.locked) {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        }
+
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        .level-card .level-icon {
+            font-size: clamp(2rem, 6vw, 2.8rem);
+        }
+
+        .level-card .level-name {
+            font-size: clamp(0.75rem, 2.2vw, 0.95rem);
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .level-card .level-stars {
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            color: #F9A825;
+            font-weight: 600;
+        }
+
+        .level-card .lock-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .reset-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Nunito', sans-serif;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+            min-height: 48px;
+        }
+
+        /* === JEU GENERIQUE === */
+        .game-header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: clamp(10px, 2vh, 20px);
+        }
+
+        .progress-text {
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .stars-count {
+            color: #FFD54F;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: clamp(18px, 4vw, 28px);
+            padding: clamp(18px, 4vw, 30px);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            margin-bottom: clamp(12px, 2vh, 20px);
+        }
+
+        .scene-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+            animation: sceneAppear 0.5s ease;
+        }
+
+        @keyframes sceneAppear {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .question-text {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            color: #333;
+            margin-bottom: clamp(8px, 2vh, 15px);
+            line-height: 1.4;
+        }
+
+        .scene-description {
+            font-size: clamp(1.05rem, 3.2vw, 1.4rem);
+            font-weight: 600;
+            color: #0277BD;
+            margin-bottom: clamp(10px, 2vh, 18px);
+            line-height: 1.4;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 1.5vh, 12px);
+            width: 100%;
+        }
+
+        .choice-btn {
+            background: #E3F2FD;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: clamp(12px, 2.5vw, 18px);
+            font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #1565C0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .choice-btn:hover { background: #BBDEFB; transform: scale(1.02); }
+        .choice-btn:active { transform: scale(0.98); }
+        .choice-btn.correct {
+            background: #C8E6C9;
+            border-color: #4CAF50;
+            color: #2E7D32;
+            animation: correctPulse 0.5s ease;
+        }
+        .choice-btn.wrong {
+            background: #FFE0B2;
+            border-color: #FF9800;
+            color: #E65100;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .feedback-msg {
+            margin-top: 12px;
+            font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+            font-weight: 700;
+            min-height: 1.5em;
+            transition: opacity 0.3s ease;
+        }
+
+        .feedback-msg.success { color: #2E7D32; }
+        .feedback-msg.encourage { color: #E65100; }
+
+        /* === THERMOMETRE (LEVEL 3) === */
+        .thermo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(15px, 4vw, 30px);
+            margin: clamp(8px, 2vh, 15px) 0;
+            width: 100%;
+        }
+
+        .thermometer {
+            position: relative;
+            width: clamp(50px, 10vw, 70px);
+            height: clamp(220px, 40vh, 320px);
+            background: #E0E0E0;
+            border-radius: 35px;
+            overflow: hidden;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.2);
+            border: 3px solid #BDBDBD;
+        }
+
+        .thermo-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, #F44336, #FF7043);
+            transition: height 0.3s ease;
+            border-radius: 0 0 35px 35px;
+        }
+
+        .thermo-markings {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .thermo-mark {
+            font-size: clamp(0.55rem, 1.5vw, 0.75rem);
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            text-shadow: 0 0 4px rgba(255,255,255,0.8);
+            z-index: 2;
+            position: relative;
+        }
+
+        .thermo-temp-display {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            min-width: clamp(80px, 20vw, 130px);
+            text-align: center;
+        }
+
+        .thermo-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .thermo-btn {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            width: clamp(52px, 12vw, 68px);
+            height: clamp(52px, 12vw, 68px);
+            border-radius: 50%;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            font-weight: 800;
+            color: #0277BD;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+            min-height: 48px;
+            min-width: 48px;
+        }
+
+        .thermo-btn:active { transform: scale(0.9); }
+
+        .thermo-validate {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 30px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76,175,80,0.4);
+            transition: all 0.2s ease;
+            min-height: 48px;
+            margin-top: 10px;
+        }
+        .thermo-validate:hover { transform: scale(1.05); }
+
+        .water-state-visual {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* === CYCLE DE L'EAU (LEVEL 4) === */
+        .cycle-landscape {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            aspect-ratio: 4/3;
+            background: linear-gradient(180deg, #81D4FA 0%, #81D4FA 45%, #A5D6A7 45%, #A5D6A7 70%, #BBDEFB 70%);
+            border-radius: clamp(15px, 3vw, 25px);
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .landscape-element {
+            position: absolute;
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.15));
+        }
+
+        .landscape-sun { top: 5%; left: 8%; }
+        .landscape-cloud1 { top: 8%; right: 15%; }
+        .landscape-cloud2 { top: 15%; right: 35%; }
+        .landscape-mountain { top: 18%; left: 25%; font-size: clamp(2.5rem, 9vw, 4.5rem); }
+        .landscape-sea { bottom: 0; left: 0; right: 0; text-align: center; font-size: clamp(2rem, 7vw, 3.5rem); line-height: 1; }
+        .landscape-rain { top: 25%; right: 20%; font-size: clamp(1.2rem, 4vw, 2rem); }
+        .landscape-river { bottom: 20%; right: 15%; font-size: clamp(1.5rem, 5vw, 2.5rem); }
+
+        .drop-zone {
+            position: absolute;
+            width: clamp(80px, 22vw, 130px);
+            height: clamp(36px, 7vh, 50px);
+            border: 3px dashed rgba(255,255,255,0.7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.55rem, 1.8vw, 0.8rem);
+            font-weight: 700;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .drop-zone:hover { background: rgba(255,255,255,0.25); }
+
+        .drop-zone.active-target {
+            border-color: #FFD54F;
+            background: rgba(255,213,79,0.3);
+            animation: pulseZone 1s ease infinite;
+        }
+
+        .drop-zone.placed {
+            border-style: solid;
+            border-color: #4CAF50;
+            background: rgba(76,175,80,0.3);
+            color: #fff;
+            font-size: clamp(0.6rem, 1.8vw, 0.78rem);
+        }
+
+        .drop-zone.wrong-place {
+            border-color: #FF9800;
+            background: rgba(255,152,0,0.3);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes pulseZone {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,213,79,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(255,213,79,0); }
+        }
+
+        .cycle-zone-evap { bottom: 28%; left: 5%; }
+        .cycle-zone-cond { top: 5%; right: 5%; }
+        .cycle-zone-precip { top: 30%; right: 10%; }
+        .cycle-zone-ruiss { bottom: 12%; right: 5%; }
+
+        .labels-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(6px, 1.5vw, 10px);
+            justify-content: center;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .label-chip {
+            background: #FFD54F;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px);
+            font-size: clamp(0.72rem, 2vw, 0.92rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+
+        .label-chip:hover { transform: scale(1.05); }
+        .label-chip.selected {
+            border-color: #0277BD;
+            background: #FFF176;
+            box-shadow: 0 0 0 3px rgba(2,119,189,0.3);
+        }
+        .label-chip.used {
+            opacity: 0.4;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* === ECRAN RESULTATS === */
+        .result-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: clamp(20px, 5vw, 35px);
+            padding: clamp(25px, 5vw, 40px);
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .result-emoji {
+            font-size: clamp(3.5rem, 12vw, 5.5rem);
+            margin-bottom: 10px;
+            animation: resultBounce 1s ease;
+        }
+
+        @keyframes resultBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .result-title {
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            font-weight: 800;
+            color: #0277BD;
+            margin-bottom: 8px;
+        }
+
+        .result-stars {
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin: 10px 0;
+            letter-spacing: 5px;
+        }
+
+        .result-text {
+            font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .result-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .result-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 28px;
+            font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 48px;
+        }
+
+        .result-btn:hover { transform: scale(1.05); }
+
+        .result-btn.primary {
+            background: #0277BD;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(2,119,189,0.4);
+        }
+
+        .result-btn.secondary {
+            background: #E3F2FD;
+            color: #0277BD;
+        }
+
+        /* === ANIMATIONS ETATS === */
+        .state-ice {
+            display: inline-block;
+            animation: iceShimmer 2s ease infinite;
+        }
+        @keyframes iceShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3) drop-shadow(0 0 8px #81D4FA); }
+        }
+
+        .state-liquid {
+            display: inline-block;
+            animation: liquidWave 1.5s ease infinite;
+        }
+        @keyframes liquidWave {
+            0%, 100% { transform: translateY(0) scaleX(1); }
+            25% { transform: translateY(-3px) scaleX(1.05); }
+            75% { transform: translateY(3px) scaleX(0.95); }
+        }
+
+        .state-gas {
+            display: inline-block;
+            animation: gasFloat 2s ease infinite;
+            opacity: 0.8;
+        }
+        @keyframes gasFloat {
+            0%, 100% { transform: translateY(0); opacity: 0.8; }
+            50% { transform: translateY(-12px); opacity: 0.5; }
+        }
+
+        /* === TRANSITION L2 === */
+        .transformation-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(8px, 2vw, 15px);
+            margin: 10px 0;
+            font-size: clamp(2rem, 7vw, 3.5rem);
+        }
+
+        .arrow-anim {
+            animation: arrowPulse 1s ease infinite;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* === CONFETTIS === */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        /* === RESPONSIVE GALAXY FOLD === */
+        @media (max-width: 320px) {
+            .levels-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .level-card { padding: 10px; }
+            .level-card .level-icon { font-size: 1.8rem; }
+            .question-card { padding: 14px; border-radius: 16px; }
+            .labels-bar { gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- BOUTON RETOUR -->
+<a href="index.html" class="back-btn">&#8592; Mes Jeux</a>
+
+<!-- ====== ECRAN ACCUEIL ====== -->
+<div id="screen-home" class="screen active">
+    <div class="mascot">💧</div>
+    <div class="title">L'Eau Magique</div>
+    <div class="subtitle">Decouvre les secrets de l'eau !</div>
+    <div class="total-stars-display" id="total-stars-home">⭐ 0 etoiles</div>
+
+    <div class="levels-grid">
+        <button class="level-card" id="lvl-card-1" onclick="startLevel(1)">
+            <span class="level-icon">🧊💧☁️</span>
+            <span class="level-name">Les 3 Etats</span>
+            <span class="level-stars" id="lvl-stars-1">☆☆☆</span>
+        </button>
+        <button class="level-card locked" id="lvl-card-2" onclick="startLevel(2)">
+            <span class="lock-icon">🔒</span>
+            <span class="level-icon">🔥❄️</span>
+            <span class="level-name">Les Transformations</span>
+            <span class="level-stars" id="lvl-stars-2">☆☆☆</span>
+        </button>
+        <button class="level-card locked" id="lvl-card-3" onclick="startLevel(3)">
+            <span class="lock-icon">🔒</span>
+            <span class="level-icon">🌡️</span>
+            <span class="level-name">Le Thermometre</span>
+            <span class="level-stars" id="lvl-stars-3">☆☆☆</span>
+        </button>
+        <button class="level-card locked" id="lvl-card-4" onclick="startLevel(4)">
+            <span class="lock-icon">🔒</span>
+            <span class="level-icon">🌍💧</span>
+            <span class="level-name">Le Cycle de l'Eau</span>
+            <span class="level-stars" id="lvl-stars-4">☆☆☆</span>
+        </button>
+    </div>
+
+    <button class="reset-btn" onclick="resetGame()">Recommencer tout</button>
+</div>
+
+<!-- ====== ECRAN QUIZ (LEVEL 1 & 2) ====== -->
+<div id="screen-quiz" class="screen">
+    <div class="game-header">
+        <span class="progress-text" id="quiz-progress">1 / 10</span>
+        <span class="stars-count" id="quiz-stars">⭐ 0</span>
+    </div>
+    <div class="question-card">
+        <div class="scene-emoji" id="quiz-emoji"></div>
+        <div class="scene-description" id="quiz-scene"></div>
+        <div class="question-text" id="quiz-question"></div>
+        <div id="quiz-visual" style="margin-bottom:10px;"></div>
+        <div class="choices" id="quiz-choices"></div>
+        <div class="feedback-msg" id="quiz-feedback">&nbsp;</div>
+    </div>
+</div>
+
+<!-- ====== ECRAN THERMOMETRE (LEVEL 3) ====== -->
+<div id="screen-thermo" class="screen">
+    <div class="game-header">
+        <span class="progress-text" id="thermo-progress">1 / 8</span>
+        <span class="stars-count" id="thermo-stars">⭐ 0</span>
+    </div>
+    <div class="question-card">
+        <div class="question-text" id="thermo-question"></div>
+        <div class="water-state-visual" id="thermo-water-visual">💧</div>
+        <div class="thermo-container">
+            <div class="thermometer">
+                <div class="thermo-fill" id="thermo-fill"></div>
+                <div class="thermo-markings">
+                    <span class="thermo-mark">120°C</span>
+                    <span class="thermo-mark">100°C</span>
+                    <span class="thermo-mark">80°C</span>
+                    <span class="thermo-mark">60°C</span>
+                    <span class="thermo-mark">40°C</span>
+                    <span class="thermo-mark">20°C</span>
+                    <span class="thermo-mark">0°C</span>
+                    <span class="thermo-mark">-20°C</span>
+                </div>
+            </div>
+            <div class="thermo-temp-display" id="thermo-temp">20°C</div>
+            <div class="thermo-controls">
+                <button class="thermo-btn" onclick="changeTemp(10)">▲</button>
+                <button class="thermo-btn" onclick="changeTemp(5)">△</button>
+                <button class="thermo-btn" onclick="changeTemp(-5)">▽</button>
+                <button class="thermo-btn" onclick="changeTemp(-10)">▼</button>
+            </div>
+        </div>
+        <button class="thermo-validate" onclick="validateTemp()">Valider !</button>
+        <div class="feedback-msg" id="thermo-feedback">&nbsp;</div>
+    </div>
+</div>
+
+<!-- ====== ECRAN CYCLE (LEVEL 4) ====== -->
+<div id="screen-cycle" class="screen">
+    <div class="game-header">
+        <span class="progress-text" id="cycle-progress">1 / 4</span>
+        <span class="stars-count" id="cycle-stars">⭐ 0</span>
+    </div>
+    <div class="question-card" style="padding-bottom:10px;">
+        <div class="question-text" id="cycle-question">Place les etiquettes au bon endroit !</div>
+    </div>
+
+    <div class="labels-bar" id="cycle-labels"></div>
+
+    <div class="cycle-landscape" id="cycle-landscape">
+        <!-- Landscape elements -->
+        <span class="landscape-element landscape-sun">☀️</span>
+        <span class="landscape-element landscape-cloud1">☁️</span>
+        <span class="landscape-element landscape-cloud2">🌧️</span>
+        <span class="landscape-element landscape-mountain">🏔️</span>
+        <span class="landscape-element landscape-river">💦</span>
+        <span class="landscape-element landscape-sea" style="font-size:clamp(2rem,7vw,3.5rem);">🌊🌊🌊</span>
+
+        <!-- Drop zones -->
+        <div class="drop-zone cycle-zone-evap" id="zone-evaporation" onclick="placeLabel('evaporation')">?</div>
+        <div class="drop-zone cycle-zone-cond" id="zone-condensation" onclick="placeLabel('condensation')">?</div>
+        <div class="drop-zone cycle-zone-precip" id="zone-precipitation" onclick="placeLabel('precipitation')">?</div>
+        <div class="drop-zone cycle-zone-ruiss" id="zone-ruissellement" onclick="placeLabel('ruissellement')">?</div>
+    </div>
+
+    <div class="feedback-msg" id="cycle-feedback">&nbsp;</div>
+</div>
+
+<!-- ====== ECRAN RESULTATS ====== -->
+<div id="screen-results" class="screen">
+    <div class="result-card">
+        <div class="result-emoji" id="result-emoji">🎉</div>
+        <div class="result-title" id="result-title">Bravo !</div>
+        <div class="result-stars" id="result-stars-display"></div>
+        <div class="result-text" id="result-text"></div>
+        <div class="result-btns">
+            <button class="result-btn primary" id="result-next-btn" onclick="goHome()">Continuer</button>
+            <button class="result-btn secondary" onclick="retryLevel()">Rejouer</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONFETTI CONTAINER -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ===================== GAME STATE =====================
+let gameState = {
+    currentLevel: 0,
+    totalStars: 0,
+    bestScores: [0, 0, 0, 0],
+    unlockedLevels: [true, false, false, false]
+};
+
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let currentStars = 0;
+let answered = false;
+let currentTemp = 20;
+let selectedLabel = null;
+let cycleRound = 0;
+let cyclePlaced = {};
+
+// ===================== DATA =====================
+
+const level1Scenes = [
+    { emoji: '🚰', desc: "L'eau coule du robinet", answer: 'liquide' },
+    { emoji: '🧊', desc: "Il y a des glacons dans le verre", answer: 'solide' },
+    { emoji: '☕', desc: "De la buee sort de la bouilloire", answer: 'gaz' },
+    { emoji: '❄️', desc: "Il neige dehors", answer: 'solide' },
+    { emoji: '🌧️', desc: "La pluie tombe", answer: 'liquide' },
+    { emoji: '🏔️', desc: "Le lac est gele", answer: 'solide' },
+    { emoji: '☀️', desc: "La flaque d'eau seche au soleil", answer: 'gaz' },
+    { emoji: '🥤', desc: "Tu bois un verre d'eau", answer: 'liquide' },
+    { emoji: '🪟', desc: "Le givre sur la fenetre", answer: 'solide' },
+    { emoji: '🍲', desc: "La vapeur au-dessus de la soupe", answer: 'gaz' }
+];
+
+const level1Choices = [
+    { id: 'solide', label: '🧊 Solide (Glace)' },
+    { id: 'liquide', label: '💧 Liquide (Eau)' },
+    { id: 'gaz', label: '☁️ Gaz (Vapeur)' }
+];
+
+const level2Scenes = [
+    { emoji: '🧊➡️🔥', desc: "On chauffe un glacon", answer: 'fusion',
+      choices: ['Il fond (Fusion)', 'Il s\'evapore', 'Il gele encore plus'],
+      correct: 0, transName: 'Fusion : solide → liquide', fromEmoji: '🧊', toEmoji: '💧' },
+    { emoji: '💧➡️❄️', desc: "On met de l'eau au congelateur", answer: 'solidification',
+      choices: ['Elle s\'evapore', 'Elle gele (Solidification)', 'Elle reste liquide'],
+      correct: 1, transName: 'Solidification : liquide → solide', fromEmoji: '💧', toEmoji: '🧊' },
+    { emoji: '💧➡️🔥', desc: "On fait bouillir de l'eau", answer: 'evaporation',
+      choices: ['Elle gele', 'Elle disparait pour toujours', 'Elle s\'evapore (Evaporation)'],
+      correct: 2, transName: 'Evaporation : liquide → gaz', fromEmoji: '💧', toEmoji: '☁️' },
+    { emoji: '☁️➡️🪟', desc: "La vapeur touche une vitre froide", answer: 'condensation',
+      choices: ['Elle se condense (Condensation)', 'Elle gele', 'Elle disparait'],
+      correct: 0, transName: 'Condensation : gaz → liquide', fromEmoji: '☁️', toEmoji: '💧' },
+    { emoji: '☀️➡️💧', desc: "Le soleil chauffe une flaque d'eau", answer: 'evaporation',
+      choices: ['L\'eau gele', 'L\'eau s\'evapore (Evaporation)', 'L\'eau grossit'],
+      correct: 1, transName: 'Evaporation : liquide → gaz', fromEmoji: '💧', toEmoji: '☁️' },
+    { emoji: '❄️➡️🏠', desc: "Un bonhomme de neige fond au printemps", answer: 'fusion',
+      choices: ['Il gele plus', 'Il s\'evapore', 'Il fond (Fusion)'],
+      correct: 2, transName: 'Fusion : solide → liquide', fromEmoji: '⛄', toEmoji: '💧' },
+    { emoji: '🥶➡️💧', desc: "De la buee apparait quand tu souffles dans le froid", answer: 'condensation',
+      choices: ['Solidification', 'Condensation', 'Evaporation'],
+      correct: 1, transName: 'Condensation : gaz → liquide', fromEmoji: '😮‍💨', toEmoji: '💧' },
+    { emoji: '🌊➡️❄️', desc: "L'eau du lac gele en hiver", answer: 'solidification',
+      choices: ['Solidification', 'Fusion', 'Condensation'],
+      correct: 0, transName: 'Solidification : liquide → solide', fromEmoji: '🌊', toEmoji: '🧊' },
+    { emoji: '👕➡️☀️', desc: "Le linge seche sur le fil au soleil", answer: 'evaporation',
+      choices: ['Condensation', 'Solidification', 'Evaporation'],
+      correct: 2, transName: 'Evaporation : liquide → gaz', fromEmoji: '💧', toEmoji: '☁️' },
+    { emoji: '🪟➡️💧', desc: "Des gouttes d'eau se forment sur la vitre froide", answer: 'condensation',
+      choices: ['Evaporation', 'Condensation', 'Fusion'],
+      correct: 1, transName: 'Condensation : gaz → liquide', fromEmoji: '☁️', toEmoji: '💧' }
+];
+
+const level3Questions = [
+    { question: "A quelle temperature l'eau gele-t-elle ?", answer: 0 },
+    { question: "A quelle temperature l'eau bout-elle ?", answer: 100 },
+    { question: "Quelle temperature pour avoir de la glace ?", answer: -10 },
+    { question: "Trouve une temperature ou l'eau est liquide", answer: 50, range: [1, 99] },
+    { question: "A quelle temperature la neige fond-elle ?", answer: 0 },
+    { question: "Mets le thermometre pour faire de la vapeur", answer: 100, range: [101, 120] },
+    { question: "Quelle temperature dans un congelateur ?", answer: -18, range: [-30, -1] },
+    { question: "A quelle temperature l'eau devient de la vapeur ?", answer: 100 }
+];
+
+const cycleLabels = [
+    { id: 'evaporation', text: 'Evaporation', zone: 'evaporation', desc: "L'eau de la mer s'evapore grace au soleil" },
+    { id: 'condensation', text: 'Condensation', zone: 'condensation', desc: "La vapeur forme des nuages en se refroidissant" },
+    { id: 'precipitation', text: 'Precipitation', zone: 'precipitation', desc: "L'eau retombe des nuages sous forme de pluie" },
+    { id: 'ruissellement', text: 'Ruissellement', zone: 'ruissellement', desc: "L'eau coule des montagnes vers la mer" }
+];
+
+// ===================== AUDIO =====================
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.value = 0.12;
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, now);
+            osc.frequency.setValueAtTime(659, now + 0.1);
+            osc.frequency.setValueAtTime(784, now + 0.2);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+            osc.start(now);
+            osc.stop(now + 0.4);
+        } else if (type === 'encourage') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(350, now);
+            osc.frequency.setValueAtTime(300, now + 0.15);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        } else if (type === 'levelup') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, now);
+            osc.frequency.setValueAtTime(659, now + 0.12);
+            osc.frequency.setValueAtTime(784, now + 0.24);
+            osc.frequency.setValueAtTime(1047, now + 0.36);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+            osc.start(now);
+            osc.stop(now + 0.6);
+        } else if (type === 'click') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, now);
+            gain.gain.setValueAtTime(0.06, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        } else if (type === 'place') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(600, now);
+            osc.frequency.setValueAtTime(900, now + 0.1);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.start(now);
+            osc.stop(now + 0.2);
+        }
+    } catch(e) {}
+}
+
+// ===================== CONFETTIS =====================
+function launchConfetti(count) {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF','#FF8A80','#82B1FF','#B388FF','#FFD54F'];
+    for (let i = 0; i < (count || 25); i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        el.style.width = (6 + Math.random() * 8) + 'px';
+        el.style.height = (6 + Math.random() * 8) + 'px';
+        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        el.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        el.style.animationDelay = (Math.random() * 0.5) + 's';
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+    }
+}
+
+// ===================== SCREENS =====================
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+// ===================== SAVE / LOAD =====================
+function saveGame() {
+    localStorage.setItem('leauMagique', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels
+    }));
+    localStorage.setItem('eauMagiqueScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem('leauMagique');
+        if (saved) {
+            const data = JSON.parse(saved);
+            gameState.totalStars = data.totalStars || 0;
+            gameState.bestScores = data.bestScores || [0, 0, 0, 0];
+            gameState.unlockedLevels = data.unlockedLevels || [true, false, false, false];
+        }
+    } catch(e) {}
+}
+
+function resetGame() {
+    if (!confirm('Recommencer tout ? Tes etoiles seront perdues.')) return;
+    gameState = {
+        currentLevel: 0,
+        totalStars: 0,
+        bestScores: [0, 0, 0, 0],
+        unlockedLevels: [true, false, false, false]
+    };
+    saveGame();
+    updateHomeScreen();
+}
+
+// ===================== HOME SCREEN =====================
+function updateHomeScreen() {
+    document.getElementById('total-stars-home').textContent = '⭐ ' + gameState.totalStars + ' etoile' + (gameState.totalStars !== 1 ? 's' : '');
+
+    const maxPerLevel = [10, 10, 8, 4];
+    for (let i = 0; i < 4; i++) {
+        const card = document.getElementById('lvl-card-' + (i + 1));
+        const starsEl = document.getElementById('lvl-stars-' + (i + 1));
+        const best = gameState.bestScores[i];
+        const max = maxPerLevel[i];
+
+        if (gameState.unlockedLevels[i]) {
+            card.classList.remove('locked');
+            const lock = card.querySelector('.lock-icon');
+            if (lock) lock.style.display = 'none';
+        } else {
+            card.classList.add('locked');
+        }
+
+        let starsStr = '';
+        for (let s = 0; s < max; s++) {
+            starsStr += s < best ? '⭐' : '☆';
+            if (max > 5 && s === Math.floor(max / 2) - 1) starsStr += ' ';
+        }
+        starsEl.textContent = best + ' / ' + max;
+    }
+}
+
+function goHome() {
+    showScreen('screen-home');
+    updateHomeScreen();
+}
+
+// ===================== SHUFFLE =====================
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// ===================== START LEVEL =====================
+function startLevel(level) {
+    if (!gameState.unlockedLevels[level - 1]) return;
+    playSound('click');
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    gameState.currentLevel = level;
+    currentStars = 0;
+    currentQuestionIndex = 0;
+    answered = false;
+
+    if (level === 1) {
+        currentQuestions = shuffle(level1Scenes);
+        showScreen('screen-quiz');
+        showQuizQuestion();
+    } else if (level === 2) {
+        currentQuestions = shuffle(level2Scenes);
+        showScreen('screen-quiz');
+        showQuizQuestion();
+    } else if (level === 3) {
+        currentQuestions = shuffle(level3Questions);
+        currentTemp = 20;
+        showScreen('screen-thermo');
+        showThermoQuestion();
+    } else if (level === 4) {
+        cycleRound = 0;
+        cyclePlaced = {};
+        selectedLabel = null;
+        showScreen('screen-cycle');
+        setupCycleRound();
+    }
+}
+
+// ===================== LEVEL 1 & 2: QUIZ =====================
+function showQuizQuestion() {
+    answered = false;
+    const level = gameState.currentLevel;
+    const total = currentQuestions.length;
+    document.getElementById('quiz-progress').textContent = (currentQuestionIndex + 1) + ' / ' + total;
+    document.getElementById('quiz-stars').textContent = '⭐ ' + currentStars;
+    document.getElementById('quiz-feedback').innerHTML = '&nbsp;';
+
+    const q = currentQuestions[currentQuestionIndex];
+    const visualDiv = document.getElementById('quiz-visual');
+    visualDiv.innerHTML = '';
+
+    if (level === 1) {
+        document.getElementById('quiz-emoji').textContent = q.emoji;
+        document.getElementById('quiz-scene').textContent = q.desc;
+        document.getElementById('quiz-question').textContent = "Dans quel etat est l'eau ?";
+
+        const choicesDiv = document.getElementById('quiz-choices');
+        choicesDiv.innerHTML = '';
+        level1Choices.forEach(c => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.textContent = c.label;
+            btn.onclick = () => answerQuiz(c.id, q.answer, btn);
+            choicesDiv.appendChild(btn);
+        });
+    } else if (level === 2) {
+        document.getElementById('quiz-emoji').textContent = '';
+        document.getElementById('quiz-scene').textContent = q.desc;
+        document.getElementById('quiz-question').textContent = "Que se passe-t-il ?";
+
+        // Visual transformation
+        visualDiv.innerHTML = '<div class="transformation-visual">' +
+            '<span class="state-' + getStateClass(q.fromEmoji) + '">' + q.fromEmoji + '</span>' +
+            '<span class="arrow-anim">➡️</span>' +
+            '<span style="font-size:clamp(2rem,7vw,3.5rem)">❓</span></div>';
+
+        const choicesDiv = document.getElementById('quiz-choices');
+        choicesDiv.innerHTML = '';
+        q.choices.forEach((text, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.textContent = text;
+            btn.onclick = () => answerQuizL2(idx, q.correct, btn, q);
+            choicesDiv.appendChild(btn);
+        });
+    }
+}
+
+function getStateClass(emoji) {
+    if (['🧊','⛄','❄️'].includes(emoji)) return 'ice';
+    if (['☁️','😮‍💨'].includes(emoji)) return 'gas';
+    return 'liquid';
+}
+
+function answerQuiz(chosen, correct, btn) {
+    if (answered) return;
+    answered = true;
+
+    const allBtns = document.querySelectorAll('#quiz-choices .choice-btn');
+    const feedback = document.getElementById('quiz-feedback');
+
+    if (chosen === correct) {
+        btn.classList.add('correct');
+        currentStars++;
+        document.getElementById('quiz-stars').textContent = '⭐ ' + currentStars;
+        playSound('correct');
+        launchConfetti(15);
+        const msgs = ['Super !', 'Bravo !', 'Genial !', 'Excellent !', 'Tres bien !'];
+        feedback.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+        feedback.className = 'feedback-msg success';
+    } else {
+        btn.classList.add('wrong');
+        allBtns.forEach(b => {
+            const choiceId = b.textContent.includes('Solide') ? 'solide' :
+                             b.textContent.includes('Liquide') ? 'liquide' : 'gaz';
+            if (choiceId === correct) b.classList.add('correct');
+        });
+        playSound('encourage');
+        const stateNames = { solide: 'Solide (Glace)', liquide: 'Liquide (Eau)', gaz: 'Gaz (Vapeur)' };
+        feedback.textContent = "C'etait : " + stateNames[correct] + ' ! Tu vas y arriver !';
+        feedback.className = 'feedback-msg encourage';
+    }
+
+    setTimeout(nextQuizQuestion, 1800);
+}
+
+function answerQuizL2(chosen, correct, btn, q) {
+    if (answered) return;
+    answered = true;
+
+    const allBtns = document.querySelectorAll('#quiz-choices .choice-btn');
+    const feedback = document.getElementById('quiz-feedback');
+    const visualDiv = document.getElementById('quiz-visual');
+
+    if (chosen === correct) {
+        btn.classList.add('correct');
+        currentStars++;
+        document.getElementById('quiz-stars').textContent = '⭐ ' + currentStars;
+        playSound('correct');
+        launchConfetti(15);
+        feedback.textContent = q.transName;
+        feedback.className = 'feedback-msg success';
+    } else {
+        btn.classList.add('wrong');
+        allBtns[correct].classList.add('correct');
+        playSound('encourage');
+        feedback.textContent = q.transName + ' — Bien essaye !';
+        feedback.className = 'feedback-msg encourage';
+    }
+
+    // Show transformation result
+    visualDiv.innerHTML = '<div class="transformation-visual">' +
+        '<span class="state-' + getStateClass(q.fromEmoji) + '">' + q.fromEmoji + '</span>' +
+        '<span class="arrow-anim">➡️</span>' +
+        '<span class="state-' + getStateClass(q.toEmoji) + '">' + q.toEmoji + '</span></div>';
+
+    setTimeout(nextQuizQuestion, 2200);
+}
+
+function nextQuizQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex >= currentQuestions.length) {
+        finishLevel();
+    } else {
+        showQuizQuestion();
+    }
+}
+
+// ===================== LEVEL 3: THERMOMETRE =====================
+function showThermoQuestion() {
+    answered = false;
+    currentTemp = 20;
+    updateThermometer();
+
+    const q = currentQuestions[currentQuestionIndex];
+    document.getElementById('thermo-progress').textContent = (currentQuestionIndex + 1) + ' / ' + currentQuestions.length;
+    document.getElementById('thermo-stars').textContent = '⭐ ' + currentStars;
+    document.getElementById('thermo-question').textContent = q.question;
+    document.getElementById('thermo-feedback').innerHTML = '&nbsp;';
+}
+
+function changeTemp(delta) {
+    if (answered) return;
+    playSound('click');
+    currentTemp = Math.max(-30, Math.min(120, currentTemp + delta));
+    updateThermometer();
+}
+
+function updateThermometer() {
+    // -30 to 120 range, map to 0-100%
+    const pct = ((currentTemp + 30) / 150) * 100;
+    document.getElementById('thermo-fill').style.height = Math.max(0, Math.min(100, pct)) + '%';
+    document.getElementById('thermo-temp').textContent = currentTemp + '°C';
+
+    // Update water visual
+    const visual = document.getElementById('thermo-water-visual');
+    if (currentTemp < 0) {
+        visual.textContent = '🧊';
+        visual.className = 'water-state-visual state-ice';
+    } else if (currentTemp >= 100) {
+        visual.textContent = '☁️';
+        visual.className = 'water-state-visual state-gas';
+    } else {
+        visual.textContent = '💧';
+        visual.className = 'water-state-visual state-liquid';
+    }
+
+    // Color the fill
+    const fill = document.getElementById('thermo-fill');
+    if (currentTemp < 0) {
+        fill.style.background = 'linear-gradient(180deg, #42A5F5, #90CAF9)';
+    } else if (currentTemp >= 100) {
+        fill.style.background = 'linear-gradient(180deg, #F44336, #FF7043)';
+    } else {
+        fill.style.background = 'linear-gradient(180deg, #FF7043, #FFB74D)';
+    }
+}
+
+function validateTemp() {
+    if (answered) return;
+    answered = true;
+
+    const q = currentQuestions[currentQuestionIndex];
+    const feedback = document.getElementById('thermo-feedback');
+    let isCorrect = false;
+
+    if (q.range) {
+        // Accept any value in range
+        isCorrect = currentTemp >= q.range[0] && currentTemp <= q.range[1];
+    } else {
+        // Accept within ±5
+        isCorrect = Math.abs(currentTemp - q.answer) <= 5;
+    }
+
+    if (isCorrect) {
+        currentStars++;
+        document.getElementById('thermo-stars').textContent = '⭐ ' + currentStars;
+        playSound('correct');
+        launchConfetti(15);
+        feedback.textContent = 'Bravo ! ' + currentTemp + '°C, c\'est correct !';
+        feedback.className = 'feedback-msg success';
+    } else {
+        playSound('encourage');
+        let expected = q.range ? ('entre ' + q.range[0] + '°C et ' + q.range[1] + '°C') : (q.answer + '°C');
+        feedback.textContent = 'La reponse etait ' + expected + '. Continue comme ca !';
+        feedback.className = 'feedback-msg encourage';
+    }
+
+    setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= currentQuestions.length) {
+            finishLevel();
+        } else {
+            showThermoQuestion();
+        }
+    }, 2000);
+}
+
+// ===================== LEVEL 4: CYCLE =====================
+function setupCycleRound() {
+    selectedLabel = null;
+    document.getElementById('cycle-progress').textContent = (cycleRound + 1) + ' / 4';
+    document.getElementById('cycle-stars').textContent = '⭐ ' + currentStars;
+    document.getElementById('cycle-feedback').innerHTML = '&nbsp;';
+
+    const current = cycleLabels[cycleRound];
+    document.getElementById('cycle-question').textContent = current.desc;
+
+    // Build label chips
+    const labelsBar = document.getElementById('cycle-labels');
+    labelsBar.innerHTML = '';
+    // Show all labels, mark used ones
+    cycleLabels.forEach(label => {
+        const chip = document.createElement('button');
+        chip.className = 'label-chip';
+        chip.textContent = label.text;
+        chip.dataset.id = label.id;
+        if (cyclePlaced[label.id]) {
+            chip.classList.add('used');
+        } else {
+            chip.onclick = () => selectLabel(label.id, chip);
+        }
+        labelsBar.appendChild(chip);
+    });
+
+    // Reset drop zones (except placed ones)
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        const zoneId = zone.id.replace('zone-', '');
+        if (!cyclePlaced[zoneId]) {
+            zone.textContent = '?';
+            zone.classList.remove('placed', 'active-target', 'wrong-place');
+        }
+    });
+}
+
+function selectLabel(labelId, chip) {
+    if (cyclePlaced[labelId]) return;
+    playSound('click');
+    selectedLabel = labelId;
+
+    // Highlight selected chip
+    document.querySelectorAll('.label-chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+
+    // Highlight all available drop zones
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        const zoneId = zone.id.replace('zone-', '');
+        if (!cyclePlaced[zoneId]) {
+            zone.classList.add('active-target');
+        }
+    });
+}
+
+function placeLabel(zoneId) {
+    if (!selectedLabel || cyclePlaced[zoneId]) return;
+
+    const currentTarget = cycleLabels[cycleRound];
+    const feedback = document.getElementById('cycle-feedback');
+    const zone = document.getElementById('zone-' + zoneId);
+
+    // Remove active highlights
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('active-target'));
+
+    if (selectedLabel === currentTarget.id && zoneId === currentTarget.zone) {
+        // Correct!
+        cyclePlaced[zoneId] = selectedLabel;
+        zone.textContent = currentTarget.text;
+        zone.classList.add('placed');
+        currentStars++;
+        document.getElementById('cycle-stars').textContent = '⭐ ' + currentStars;
+        playSound('correct');
+        launchConfetti(20);
+        feedback.textContent = 'Bravo ! ' + currentTarget.text + ' bien place !';
+        feedback.className = 'feedback-msg success';
+
+        // Mark chip as used
+        document.querySelectorAll('.label-chip').forEach(c => {
+            if (c.dataset.id === selectedLabel) c.classList.add('used');
+        });
+        selectedLabel = null;
+
+        setTimeout(() => {
+            cycleRound++;
+            if (cycleRound >= 4) {
+                finishLevel();
+            } else {
+                setupCycleRound();
+            }
+        }, 1800);
+    } else {
+        // Wrong placement
+        zone.classList.add('wrong-place');
+        playSound('encourage');
+        if (selectedLabel !== currentTarget.id) {
+            feedback.textContent = 'Essaie avec l\'etiquette "' + currentTarget.text + '" !';
+        } else {
+            feedback.textContent = 'Pas au bon endroit, reessaie !';
+        }
+        feedback.className = 'feedback-msg encourage';
+        selectedLabel = null;
+        document.querySelectorAll('.label-chip').forEach(c => c.classList.remove('selected'));
+        setTimeout(() => zone.classList.remove('wrong-place'), 600);
+    }
+}
+
+// ===================== FINISH LEVEL =====================
+function finishLevel() {
+    const level = gameState.currentLevel;
+    const levelIdx = level - 1;
+    const maxPerLevel = [10, 10, 8, 4];
+    const max = maxPerLevel[levelIdx];
+
+    // Update best score
+    const prevBest = gameState.bestScores[levelIdx];
+    if (currentStars > prevBest) {
+        const diff = currentStars - prevBest;
+        gameState.totalStars += diff;
+        gameState.bestScores[levelIdx] = currentStars;
+    }
+
+    // Unlock next level if 60%+ correct
+    const threshold = Math.ceil(max * 0.6);
+    if (currentStars >= threshold && level < 4) {
+        gameState.unlockedLevels[level] = true;
+    }
+
+    saveGame();
+    playSound('levelup');
+    launchConfetti(40);
+
+    // Show results
+    showScreen('screen-results');
+
+    const pct = Math.round((currentStars / max) * 100);
+    let emoji, title, text;
+
+    if (pct === 100) {
+        emoji = '🏆';
+        title = 'Parfait !';
+        text = 'Tu as tout reussi, tu es un champion de l\'eau !';
+    } else if (pct >= 80) {
+        emoji = '🌟';
+        title = 'Super !';
+        text = 'Tu connais tres bien les secrets de l\'eau !';
+    } else if (pct >= 60) {
+        emoji = '😃';
+        title = 'Bien joue !';
+        text = 'Tu as bien compris, continue comme ca !';
+    } else {
+        emoji = '💪';
+        title = 'Bon effort !';
+        text = 'Tu progresses, rejoue pour t\'ameliorer !';
+    }
+
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-title').textContent = title;
+    document.getElementById('result-text').textContent = text;
+
+    let starsHtml = '';
+    for (let i = 0; i < max; i++) {
+        starsHtml += i < currentStars ? '⭐' : '☆';
+    }
+    document.getElementById('result-stars-display').textContent = currentStars + ' / ' + max;
+
+    // Next button text
+    const nextBtn = document.getElementById('result-next-btn');
+    if (currentStars >= threshold && level < 4 && !gameState.unlockedLevels[level]) {
+        nextBtn.textContent = 'Niveau suivant !';
+        nextBtn.onclick = () => startLevel(level + 1);
+    } else if (currentStars >= threshold && level < 4) {
+        nextBtn.textContent = 'Niveau suivant';
+        nextBtn.onclick = () => startLevel(level + 1);
+    } else {
+        nextBtn.textContent = 'Menu';
+        nextBtn.onclick = goHome;
+    }
+}
+
+function retryLevel() {
+    startLevel(gameState.currentLevel);
+}
+
+// ===================== INIT =====================
+loadGame();
+updateHomeScreen();
+
+</script>
+</body>
+</html>
