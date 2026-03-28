@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le P'tit Marchand - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #F9A825 0%, #FFF9C4 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* === BACK BUTTON === */
+        .back-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #5D4037;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* === SCREENS === */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === HOME SCREEN === */
+        .title {
+            font-size: clamp(1.8rem, 7vw, 3.2rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #E65100;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .title-emoji {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            display: block;
+            margin-bottom: 5px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: #795548;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stars-display {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #F57F17;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* === LEVEL BUTTONS === */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+
+        .level-btn {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1), inset 0 -3px 0 rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-height: 48px;
+        }
+
+        .level-btn:not(.locked):hover,
+        .level-btn:not(.locked):active {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        .level-btn .level-icon {
+            font-size: 2rem;
+        }
+
+        .level-btn .level-name {
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #5D4037;
+        }
+
+        .level-btn .level-stars {
+            font-size: 0.85rem;
+            color: #F9A825;
+        }
+
+        .level-btn .lock-icon {
+            font-size: 1.5rem;
+        }
+
+        /* === GAME SCREEN === */
+        .game-header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .game-progress {
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #5D4037;
+        }
+
+        .game-stars-count {
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #F9A825;
+        }
+
+        /* === SHOP COUNTER === */
+        .shop-counter {
+            width: 100%;
+            max-width: 600px;
+            background: repeating-linear-gradient(
+                90deg,
+                #8D6E63 0px, #8D6E63 20px,
+                #795548 20px, #795548 22px,
+                #A1887F 22px, #A1887F 42px,
+                #795548 42px, #795548 44px
+            );
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .shop-inner {
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* === MASCOT === */
+        .mascot {
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .mascot-speech {
+            font-size: clamp(0.85rem, 2.8vw, 1.1rem);
+            font-weight: 600;
+            color: #5D4037;
+            margin-bottom: 10px;
+            min-height: 1.5em;
+        }
+
+        /* === ITEM DISPLAY === */
+        .item-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .shop-item .item-emoji {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+        }
+
+        .shop-item .item-name {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #5D4037;
+        }
+
+        .price-tag {
+            display: inline-block;
+            background: #FFF9C4;
+            border: 2px solid #F9A825;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-size: clamp(1.1rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #E65100;
+        }
+
+        /* === COIN DISPLAY (Level 1) === */
+        .coin-question {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        /* === COINS & BILLS === */
+        .coin {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            position: relative;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .coin:active {
+            transform: scale(0.9);
+        }
+
+        .coin.copper {
+            background: radial-gradient(circle at 35% 35%, #D4956B, #B87333, #8B5E3C);
+            color: #FFF;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+        .coin.gold {
+            background: radial-gradient(circle at 35% 35%, #FFE082, #FFD700, #C9A800);
+            color: #5D4037;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .coin.bimetal-1e {
+            background: radial-gradient(circle at 50% 50%, #C0C0C0 55%, #FFD700 55%);
+            color: #333;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+        .coin.bimetal-2e {
+            background: radial-gradient(circle at 50% 50%, #FFD700 55%, #C0C0C0 55%);
+            color: #333;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+        .coin-small {
+            width: 35px;
+            height: 35px;
+            font-size: 0.55rem;
+        }
+
+        .coin-medium {
+            width: 40px;
+            height: 40px;
+            font-size: 0.6rem;
+        }
+
+        .coin-1e {
+            width: 45px;
+            height: 45px;
+            font-size: 0.7rem;
+        }
+
+        .coin-2e {
+            width: 48px;
+            height: 48px;
+            font-size: 0.7rem;
+        }
+
+        .coin-display-big {
+            width: clamp(60px, 18vw, 90px);
+            height: clamp(60px, 18vw, 90px);
+            font-size: clamp(0.9rem, 3vw, 1.4rem);
+        }
+
+        .bill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            min-width: 55px;
+            min-height: 35px;
+            padding: 6px 10px;
+            font-size: clamp(0.65rem, 2vw, 0.85rem);
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .bill:active {
+            transform: scale(0.9);
+        }
+
+        .bill-5 {
+            background: linear-gradient(135deg, #9E9E9E, #757575);
+        }
+
+        .bill-10 {
+            background: linear-gradient(135deg, #EF5350, #C62828);
+        }
+
+        .bill-20 {
+            background: linear-gradient(135deg, #42A5F5, #1565C0);
+        }
+
+        /* === ANSWER OPTIONS (Level 1) === */
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #E0E0E0;
+            border-radius: 15px;
+            padding: 12px 24px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+            font-weight: 700;
+            color: #5D4037;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 48px;
+            min-width: 48px;
+        }
+
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        .option-btn.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .option-btn.wrong {
+            border-color: #FF9800;
+            background: #FFF3E0;
+            color: #E65100;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* === MONEY PALETTE === */
+        .money-palette {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .palette-label {
+            font-size: clamp(0.75rem, 2.2vw, 0.9rem);
+            font-weight: 700;
+            color: #9E9E9E;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .palette-coins {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* === PAYMENT TRAY === */
+        .payment-tray {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border: 3px dashed #BDBDBD;
+            border-radius: 15px;
+            padding: 12px;
+            min-height: 70px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .tray-label {
+            font-size: clamp(0.75rem, 2.2vw, 0.9rem);
+            font-weight: 700;
+            color: #9E9E9E;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .tray-coins {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 4px;
+        }
+
+        .tray-coins:empty::after {
+            content: "Place tes pieces ici";
+            color: #BDBDBD;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 600;
+        }
+
+        .running-total {
+            text-align: center;
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            font-weight: 800;
+            color: #E65100;
+            margin-top: 8px;
+        }
+
+        /* === PAY BUTTON === */
+        .pay-btn {
+            background: linear-gradient(180deg, #66BB6A, #43A047);
+            border: none;
+            border-radius: 15px;
+            padding: 14px 40px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76,175,80,0.4), inset 0 -3px 0 rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            min-height: 48px;
+            margin-bottom: 10px;
+        }
+
+        .pay-btn:active {
+            transform: scale(0.95);
+        }
+
+        .pay-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* === SHOPPING LIST (Level 4) === */
+        .shopping-list {
+            background: #FFFDE7;
+            border: 2px solid #F9A825;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .shopping-list h3 {
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            color: #F57F17;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .shopping-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 600;
+            color: #5D4037;
+        }
+
+        .shopping-total {
+            border-top: 2px solid #F9A825;
+            margin-top: 8px;
+            padding-top: 8px;
+            font-weight: 800;
+            color: #E65100;
+            text-align: center;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+        }
+
+        /* === CELEBRATION === */
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .celebration.active {
+            display: flex;
+        }
+
+        .celebration-box {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 90%;
+            width: 350px;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .celebration-emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .celebration-text {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #E65100;
+            margin-bottom: 5px;
+        }
+
+        .celebration-sub {
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            color: #795548;
+            margin-bottom: 15px;
+        }
+
+        .celebration-stars {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .next-btn {
+            background: linear-gradient(180deg, #FFB74D, #FF9800);
+            border: none;
+            border-radius: 15px;
+            padding: 14px 35px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,152,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            min-height: 48px;
+        }
+
+        .next-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* === LEVEL COMPLETE === */
+        .level-complete {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .level-complete.active {
+            display: flex;
+        }
+
+        .level-complete-box {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 90%;
+            width: 380px;
+        }
+
+        .level-complete-box .celebration-emoji {
+            font-size: 3.5rem;
+        }
+
+        .level-complete-box .celebration-text {
+            font-size: clamp(1.3rem, 4.5vw, 1.8rem);
+        }
+
+        .complete-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .complete-buttons .next-btn {
+            width: 100%;
+        }
+
+        .home-btn {
+            background: linear-gradient(180deg, #90CAF9, #42A5F5);
+            border: none;
+            border-radius: 15px;
+            padding: 14px 35px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(66,165,245,0.4), inset 0 -3px 0 rgba(0,0,0,0.1);
+            min-height: 48px;
+            transition: all 0.2s ease;
+        }
+
+        .home-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* === CONFETTI === */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 300;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 2.5s ease forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* === CHANGE INFO (Level 3) === */
+        .change-info {
+            background: #FFF3E0;
+            border: 2px solid #FFB74D;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .change-info p {
+            font-size: clamp(0.85rem, 2.8vw, 1.1rem);
+            font-weight: 600;
+            color: #5D4037;
+            margin: 4px 0;
+        }
+
+        .change-info .change-amount {
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            font-weight: 800;
+            color: #E65100;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 350px) {
+            .coin-small { width: 30px; height: 30px; font-size: 0.45rem; }
+            .coin-medium { width: 34px; height: 34px; font-size: 0.5rem; }
+            .coin-1e { width: 38px; height: 38px; font-size: 0.6rem; }
+            .coin-2e { width: 42px; height: 42px; font-size: 0.6rem; }
+            .bill { min-width: 45px; min-height: 30px; padding: 4px 6px; font-size: 0.55rem; }
+            .palette-coins { gap: 5px; }
+        }
+
+        @media (min-width: 768px) {
+            .screen { padding-top: 70px; }
+        }
+
+        /* === SLIDE ANIMATION === */
+        .coin-slide-in {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0.5) translateY(-20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .coin-slide-out {
+            animation: slideOut 0.2s ease forwards;
+        }
+
+        @keyframes slideOut {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(0.5); opacity: 0; }
+        }
+
+        /* === KA-CHING === */
+        .ka-ching {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 800;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 250;
+            animation: kaChing 0.8s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes kaChing {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            40% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -60%) scale(1); opacity: 0; }
+        }
+
+        /* Level 4 total input */
+        .total-input-area {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .total-input-area label {
+            font-size: clamp(0.85rem, 2.8vw, 1.1rem);
+            font-weight: 700;
+            color: #5D4037;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .total-guess-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .total-guess-btn {
+            background: white;
+            border: 3px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 700;
+            color: #5D4037;
+            cursor: pointer;
+            min-height: 48px;
+            transition: all 0.2s ease;
+        }
+
+        .total-guess-btn:active { transform: scale(0.95); }
+        .total-guess-btn.correct { border-color: #4CAF50; background: #E8F5E9; color: #2E7D32; }
+        .total-guess-btn.wrong { border-color: #FF9800; background: #FFF3E0; animation: shake 0.4s ease; }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">← Mes Jeux</a>
+
+<!-- HOME SCREEN -->
+<div id="home-screen" class="screen active">
+    <div class="title-emoji">🏪</div>
+    <div class="title">Le P'tit Marchand</div>
+    <div class="subtitle">Apprends a compter avec les euros !</div>
+    <div class="stars-display" id="home-stars">Etoiles : 0</div>
+    <div class="levels-grid" id="levels-grid"></div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen" class="screen">
+    <div class="game-header">
+        <div class="game-progress" id="game-progress">Question 1/10</div>
+        <div class="game-stars-count" id="game-stars-count">⭐ 0</div>
+    </div>
+    <div class="shop-counter">
+        <div class="shop-inner" id="shop-inner">
+            <!-- Dynamic content here -->
+        </div>
+    </div>
+    <div id="game-body">
+        <!-- Dynamic content: palette, tray, pay button -->
+    </div>
+</div>
+
+<!-- CELEBRATION OVERLAY -->
+<div class="celebration" id="celebration">
+    <div class="celebration-box">
+        <div class="celebration-emoji" id="celeb-emoji">🎉</div>
+        <div class="celebration-text" id="celeb-text">Bravo !</div>
+        <div class="celebration-sub" id="celeb-sub">+1 etoile</div>
+        <div class="celebration-stars" id="celeb-stars"></div>
+        <button class="next-btn" id="celeb-next-btn">Suivant</button>
+    </div>
+</div>
+
+<!-- LEVEL COMPLETE OVERLAY -->
+<div class="level-complete" id="level-complete">
+    <div class="level-complete-box">
+        <div class="celebration-emoji" id="lc-emoji">🏆</div>
+        <div class="celebration-text" id="lc-text">Niveau termine !</div>
+        <div class="celebration-sub" id="lc-sub"></div>
+        <div class="celebration-stars" id="lc-stars"></div>
+        <div class="complete-buttons">
+            <button class="next-btn" id="lc-next-btn" style="display:none;">Niveau suivant</button>
+            <button class="home-btn" id="lc-home-btn">Retour au menu</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONFETTI -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ===================== GAME STATE =====================
+const gameState = {
+    currentLevel: 1,
+    totalStars: 0,
+    bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+    unlockedLevels: [1],
+    starsThisSession: 0,
+    currentQuestion: 0
+};
+
+let currentQuestions = [];
+let trayContents = []; // cents values in tray
+let currentTargetCents = 0;
+let currentLevelConfig = null;
+let level4Phase = 'guess'; // 'guess' or 'pay'
+let level4TotalCents = 0;
+let firstTryExact = true;
+
+// ===================== DATA =====================
+const COINS = [
+    { label: '1c', cents: 1, type: 'copper', sizeClass: 'coin-small' },
+    { label: '2c', cents: 2, type: 'copper', sizeClass: 'coin-small' },
+    { label: '5c', cents: 5, type: 'copper', sizeClass: 'coin-small' },
+    { label: '10c', cents: 10, type: 'gold', sizeClass: 'coin-medium' },
+    { label: '20c', cents: 20, type: 'gold', sizeClass: 'coin-medium' },
+    { label: '50c', cents: 50, type: 'gold', sizeClass: 'coin-medium' },
+    { label: '1€', cents: 100, type: 'bimetal-1e', sizeClass: 'coin-1e' },
+    { label: '2€', cents: 200, type: 'bimetal-2e', sizeClass: 'coin-2e' }
+];
+
+const BILLS = [
+    { label: '5€', cents: 500, colorClass: 'bill-5' },
+    { label: '10€', cents: 1000, colorClass: 'bill-10' },
+    { label: '20€', cents: 2000, colorClass: 'bill-20' }
+];
+
+const SHOP_ITEMS = [
+    { name: 'Bonbon', emoji: '🍬', cents: 100 },
+    { name: 'Crayon', emoji: '✏️', cents: 200 },
+    { name: 'Gomme', emoji: '📏', cents: 50 },
+    { name: 'Gateau', emoji: '🍰', cents: 300 },
+    { name: 'Jus', emoji: '🧃', cents: 150 },
+    { name: 'Livre', emoji: '📚', cents: 500 },
+    { name: 'Jouet', emoji: '🧸', cents: 700 },
+    { name: 'Pizza', emoji: '🍕', cents: 450 },
+    { name: 'Glace', emoji: '🍦', cents: 250 },
+    { name: 'Ballon', emoji: '⚽', cents: 600 }
+];
+
+const ENCOURAGEMENTS = [
+    "Super !", "Bravo !", "Genial !", "Tres bien !", "Excellent !",
+    "Parfait !", "Magnifique !", "Formidable !", "Champion !", "Fantastique !"
+];
+
+const LEVEL_CONFIG = {
+    1: { name: 'Reconnais les pieces', icon: '🪙', questions: 10 },
+    2: { name: 'Paye le prix exact', icon: '💰', questions: 10 },
+    3: { name: 'Rends la monnaie', icon: '🤝', questions: 8 },
+    4: { name: 'Le Marche', icon: '🛒', questions: 6 }
+};
+
+// ===================== AUDIO =====================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function getAudioCtx() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    return audioCtx;
+}
+
+function playCoinSound() {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+    } catch(e) {}
+}
+
+function playRemoveSound() {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+    } catch(e) {}
+}
+
+function playCorrectSound() {
+    try {
+        const ctx = getAudioCtx();
+        const notes = [523, 659, 784];
+        notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.12 + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + i * 0.12);
+            osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+        });
+    } catch(e) {}
+}
+
+function playKaChingSound() {
+    try {
+        const ctx = getAudioCtx();
+        [1200, 1600, 2000].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.4);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + i * 0.08);
+            osc.stop(ctx.currentTime + i * 0.08 + 0.4);
+        });
+    } catch(e) {}
+}
+
+function playWrongSound() {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(200, ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+    } catch(e) {}
+}
+
+function playLevelCompleteSound() {
+    try {
+        const ctx = getAudioCtx();
+        const melody = [523, 587, 659, 784, 1047];
+        melody.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.4);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + i * 0.15);
+            osc.stop(ctx.currentTime + i * 0.15 + 0.4);
+        });
+    } catch(e) {}
+}
+
+// ===================== HELPERS =====================
+function formatCents(cents) {
+    if (cents >= 100) {
+        const euros = Math.floor(cents / 100);
+        const cts = cents % 100;
+        if (cts === 0) return euros + '€';
+        return euros + '€' + (cts < 10 ? '0' : '') + cts;
+    }
+    return cents + 'c';
+}
+
+function formatCentsLong(cents) {
+    if (cents >= 100) {
+        const euros = Math.floor(cents / 100);
+        const cts = cents % 100;
+        if (cts === 0) return euros + '€';
+        return euros + '€' + (cts < 10 ? '0' : '') + cts;
+    }
+    return cents + ' centimes';
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function randomFrom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomEncouragement() {
+    return randomFrom(ENCOURAGEMENTS);
+}
+
+// ===================== SAVE / LOAD =====================
+function saveGame() {
+    localStorage.setItem('lePtitMarchand', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels
+    }));
+    localStorage.setItem('marchandScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('lePtitMarchand'));
+        if (saved) {
+            gameState.currentLevel = saved.currentLevel || 1;
+            gameState.totalStars = saved.totalStars || 0;
+            gameState.bestScores = saved.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+            gameState.unlockedLevels = saved.unlockedLevels || [1];
+        }
+    } catch(e) {}
+}
+
+// ===================== SCREENS =====================
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// ===================== HOME SCREEN =====================
+function renderHome() {
+    document.getElementById('home-stars').textContent = 'Etoiles : ' + gameState.totalStars + ' ⭐';
+    const grid = document.getElementById('levels-grid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= 4; i++) {
+        const cfg = LEVEL_CONFIG[i];
+        const unlocked = gameState.unlockedLevels.includes(i);
+        const btn = document.createElement('button');
+        btn.className = 'level-btn' + (unlocked ? '' : ' locked');
+        const best = gameState.bestScores[i] || 0;
+        btn.innerHTML = unlocked
+            ? `<span class="level-icon">${cfg.icon}</span>
+               <span class="level-name">${cfg.name}</span>
+               <span class="level-stars">${'⭐'.repeat(best)} ${best > 0 ? '(' + best + '/' + cfg.questions + ')' : ''}</span>`
+            : `<span class="lock-icon">🔒</span>
+               <span class="level-name">${cfg.name}</span>`;
+        if (unlocked) {
+            btn.addEventListener('click', () => startLevel(i));
+        }
+        grid.appendChild(btn);
+    }
+    showScreen('home-screen');
+}
+
+// ===================== START LEVEL =====================
+function startLevel(level) {
+    gameState.currentLevel = level;
+    gameState.starsThisSession = 0;
+    gameState.currentQuestion = 0;
+    currentLevelConfig = LEVEL_CONFIG[level];
+
+    switch(level) {
+        case 1: generateLevel1Questions(); break;
+        case 2: generateLevel2Questions(); break;
+        case 3: generateLevel3Questions(); break;
+        case 4: generateLevel4Questions(); break;
+    }
+
+    showScreen('game-screen');
+    showQuestion();
+}
+
+// ===================== LEVEL 1: RECOGNIZE COINS =====================
+function generateLevel1Questions() {
+    currentQuestions = [];
+    const allCoins = shuffle(COINS);
+    for (let i = 0; i < 10; i++) {
+        const coin = allCoins[i % allCoins.length];
+        // generate wrong answers
+        const wrongPool = COINS.filter(c => c.cents !== coin.cents);
+        const wrongs = shuffle(wrongPool).slice(0, 2 + Math.floor(Math.random() * 2)); // 2-3 wrong
+        const options = shuffle([coin, ...wrongs]);
+        currentQuestions.push({ coin, options });
+    }
+}
+
+function showQuestion() {
+    const level = gameState.currentLevel;
+    const qNum = gameState.currentQuestion;
+    const total = currentLevelConfig.questions;
+
+    document.getElementById('game-progress').textContent = `Question ${qNum + 1}/${total}`;
+    document.getElementById('game-stars-count').textContent = `⭐ ${gameState.starsThisSession}`;
+
+    switch(level) {
+        case 1: renderLevel1Question(); break;
+        case 2: renderLevel2Question(); break;
+        case 3: renderLevel3Question(); break;
+        case 4: renderLevel4Question(); break;
+    }
+}
+
+function renderLevel1Question() {
+    const q = currentQuestions[gameState.currentQuestion];
+    const shop = document.getElementById('shop-inner');
+    const body = document.getElementById('game-body');
+
+    shop.innerHTML = `
+        <div class="mascot" id="mascot">😊</div>
+        <div class="mascot-speech" id="mascot-speech">Combien vaut cette piece ?</div>
+        <div class="coin-question">
+            <div class="coin ${q.coin.type} coin-display-big">${q.coin.label}</div>
+        </div>
+    `;
+
+    let optionsHTML = '<div class="options-grid">';
+    q.options.forEach((opt, idx) => {
+        optionsHTML += `<button class="option-btn" data-cents="${opt.cents}" data-idx="${idx}">${opt.label}</button>`;
+    });
+    optionsHTML += '</div>';
+    body.innerHTML = optionsHTML;
+
+    body.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleLevel1Answer(btn, q.coin.cents));
+    });
+}
+
+function handleLevel1Answer(btn, correctCents) {
+    const chosen = parseInt(btn.dataset.cents);
+    const allBtns = document.querySelectorAll('.option-btn');
+
+    if (chosen === correctCents) {
+        btn.classList.add('correct');
+        allBtns.forEach(b => b.style.pointerEvents = 'none');
+        document.getElementById('mascot').textContent = '🎉';
+        document.getElementById('mascot-speech').textContent = randomEncouragement();
+        playCorrectSound();
+        gameState.starsThisSession++;
+        document.getElementById('game-stars-count').textContent = `⭐ ${gameState.starsThisSession}`;
+        setTimeout(() => advanceQuestion(), 1000);
+    } else {
+        btn.classList.add('wrong');
+        btn.style.pointerEvents = 'none';
+        document.getElementById('mascot').textContent = '🤔';
+        document.getElementById('mascot-speech').textContent = 'Essaie encore !';
+        playWrongSound();
+    }
+}
+
+// ===================== LEVEL 2: PAY EXACT =====================
+function generateLevel2Questions() {
+    currentQuestions = shuffle([...SHOP_ITEMS]).slice(0, 10);
+}
+
+function renderLevel2Question() {
+    const item = currentQuestions[gameState.currentQuestion];
+    currentTargetCents = item.cents;
+    trayContents = [];
+    firstTryExact = true;
+
+    const shop = document.getElementById('shop-inner');
+    shop.innerHTML = `
+        <div class="mascot" id="mascot">😊</div>
+        <div class="mascot-speech" id="mascot-speech">Paye le bon montant !</div>
+        <div class="item-display">
+            <div class="shop-item">
+                <span class="item-emoji">${item.emoji}</span>
+                <span class="item-name">${item.name}</span>
+            </div>
+            <div class="price-tag">${formatCents(item.cents)}</div>
+        </div>
+    `;
+
+    renderPaymentUI();
+}
+
+function renderPaymentUI() {
+    const body = document.getElementById('game-body');
+    const availableCoins = getAvailableMoneyForAmount(currentTargetCents);
+
+    let html = `
+        <div class="money-palette">
+            <div class="palette-label">Tes pieces et billets</div>
+            <div class="palette-coins" id="palette-coins">`;
+
+    availableCoins.forEach((money, i) => {
+        if (money.isBill) {
+            html += `<div class="bill ${money.colorClass}" data-cents="${money.cents}" data-idx="${i}">${money.label}</div>`;
+        } else {
+            html += `<div class="coin ${money.type} ${money.sizeClass}" data-cents="${money.cents}" data-idx="${i}">${money.label}</div>`;
+        }
+    });
+
+    html += `</div></div>
+        <div class="payment-tray">
+            <div class="tray-label">Plateau de paiement</div>
+            <div class="tray-coins" id="tray-coins"></div>
+            <div class="running-total" id="running-total">Tu as mis : 0c</div>
+        </div>
+        <button class="pay-btn" id="pay-btn">Payer !</button>`;
+
+    body.innerHTML = html;
+
+    // Events: palette click to add
+    body.querySelectorAll('.palette-coins .coin, .palette-coins .bill').forEach(el => {
+        el.addEventListener('click', () => addToTray(parseInt(el.dataset.cents), el));
+    });
+
+    document.getElementById('pay-btn').addEventListener('click', handlePayment);
+}
+
+function getAvailableMoneyForAmount(targetCents) {
+    const available = [];
+    // Only provide denominations that make sense for the target
+    const allMoney = [
+        ...COINS.map(c => ({ ...c, isBill: false })),
+        ...BILLS.map(b => ({ ...b, isBill: true, type: b.colorClass }))
+    ];
+
+    // For level 2 & 3, provide relevant denominations with multiples
+    allMoney.forEach(m => {
+        if (m.cents <= targetCents * 2 && m.cents <= 2000) {
+            const count = Math.min(Math.ceil(targetCents / m.cents) + 1, 5);
+            for (let i = 0; i < count; i++) {
+                available.push(m);
+            }
+        }
+    });
+
+    // Limit to reasonable number, but always include small coins
+    return available.slice(0, 30);
+}
+
+function addToTray(cents, el) {
+    trayContents.push(cents);
+    playCoinSound();
+    updateTrayDisplay();
+}
+
+function removeFromTray(index) {
+    trayContents.splice(index, 1);
+    playRemoveSound();
+    updateTrayDisplay();
+}
+
+function updateTrayDisplay() {
+    const tray = document.getElementById('tray-coins');
+    const totalEl = document.getElementById('running-total');
+    if (!tray || !totalEl) return;
+
+    const total = trayContents.reduce((s, c) => s + c, 0);
+    totalEl.textContent = 'Tu as mis : ' + formatCents(total);
+
+    tray.innerHTML = '';
+    trayContents.forEach((cents, idx) => {
+        const moneyDef = findMoneyDef(cents);
+        const el = document.createElement('div');
+        if (moneyDef.isBill) {
+            el.className = `bill ${moneyDef.colorClass} coin-slide-in`;
+        } else {
+            el.className = `coin ${moneyDef.type} ${moneyDef.sizeClass} coin-slide-in`;
+        }
+        el.textContent = moneyDef.label;
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', () => removeFromTray(idx));
+        tray.appendChild(el);
+    });
+}
+
+function findMoneyDef(cents) {
+    // Find the matching coin or bill definition
+    const coin = COINS.find(c => c.cents === cents);
+    if (coin) return { ...coin, isBill: false };
+    const bill = BILLS.find(b => b.cents === cents);
+    if (bill) return { ...bill, isBill: true, type: bill.colorClass };
+    return { label: formatCents(cents), type: 'gold', sizeClass: 'coin-medium', isBill: false };
+}
+
+function handlePayment() {
+    const total = trayContents.reduce((s, c) => s + c, 0);
+    const mascot = document.getElementById('mascot');
+    const speech = document.getElementById('mascot-speech');
+
+    if (total === currentTargetCents) {
+        // Correct!
+        mascot.textContent = '🎉';
+        speech.textContent = randomEncouragement();
+        gameState.starsThisSession++;
+        document.getElementById('game-stars-count').textContent = `⭐ ${gameState.starsThisSession}`;
+        playKaChingSound();
+        showKaChing();
+        document.getElementById('pay-btn').disabled = true;
+        document.querySelectorAll('.palette-coins .coin, .palette-coins .bill').forEach(el => el.style.pointerEvents = 'none');
+        setTimeout(() => advanceQuestion(), 1500);
+    } else if (total > currentTargetCents) {
+        mascot.textContent = '🤔';
+        speech.textContent = "C'est trop ! Retire une piece.";
+        playWrongSound();
+        firstTryExact = false;
+    } else {
+        mascot.textContent = '🤔';
+        speech.textContent = 'Il manque encore un peu !';
+        playWrongSound();
+        firstTryExact = false;
+    }
+}
+
+function showKaChing() {
+    const el = document.createElement('div');
+    el.className = 'ka-ching';
+    el.textContent = 'Ka-ching ! 💰';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+}
+
+// ===================== LEVEL 3: GIVE CHANGE =====================
+function generateLevel3Questions() {
+    currentQuestions = [];
+    const items = shuffle([...SHOP_ITEMS]);
+    for (let i = 0; i < 8; i++) {
+        const item = items[i % items.length];
+        // Pick a payment that's larger
+        let paid;
+        if (item.cents <= 100) paid = 200;
+        else if (item.cents <= 200) paid = 500;
+        else if (item.cents <= 500) paid = 1000;
+        else paid = 1000;
+
+        // Make sure change is positive
+        if (paid <= item.cents) paid = item.cents + 100;
+
+        currentQuestions.push({
+            item,
+            paidCents: paid,
+            changeCents: paid - item.cents
+        });
+    }
+}
+
+function renderLevel3Question() {
+    const q = currentQuestions[gameState.currentQuestion];
+    currentTargetCents = q.changeCents;
+    trayContents = [];
+    firstTryExact = true;
+
+    const shop = document.getElementById('shop-inner');
+    shop.innerHTML = `
+        <div class="mascot" id="mascot">😊</div>
+        <div class="mascot-speech" id="mascot-speech">Rends la monnaie au client !</div>
+        <div class="item-display">
+            <div class="shop-item">
+                <span class="item-emoji">${q.item.emoji}</span>
+                <span class="item-name">${q.item.name}</span>
+            </div>
+        </div>
+        <div class="change-info">
+            <p>Prix : <strong>${formatCents(q.item.cents)}</strong></p>
+            <p>Le client donne : <strong>${formatCents(q.paidCents)}</strong></p>
+            <p class="change-amount">Monnaie a rendre : ?</p>
+        </div>
+    `;
+
+    renderPaymentUI();
+    document.getElementById('pay-btn').textContent = 'Rendre la monnaie';
+
+    // Override pay button
+    document.getElementById('pay-btn').removeEventListener('click', handlePayment);
+    document.getElementById('pay-btn').addEventListener('click', handleChangePayment);
+}
+
+function handleChangePayment() {
+    const total = trayContents.reduce((s, c) => s + c, 0);
+    const mascot = document.getElementById('mascot');
+    const speech = document.getElementById('mascot-speech');
+
+    if (total === currentTargetCents) {
+        mascot.textContent = '🎉';
+        speech.textContent = randomEncouragement();
+        gameState.starsThisSession++;
+        document.getElementById('game-stars-count').textContent = `⭐ ${gameState.starsThisSession}`;
+        playKaChingSound();
+        showKaChing();
+        document.getElementById('pay-btn').disabled = true;
+        document.querySelectorAll('.palette-coins .coin, .palette-coins .bill').forEach(el => el.style.pointerEvents = 'none');
+        setTimeout(() => advanceQuestion(), 1500);
+    } else if (total > currentTargetCents) {
+        mascot.textContent = '🤔';
+        speech.textContent = "C'est trop ! Retire une piece.";
+        playWrongSound();
+        firstTryExact = false;
+    } else {
+        mascot.textContent = '🤔';
+        speech.textContent = 'Il en manque encore un peu !';
+        playWrongSound();
+        firstTryExact = false;
+    }
+}
+
+// ===================== LEVEL 4: THE MARKET =====================
+function generateLevel4Questions() {
+    currentQuestions = [];
+    const items = shuffle([...SHOP_ITEMS]);
+    for (let i = 0; i < 6; i++) {
+        // Pick 2-3 items
+        const count = 2 + Math.floor(Math.random() * 2);
+        const selected = [];
+        for (let j = 0; j < count; j++) {
+            selected.push(items[(i * 3 + j) % items.length]);
+        }
+        const totalCents = selected.reduce((s, it) => s + it.cents, 0);
+        currentQuestions.push({ items: selected, totalCents });
+    }
+}
+
+function renderLevel4Question() {
+    const q = currentQuestions[gameState.currentQuestion];
+    level4Phase = 'guess';
+    level4TotalCents = q.totalCents;
+    currentTargetCents = q.totalCents;
+    trayContents = [];
+    firstTryExact = true;
+
+    const shop = document.getElementById('shop-inner');
+    shop.innerHTML = `
+        <div class="mascot" id="mascot">😊</div>
+        <div class="mascot-speech" id="mascot-speech">Combien coute tout ca ?</div>
+        <div class="shopping-list">
+            <h3>🛒 Liste de courses</h3>
+            ${q.items.map(it => `
+                <div class="shopping-list-item">
+                    <span>${it.emoji} ${it.name}</span>
+                    <span>${formatCents(it.cents)}</span>
+                </div>
+            `).join('')}
+            <div class="shopping-total" id="shopping-total">Total : ???</div>
+        </div>
+    `;
+
+    // Phase 1: guess the total
+    const body = document.getElementById('game-body');
+    const correctTotal = q.totalCents;
+
+    // Generate choices: correct + 2-3 wrong
+    let choices = [correctTotal];
+    while (choices.length < 4) {
+        const offset = (Math.floor(Math.random() * 5) + 1) * 50 * (Math.random() < 0.5 ? 1 : -1);
+        const wrong = correctTotal + offset;
+        if (wrong > 0 && !choices.includes(wrong)) {
+            choices.push(wrong);
+        }
+    }
+    choices = shuffle(choices);
+
+    body.innerHTML = `
+        <div class="total-input-area">
+            <label>Quel est le total ?</label>
+            <div class="total-guess-buttons" id="total-guess-buttons">
+                ${choices.map(c => `<button class="total-guess-btn" data-cents="${c}">${formatCents(c)}</button>`).join('')}
+            </div>
+        </div>
+    `;
+
+    body.querySelectorAll('.total-guess-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleTotalGuess(btn, correctTotal));
+    });
+}
+
+function handleTotalGuess(btn, correctCents) {
+    const chosen = parseInt(btn.dataset.cents);
+    if (chosen === correctCents) {
+        btn.classList.add('correct');
+        document.querySelectorAll('.total-guess-btn').forEach(b => b.style.pointerEvents = 'none');
+        document.getElementById('mascot').textContent = '🎉';
+        document.getElementById('mascot-speech').textContent = 'Correct ! Maintenant, paye !';
+        document.getElementById('shopping-total').textContent = 'Total : ' + formatCents(correctCents);
+        playCorrectSound();
+        // Move to payment phase
+        setTimeout(() => {
+            level4Phase = 'pay';
+            currentTargetCents = correctCents;
+            trayContents = [];
+            renderPaymentUI();
+        }, 1000);
+    } else {
+        btn.classList.add('wrong');
+        btn.style.pointerEvents = 'none';
+        document.getElementById('mascot').textContent = '🤔';
+        document.getElementById('mascot-speech').textContent = 'Pas tout a fait, recompte !';
+        playWrongSound();
+        firstTryExact = false;
+    }
+}
+
+// ===================== QUESTION FLOW =====================
+function advanceQuestion() {
+    gameState.currentQuestion++;
+    if (gameState.currentQuestion >= currentLevelConfig.questions) {
+        finishLevel();
+    } else {
+        showQuestion();
+    }
+}
+
+function finishLevel() {
+    const level = gameState.currentLevel;
+    const stars = gameState.starsThisSession;
+    const total = currentLevelConfig.questions;
+
+    // Update best score
+    if (stars > gameState.bestScores[level]) {
+        gameState.bestScores[level] = stars;
+    }
+
+    // Add stars to total
+    gameState.totalStars += stars;
+
+    // Unlock next level if scored enough (>= 50%)
+    const nextLevel = level + 1;
+    if (nextLevel <= 4 && stars >= Math.ceil(total / 2) && !gameState.unlockedLevels.includes(nextLevel)) {
+        gameState.unlockedLevels.push(nextLevel);
+    }
+
+    saveGame();
+
+    // Show level complete
+    document.getElementById('lc-emoji').textContent = stars >= total ? '🏆' : '🎉';
+    document.getElementById('lc-text').textContent = stars >= total ? 'Parfait !' : 'Niveau termine !';
+    document.getElementById('lc-sub').textContent = stars + '/' + total + ' etoiles';
+    document.getElementById('lc-stars').textContent = '⭐'.repeat(Math.min(stars, 10));
+
+    const nextBtn = document.getElementById('lc-next-btn');
+    if (nextLevel <= 4 && gameState.unlockedLevels.includes(nextLevel)) {
+        nextBtn.style.display = 'block';
+        nextBtn.textContent = 'Niveau ' + nextLevel;
+        nextBtn.onclick = () => {
+            document.getElementById('level-complete').classList.remove('active');
+            startLevel(nextLevel);
+        };
+    } else {
+        nextBtn.style.display = 'none';
+    }
+
+    document.getElementById('lc-home-btn').onclick = () => {
+        document.getElementById('level-complete').classList.remove('active');
+        renderHome();
+    };
+
+    document.getElementById('level-complete').classList.add('active');
+    playLevelCompleteSound();
+    launchConfetti();
+}
+
+// ===================== CONFETTI =====================
+function launchConfetti() {
+    const container = document.getElementById('confetti-container');
+    container.innerHTML = '';
+    const colors = ['#FF6B35', '#FFD700', '#4CAF50', '#2196F3', '#E91E63', '#9C27B0'];
+    for (let i = 0; i < 40; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.backgroundColor = randomFrom(colors);
+        piece.style.animationDelay = Math.random() * 0.8 + 's';
+        piece.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+        piece.style.width = (6 + Math.random() * 8) + 'px';
+        piece.style.height = (6 + Math.random() * 8) + 'px';
+        container.appendChild(piece);
+    }
+    setTimeout(() => container.innerHTML = '', 3500);
+}
+
+// ===================== INIT =====================
+loadGame();
+renderHome();
+</script>
+</body>
+</html>

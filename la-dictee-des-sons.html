@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>La Dictee des Sons - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #AD1457 0%, #E91E63 40%, #F48FB1 100%);
+            min-height: 100vh;
+            overflow: auto;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #AD1457;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #fff;
+        }
+
+        /* ===== WELCOME SCREEN ===== */
+        .welcome-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mascot {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .total-stars-display {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 8px 20px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 20px;
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 3px solid transparent;
+        }
+        .level-card:not(.locked):hover {
+            transform: translateY(-4px) scale(1.03);
+            border-color: #FFD600;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .level-card:not(.locked):active {
+            transform: scale(0.97);
+        }
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+        .level-card .level-icon {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+        }
+        .level-card .level-name {
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            font-weight: 700;
+            color: #AD1457;
+            line-height: 1.2;
+        }
+        .level-card .level-best {
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            color: #888;
+            font-weight: 600;
+        }
+        .level-card .lock-icon {
+            font-size: 1.5rem;
+            opacity: 0.5;
+        }
+
+        /* ===== GAME SCREEN ===== */
+        .game-header {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD600, #FFAB00);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .stars-counter {
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 5px 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            white-space: nowrap;
+        }
+
+        .level-label {
+            color: rgba(255,255,255,0.8);
+            font-weight: 700;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            white-space: nowrap;
+        }
+
+        .speaker-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0;
+            gap: 8px;
+        }
+
+        .speaker-btn {
+            width: clamp(80px, 20vw, 110px);
+            height: clamp(80px, 20vw, 110px);
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #fff 0%, #f3e5f5 100%);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+            cursor: pointer;
+            font-size: clamp(2rem, 7vw, 3rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .speaker-btn:hover {
+            transform: scale(1.08);
+        }
+        .speaker-btn:active {
+            transform: scale(0.95);
+        }
+        .speaker-btn.playing {
+            animation: pulse 0.8s ease infinite;
+            box-shadow: 0 0 30px rgba(255,255,255,0.5), 0 6px 25px rgba(0,0,0,0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+            50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(255,255,255,0.6); }
+        }
+
+        .speaker-label {
+            color: rgba(255,255,255,0.9);
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .instruction-text {
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            text-align: center;
+            margin-bottom: 12px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+            min-height: 1.5em;
+        }
+
+        /* Slots for levels 3 & 4 */
+        .slots-area {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+
+        .slot {
+            width: clamp(50px, 14vw, 70px);
+            height: clamp(55px, 15vw, 70px);
+            border: 3px dashed rgba(255,255,255,0.6);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #AD1457;
+            background: rgba(255,255,255,0.15);
+            transition: all 0.3s ease;
+        }
+        .slot.filled {
+            background: rgba(255,255,255,0.9);
+            border-style: solid;
+            border-color: #FFD600;
+            animation: slotPop 0.3s ease;
+        }
+
+        @keyframes slotPop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Grapheme cards grid */
+        .cards-section {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 15px;
+        }
+
+        .cards-row-label {
+            color: rgba(255,255,255,0.8);
+            font-weight: 700;
+            font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .grapheme-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 10px 16px;
+            min-width: clamp(55px, 16vw, 80px);
+            min-height: clamp(55px, 14vw, 65px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.7rem);
+            font-weight: 800;
+            color: #AD1457;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            border: 3px solid transparent;
+        }
+        .grapheme-card:hover:not(.disabled):not(.used) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+        }
+        .grapheme-card:active:not(.disabled):not(.used) {
+            transform: scale(0.95);
+        }
+        .grapheme-card.selected {
+            border-color: #FFD600;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5), 0 4px 15px rgba(0,0,0,0.12);
+            transform: scale(1.08);
+        }
+        .grapheme-card.correct {
+            background: #4CAF50;
+            color: #fff;
+            border-color: #388E3C;
+            animation: correctPop 0.5s ease;
+        }
+        .grapheme-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: scale(0.95);
+        }
+        .grapheme-card.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .grapheme-card.hint {
+            animation: hintPulse 1s ease infinite;
+        }
+
+        @keyframes correctPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.2); }
+            100% { transform: scale(1.05); }
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { border-color: transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.12); }
+            50% { border-color: #FFD600; box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+        }
+
+        /* Color codes for vowel cards */
+        .card-color-a { color: #D32F2F; }
+        .card-color-e { color: #1976D2; }
+        .card-color-i { color: #388E3C; }
+        .card-color-o { color: #F57C00; }
+        .card-color-u { color: #7B1FA2; }
+        .card-color-default { color: #AD1457; }
+
+        /* Feedback area */
+        .feedback-area {
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 0;
+        }
+
+        .feedback-text {
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-emoji {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            animation: celebrationPop 0.6s ease;
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .sparkles {
+            position: fixed;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: sparkleFloat 1s ease forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; }
+        }
+
+        /* ===== LEVEL COMPLETE SCREEN ===== */
+        .complete-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 30px 25px;
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .complete-emoji {
+            font-size: clamp(3rem, 10vw, 4.5rem);
+            margin-bottom: 10px;
+        }
+
+        .complete-title {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #AD1457;
+            margin-bottom: 8px;
+        }
+
+        .complete-stars {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+
+        .complete-text {
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .complete-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #AD1457, #E91E63);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 24px;
+            font-size: clamp(1rem, 3vw, 1.15rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            box-shadow: 0 4px 15px rgba(173,20,87,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-primary:active { transform: scale(0.97); }
+
+        .btn-secondary {
+            background: rgba(173,20,87,0.1);
+            color: #AD1457;
+            border: 2px solid #AD1457;
+            border-radius: 16px;
+            padding: 12px 24px;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+        }
+        .btn-secondary:hover { background: rgba(173,20,87,0.15); }
+
+        /* Galaxy Fold */
+        @media (max-width: 300px) {
+            .cards-grid {
+                gap: 6px;
+            }
+            .grapheme-card {
+                min-width: 50px;
+                min-height: 50px;
+                padding: 8px 10px;
+                font-size: 1.1rem;
+            }
+            .levels-grid {
+                gap: 8px;
+            }
+            .slot {
+                width: 45px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .grapheme-card {
+                min-width: 52px;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Landscape */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .screen {
+                padding-top: 50px;
+                min-height: auto;
+            }
+            .speaker-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 1.8rem;
+            }
+            .speaker-area {
+                margin: 8px 0;
+            }
+            .mascot {
+                font-size: 2.5rem;
+                margin-bottom: 5px;
+            }
+            .welcome-title {
+                font-size: 1.8rem;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== WELCOME SCREEN ===== -->
+<div id="welcome-screen" class="screen active">
+    <a href="index.html" class="back-to-menu">&larr; Mes Jeux</a>
+    <div class="mascot">🎧</div>
+    <div class="welcome-title">La Dictee des Sons</div>
+    <div class="welcome-subtitle">Ecoute le son et trouve la bonne ecriture !</div>
+    <div class="total-stars-display" id="total-stars-welcome">Total : 0 ⭐</div>
+    <div class="levels-grid" id="levels-grid"></div>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div id="game-screen" class="screen">
+    <a href="index.html" class="back-to-menu">&larr; Mes Jeux</a>
+    <div class="game-header">
+        <span class="level-label" id="level-label">Niveau 1</span>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <span class="stars-counter" id="stars-counter">0 ⭐</span>
+    </div>
+
+    <div class="speaker-area">
+        <button class="speaker-btn" id="speaker-btn" aria-label="Ecouter le son">🔊</button>
+        <span class="speaker-label">Ecouter</span>
+    </div>
+
+    <div class="instruction-text" id="instruction-text"></div>
+
+    <div class="slots-area" id="slots-area" style="display:none;"></div>
+
+    <div class="cards-section" id="cards-section"></div>
+
+    <div class="feedback-area" id="feedback-area"></div>
+</div>
+
+<!-- ===== LEVEL COMPLETE SCREEN ===== -->
+<div id="complete-screen" class="screen">
+    <a href="index.html" class="back-to-menu">&larr; Mes Jeux</a>
+    <div class="complete-card">
+        <div class="complete-emoji" id="complete-emoji">🎉</div>
+        <div class="complete-title" id="complete-title">Bravo !</div>
+        <div class="complete-stars" id="complete-stars"></div>
+        <div class="complete-text" id="complete-text"></div>
+        <div class="complete-btns" id="complete-btns"></div>
+    </div>
+</div>
+
+<script>
+// ===== GAME STATE =====
+const gameState = {
+    currentLevel: 1,
+    totalStars: 0,
+    bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+    unlockedLevels: [1],
+    starsThisSession: 0,
+    currentQuestion: 0,
+    wrongAttempts: 0
+};
+
+// ===== LEVEL DATA =====
+const LEVELS = {
+    1: {
+        name: 'Sons simples',
+        icon: '🔤',
+        totalQuestions: 10,
+        type: 'qcm',
+        questions: [
+            { sound: 'A', answer: 'A', choices: ['A', 'O', 'I', 'U'], emoji: '🐝', word: 'Abeille' },
+            { sound: 'E', answer: 'E', choices: ['E', 'A', 'I', 'U'], emoji: '🐘', word: 'Elephant' },
+            { sound: 'I', answer: 'I', choices: ['I', 'E', 'O', 'U'], emoji: '🏝️', word: 'Ile' },
+            { sound: 'O', answer: 'O', choices: ['O', 'A', 'U', 'E'], emoji: '🦴', word: 'Os' },
+            { sound: 'U', answer: 'U', choices: ['U', 'O', 'I', 'OU'], emoji: '🌙', word: 'Lune' },
+            { sound: 'É', answer: 'É', choices: ['É', 'È', 'E', 'A'], emoji: '⭐', word: 'Etoile' },
+            { sound: 'È', answer: 'È', choices: ['È', 'É', 'E', 'I'], emoji: '🧸', word: 'Pere' },
+            { sound: 'OU', answer: 'OU', choices: ['OU', 'ON', 'OI', 'O'], emoji: '🧸', word: 'Ours' },
+            { sound: 'ON', answer: 'ON', choices: ['ON', 'OU', 'AN', 'IN'], emoji: '🍄', word: 'Champignon' },
+            { sound: 'AN', answer: 'AN', choices: ['AN', 'ON', 'IN', 'OU'], emoji: '🐘', word: 'Elephant' }
+        ]
+    },
+    2: {
+        name: 'Sons complexes',
+        icon: '🧩',
+        totalQuestions: 10,
+        type: 'qcm',
+        questions: [
+            { sound: 'OU', answer: 'OU', choices: ['OU', 'ON', 'OI', 'AU'], emoji: '🐺', word: 'Loup' },
+            { sound: 'OI', answer: 'OI', choices: ['OI', 'OU', 'ON', 'AU'], emoji: '🐟', word: 'Poisson' },
+            { sound: 'AN', answer: 'AN', choices: ['AN', 'ON', 'IN', 'OU'], emoji: '🐘', word: 'Elephant' },
+            { sound: 'IN', answer: 'IN', choices: ['IN', 'AN', 'ON', 'AIN'], emoji: '🐰', word: 'Lapin' },
+            { sound: 'AU', answer: 'AU', choices: ['AU', 'OU', 'OI', 'AI'], emoji: '💧', word: 'Eau' },
+            { sound: 'AI', answer: 'AI', choices: ['AI', 'OI', 'AU', 'EI'], emoji: '🏠', word: 'Maison' },
+            { sound: 'CH', answer: 'CH', choices: ['CH', 'PH', 'GN', 'QU'], emoji: '🐱', word: 'Chat' },
+            { sound: 'PH', answer: 'PH', choices: ['PH', 'CH', 'GN', 'QU'], emoji: '📸', word: 'Photo' },
+            { sound: 'GN', answer: 'GN', choices: ['GN', 'CH', 'PH', 'QU'], emoji: '🕷️', word: 'Araignee' },
+            { sound: 'EAU', answer: 'EAU', choices: ['EAU', 'AU', 'OU', 'EU'], emoji: '💧', word: 'Eau' }
+        ]
+    },
+    3: {
+        name: 'Syllabes',
+        icon: '🧱',
+        totalQuestions: 10,
+        type: 'syllable',
+        questions: [
+            { sound: 'BA', parts: ['B', 'A'], onsets: ['B', 'M', 'P', 'D'], rimes: ['A', 'O', 'I', 'OU'], emoji: '🍌', word: 'Banane' },
+            { sound: 'MA', parts: ['M', 'A'], onsets: ['M', 'B', 'N', 'P'], rimes: ['A', 'I', 'O', 'U'], emoji: '👩', word: 'Maman' },
+            { sound: 'CHA', parts: ['CH', 'A'], onsets: ['CH', 'PH', 'GN', 'QU'], rimes: ['A', 'OU', 'ON', 'I'], emoji: '🐱', word: 'Chat' },
+            { sound: 'POU', parts: ['P', 'OU'], onsets: ['P', 'B', 'T', 'M'], rimes: ['OU', 'ON', 'OI', 'AU'], emoji: '🐔', word: 'Poule' },
+            { sound: 'TROU', parts: ['TR', 'OU'], onsets: ['TR', 'PR', 'CR', 'BR'], rimes: ['OU', 'OI', 'AU', 'ON'], emoji: '🕳️', word: 'Trou' },
+            { sound: 'FLAN', parts: ['FL', 'AN'], onsets: ['FL', 'BL', 'CL', 'PL'], rimes: ['AN', 'ON', 'IN', 'OU'], emoji: '🍮', word: 'Flan' },
+            { sound: 'BRIN', parts: ['BR', 'IN'], onsets: ['BR', 'CR', 'TR', 'GR'], rimes: ['IN', 'AN', 'ON', 'OU'], emoji: '🌿', word: 'Brin' },
+            { sound: 'CLOU', parts: ['CL', 'OU'], onsets: ['CL', 'FL', 'PL', 'BL'], rimes: ['OU', 'OI', 'ON', 'AU'], emoji: '🔩', word: 'Clou' },
+            { sound: 'GNOU', parts: ['GN', 'OU'], onsets: ['GN', 'CH', 'PH', 'QU'], rimes: ['OU', 'ON', 'OI', 'AU'], emoji: '🦬', word: 'Gnou' },
+            { sound: 'PHRA', parts: ['PHR', 'A'], onsets: ['PHR', 'CHR', 'THR', 'BLR'], rimes: ['A', 'I', 'O', 'U'], emoji: '📝', word: 'Phrase' }
+        ]
+    },
+    4: {
+        name: 'Mots entiers',
+        icon: '📖',
+        totalQuestions: 8,
+        type: 'word',
+        questions: [
+            { sound: 'CHAT', graphemes: ['CH', 'A', 'T'], available: ['CH', 'A', 'T', 'OU', 'P', 'L'], emoji: '🐱' },
+            { sound: 'LOUP', graphemes: ['L', 'OU', 'P'], available: ['L', 'OU', 'P', 'CH', 'A', 'N'], emoji: '🐺' },
+            { sound: 'PAIN', graphemes: ['P', 'AIN'], available: ['P', 'AIN', 'OU', 'CH', 'L', 'T'], emoji: '🍞' },
+            { sound: 'BEAU', graphemes: ['B', 'EAU'], available: ['B', 'EAU', 'AI', 'P', 'OU', 'L'], emoji: '🌟' },
+            { sound: 'CHIEN', graphemes: ['CH', 'IEN'], available: ['CH', 'IEN', 'AN', 'OU', 'P', 'T'], emoji: '🐶' },
+            { sound: 'POIRE', graphemes: ['P', 'OI', 'R', 'E'], available: ['P', 'OI', 'R', 'E', 'AN', 'CH'], emoji: '🍐' },
+            { sound: 'FLEUR', graphemes: ['FL', 'EUR'], available: ['FL', 'EUR', 'OI', 'CH', 'AN', 'P'], emoji: '🌸' },
+            { sound: 'TRAIN', graphemes: ['TR', 'AIN'], available: ['TR', 'AIN', 'OU', 'CH', 'E', 'P'], emoji: '🚂' }
+        ]
+    }
+};
+
+const LEVEL_INFO = [
+    { num: 1, name: 'Sons simples', icon: '🔤', desc: 'Voyelles' },
+    { num: 2, name: 'Sons complexes', icon: '🧩', desc: 'OU, OI, AN...' },
+    { num: 3, name: 'Syllabes', icon: '🧱', desc: 'BA, CHA, TROU...' },
+    { num: 4, name: 'Mots entiers', icon: '📖', desc: 'CHAT, LOUP...' }
+];
+
+const ENCOURAGE = [
+    'Ecoute bien !',
+    'Presque !',
+    'Essaie encore !',
+    'Tu y es presque !',
+    'Encore un essai !'
+];
+
+// Track current question data
+let currentQuestionData = null;
+let currentSlots = [];
+let currentSyllableStep = 0; // for level 3: 0 = onset, 1 = rime
+let isSpeaking = false;
+
+// ===== SAVE / LOAD =====
+function saveGame() {
+    localStorage.setItem('laDicteeDesSons', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels
+    }));
+    localStorage.setItem('dicteeScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem('laDicteeDesSons');
+        if (saved) {
+            const data = JSON.parse(saved);
+            gameState.currentLevel = data.currentLevel || 1;
+            gameState.totalStars = data.totalStars || 0;
+            gameState.bestScores = data.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+            gameState.unlockedLevels = data.unlockedLevels || [1];
+        }
+    } catch (e) {
+        console.warn('Could not load save data');
+    }
+}
+
+// ===== SCREEN MANAGEMENT =====
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// ===== TTS =====
+function speak(text, callback) {
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.7;
+
+    const speakerBtn = document.getElementById('speaker-btn');
+
+    // Try to find a French voice
+    const voices = speechSynthesis.getVoices();
+    const frVoice = voices.find(v => v.lang.startsWith('fr'));
+    if (frVoice) utterance.voice = frVoice;
+
+    utterance.onstart = () => {
+        isSpeaking = true;
+        if (speakerBtn) speakerBtn.classList.add('playing');
+    };
+    utterance.onend = () => {
+        isSpeaking = false;
+        if (speakerBtn) speakerBtn.classList.remove('playing');
+        if (callback) callback();
+    };
+    utterance.onerror = () => {
+        isSpeaking = false;
+        if (speakerBtn) speakerBtn.classList.remove('playing');
+    };
+
+    speechSynthesis.speak(utterance);
+}
+
+// ===== AUDIO FEEDBACK =====
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playCorrectSound() {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(523, now);
+    osc.frequency.setValueAtTime(659, now + 0.1);
+    osc.frequency.setValueAtTime(784, now + 0.2);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+    osc.start(now);
+    osc.stop(now + 0.4);
+}
+
+function playWrongSound() {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.setValueAtTime(250, now + 0.15);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+}
+
+function playStarSound() {
+    const now = audioCtx.currentTime;
+    [523, 659, 784, 1047].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.12);
+        gain.gain.setValueAtTime(0.25, now + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.3);
+        osc.start(now + i * 0.12);
+        osc.stop(now + i * 0.12 + 0.3);
+    });
+}
+
+// ===== SPARKLES =====
+function createSparkles(x, y) {
+    const container = document.createElement('div');
+    container.className = 'sparkles';
+    container.style.left = x + 'px';
+    container.style.top = y + 'px';
+    const colors = ['#FFD600', '#FF6D00', '#E91E63', '#4CAF50', '#2196F3', '#9C27B0'];
+    for (let i = 0; i < 12; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const angle = (Math.PI * 2 * i) / 12;
+        const dist = 40 + Math.random() * 40;
+        s.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+        s.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+        s.style.background = colors[i % colors.length];
+        container.appendChild(s);
+    }
+    document.body.appendChild(container);
+    setTimeout(() => container.remove(), 1200);
+}
+
+// ===== WELCOME SCREEN =====
+function renderWelcome() {
+    document.getElementById('total-stars-welcome').textContent = 'Total : ' + gameState.totalStars + ' ⭐';
+
+    const grid = document.getElementById('levels-grid');
+    grid.innerHTML = '';
+    LEVEL_INFO.forEach(info => {
+        const locked = !gameState.unlockedLevels.includes(info.num);
+        const card = document.createElement('div');
+        card.className = 'level-card' + (locked ? ' locked' : '');
+        const best = gameState.bestScores[info.num] || 0;
+        const total = LEVELS[info.num].totalQuestions;
+
+        if (locked) {
+            card.innerHTML = `
+                <div class="level-icon">${info.icon}</div>
+                <div class="level-name">${info.name}</div>
+                <div class="lock-icon">🔒</div>
+            `;
+        } else {
+            card.innerHTML = `
+                <div class="level-icon">${info.icon}</div>
+                <div class="level-name">${info.name}</div>
+                <div class="level-best">${best > 0 ? best + '/' + total + ' ⭐' : info.desc}</div>
+            `;
+            card.addEventListener('click', () => startLevel(info.num));
+        }
+        grid.appendChild(card);
+    });
+}
+
+// ===== START LEVEL =====
+function startLevel(level) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    gameState.currentLevel = level;
+    gameState.currentQuestion = 0;
+    gameState.starsThisSession = 0;
+    gameState.wrongAttempts = 0;
+    showScreen('game-screen');
+    document.getElementById('level-label').textContent = 'Niveau ' + level;
+    document.getElementById('stars-counter').textContent = '0 ⭐';
+    loadQuestion();
+}
+
+// ===== LOAD QUESTION =====
+function loadQuestion() {
+    const level = LEVELS[gameState.currentLevel];
+    const qIndex = gameState.currentQuestion;
+
+    if (qIndex >= level.totalQuestions) {
+        finishLevel();
+        return;
+    }
+
+    gameState.wrongAttempts = 0;
+    currentQuestionData = level.questions[qIndex];
+    currentSlots = [];
+    currentSyllableStep = 0;
+
+    // Update progress
+    const pct = (qIndex / level.totalQuestions) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+
+    // Clear feedback
+    document.getElementById('feedback-area').innerHTML = '';
+
+    // Setup speaker button
+    const speakerBtn = document.getElementById('speaker-btn');
+    speakerBtn.onclick = () => {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        speak(currentQuestionData.sound);
+    };
+
+    const slotsArea = document.getElementById('slots-area');
+    const cardsSection = document.getElementById('cards-section');
+    const instructionText = document.getElementById('instruction-text');
+
+    if (level.type === 'qcm') {
+        renderQCM(currentQuestionData, cardsSection);
+        slotsArea.style.display = 'none';
+        instructionText.textContent = 'Quel son entends-tu ?';
+    } else if (level.type === 'syllable') {
+        renderSyllable(currentQuestionData, cardsSection, slotsArea);
+        slotsArea.style.display = 'flex';
+        instructionText.textContent = 'Fabrique la syllabe !';
+    } else if (level.type === 'word') {
+        renderWord(currentQuestionData, cardsSection, slotsArea);
+        slotsArea.style.display = 'flex';
+        instructionText.textContent = 'Ecris le mot !';
+    }
+
+    // Auto-play sound after a short delay
+    setTimeout(() => speak(currentQuestionData.sound), 400);
+}
+
+// ===== RENDER QCM (Levels 1 & 2) =====
+function renderQCM(q, container) {
+    container.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'cards-grid';
+
+    const shuffled = shuffleArray([...q.choices]);
+    shuffled.forEach(choice => {
+        const card = document.createElement('div');
+        card.className = 'grapheme-card' + getColorClass(choice);
+        card.textContent = choice;
+        card.addEventListener('click', () => handleQCMClick(card, choice, q, grid));
+        grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
+}
+
+function handleQCMClick(card, choice, q, grid) {
+    if (card.classList.contains('disabled') || card.classList.contains('correct')) return;
+
+    if (choice === q.answer) {
+        // Correct
+        card.classList.add('correct');
+        playCorrectSound();
+        gameState.starsThisSession++;
+        document.getElementById('stars-counter').textContent = gameState.starsThisSession + ' ⭐';
+
+        const rect = card.getBoundingClientRect();
+        createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        showFeedback(q.emoji, q.word || '');
+
+        // Remove hints
+        grid.querySelectorAll('.grapheme-card').forEach(c => {
+            c.classList.remove('hint');
+            if (!c.classList.contains('correct')) c.classList.add('disabled');
+        });
+
+        setTimeout(() => {
+            gameState.currentQuestion++;
+            loadQuestion();
+        }, 1800);
+    } else {
+        // Wrong
+        card.classList.add('disabled');
+        playWrongSound();
+        gameState.wrongAttempts++;
+
+        showEncouragement();
+
+        // After 2 wrong attempts, hint the correct answer
+        if (gameState.wrongAttempts >= 2) {
+            grid.querySelectorAll('.grapheme-card').forEach(c => {
+                if (c.textContent === q.answer && !c.classList.contains('disabled')) {
+                    c.classList.add('hint');
+                }
+            });
+        }
+    }
+}
+
+// ===== RENDER SYLLABLE (Level 3) =====
+function renderSyllable(q, container, slotsArea) {
+    container.innerHTML = '';
+    slotsArea.innerHTML = '';
+    currentSlots = [];
+    currentSyllableStep = 0;
+
+    // Create 2 slots
+    for (let i = 0; i < 2; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.dataset.index = i;
+        slotsArea.appendChild(slot);
+        currentSlots.push({ el: slot, value: null });
+    }
+
+    // Onset row
+    const onsetLabel = document.createElement('div');
+    onsetLabel.className = 'cards-row-label';
+    onsetLabel.textContent = 'Debut du son';
+    container.appendChild(onsetLabel);
+
+    const onsetGrid = document.createElement('div');
+    onsetGrid.className = 'cards-grid';
+    onsetGrid.id = 'onset-grid';
+    const shuffledOnsets = shuffleArray([...q.onsets]);
+    shuffledOnsets.forEach(onset => {
+        const card = document.createElement('div');
+        card.className = 'grapheme-card';
+        card.textContent = onset;
+        card.dataset.type = 'onset';
+        card.addEventListener('click', () => handleSyllableClick(card, onset, q, 0));
+        onsetGrid.appendChild(card);
+    });
+    container.appendChild(onsetGrid);
+
+    // Rime row
+    const rimeLabel = document.createElement('div');
+    rimeLabel.className = 'cards-row-label';
+    rimeLabel.textContent = 'Fin du son';
+    rimeLabel.style.marginTop = '8px';
+    container.appendChild(rimeLabel);
+
+    const rimeGrid = document.createElement('div');
+    rimeGrid.className = 'cards-grid';
+    rimeGrid.id = 'rime-grid';
+    const shuffledRimes = shuffleArray([...q.rimes]);
+    shuffledRimes.forEach(rime => {
+        const card = document.createElement('div');
+        card.className = 'grapheme-card';
+        card.textContent = rime;
+        card.dataset.type = 'rime';
+        card.addEventListener('click', () => handleSyllableClick(card, rime, q, 1));
+        rimeGrid.appendChild(card);
+    });
+    container.appendChild(rimeGrid);
+
+    updateSyllableHighlight();
+}
+
+function updateSyllableHighlight() {
+    const instruction = document.getElementById('instruction-text');
+    if (currentSyllableStep === 0) {
+        instruction.textContent = 'Choisis le debut du son !';
+    } else {
+        instruction.textContent = 'Choisis la fin du son !';
+    }
+}
+
+function handleSyllableClick(card, value, q, stepType) {
+    if (card.classList.contains('disabled') || card.classList.contains('used') || card.classList.contains('correct')) return;
+    if (stepType !== currentSyllableStep) return; // Must follow order
+
+    const expectedPart = q.parts[stepType];
+
+    if (value === expectedPart) {
+        // Correct part
+        card.classList.add('correct');
+        currentSlots[stepType].el.textContent = value;
+        currentSlots[stepType].el.classList.add('filled');
+        currentSlots[stepType].value = value;
+        playCorrectSound();
+
+        const rect = card.getBoundingClientRect();
+        createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        // Disable other cards in this row
+        const gridId = stepType === 0 ? 'onset-grid' : 'rime-grid';
+        document.getElementById(gridId).querySelectorAll('.grapheme-card').forEach(c => {
+            if (!c.classList.contains('correct')) c.classList.add('disabled');
+            c.classList.remove('hint');
+        });
+
+        if (stepType === 0) {
+            currentSyllableStep = 1;
+            gameState.wrongAttempts = 0;
+            updateSyllableHighlight();
+        } else {
+            // Both parts correct
+            gameState.starsThisSession++;
+            document.getElementById('stars-counter').textContent = gameState.starsThisSession + ' ⭐';
+            showFeedback(q.emoji, q.word || '');
+
+            setTimeout(() => {
+                gameState.currentQuestion++;
+                loadQuestion();
+            }, 1800);
+        }
+    } else {
+        card.classList.add('disabled');
+        playWrongSound();
+        gameState.wrongAttempts++;
+        showEncouragement();
+
+        // Hint after 2 wrong
+        if (gameState.wrongAttempts >= 2) {
+            const gridId = stepType === 0 ? 'onset-grid' : 'rime-grid';
+            document.getElementById(gridId).querySelectorAll('.grapheme-card').forEach(c => {
+                if (c.textContent === expectedPart && !c.classList.contains('disabled')) {
+                    c.classList.add('hint');
+                }
+            });
+        }
+    }
+}
+
+// ===== RENDER WORD (Level 4) =====
+function renderWord(q, container, slotsArea) {
+    container.innerHTML = '';
+    slotsArea.innerHTML = '';
+    currentSlots = [];
+    currentSyllableStep = 0; // reuse as current grapheme index
+
+    // Create slots for each grapheme
+    q.graphemes.forEach((g, i) => {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.dataset.index = i;
+        slotsArea.appendChild(slot);
+        currentSlots.push({ el: slot, value: null, expected: g });
+    });
+
+    // Cards
+    const grid = document.createElement('div');
+    grid.className = 'cards-grid';
+    grid.id = 'word-grid';
+    const shuffled = shuffleArray([...q.available]);
+    shuffled.forEach(grapheme => {
+        const card = document.createElement('div');
+        card.className = 'grapheme-card';
+        card.textContent = grapheme;
+        card.addEventListener('click', () => handleWordClick(card, grapheme, q));
+        grid.appendChild(card);
+    });
+    container.appendChild(grid);
+
+    document.getElementById('instruction-text').textContent = 'Place les sons dans l\'ordre !';
+}
+
+function handleWordClick(card, value, q) {
+    if (card.classList.contains('disabled') || card.classList.contains('used') || card.classList.contains('correct')) return;
+
+    const stepIndex = currentSyllableStep;
+    const expected = q.graphemes[stepIndex];
+
+    if (value === expected) {
+        card.classList.add('used');
+        currentSlots[stepIndex].el.textContent = value;
+        currentSlots[stepIndex].el.classList.add('filled');
+        currentSlots[stepIndex].value = value;
+        playCorrectSound();
+
+        const rect = card.getBoundingClientRect();
+        createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        currentSyllableStep++;
+        gameState.wrongAttempts = 0;
+
+        // Remove hints
+        document.getElementById('word-grid').querySelectorAll('.grapheme-card.hint').forEach(c => c.classList.remove('hint'));
+
+        if (currentSyllableStep >= q.graphemes.length) {
+            // Word complete
+            gameState.starsThisSession++;
+            document.getElementById('stars-counter').textContent = gameState.starsThisSession + ' ⭐';
+            showFeedback(q.emoji, q.sound);
+
+            // Disable remaining cards
+            document.getElementById('word-grid').querySelectorAll('.grapheme-card').forEach(c => {
+                if (!c.classList.contains('used')) c.classList.add('disabled');
+            });
+
+            setTimeout(() => {
+                gameState.currentQuestion++;
+                loadQuestion();
+            }, 1800);
+        }
+    } else {
+        card.classList.add('disabled');
+        playWrongSound();
+        gameState.wrongAttempts++;
+        showEncouragement();
+
+        // Re-enable after a moment (for words, we need to allow re-tries since limited pool)
+        setTimeout(() => {
+            if (!card.classList.contains('used')) {
+                card.classList.remove('disabled');
+            }
+        }, 800);
+
+        if (gameState.wrongAttempts >= 2) {
+            const expected = q.graphemes[currentSyllableStep];
+            document.getElementById('word-grid').querySelectorAll('.grapheme-card').forEach(c => {
+                if (c.textContent === expected && !c.classList.contains('used')) {
+                    c.classList.add('hint');
+                }
+            });
+        }
+    }
+}
+
+// ===== FEEDBACK =====
+function showFeedback(emoji, word) {
+    const area = document.getElementById('feedback-area');
+    area.innerHTML = `
+        <div class="feedback-emoji">${emoji}</div>
+        <div class="feedback-text">${word ? 'Bravo ! ' + word : 'Bravo !'}</div>
+    `;
+}
+
+function showEncouragement() {
+    const area = document.getElementById('feedback-area');
+    const msg = ENCOURAGE[Math.floor(Math.random() * ENCOURAGE.length)];
+    area.innerHTML = `<div class="feedback-text">${msg}</div>`;
+}
+
+// ===== FINISH LEVEL =====
+function finishLevel() {
+    const level = gameState.currentLevel;
+    const stars = gameState.starsThisSession;
+    const total = LEVELS[level].totalQuestions;
+
+    // Update best score
+    if (stars > gameState.bestScores[level]) {
+        gameState.bestScores[level] = stars;
+    }
+
+    // Add to total (only the new stars beyond previous best, or all if first time)
+    gameState.totalStars += stars;
+
+    // Unlock next level if scored >= 6/10 (or 5/8 for level 4)
+    const threshold = level === 4 ? 5 : 6;
+    if (stars >= threshold && level < 4) {
+        if (!gameState.unlockedLevels.includes(level + 1)) {
+            gameState.unlockedLevels.push(level + 1);
+        }
+    }
+
+    saveGame();
+    playStarSound();
+
+    // Show complete screen
+    showScreen('complete-screen');
+
+    const starIcons = Array.from({ length: total }, (_, i) => i < stars ? '⭐' : '☆').join('');
+    document.getElementById('complete-stars').textContent = starIcons;
+
+    if (stars === total) {
+        document.getElementById('complete-emoji').textContent = '🏆';
+        document.getElementById('complete-title').textContent = 'Parfait !';
+        document.getElementById('complete-text').textContent = 'Tu as eu toutes les etoiles !';
+    } else if (stars >= threshold) {
+        document.getElementById('complete-emoji').textContent = '🎉';
+        document.getElementById('complete-title').textContent = 'Super !';
+        document.getElementById('complete-text').textContent = stars + '/' + total + ' etoiles ! Niveau suivant debloque !';
+    } else {
+        document.getElementById('complete-emoji').textContent = '👏';
+        document.getElementById('complete-title').textContent = 'Bien joue !';
+        document.getElementById('complete-text').textContent = stars + '/' + total + ' etoiles. Encore un peu d\'entrainement !';
+    }
+
+    // Buttons
+    const btnsContainer = document.getElementById('complete-btns');
+    btnsContainer.innerHTML = '';
+
+    // Replay button
+    const replayBtn = document.createElement('button');
+    replayBtn.className = 'btn-secondary';
+    replayBtn.textContent = 'Rejouer ce niveau';
+    replayBtn.addEventListener('click', () => startLevel(level));
+    btnsContainer.appendChild(replayBtn);
+
+    // Next level button (if unlocked and exists)
+    if (level < 4 && gameState.unlockedLevels.includes(level + 1)) {
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'btn-primary';
+        nextBtn.textContent = 'Niveau suivant';
+        nextBtn.addEventListener('click', () => startLevel(level + 1));
+        btnsContainer.appendChild(nextBtn);
+    }
+
+    // Back to menu
+    const menuBtn = document.createElement('button');
+    menuBtn.className = 'btn-secondary';
+    menuBtn.textContent = 'Choisir un niveau';
+    menuBtn.addEventListener('click', () => {
+        renderWelcome();
+        showScreen('welcome-screen');
+    });
+    btnsContainer.appendChild(menuBtn);
+}
+
+// ===== UTILITIES =====
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function getColorClass(grapheme) {
+    const g = grapheme.toUpperCase();
+    if (g === 'A' || g === 'AN' || g === 'AI' || g === 'AIN') return ' card-color-a';
+    if (g === 'E' || g === 'É' || g === 'È' || g === 'EI' || g === 'EAU' || g === 'EUR') return ' card-color-e';
+    if (g === 'I' || g === 'IN') return ' card-color-i';
+    if (g === 'O' || g === 'OI' || g === 'ON' || g === 'OU' || g === 'AU') return ' card-color-o';
+    if (g === 'U') return ' card-color-u';
+    return ' card-color-default';
+}
+
+// ===== INIT =====
+function init() {
+    loadGame();
+    renderWelcome();
+
+    // Preload voices
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = () => {};
+    }
+    speechSynthesis.getVoices();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le Train des Mots - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #2E7D32 0%, #A5D6A7 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 15px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === BACK BUTTON === */
+        .back-to-menu {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #2E7D32;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        /* === HOME SCREEN === */
+        .title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .title-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            display: block;
+            margin-bottom: 10px;
+            filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.3));
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .total-stars-display {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: #FFF9C4;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 400px;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .level-btn {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 18px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: #2E7D32;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-height: 48px;
+        }
+
+        .level-btn:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .level-btn.locked {
+            background: rgba(255,255,255,0.4);
+            color: rgba(0,0,0,0.35);
+            cursor: not-allowed;
+        }
+
+        .level-btn .level-icon {
+            font-size: 1.8rem;
+        }
+
+        .level-btn .level-stars {
+            font-size: 0.85rem;
+            color: #FFA000;
+        }
+
+        /* === GAME SCREEN === */
+        #game-screen {
+            justify-content: flex-start;
+            padding-top: 70px;
+            gap: 0;
+        }
+
+        .game-header {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 0 5px;
+        }
+
+        .game-level-label {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: white;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .game-progress {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #FFF9C4;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .game-stars {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #FFF9C4;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Timer bar (level 4) */
+        .timer-bar-container {
+            width: 100%;
+            max-width: 700px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .timer-bar-container.visible {
+            display: block;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #FFEB3B, #FF9800);
+            border-radius: 5px;
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+
+        .timer-bar.urgent {
+            background: linear-gradient(90deg, #FF5722, #FF9800);
+        }
+
+        /* Word hint */
+        .word-hint {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: white;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* === TRAIN AREA === */
+        .train-area {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            padding: 15px 10px 30px 10px;
+            overflow: hidden;
+        }
+
+        .train-container {
+            display: flex;
+            align-items: flex-end;
+            gap: clamp(4px, 1vw, 8px);
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .train-container.departing {
+            transform: translateX(120%);
+        }
+
+        .locomotive {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            line-height: 1;
+            flex-shrink: 0;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+            position: relative;
+            bottom: 5px;
+        }
+
+        .wagons {
+            display: flex;
+            gap: clamp(3px, 0.8vw, 8px);
+            align-items: flex-end;
+            flex-wrap: nowrap;
+        }
+
+        .wagon {
+            width: clamp(55px, 15vw, 90px);
+            height: clamp(50px, 12vw, 75px);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 3.5vw, 1.5rem);
+            font-weight: 800;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .wagon.empty {
+            border: 3px dashed rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.15);
+            color: transparent;
+        }
+
+        .wagon.filled {
+            border: 3px solid #43A047;
+            background: white;
+            color: #2E7D32;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .wagon.filled:hover {
+            transform: scale(1.05);
+            border-color: #FF7043;
+        }
+
+        /* Wagon wheels */
+        .wagon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 10px;
+            display: flex;
+        }
+
+        .wagon .wheel-left,
+        .wagon .wheel-right {
+            position: absolute;
+            bottom: -12px;
+            width: clamp(12px, 3vw, 18px);
+            height: clamp(12px, 3vw, 18px);
+            background: #5D4037;
+            border-radius: 50%;
+            border: 2px solid #795548;
+        }
+
+        .wagon .wheel-left { left: 5px; }
+        .wagon .wheel-right { right: 5px; }
+
+        /* Connector between wagons */
+        .wagon-connector {
+            width: clamp(8px, 2vw, 15px);
+            height: 4px;
+            background: #795548;
+            flex-shrink: 0;
+            align-self: center;
+            margin-bottom: 15px;
+        }
+
+        /* Railroad tracks */
+        .tracks {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            z-index: 1;
+        }
+
+        .track-line {
+            width: 100%;
+            height: 4px;
+            background: #795548;
+            margin-bottom: 6px;
+            border-radius: 2px;
+        }
+
+        .track-ties {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .track-tie {
+            width: 8px;
+            height: 16px;
+            background: #8D6E63;
+            border-radius: 2px;
+        }
+
+        /* Shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .wagon.shake {
+            animation: shake 0.4s ease;
+        }
+
+        /* === PLATFORM (syllable buttons) === */
+        .platform {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: clamp(12px, 3vw, 20px);
+            margin-top: 15px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .platform-label {
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .syllable-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(8px, 2vw, 12px);
+        }
+
+        .syllable-btn {
+            min-width: 48px;
+            min-height: 48px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .syllable-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .syllable-btn:active {
+            transform: scale(0.95);
+        }
+
+        .syllable-btn.used {
+            opacity: 0.3;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        @keyframes bounceBack {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .syllable-btn.bounce-back {
+            animation: bounceBack 0.4s ease;
+        }
+
+        /* Syllable button colors */
+        .syl-color-0 { background: linear-gradient(135deg, #FF7043, #FF5722); }
+        .syl-color-1 { background: linear-gradient(135deg, #42A5F5, #1E88E5); }
+        .syl-color-2 { background: linear-gradient(135deg, #AB47BC, #8E24AA); }
+        .syl-color-3 { background: linear-gradient(135deg, #FFA726, #FB8C00); }
+        .syl-color-4 { background: linear-gradient(135deg, #26A69A, #00897B); }
+        .syl-color-5 { background: linear-gradient(135deg, #EC407A, #D81B60); }
+
+        /* === FEEDBACK OVERLAY === */
+        .feedback-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            background: rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-overlay.active {
+            display: flex;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 90vw;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .feedback-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #2E7D32;
+            margin-bottom: 5px;
+        }
+
+        .feedback-subtext {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* === LEVEL COMPLETE SCREEN === */
+        .level-complete-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .level-complete-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 15px;
+        }
+
+        .level-complete-stars {
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            color: #FFF9C4;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .level-complete-message {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .action-btn {
+            background: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 35px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 800;
+            color: #2E7D32;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            min-height: 48px;
+            margin: 5px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* === CONFETTI === */
+        .confetti-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 300;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: -20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* === SMOKE from locomotive === */
+        @keyframes smokeRise {
+            0% { transform: translateY(0) scale(1); opacity: 0.7; }
+            100% { transform: translateY(-40px) scale(2); opacity: 0; }
+        }
+
+        .smoke {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: rgba(200,200,200,0.6);
+            border-radius: 50%;
+            animation: smokeRise 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* Stars animation */
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(-30deg); }
+            60% { transform: scale(1.3) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .star-anim {
+            display: inline-block;
+            animation: starPop 0.4s ease forwards;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 380px) {
+            .wagon {
+                width: 50px;
+                height: 45px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+            .locomotive {
+                font-size: 2rem;
+            }
+            .wagon-connector {
+                width: 5px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            #game-screen {
+                padding-top: 55px;
+            }
+            .platform {
+                margin-top: 8px;
+                padding: 10px;
+            }
+            .word-hint {
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            #game-screen {
+                padding-top: 50px;
+                justify-content: flex-start;
+            }
+            .train-area {
+                padding: 8px 10px 25px 10px;
+            }
+            .wagon {
+                height: clamp(40px, 10vw, 60px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HOME SCREEN ===== -->
+<div id="home-screen" class="screen active">
+    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
+    <span class="title-emoji">&#x1F682;</span>
+    <h1 class="title">Le Train des Mots</h1>
+    <p class="subtitle">Assemble les syllabes pour former des mots !</p>
+    <div class="total-stars-display" id="total-stars-home"></div>
+    <div class="levels-grid" id="levels-grid"></div>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div id="game-screen" class="screen">
+    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
+
+    <div class="game-header">
+        <span class="game-level-label" id="game-level-label"></span>
+        <span class="game-progress" id="game-progress"></span>
+        <span class="game-stars" id="game-stars"></span>
+    </div>
+
+    <div class="timer-bar-container" id="timer-bar-container">
+        <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <div class="word-hint" id="word-hint"></div>
+
+    <div class="train-area">
+        <div class="tracks">
+            <div class="track-line"></div>
+            <div class="track-line"></div>
+            <div class="track-ties" id="track-ties"></div>
+        </div>
+        <div class="train-container" id="train-container">
+            <div class="locomotive">&#x1F682;</div>
+            <div class="wagons" id="wagons"></div>
+        </div>
+    </div>
+
+    <div class="platform">
+        <div class="platform-label">Choisis les syllabes :</div>
+        <div class="syllable-buttons" id="syllable-buttons"></div>
+    </div>
+</div>
+
+<!-- ===== LEVEL COMPLETE SCREEN ===== -->
+<div id="complete-screen" class="screen">
+    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
+    <span class="level-complete-emoji" id="complete-emoji">&#x1F389;</span>
+    <h2 class="level-complete-title" id="complete-title">Bravo !</h2>
+    <div class="level-complete-stars" id="complete-stars"></div>
+    <p class="level-complete-message" id="complete-message"></p>
+    <div class="action-buttons" id="complete-buttons"></div>
+</div>
+
+<!-- ===== FEEDBACK OVERLAY ===== -->
+<div class="feedback-overlay" id="feedback-overlay">
+    <div class="feedback-card">
+        <div class="feedback-emoji" id="feedback-emoji"></div>
+        <div class="feedback-text" id="feedback-text"></div>
+        <div class="feedback-subtext" id="feedback-subtext"></div>
+    </div>
+</div>
+
+<!-- ===== CONFETTI CONTAINER ===== -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+    // =============================================
+    // WORD DATA
+    // =============================================
+    const WORDS = {
+        1: [
+            { word: 'PAPA', syllables: ['PA', 'PA'], distractors: ['PI', 'PO'] },
+            { word: 'MAMA', syllables: ['MA', 'MA'], distractors: ['MI', 'MO'] },
+            { word: 'LUNE', syllables: ['LU', 'NE'], distractors: ['LA', 'NU'] },
+            { word: 'BEBE', syllables: ['BE', 'BE'], distractors: ['BA', 'BI'] },
+            { word: 'MOTO', syllables: ['MO', 'TO'], distractors: ['MA', 'TI'] },
+            { word: 'VELO', syllables: ['VE', 'LO'], distractors: ['VA', 'LI'] },
+            { word: 'CHAT', syllables: ['CHA', 'T'], distractors: ['CHI', 'TA'] },
+            { word: 'DODO', syllables: ['DO', 'DO'], distractors: ['DA', 'DI'] },
+            { word: 'LOUP', syllables: ['LOU', 'P'], distractors: ['LO', 'POU'] },
+            { word: 'CAFE', syllables: ['CA', 'FE'], distractors: ['CO', 'FA'] }
+        ],
+        2: [
+            { word: 'BANANE', syllables: ['BA', 'NA', 'NE'], distractors: ['BI', 'NO'] },
+            { word: 'TOMATE', syllables: ['TO', 'MA', 'TE'], distractors: ['TI', 'MO'] },
+            { word: 'SALADE', syllables: ['SA', 'LA', 'DE'], distractors: ['SO', 'LI'] },
+            { word: 'ANIMAL', syllables: ['A', 'NI', 'MAL'], distractors: ['AN', 'MI'] },
+            { word: 'DOMINO', syllables: ['DO', 'MI', 'NO'], distractors: ['DA', 'MO'] },
+            { word: 'PANIER', syllables: ['PA', 'NI', 'ER'], distractors: ['PO', 'NE'] },
+            { word: 'LAVABO', syllables: ['LA', 'VA', 'BO'], distractors: ['LO', 'VI'] },
+            { word: 'CARTON', syllables: ['CAR', 'TO', 'N'], distractors: ['CA', 'TAN'] },
+            { word: 'PIRATE', syllables: ['PI', 'RA', 'TE'], distractors: ['PA', 'RO'] },
+            { word: 'NATURE', syllables: ['NA', 'TU', 'RE'], distractors: ['NI', 'TA'] }
+        ],
+        3: [
+            { word: 'PAPILLON', syllables: ['PA', 'PI', 'LLON'], distractors: ['PO', 'LI', 'LON'] },
+            { word: 'CHOCOLAT', syllables: ['CHO', 'CO', 'LAT'], distractors: ['CHA', 'LA', 'LO'] },
+            { word: 'CROCODILE', syllables: ['CRO', 'CO', 'DI', 'LE'], distractors: ['CRA', 'DO'] },
+            { word: 'TELEPHONE', syllables: ['TE', 'LE', 'PHO', 'NE'], distractors: ['TA', 'PO'] },
+            { word: 'PARAPLUIE', syllables: ['PA', 'RA', 'PLUIE'], distractors: ['PO', 'PLU', 'RI'] },
+            { word: 'DINOSAURE', syllables: ['DI', 'NO', 'SAU', 'RE'], distractors: ['DA', 'SO'] },
+            { word: 'HIPPOPOTAME', syllables: ['HI', 'PPO', 'PO', 'TA', 'ME'], distractors: ['HA'] },
+            { word: 'ORDINATEUR', syllables: ['OR', 'DI', 'NA', 'TEUR'], distractors: ['AR', 'TOR'] }
+        ],
+        4: [] // Filled dynamically from levels 1-3
+    };
+
+    // Build level 4 from mixed words (pick 10 random from all levels)
+    function buildLevel4() {
+        const allWords = [...WORDS[1], ...WORDS[2], ...WORDS[3]];
+        const shuffled = allWords.sort(() => Math.random() - 0.5);
+        WORDS[4] = shuffled.slice(0, 10);
+    }
+
+    const LEVEL_NAMES = {
+        1: 'Niveau 1 : 2 syllabes',
+        2: 'Niveau 2 : 3 syllabes',
+        3: 'Niveau 3 : Mots longs',
+        4: 'Niveau 4 : Chrono !'
+    };
+
+    const LEVEL_ICONS = { 1: '&#x1F683;', 2: '&#x1F684;', 3: '&#x1F685;', 4: '&#x23F1;&#xFE0F;' };
+    const LEVEL_WORD_COUNT = { 1: 10, 2: 10, 3: 8, 4: 10 };
+
+    const POSITIVE_MESSAGES = [
+        { emoji: '&#x1F31F;', text: 'Super !' },
+        { emoji: '&#x1F389;', text: 'Bravo !' },
+        { emoji: '&#x1F60D;', text: 'Genial !' },
+        { emoji: '&#x1F3C6;', text: 'Champion !' },
+        { emoji: '&#x1F44F;', text: 'Excellent !' },
+        { emoji: '&#x2B50;', text: 'Magnifique !' },
+        { emoji: '&#x1F680;', text: 'Fantastique !' }
+    ];
+
+    const ENCOURAGE_MESSAGES = [
+        'Continue comme ca !',
+        'Tu es trop fort !',
+        'Quel talent !',
+        'Tu lis super bien !',
+        'Le train avance grace a toi !'
+    ];
+
+    const TIMEOUT_MESSAGES = [
+        { emoji: '&#x1F60A;', text: 'Pas grave !', sub: 'On passe au suivant !' },
+        { emoji: '&#x1F4AA;', text: 'Bien essaye !', sub: 'Le prochain sera le bon !' },
+        { emoji: '&#x1F31E;', text: 'Continue !', sub: 'Tu fais du super travail !' }
+    ];
+
+    // =============================================
+    // GAME STATE
+    // =============================================
+    let gameState = {
+        currentLevel: 1,
+        totalStars: 0,
+        bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+        unlockedLevels: [1],
+        starsThisSession: 0,
+        currentQuestion: 0
+    };
+
+    let currentWordData = null;
+    let filledWagons = []; // array of { syllable: string, buttonIndex: number } or null
+    let allSyllableChoices = [];
+    let timerInterval = null;
+    let timerRemaining = 0;
+    let isProcessing = false;
+
+    // =============================================
+    // AUDIO (Web Audio API)
+    // =============================================
+    let audioCtx = null;
+
+    function getAudioCtx() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioCtx;
+    }
+
+    function playClickSound() {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 600;
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.15);
+        } catch (e) {}
+    }
+
+    function playErrorSound() {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 250;
+            osc.type = 'triangle';
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.25);
+        } catch (e) {}
+    }
+
+    function playSuccessSound() {
+        try {
+            const ctx = getAudioCtx();
+            const notes = [523, 659, 784, 1047];
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                const t = ctx.currentTime + i * 0.12;
+                gain.gain.setValueAtTime(0.15, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                osc.start(t);
+                osc.stop(t + 0.3);
+            });
+        } catch (e) {}
+    }
+
+    function playChooChoo() {
+        try {
+            const ctx = getAudioCtx();
+            // First whistle
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.frequency.value = 800;
+            osc1.type = 'sawtooth';
+            gain1.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc1.start(ctx.currentTime);
+            osc1.stop(ctx.currentTime + 0.3);
+            // Second whistle
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.frequency.value = 600;
+            osc2.type = 'sawtooth';
+            gain2.gain.setValueAtTime(0.1, ctx.currentTime + 0.35);
+            gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.7);
+            osc2.start(ctx.currentTime + 0.35);
+            osc2.stop(ctx.currentTime + 0.7);
+        } catch (e) {}
+    }
+
+    function playLevelCompleteSound() {
+        try {
+            const ctx = getAudioCtx();
+            const melody = [523, 587, 659, 784, 880, 1047];
+            melody.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                const t = ctx.currentTime + i * 0.15;
+                gain.gain.setValueAtTime(0.12, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc.start(t);
+                osc.stop(t + 0.4);
+            });
+        } catch (e) {}
+    }
+
+    // =============================================
+    // TTS
+    // =============================================
+    function speakWord(word) {
+        try {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(word.toLowerCase());
+                utterance.lang = 'fr-FR';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.1;
+                const voices = window.speechSynthesis.getVoices();
+                const frVoice = voices.find(v => v.lang.startsWith('fr'));
+                if (frVoice) utterance.voice = frVoice;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch (e) {}
+    }
+
+    // Preload voices
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // =============================================
+    // SAVE / LOAD
+    // =============================================
+    function saveGame() {
+        localStorage.setItem('leTrainDesMots', JSON.stringify({
+            currentLevel: gameState.currentLevel,
+            totalStars: gameState.totalStars,
+            bestScores: gameState.bestScores,
+            unlockedLevels: gameState.unlockedLevels
+        }));
+        localStorage.setItem('trainMotsScore', gameState.totalStars.toString());
+    }
+
+    function loadGame() {
+        try {
+            const saved = localStorage.getItem('leTrainDesMots');
+            if (saved) {
+                const data = JSON.parse(saved);
+                gameState.currentLevel = data.currentLevel || 1;
+                gameState.totalStars = data.totalStars || 0;
+                gameState.bestScores = data.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+                gameState.unlockedLevels = data.unlockedLevels || [1];
+            }
+        } catch (e) {}
+    }
+
+    // =============================================
+    // SCREEN MANAGEMENT
+    // =============================================
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    // =============================================
+    // HOME SCREEN
+    // =============================================
+    function renderHome() {
+        const totalStarsEl = document.getElementById('total-stars-home');
+        totalStarsEl.innerHTML = '&#x2B50; ' + gameState.totalStars + ' etoile' + (gameState.totalStars > 1 ? 's' : '');
+
+        const grid = document.getElementById('levels-grid');
+        grid.innerHTML = '';
+
+        for (let lvl = 1; lvl <= 4; lvl++) {
+            const btn = document.createElement('button');
+            btn.className = 'level-btn';
+            const isUnlocked = gameState.unlockedLevels.includes(lvl);
+
+            if (!isUnlocked) {
+                btn.classList.add('locked');
+                btn.innerHTML = `
+                    <span class="level-icon">&#x1F512;</span>
+                    <span>Niveau ${lvl}</span>
+                    <span style="font-size:0.75rem;">Termine le niveau ${lvl - 1}</span>
+                `;
+            } else {
+                const best = gameState.bestScores[lvl] || 0;
+                const max = LEVEL_WORD_COUNT[lvl];
+                const starsText = best > 0 ? '&#x2B50;'.repeat(Math.min(best, 3)) + ' ' + best + '/' + max : 'Nouveau !';
+                btn.innerHTML = `
+                    <span class="level-icon">${LEVEL_ICONS[lvl]}</span>
+                    <span>Niveau ${lvl}</span>
+                    <span class="level-stars">${starsText}</span>
+                `;
+                btn.addEventListener('click', () => startLevel(lvl));
+            }
+
+            grid.appendChild(btn);
+        }
+
+        showScreen('home-screen');
+    }
+
+    // =============================================
+    // START LEVEL
+    // =============================================
+    function startLevel(level) {
+        playClickSound();
+        gameState.currentLevel = level;
+        gameState.starsThisSession = 0;
+        gameState.currentQuestion = 0;
+
+        if (level === 4) buildLevel4();
+
+        // Shuffle the words for this level
+        WORDS[level] = WORDS[level].sort(() => Math.random() - 0.5);
+
+        showScreen('game-screen');
+        renderTrackTies();
+        loadQuestion();
+    }
+
+    function renderTrackTies() {
+        const tiesContainer = document.getElementById('track-ties');
+        tiesContainer.innerHTML = '';
+        for (let i = 0; i < 20; i++) {
+            const tie = document.createElement('div');
+            tie.className = 'track-tie';
+            tiesContainer.appendChild(tie);
+        }
+    }
+
+    // =============================================
+    // LOAD QUESTION
+    // =============================================
+    function loadQuestion() {
+        isProcessing = false;
+        clearTimer();
+
+        const level = gameState.currentLevel;
+        const words = WORDS[level];
+        const qIndex = gameState.currentQuestion;
+
+        if (qIndex >= words.length) {
+            endLevel();
+            return;
+        }
+
+        currentWordData = words[qIndex];
+        filledWagons = new Array(currentWordData.syllables.length).fill(null);
+
+        // Update header
+        document.getElementById('game-level-label').textContent = 'Niveau ' + level;
+        document.getElementById('game-progress').textContent = 'Mot ' + (qIndex + 1) + '/' + words.length;
+        document.getElementById('game-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+
+        // Word hint: show underscores
+        const hintEl = document.getElementById('word-hint');
+        const dotCount = currentWordData.word.length;
+        hintEl.textContent = '_ '.repeat(dotCount).trim();
+
+        // Reset train
+        const trainContainer = document.getElementById('train-container');
+        trainContainer.classList.remove('departing');
+
+        // Build wagons
+        renderWagons();
+
+        // Build syllable buttons
+        renderSyllableButtons();
+
+        // Timer for level 4
+        if (level === 4) {
+            startTimer();
+        }
+
+        const timerContainer = document.getElementById('timer-bar-container');
+        if (level === 4) {
+            timerContainer.classList.add('visible');
+        } else {
+            timerContainer.classList.remove('visible');
+        }
+    }
+
+    // =============================================
+    // RENDER WAGONS
+    // =============================================
+    function renderWagons() {
+        const wagonsEl = document.getElementById('wagons');
+        wagonsEl.innerHTML = '';
+
+        const syllables = currentWordData.syllables;
+
+        syllables.forEach((syl, index) => {
+            // Connector
+            if (index === 0) {
+                const connector = document.createElement('div');
+                connector.className = 'wagon-connector';
+                wagonsEl.appendChild(connector);
+            }
+
+            const wagon = document.createElement('div');
+            wagon.className = 'wagon empty';
+            wagon.dataset.index = index;
+
+            // Wheels
+            const wheelL = document.createElement('div');
+            wheelL.className = 'wheel-left';
+            wagon.appendChild(wheelL);
+            const wheelR = document.createElement('div');
+            wheelR.className = 'wheel-right';
+            wagon.appendChild(wheelR);
+
+            // Syllable text (hidden when empty)
+            const textSpan = document.createElement('span');
+            textSpan.className = 'wagon-text';
+            wagon.appendChild(textSpan);
+
+            // Click to undo
+            wagon.addEventListener('click', () => undoWagon(index));
+
+            wagonsEl.appendChild(wagon);
+
+            // Connector after
+            if (index < syllables.length - 1) {
+                const connector = document.createElement('div');
+                connector.className = 'wagon-connector';
+                wagonsEl.appendChild(connector);
+            }
+        });
+    }
+
+    function updateWagonDisplay() {
+        const wagonsEl = document.getElementById('wagons');
+        const wagonEls = wagonsEl.querySelectorAll('.wagon');
+
+        wagonEls.forEach((wagonEl, index) => {
+            const textSpan = wagonEl.querySelector('.wagon-text');
+            const data = filledWagons[index];
+
+            if (data) {
+                wagonEl.className = 'wagon filled';
+                wagonEl.querySelector('.wheel-left').className = 'wheel-left';
+                wagonEl.querySelector('.wheel-right').className = 'wheel-right';
+                textSpan.textContent = data.syllable;
+            } else {
+                wagonEl.className = 'wagon empty';
+                wagonEl.querySelector('.wheel-left').className = 'wheel-left';
+                wagonEl.querySelector('.wheel-right').className = 'wheel-right';
+                textSpan.textContent = '';
+            }
+        });
+    }
+
+    // =============================================
+    // RENDER SYLLABLE BUTTONS
+    // =============================================
+    function renderSyllableButtons() {
+        const container = document.getElementById('syllable-buttons');
+        container.innerHTML = '';
+
+        // Combine correct syllables + distractors, shuffle
+        const correct = [...currentWordData.syllables];
+        const distractors = [...currentWordData.distractors];
+        allSyllableChoices = [...correct, ...distractors].sort(() => Math.random() - 0.5);
+
+        allSyllableChoices.forEach((syl, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'syllable-btn syl-color-' + (index % 6);
+            btn.textContent = syl;
+            btn.dataset.index = index;
+            btn.dataset.syllable = syl;
+            btn.addEventListener('click', () => onSyllableClick(index, syl));
+            container.appendChild(btn);
+        });
+    }
+
+    function setSyllableUsed(index, used) {
+        const container = document.getElementById('syllable-buttons');
+        const btn = container.querySelector(`[data-index="${index}"]`);
+        if (btn) {
+            if (used) {
+                btn.classList.add('used');
+            } else {
+                btn.classList.remove('used');
+                btn.classList.add('bounce-back');
+                setTimeout(() => btn.classList.remove('bounce-back'), 400);
+            }
+        }
+    }
+
+    // =============================================
+    // CLICK HANDLERS
+    // =============================================
+    function onSyllableClick(buttonIndex, syllable) {
+        if (isProcessing) return;
+
+        playClickSound();
+
+        // Find next empty wagon
+        const nextEmpty = filledWagons.indexOf(null);
+        if (nextEmpty === -1) return; // All filled
+
+        // Check if this syllable is correct for this position
+        const expectedSyllable = currentWordData.syllables[nextEmpty];
+
+        if (syllable.toUpperCase() === expectedSyllable.toUpperCase()) {
+            // Correct!
+            filledWagons[nextEmpty] = { syllable: syllable, buttonIndex: buttonIndex };
+            setSyllableUsed(buttonIndex, true);
+            updateWagonDisplay();
+
+            // Check if word is complete
+            if (filledWagons.every(w => w !== null)) {
+                onWordComplete();
+            }
+        } else {
+            // Wrong syllable - shake the wagon
+            playErrorSound();
+            const wagonsEl = document.getElementById('wagons');
+            const wagonEls = wagonsEl.querySelectorAll('.wagon');
+            const targetWagon = wagonEls[nextEmpty];
+            targetWagon.classList.add('shake');
+            setTimeout(() => targetWagon.classList.remove('shake'), 400);
+        }
+    }
+
+    function undoWagon(index) {
+        if (isProcessing) return;
+        if (!filledWagons[index]) return;
+
+        playClickSound();
+
+        // Only allow undo of the last filled wagon (rightmost filled)
+        let lastFilledIndex = -1;
+        for (let i = filledWagons.length - 1; i >= 0; i--) {
+            if (filledWagons[i] !== null) {
+                lastFilledIndex = i;
+                break;
+            }
+        }
+
+        if (index !== lastFilledIndex) return;
+
+        const data = filledWagons[index];
+        setSyllableUsed(data.buttonIndex, false);
+        filledWagons[index] = null;
+        updateWagonDisplay();
+    }
+
+    // =============================================
+    // WORD COMPLETE
+    // =============================================
+    function onWordComplete() {
+        isProcessing = true;
+        clearTimer();
+
+        gameState.starsThisSession++;
+
+        // Bonus star for level 4 if fast (< 15 seconds)
+        let bonusStar = false;
+        if (gameState.currentLevel === 4 && timerRemaining > 15) {
+            gameState.starsThisSession++;
+            bonusStar = true;
+        }
+
+        // Update stars display
+        document.getElementById('game-stars').innerHTML = '&#x2B50; ' + gameState.starsThisSession;
+
+        // Show the word
+        document.getElementById('word-hint').textContent = currentWordData.word;
+
+        // TTS
+        setTimeout(() => speakWord(currentWordData.word), 300);
+
+        // Play sounds
+        playSuccessSound();
+
+        // Show positive feedback
+        const msg = POSITIVE_MESSAGES[Math.floor(Math.random() * POSITIVE_MESSAGES.length)];
+        const sub = bonusStar ? 'Bonus rapidite ! +1 etoile' : ENCOURAGE_MESSAGES[Math.floor(Math.random() * ENCOURAGE_MESSAGES.length)];
+        showFeedback(msg.emoji, msg.text, sub);
+
+        // Animate train departure after feedback
+        setTimeout(() => {
+            playChooChoo();
+            const trainContainer = document.getElementById('train-container');
+            trainContainer.classList.add('departing');
+        }, 1500);
+
+        // Next question after animation
+        setTimeout(() => {
+            hideFeedback();
+            gameState.currentQuestion++;
+            loadQuestion();
+        }, 2800);
+    }
+
+    // =============================================
+    // TIMER (Level 4)
+    // =============================================
+    function startTimer() {
+        timerRemaining = 30;
+        const timerBar = document.getElementById('timer-bar');
+        timerBar.style.width = '100%';
+        timerBar.classList.remove('urgent');
+
+        timerInterval = setInterval(() => {
+            timerRemaining -= 0.1;
+            const pct = Math.max(0, (timerRemaining / 30) * 100);
+            timerBar.style.width = pct + '%';
+
+            if (timerRemaining <= 10) {
+                timerBar.classList.add('urgent');
+            }
+
+            if (timerRemaining <= 0) {
+                clearTimer();
+                onTimeout();
+            }
+        }, 100);
+    }
+
+    function clearTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    function onTimeout() {
+        isProcessing = true;
+
+        const msg = TIMEOUT_MESSAGES[Math.floor(Math.random() * TIMEOUT_MESSAGES.length)];
+        showFeedback(msg.emoji, msg.text, msg.sub);
+
+        setTimeout(() => {
+            hideFeedback();
+            gameState.currentQuestion++;
+            loadQuestion();
+        }, 2000);
+    }
+
+    // =============================================
+    // END LEVEL
+    // =============================================
+    function endLevel() {
+        clearTimer();
+        const level = gameState.currentLevel;
+        const stars = gameState.starsThisSession;
+
+        // Update best score
+        if (stars > (gameState.bestScores[level] || 0)) {
+            gameState.bestScores[level] = stars;
+        }
+
+        // Add to total
+        gameState.totalStars += stars;
+
+        // Unlock next level if scored enough (at least half the words)
+        const maxWords = LEVEL_WORD_COUNT[level];
+        if (stars >= Math.ceil(maxWords / 2) && level < 4) {
+            if (!gameState.unlockedLevels.includes(level + 1)) {
+                gameState.unlockedLevels.push(level + 1);
+            }
+        }
+
+        saveGame();
+
+        // Play celebration
+        playLevelCompleteSound();
+        launchConfetti();
+
+        // Show complete screen
+        const emoji = stars >= maxWords ? '&#x1F3C6;' : stars >= Math.ceil(maxWords / 2) ? '&#x1F31F;' : '&#x1F60A;';
+        document.getElementById('complete-emoji').innerHTML = emoji;
+        document.getElementById('complete-title').textContent = stars >= maxWords ? 'Parfait !' : 'Bravo !';
+        document.getElementById('complete-stars').innerHTML = '&#x2B50; ' + stars + ' / ' + maxWords + ' etoiles';
+
+        let message = '';
+        if (stars >= maxWords) {
+            message = 'Tu as reussi tous les mots ! Tu es un champion de la lecture !';
+        } else if (stars >= Math.ceil(maxWords / 2)) {
+            message = 'Tres bien joue ! Le niveau suivant est debloque !';
+        } else {
+            message = 'Continue a t\'entrainer, tu progresses super bien !';
+        }
+        document.getElementById('complete-message').textContent = message;
+
+        // Buttons
+        const btnsContainer = document.getElementById('complete-buttons');
+        btnsContainer.innerHTML = '';
+
+        const retryBtn = document.createElement('button');
+        retryBtn.className = 'action-btn secondary';
+        retryBtn.textContent = 'Rejouer';
+        retryBtn.addEventListener('click', () => {
+            playClickSound();
+            startLevel(level);
+        });
+        btnsContainer.appendChild(retryBtn);
+
+        if (level < 4 && gameState.unlockedLevels.includes(level + 1)) {
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'action-btn';
+            nextBtn.textContent = 'Niveau suivant';
+            nextBtn.addEventListener('click', () => {
+                playClickSound();
+                startLevel(level + 1);
+            });
+            btnsContainer.appendChild(nextBtn);
+        }
+
+        const homeBtn = document.createElement('button');
+        homeBtn.className = 'action-btn secondary';
+        homeBtn.textContent = 'Menu';
+        homeBtn.addEventListener('click', () => {
+            playClickSound();
+            renderHome();
+        });
+        btnsContainer.appendChild(homeBtn);
+
+        showScreen('complete-screen');
+    }
+
+    // =============================================
+    // FEEDBACK OVERLAY
+    // =============================================
+    function showFeedback(emoji, text, subtext) {
+        document.getElementById('feedback-emoji').innerHTML = emoji;
+        document.getElementById('feedback-text').textContent = text;
+        document.getElementById('feedback-subtext').textContent = subtext || '';
+        document.getElementById('feedback-overlay').classList.add('active');
+    }
+
+    function hideFeedback() {
+        document.getElementById('feedback-overlay').classList.remove('active');
+    }
+
+    // =============================================
+    // CONFETTI
+    // =============================================
+    function launchConfetti() {
+        const container = document.getElementById('confetti-container');
+        container.innerHTML = '';
+        const colors = ['#FF5722', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF9800', '#E91E63'];
+
+        for (let i = 0; i < 60; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+            piece.style.animationDelay = Math.random() * 0.5 + 's';
+            piece.style.width = (8 + Math.random() * 8) + 'px';
+            piece.style.height = (8 + Math.random() * 8) + 'px';
+            container.appendChild(piece);
+        }
+
+        setTimeout(() => { container.innerHTML = ''; }, 4000);
+    }
+
+    // =============================================
+    // INIT
+    // =============================================
+    loadGame();
+    renderHome();
+</script>
+</body>
+</html>
