@@ -995,6 +995,7 @@
                 completedLevels: gameState.completedLevels
             };
             localStorage.setItem('calculAventure', JSON.stringify(data));
+            localStorage.setItem('calculScore', gameState.completedLevels.length.toString());
         }
 
         function loadGame() {
