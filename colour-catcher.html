@@ -1,1012 +1,564 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Colour Catcher - Jeu Educatif</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Colour Catcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
+body{background:linear-gradient(180deg,#0D47A1 0%,#42A5F5 100%);display:flex;flex-direction:column;align-items:center;color:#fff}
 
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #0D47A1 0%, #42A5F5 100%);
-            min-height: 100vh;
-            overflow: auto;
-            user-select: none;
-        }
+.back-btn{position:absolute;top:clamp(8px,2vw,16px);left:clamp(8px,2vw,16px);background:rgba(255,255,255,.2);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:700;font-size:clamp(14px,3vw,18px);padding:clamp(8px,1.5vw,12px) clamp(12px,2vw,20px);border-radius:30px;cursor:pointer;z-index:100;min-height:48px;min-width:48px;backdrop-filter:blur(4px);transition:background .2s;text-decoration:none;display:flex;align-items:center}
+.back-btn:hover,.back-btn:active{background:rgba(255,255,255,.35)}
 
-        .screen {
-            position: relative;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-            padding-top: 60px;
-            animation: fadeIn 0.5s ease;
-            overflow: auto;
-        }
+.header{text-align:center;padding-top:clamp(50px,10vh,80px);z-index:10}
+.header h1{font-size:clamp(28px,6vw,48px);font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+.header .mascot{font-size:clamp(40px,8vw,64px);display:block;margin:8px 0}
+.header p{font-size:clamp(14px,3vw,20px);opacity:.9}
 
-        .screen.active { display: flex; }
+.score-bar{position:absolute;top:clamp(8px,2vw,16px);right:clamp(8px,2vw,16px);display:flex;gap:8px;align-items:center;z-index:100;font-weight:700;font-size:clamp(14px,3vw,18px);background:rgba(255,255,255,.2);padding:clamp(6px,1vw,10px) clamp(12px,2vw,20px);border-radius:30px;backdrop-filter:blur(4px)}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+.menu{display:flex;flex-direction:column;gap:clamp(12px,2vw,20px);margin-top:clamp(20px,4vh,40px);z-index:10;width:90%;max-width:400px}
+.menu-btn{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);color:#fff;font-family:'Nunito',sans-serif;font-weight:700;font-size:clamp(16px,3.5vw,22px);padding:clamp(14px,3vw,20px) clamp(16px,3vw,24px);border-radius:16px;cursor:pointer;min-height:48px;backdrop-filter:blur(4px);transition:all .2s;text-align:left;display:flex;align-items:center;gap:12px}
+.menu-btn:hover,.menu-btn:active{background:rgba(255,255,255,.35);transform:scale(1.02)}
+.menu-btn.locked{opacity:.45;pointer-events:none}
+.menu-btn .level-icon{font-size:clamp(22px,4vw,30px)}
+.menu-btn .level-info{display:flex;flex-direction:column}
+.menu-btn .level-info small{font-weight:400;font-size:clamp(11px,2.2vw,14px);opacity:.8}
 
-        .back-to-menu {
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            background: rgba(255,255,255,0.95);
-            border: none;
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-size: clamp(0.85rem, 2.5vw, 1rem);
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            color: #0D47A1;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            z-index: 100;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-        }
-        .back-to-menu:hover { transform: scale(1.05); background: #fff; }
+.game-area{position:absolute;inset:0;overflow:hidden}
+.command-bar{position:absolute;top:clamp(60px,12vh,100px);left:50%;transform:translateX(-50%);z-index:50;text-align:center;width:90%}
+.command-en{font-size:clamp(20px,5vw,36px);font-weight:800;text-shadow:0 2px 6px rgba(0,0,0,.3);line-height:1.2}
+.command-fr{font-size:clamp(13px,2.8vw,18px);font-weight:400;opacity:.7;margin-top:4px}
+.round-counter{font-size:clamp(13px,2.8vw,18px);font-weight:600;margin-top:8px;opacity:.8}
 
-        /* ===== WELCOME ===== */
-        .welcome-title {
-            font-size: clamp(2rem, 7vw, 3.5rem);
-            font-weight: 800;
-            text-align: center;
-            color: #fff;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
-            margin-bottom: 5px;
-            line-height: 1.2;
-        }
+.balloon-container{position:absolute;inset:0;z-index:20}
+.balloon{position:absolute;cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:transform .15s}
+.balloon-body{width:clamp(55px,12vw,80px);height:clamp(68px,15vw,100px);border-radius:50% 50% 50% 50%/40% 40% 60% 60%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(18px,4vw,28px);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.25);position:relative;box-shadow:inset -8px -8px 20px rgba(0,0,0,.15),inset 8px 8px 20px rgba(255,255,255,.25);min-width:48px;min-height:48px}
+.balloon-body::after{content:'';position:absolute;top:15%;left:25%;width:20%;height:25%;background:rgba(255,255,255,.35);border-radius:50%;transform:rotate(-30deg)}
+.balloon-knot{width:8px;height:8px;background:inherit;clip-path:polygon(0 0,100% 0,50% 100%);margin-top:-2px}
+.balloon-string{width:1.5px;height:clamp(30px,6vw,50px);background:rgba(255,255,255,.5);margin-top:-1px}
 
-        .welcome-subtitle {
-            font-size: clamp(1rem, 3.5vw, 1.4rem);
-            color: rgba(255,255,255,0.9);
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
+.balloon.wobble{animation:wobble .4s ease}
+.balloon.pop .balloon-body{animation:popScale .2s ease forwards}
+.balloon.pop .balloon-knot,.balloon.pop .balloon-string{display:none}
 
-        .welcome-emoji {
-            font-size: clamp(3rem, 10vw, 5rem);
-            margin-bottom: 10px;
-            animation: bounce 2s ease infinite;
-        }
+@keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}75%{transform:rotate(-4deg)}}
+@keyframes popScale{0%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:1}100%{transform:scale(1.5);opacity:0}}
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+@keyframes floatBalloon{
+0%{transform:translate(0,0)}
+25%{transform:translate(8px,-12px)}
+50%{transform:translate(-5px,-6px)}
+75%{transform:translate(10px,-15px)}
+100%{transform:translate(0,0)}
+}
+.balloon.floating{animation:floatBalloon 3s ease-in-out infinite}
 
-        .level-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-        }
+.particle{position:absolute;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:60;opacity:1}
 
-        .level-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            min-height: 48px;
-            border: 3px solid transparent;
-        }
+.feedback{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:clamp(32px,8vw,56px);font-weight:800;text-shadow:0 3px 10px rgba(0,0,0,.3);z-index:200;pointer-events:none;animation:feedbackPop .8s ease forwards}
+@keyframes feedbackPop{0%{transform:translate(-50%,-50%) scale(0);opacity:0}30%{transform:translate(-50%,-50%) scale(1.1);opacity:1}70%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(.8) translateY(-30px);opacity:0}}
 
-        .level-card:hover:not(.locked) { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-        .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
-        .level-card.completed { border-color: #FFD700; }
-        .level-card-emoji { font-size: clamp(2rem, 6vw, 2.5rem); margin-bottom: 8px; }
-        .level-card-title { font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 800; color: #0D47A1; margin-bottom: 4px; }
-        .level-card-desc { font-size: clamp(0.8rem, 2.5vw, 0.9rem); color: #666; font-weight: 600; }
-        .level-card-stars { margin-top: 8px; font-size: clamp(0.9rem, 2.5vw, 1rem); color: #FFD700; }
-        .lock-icon { font-size: 1.5rem; margin-top: 5px; }
+.level-complete{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;backdrop-filter:blur(4px)}
+.level-complete h2{font-size:clamp(28px,6vw,44px);font-weight:800;margin-bottom:8px}
+.level-complete .stars{font-size:clamp(36px,8vw,56px);margin:12px 0}
+.level-complete p{font-size:clamp(16px,3.5vw,22px);opacity:.9;margin-bottom:20px}
+.level-complete button{background:#fff;color:#0D47A1;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:clamp(16px,3.5vw,22px);padding:clamp(12px,2.5vw,18px) clamp(28px,5vw,48px);border-radius:50px;cursor:pointer;min-height:48px;margin:6px;transition:transform .15s}
+.level-complete button:active{transform:scale(.95)}
 
-        .total-stars-display {
-            background: rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 10px 25px;
-            color: #fff;
-            font-weight: 700;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            margin-bottom: 20px;
-        }
+.sub-counter{position:absolute;bottom:clamp(20px,5vh,60px);left:50%;transform:translateX(-50%);z-index:50;font-size:clamp(20px,5vw,32px);font-weight:800;background:rgba(255,255,255,.2);padding:8px 24px;border-radius:20px;backdrop-filter:blur(4px)}
 
-        /* ===== GAME ===== */
-        .game-header {
-            text-align: center;
-            margin-bottom: 10px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .game-title {
-            font-size: clamp(1.3rem, 5vw, 2rem);
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            margin-bottom: 5px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 12px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px auto;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA000);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .round-info {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            color: rgba(255,255,255,0.9);
-            font-weight: 600;
-        }
-
-        .stars-count {
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            color: #FFD700;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-
-        /* ===== COMMAND BAR ===== */
-        .command-bar {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 15px 25px;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 10px;
-        }
-
-        .command-en {
-            font-size: clamp(1.3rem, 4vw, 1.8rem);
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .command-fr {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            color: rgba(255,255,255,0.7);
-            font-weight: 600;
-            font-style: italic;
-            margin-top: 4px;
-        }
-
-        .catch-counter {
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            color: #FFD700;
-            font-weight: 700;
-            margin-top: 6px;
-        }
-
-        /* ===== BALLOON FIELD ===== */
-        .balloon-field {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: clamp(300px, 50vh, 450px);
-            border-radius: 25px;
-            overflow: hidden;
-            background: rgba(255,255,255,0.05);
-            margin-bottom: 15px;
-        }
-
-        .balloon {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.15s ease;
-            animation: floatBalloon 3s ease-in-out infinite;
-        }
-
-        .balloon:active { transform: scale(1.1) !important; }
-
-        @keyframes floatBalloon {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-12px) translateX(5px); }
-            50% { transform: translateY(-6px) translateX(-5px); }
-            75% { transform: translateY(-15px) translateX(3px); }
-        }
-
-        .balloon-body {
-            width: clamp(55px, 14vw, 80px);
-            height: clamp(65px, 17vw, 95px);
-            border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset -8px -8px 15px rgba(0,0,0,0.15), 0 4px 15px rgba(0,0,0,0.2);
-            position: relative;
-        }
-
-        .balloon-body::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 20%;
-            height: 25%;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.35);
-        }
-
-        .balloon-text {
-            font-size: clamp(1rem, 3vw, 1.4rem);
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        .balloon-string {
-            width: 2px;
-            height: 30px;
-            background: rgba(255,255,255,0.5);
-            margin-top: -2px;
-        }
-
-        /* ===== POP ANIMATION ===== */
-        .balloon.popping .balloon-body {
-            animation: popBurst 0.4s ease forwards;
-        }
-
-        .balloon.popping .balloon-string { display: none; }
-
-        @keyframes popBurst {
-            0% { transform: scale(1); opacity: 1; }
-            30% { transform: scale(1.3); opacity: 0.8; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        .pop-particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particleFly 0.6s ease-out forwards;
-        }
-
-        @keyframes particleFly {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
-        }
-
-        .balloon.wrong-pop {
-            animation: shake 0.4s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        /* ===== FEEDBACK ===== */
-        .feedback {
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
-            font-weight: 800;
-            text-align: center;
-            margin: 10px 0;
-            min-height: 40px;
-            color: #fff;
-        }
-
-        .feedback.positive { color: #A5D6A7; }
-        .feedback.info { color: #FFCC80; }
-
-        /* ===== TIMER ===== */
-        .timer-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 8px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 5px auto;
-        }
-
-        .timer-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336);
-            border-radius: 10px;
-            transition: width 0.1s linear;
-        }
-
-        /* ===== RESULT ===== */
-        .result-container {
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            padding: clamp(20px, 5vw, 40px);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            animation: popIn 0.4s ease;
-        }
-
-        .result-emoji { font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 10px; }
-        .result-title { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: #0D47A1; margin-bottom: 10px; }
-        .result-text { font-size: clamp(1rem, 3vw, 1.2rem); color: #555; font-weight: 600; margin-bottom: 15px; }
-        .result-stars-display { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; }
-
-        .action-btn {
-            background: rgba(255,255,255,0.95);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            color: #0D47A1;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            min-height: 48px;
-            margin: 5px;
-        }
-
-        .action-btn:hover { transform: translateY(-2px); }
-        .action-btn.primary { background: linear-gradient(145deg, #FFD700, #FFA000); color: #fff; }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.15); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-            pointer-events: none;
-            z-index: 200;
-            animation: confettiFall 3s ease-out forwards;
-        }
-
-        @keyframes confettiFall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-        }
-    </style>
+.hidden{display:none!important}
+</style>
 </head>
 <body>
-    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
 
-    <!-- WELCOME SCREEN -->
-    <div id="welcome-screen" class="screen active">
-        <div class="welcome-emoji">&#127880;</div>
-        <div class="welcome-title">Colour<br>Catcher</div>
-        <div class="welcome-subtitle">Attrape les ballons en anglais !</div>
-        <div class="total-stars-display" id="total-stars">&#11088; 0 etoile(s)</div>
-        <div class="level-grid" id="level-grid"></div>
-    </div>
+<a class="back-btn" href="index.html">&#8592; Mes Jeux</a>
 
-    <!-- GAME SCREEN -->
-    <div id="game-screen" class="screen">
-        <div class="game-header">
-            <div class="game-title" id="game-title"></div>
-            <div class="round-info" id="round-info"></div>
-            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-            <div class="timer-bar" id="timer-bar" style="display:none;"><div class="timer-fill" id="timer-fill"></div></div>
-            <div class="stars-count" id="stars-count"></div>
-        </div>
-        <div class="command-bar" id="command-bar">
-            <div class="command-en" id="command-en"></div>
-            <div class="command-fr" id="command-fr"></div>
-            <div class="catch-counter" id="catch-counter"></div>
-        </div>
-        <div class="balloon-field" id="balloon-field"></div>
-        <div class="feedback" id="feedback"></div>
-    </div>
+<!-- MENU SCREEN -->
+<div id="menuScreen" class="header">
+  <span class="mascot">&#127880;</span>
+  <h1>Colour Catcher</h1>
+  <p>Attrape les ballons et apprends les couleurs en anglais !</p>
+  <div class="menu" id="levelMenu"></div>
+</div>
 
-    <!-- RESULT SCREEN -->
-    <div id="result-screen" class="screen">
-        <div class="result-container">
-            <div class="result-emoji" id="result-emoji"></div>
-            <div class="result-title" id="result-title"></div>
-            <div class="result-stars-display" id="result-stars"></div>
-            <div class="result-text" id="result-text"></div>
-            <div>
-                <button class="action-btn primary" onclick="goMenu()">Menu &#127968;</button>
-            </div>
-        </div>
-    </div>
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="game-area hidden">
+  <div class="score-bar" id="scoreBar">&#11088; <span id="scoreDisplay">0</span></div>
+  <div class="command-bar">
+    <div class="command-en" id="commandEn"></div>
+    <div class="command-fr" id="commandFr"></div>
+    <div class="round-counter" id="roundCounter"></div>
+  </div>
+  <div class="balloon-container" id="balloonContainer"></div>
+  <div class="sub-counter hidden" id="subCounter"></div>
+</div>
 
-    <script>
-        // ===== AUDIO =====
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+<!-- LEVEL COMPLETE OVERLAY -->
+<div id="levelComplete" class="level-complete hidden">
+  <h2 id="lcTitle"></h2>
+  <div class="stars" id="lcStars"></div>
+  <p id="lcMsg"></p>
+  <button id="lcNext">Niveau suivant</button>
+  <button id="lcMenu">Menu</button>
+</div>
 
-        function playSound(type) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                gain.gain.value = 0.15;
-                const now = audioCtx.currentTime;
+<script>
+// =============== STATE ===============
+const COLORS = [
+  {en:'red',fr:'rouge',hex:'#EF5350'},
+  {en:'blue',fr:'bleu',hex:'#42A5F5'},
+  {en:'green',fr:'vert',hex:'#66BB6A'},
+  {en:'yellow',fr:'jaune',hex:'#FFEE58'},
+  {en:'orange',fr:'orange',hex:'#FFA726'},
+  {en:'pink',fr:'rose',hex:'#EC407A'},
+  {en:'purple',fr:'violet',hex:'#AB47BC'}
+];
+const LEVELS = [
+  {id:1,name:'Touch the Colour',nameFr:'Touche la couleur',icon:'&#127912;',rounds:10},
+  {id:2,name:'Catch the Number',nameFr:'Attrape le nombre',icon:'&#128290;',rounds:10},
+  {id:3,name:'Colour + Number',nameFr:'Couleur + Nombre',icon:'&#127752;',rounds:10},
+  {id:4,name:'Speed Round',nameFr:'Tour de vitesse',icon:'&#9889;',rounds:10}
+];
 
-                if (type === 'click') {
-                    osc.frequency.value = 600;
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-                    osc.start(now); osc.stop(now + 0.15);
-                } else if (type === 'pop') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(800, now);
-                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.15);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-                    osc.start(now); osc.stop(now + 0.2);
-                } else if (type === 'correct') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523, now);
-                    osc.frequency.setValueAtTime(659, now + 0.1);
-                    osc.frequency.setValueAtTime(784, now + 0.2);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                    osc.start(now); osc.stop(now + 0.4);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.value = 200;
-                    gain.gain.value = 0.06;
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-                    osc.start(now); osc.stop(now + 0.25);
-                } else if (type === 'win') {
-                    osc.type = 'triangle';
-                    [523, 659, 784, 1047].forEach((f, i) => {
-                        osc.frequency.setValueAtTime(f, now + i * 0.15);
-                    });
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-                    osc.start(now); osc.stop(now + 0.8);
-                }
-            } catch(e) {}
+let state, score;
+function loadState(){
+  try{ state = JSON.parse(localStorage.getItem('colourCatcher')) || {unlocked:1}; }catch(e){ state = {unlocked:1}; }
+  try{ score = parseInt(localStorage.getItem('colourCatcherScore')) || 0; }catch(e){ score = 0; }
+}
+function saveState(){
+  localStorage.setItem('colourCatcher', JSON.stringify(state));
+  localStorage.setItem('colourCatcherScore', String(score));
+}
+loadState();
+
+let currentLevel = 0, currentRound = 0, roundScore = 0, roundActive = false, speedTimer = null;
+let subTarget = 0, subCount = 0;
+
+// =============== AUDIO ===============
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx;
+function ensureAudio(){ if(!actx) actx = new AudioCtx(); }
+function playPop(){
+  ensureAudio();
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(600, actx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(200, actx.currentTime + 0.15);
+  g.gain.setValueAtTime(0.3, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.2);
+  o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.2);
+}
+function playWrong(){
+  ensureAudio();
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(200, actx.currentTime);
+  g.gain.setValueAtTime(0.15, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.25);
+  o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.25);
+}
+function playStar(){
+  ensureAudio();
+  const now = actx.currentTime;
+  [523, 659, 784].forEach((f, i) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.2, now + i * 0.1);
+    g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3);
+    o.connect(g); g.connect(actx.destination); o.start(now + i * 0.1); o.stop(now + i * 0.1 + 0.3);
+  });
+}
+function playLevelUp(){
+  ensureAudio();
+  const now = actx.currentTime;
+  [523, 587, 659, 784, 1047].forEach((f, i) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.2, now + i * 0.12);
+    g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.35);
+    o.connect(g); g.connect(actx.destination); o.start(now + i * 0.12); o.stop(now + i * 0.12 + 0.35);
+  });
+}
+
+// =============== TTS ===============
+function speak(text, cb){
+  if(!('speechSynthesis' in window)){ cb && cb(); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB'; u.rate = 0.8;
+  u.onend = () => { cb && cb(); };
+  u.onerror = () => { cb && cb(); };
+  window.speechSynthesis.speak(u);
+}
+
+// =============== DOM REFS ===============
+const menuScreen = document.getElementById('menuScreen');
+const gameScreen = document.getElementById('gameScreen');
+const levelMenu = document.getElementById('levelMenu');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const commandEn = document.getElementById('commandEn');
+const commandFr = document.getElementById('commandFr');
+const roundCounter = document.getElementById('roundCounter');
+const balloonContainer = document.getElementById('balloonContainer');
+const subCounterEl = document.getElementById('subCounter');
+const lcOverlay = document.getElementById('levelComplete');
+const lcTitle = document.getElementById('lcTitle');
+const lcStars = document.getElementById('lcStars');
+const lcMsg = document.getElementById('lcMsg');
+const lcNext = document.getElementById('lcNext');
+const lcMenu = document.getElementById('lcMenu');
+
+// =============== MENU ===============
+function buildMenu(){
+  levelMenu.innerHTML = '';
+  LEVELS.forEach(lv => {
+    const locked = lv.id > state.unlocked;
+    const btn = document.createElement('button');
+    btn.className = 'menu-btn' + (locked ? ' locked' : '');
+    btn.innerHTML = `<span class="level-icon">${lv.icon}</span><span class="level-info"><span>${lv.name}</span><small>${lv.nameFr}${locked ? ' — verrouille' : ''}</small></span>`;
+    if(!locked) btn.addEventListener('click', () => startLevel(lv.id));
+    levelMenu.appendChild(btn);
+  });
+}
+
+function showMenu(){
+  loadState();
+  gameScreen.classList.add('hidden');
+  lcOverlay.classList.add('hidden');
+  menuScreen.classList.remove('hidden');
+  buildMenu();
+  if(speedTimer){ clearTimeout(speedTimer); speedTimer = null; }
+}
+
+// =============== GAME ENGINE ===============
+function startLevel(lvId){
+  ensureAudio();
+  currentLevel = lvId; currentRound = 0; roundScore = 0; roundActive = false;
+  menuScreen.classList.add('hidden');
+  gameScreen.classList.remove('hidden');
+  lcOverlay.classList.add('hidden');
+  scoreDisplay.textContent = score;
+  subCounterEl.classList.add('hidden');
+  nextRound();
+}
+
+function nextRound(){
+  if(currentRound >= LEVELS[currentLevel - 1].rounds){ endLevel(); return; }
+  currentRound++;
+  roundCounter.textContent = `${currentRound} / ${LEVELS[currentLevel - 1].rounds}`;
+  balloonContainer.innerHTML = '';
+  roundActive = false;
+
+  if(currentLevel === 1) setupColourRound();
+  else if(currentLevel === 2) setupNumberRound();
+  else if(currentLevel === 3) setupComboRound();
+  else setupSpeedRound();
+}
+
+// ---- Helpers ----
+function randInt(a, b){ return a + Math.floor(Math.random() * (b - a + 1)); }
+function shuffle(a){ for(let i = a.length - 1; i > 0; i--){ const j = randInt(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function pick(a){ return a[randInt(0, a.length - 1)]; }
+
+function placeBalloons(count){
+  const positions = [];
+  const bw = Math.min(80, window.innerWidth * 0.12);
+  const margin = 10;
+  const areaTop = window.innerHeight * 0.25;
+  const areaBot = window.innerHeight * 0.85;
+  const areaLeft = margin;
+  const areaRight = window.innerWidth - bw - margin;
+  for(let i = 0; i < count; i++){
+    let x, y, tries = 0;
+    do {
+      x = randInt(areaLeft, areaRight);
+      y = randInt(areaTop, areaBot - bw);
+      tries++;
+    } while(tries < 80 && positions.some(p => Math.abs(p.x - x) < bw + 14 && Math.abs(p.y - y) < bw + 14));
+    positions.push({x, y});
+  }
+  return positions;
+}
+
+function createBalloon(color, label, x, y){
+  const el = document.createElement('div');
+  el.className = 'balloon floating';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  el.style.animationDelay = (-Math.random() * 3) + 's';
+  el.innerHTML = `<div class="balloon-body" style="background:${color.hex}">${label}</div><div class="balloon-knot" style="background:${color.hex}"></div><div class="balloon-string"></div>`;
+  el.dataset.colorEn = color.en;
+  el.dataset.label = label;
+  balloonContainer.appendChild(el);
+  return el;
+}
+
+function popBalloon(el){
+  el.classList.remove('floating');
+  el.classList.add('pop');
+  playPop();
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const hex = el.querySelector('.balloon-body').style.background;
+  for(let i = 0; i < 8; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.background = hex;
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    const angle = (Math.PI * 2 / 8) * i;
+    const dist = randInt(40, 90);
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    document.body.appendChild(p);
+    p.animate([
+      {transform: 'translate(0,0) scale(1)', opacity: 1},
+      {transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0}
+    ], {duration: 400, easing: 'ease-out', fill: 'forwards'});
+    setTimeout(() => p.remove(), 450);
+  }
+  setTimeout(() => el.remove(), 250);
+}
+
+function wobbleBalloon(el){
+  el.classList.remove('wobble');
+  void el.offsetWidth;
+  el.classList.add('wobble');
+  playWrong();
+}
+
+function showFeedback(text){
+  const fb = document.createElement('div');
+  fb.className = 'feedback';
+  fb.textContent = text;
+  document.body.appendChild(fb);
+  setTimeout(() => fb.remove(), 850);
+}
+
+function addScore(n){
+  score += n;
+  roundScore += n;
+  scoreDisplay.textContent = score;
+  saveState();
+}
+
+const NUMBER_WORDS_EN = ['','one','two','three','four','five','six','seven','eight','nine','ten'];
+const NUMBER_WORDS_FR = ['','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix'];
+
+// ---- Level 1: Touch the Colour ----
+function setupColourRound(){
+  const count = randInt(4, 6);
+  const chosen = shuffle([...COLORS]).slice(0, count);
+  const target = pick(chosen);
+  const positions = placeBalloons(count);
+  chosen.forEach((c, i) => {
+    const el = createBalloon(c, '', positions[i].x, positions[i].y);
+    el.addEventListener('click', () => {
+      if(!roundActive) return;
+      if(c.en === target.en){
+        roundActive = false;
+        popBalloon(el);
+        addScore(10);
+        showFeedback('Super !');
+        playStar();
+        setTimeout(nextRound, 900);
+      } else {
+        wobbleBalloon(el);
+      }
+    });
+  });
+  const cmdEn = `Touch the ${target.en.toUpperCase()} balloon!`;
+  const cmdFr = `Touche le ballon ${target.fr} !`;
+  commandEn.textContent = cmdEn;
+  commandFr.textContent = cmdFr;
+  speak(cmdEn, () => { roundActive = true; });
+}
+
+// ---- Level 2: Catch the Number ----
+function setupNumberRound(){
+  const count = randInt(4, 6);
+  const nums = shuffle([1,2,3,4,5,6,7,8,9,10]).slice(0, count);
+  const target = pick(nums);
+  const positions = placeBalloons(count);
+  nums.forEach((n, i) => {
+    const c = COLORS[i % COLORS.length];
+    const el = createBalloon(c, String(n), positions[i].x, positions[i].y);
+    el.addEventListener('click', () => {
+      if(!roundActive) return;
+      if(n === target){
+        roundActive = false;
+        popBalloon(el);
+        addScore(10);
+        showFeedback('Bravo !');
+        playStar();
+        setTimeout(nextRound, 900);
+      } else {
+        wobbleBalloon(el);
+      }
+    });
+  });
+  const cmdEn = `Catch number ${NUMBER_WORDS_EN[target].toUpperCase()}!`;
+  const cmdFr = `Attrape le nombre ${NUMBER_WORDS_FR[target]} !`;
+  commandEn.textContent = cmdEn;
+  commandFr.textContent = cmdFr;
+  speak(cmdEn, () => { roundActive = true; });
+}
+
+// ---- Level 3: Colour + Number combo ----
+function setupComboRound(){
+  const targetCount = randInt(2, 4);
+  const targetColor = pick(COLORS);
+  const totalBalloons = randInt(6, 8);
+  subTarget = targetCount;
+  subCount = 0;
+  subCounterEl.classList.remove('hidden');
+  subCounterEl.textContent = `0 / ${subTarget}`;
+
+  const balloonColors = [];
+  for(let i = 0; i < targetCount; i++) balloonColors.push(targetColor);
+  const others = COLORS.filter(c => c.en !== targetColor.en);
+  while(balloonColors.length < totalBalloons) balloonColors.push(pick(others));
+  shuffle(balloonColors);
+
+  const positions = placeBalloons(totalBalloons);
+  balloonColors.forEach((c, i) => {
+    const el = createBalloon(c, '', positions[i].x, positions[i].y);
+    el.addEventListener('click', () => {
+      if(!roundActive) return;
+      if(c.en === targetColor.en){
+        popBalloon(el);
+        subCount++;
+        addScore(10);
+        subCounterEl.textContent = `${subCount} / ${subTarget}`;
+        if(subCount >= subTarget){
+          roundActive = false;
+          showFeedback('Genial !');
+          playStar();
+          subCounterEl.classList.add('hidden');
+          setTimeout(nextRound, 900);
         }
+      } else {
+        wobbleBalloon(el);
+      }
+    });
+  });
+  const cmdEn = `Catch ${NUMBER_WORDS_EN[targetCount].toUpperCase()} ${targetColor.en} balloons!`;
+  const cmdFr = `Attrape ${NUMBER_WORDS_FR[targetCount]} ballons ${targetColor.fr} !`;
+  commandEn.textContent = cmdEn;
+  commandFr.textContent = cmdFr;
+  speak(cmdEn, () => { roundActive = true; });
+}
 
-        // ===== TTS =====
-        function speakEN(text) {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'en-GB';
-                u.rate = 0.8;
-                u.volume = 1;
-                speechSynthesis.cancel();
-                speechSynthesis.speak(u);
-            } catch(e) {}
+// ---- Level 4: Speed Round ----
+function setupSpeedRound(){
+  subCounterEl.classList.add('hidden');
+  const isColor = Math.random() < 0.5;
+  let roundStart;
+
+  if(isColor){
+    const count = randInt(4, 6);
+    const chosen = shuffle([...COLORS]).slice(0, count);
+    const target = pick(chosen);
+    const positions = placeBalloons(count);
+    chosen.forEach((c, i) => {
+      const el = createBalloon(c, '', positions[i].x, positions[i].y);
+      el.addEventListener('click', () => {
+        if(!roundActive) return;
+        if(c.en === target.en){
+          roundActive = false;
+          if(speedTimer){ clearTimeout(speedTimer); speedTimer = null; }
+          popBalloon(el);
+          const fast = Date.now() - roundStart < 2000;
+          addScore(fast ? 15 : 10);
+          showFeedback(fast ? 'Rapide ! +15' : 'Super ! +10');
+          playStar();
+          setTimeout(nextRound, 900);
+        } else {
+          wobbleBalloon(el);
         }
-
-        // ===== STATE =====
-        let state = JSON.parse(localStorage.getItem('colourCatcher') || 'null') || {
-            levelsCompleted: [false, false, false, false],
-            levelStars: [0, 0, 0, 0],
-            totalStars: 0
-        };
-
-        function saveState() {
-            state.totalStars = state.levelStars.reduce((a, b) => a + b, 0);
-            localStorage.setItem('colourCatcher', JSON.stringify(state));
-            localStorage.setItem('colourCatcherScore', state.totalStars.toString());
+      });
+    });
+    const cmdEn = `Touch the ${target.en.toUpperCase()} balloon!`;
+    const cmdFr = `Touche le ballon ${target.fr} !`;
+    commandEn.textContent = cmdEn;
+    commandFr.textContent = cmdFr;
+    speak(cmdEn, () => {
+      roundActive = true;
+      roundStart = Date.now();
+      speedTimer = setTimeout(() => {
+        if(roundActive){ roundActive = false; showFeedback('Trop lent !'); setTimeout(nextRound, 900); }
+      }, 4000);
+    });
+  } else {
+    const count = randInt(4, 6);
+    const nums = shuffle([1,2,3,4,5,6,7,8,9,10]).slice(0, count);
+    const target = pick(nums);
+    const positions = placeBalloons(count);
+    nums.forEach((n, i) => {
+      const c = COLORS[i % COLORS.length];
+      const el = createBalloon(c, String(n), positions[i].x, positions[i].y);
+      el.addEventListener('click', () => {
+        if(!roundActive) return;
+        if(n === target){
+          roundActive = false;
+          if(speedTimer){ clearTimeout(speedTimer); speedTimer = null; }
+          popBalloon(el);
+          const fast = Date.now() - roundStart < 2000;
+          addScore(fast ? 15 : 10);
+          showFeedback(fast ? 'Rapide ! +15' : 'Bravo ! +10');
+          playStar();
+          setTimeout(nextRound, 900);
+        } else {
+          wobbleBalloon(el);
         }
-
-        // ===== DATA =====
-        const COLOURS = [
-            { en: 'red', fr: 'rouge', hex: '#F44336' },
-            { en: 'blue', fr: 'bleu', hex: '#2196F3' },
-            { en: 'yellow', fr: 'jaune', hex: '#FFEB3B' },
-            { en: 'green', fr: 'vert', hex: '#4CAF50' },
-            { en: 'orange', fr: 'orange', hex: '#FF9800' },
-            { en: 'purple', fr: 'violet', hex: '#9C27B0' },
-            { en: 'pink', fr: 'rose', hex: '#E91E63' }
-        ];
-
-        const NUMBERS_EN = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
-        const NUMBERS_FR = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix'];
-
-        let currentLevel = 0;
-        let currentRound = 0;
-        let roundStars = 0;
-        let roundTotal = 10;
-        let isWaiting = false;
-        let timerInterval = null;
-        let catchNeeded = 0;
-        let catchCount = 0;
-
-        // ===== SCREENS =====
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function renderWelcome() {
-            const grid = document.getElementById('level-grid');
-            grid.innerHTML = '';
-            document.getElementById('total-stars').innerHTML = `&#11088; ${state.totalStars} etoile(s)`;
-
-            const levels = [
-                { name: 'Touch the Colour', emoji: '&#127912;', desc: '10 rounds' },
-                { name: 'Catch the Number', emoji: '&#128290;', desc: '10 rounds' },
-                { name: 'Colour + Number', emoji: '&#127880;', desc: '10 rounds' },
-                { name: 'Speed Round', emoji: '&#9889;', desc: '10 rounds' }
-            ];
-
-            levels.forEach((level, i) => {
-                const card = document.createElement('div');
-                card.className = 'level-card';
-                const unlocked = i === 0 || state.levelsCompleted[i - 1];
-                if (!unlocked) card.classList.add('locked');
-                if (state.levelsCompleted[i]) card.classList.add('completed');
-
-                card.innerHTML = `
-                    <div class="level-card-emoji">${level.emoji}</div>
-                    <div class="level-card-title">${level.name}</div>
-                    <div class="level-card-desc">${level.desc}</div>
-                    ${!unlocked ? '<div class="lock-icon">&#128274;</div>' : ''}
-                    ${state.levelStars[i] > 0 ? `<div class="level-card-stars">${'&#11088;'.repeat(state.levelStars[i])}</div>` : ''}
-                `;
-
-                if (unlocked) {
-                    card.onclick = () => { playSound('click'); startLevel(i); };
-                }
-                grid.appendChild(card);
-            });
-        }
-
-        // ===== START LEVEL =====
-        function startLevel(level) {
-            currentLevel = level;
-            currentRound = 0;
-            roundStars = 0;
-            roundTotal = 10;
-
-            const titles = ['Touch the Colour', 'Catch the Number', 'Colour + Number', 'Speed Round'];
-            document.getElementById('game-title').textContent = titles[level];
-            document.getElementById('timer-bar').style.display = level === 3 ? 'block' : 'none';
-            document.getElementById('catch-counter').textContent = '';
-
-            showScreen('game-screen');
-            nextRound();
-        }
-
-        function updateHeader() {
-            document.getElementById('round-info').textContent = `Round ${currentRound + 1} / ${roundTotal}`;
-            document.getElementById('progress-fill').style.width = `${((currentRound + 1) / roundTotal) * 100}%`;
-            document.getElementById('stars-count').innerHTML = `&#11088; ${roundStars}`;
-        }
-
-        // ===== NEXT ROUND =====
-        function nextRound() {
-            if (currentRound >= roundTotal) {
-                finishLevel();
-                return;
-            }
-            isWaiting = false;
-            updateHeader();
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('catch-counter').textContent = '';
-
-            if (currentLevel === 0) setupColourRound();
-            else if (currentLevel === 1) setupNumberRound();
-            else if (currentLevel === 2) setupComboRound();
-            else if (currentLevel === 3) setupSpeedRound();
-        }
-
-        // ===== HELPERS =====
-        function shuffle(arr) {
-            const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
-        }
-
-        function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-        function placeBalloons(balloons) {
-            const field = document.getElementById('balloon-field');
-            field.innerHTML = '';
-            const fieldW = field.offsetWidth || 400;
-            const fieldH = field.offsetHeight || 350;
-            const bw = 80;
-            const bh = 110;
-
-            balloons.forEach((b, i) => {
-                const balloon = document.createElement('div');
-                balloon.className = 'balloon';
-                balloon.style.animationDelay = (i * 0.3) + 's';
-
-                const x = 10 + (i % 4) * ((fieldW - bw - 20) / Math.min(balloons.length, 4));
-                const y = 10 + Math.floor(i / 4) * (fieldH / 2 - 20);
-                balloon.style.left = Math.min(x, fieldW - bw - 10) + 'px';
-                balloon.style.top = Math.min(y, fieldH - bh - 10) + 'px';
-
-                balloon.innerHTML = `
-                    <div class="balloon-body" style="background:${b.color}">
-                        <span class="balloon-text">${b.label || ''}</span>
-                    </div>
-                    <div class="balloon-string"></div>
-                `;
-
-                balloon.dataset.colorEn = b.colorEn || '';
-                balloon.dataset.number = b.number || '';
-                balloon.dataset.idx = i;
-
-                balloon.onclick = () => {
-                    if (b.onClick) b.onClick(balloon, b);
-                };
-
-                field.appendChild(balloon);
-            });
-        }
-
-        function popBalloon(el, color) {
-            el.classList.add('popping');
-            playSound('pop');
-
-            // Particles
-            for (let i = 0; i < 8; i++) {
-                const p = document.createElement('div');
-                p.className = 'pop-particle';
-                p.style.background = color;
-                const angle = (i / 8) * Math.PI * 2;
-                p.style.setProperty('--dx', Math.cos(angle) * 40 + 'px');
-                p.style.setProperty('--dy', Math.sin(angle) * 40 + 'px');
-                p.style.left = '50%';
-                p.style.top = '40%';
-                el.appendChild(p);
-            }
-
-            setTimeout(() => el.remove(), 500);
-        }
-
-        // ===== LEVEL 1: TOUCH THE COLOUR =====
-        function setupColourRound() {
-            const targetColour = COLOURS[randomInt(0, COLOURS.length - 1)];
-            const commandEn = `Touch the ${targetColour.en.toUpperCase()} balloon!`;
-            const commandFr = `Touche le ballon ${targetColour.fr} !`;
-
-            document.getElementById('command-en').textContent = commandEn;
-            document.getElementById('command-fr').textContent = commandFr;
-
-            speakEN(`Touch the ${targetColour.en} balloon`);
-
-            // Create 5 balloons, at least one is the target
-            const others = shuffle(COLOURS.filter(c => c.en !== targetColour.en)).slice(0, 4);
-            const all = shuffle([targetColour, ...others]);
-
-            const balloons = all.map(c => ({
-                color: c.hex,
-                colorEn: c.en,
-                label: '',
-                onClick: (el, b) => {
-                    if (isWaiting) return;
-                    if (b.colorEn === targetColour.en) {
-                        isWaiting = true;
-                        popBalloon(el, targetColour.hex);
-                        document.getElementById('feedback').className = 'feedback positive';
-                        document.getElementById('feedback').textContent = `Yes! ${capitalize(targetColour.en)}! (${capitalize(targetColour.fr)})`;
-                        roundStars++;
-                        playSound('correct');
-                        setTimeout(() => { currentRound++; nextRound(); }, 1200);
-                    } else {
-                        el.classList.add('wrong-pop');
-                        document.getElementById('feedback').className = 'feedback info';
-                        document.getElementById('feedback').textContent = `That's ${c.en} (${c.fr})... Try again!`;
-                        playSound('wrong');
-                        setTimeout(() => el.classList.remove('wrong-pop'), 400);
-                    }
-                }
-            }));
-
-            placeBalloons(balloons);
-        }
-
-        // ===== LEVEL 2: CATCH THE NUMBER =====
-        function setupNumberRound() {
-            const targetNum = randomInt(1, 10);
-            const commandEn = `Catch number ${NUMBERS_EN[targetNum].toUpperCase()}!`;
-            const commandFr = `Attrape le numero ${NUMBERS_FR[targetNum]} !`;
-
-            document.getElementById('command-en').textContent = commandEn;
-            document.getElementById('command-fr').textContent = commandFr;
-
-            speakEN(`Catch number ${NUMBERS_EN[targetNum]}`);
-
-            // 6 balloons with different numbers
-            const nums = [targetNum];
-            while (nums.length < 6) {
-                const n = randomInt(1, 10);
-                if (!nums.includes(n)) nums.push(n);
-            }
-            const shuffled = shuffle(nums);
-            const colorsShuffled = shuffle(COLOURS);
-
-            const balloons = shuffled.map((n, i) => ({
-                color: colorsShuffled[i % colorsShuffled.length].hex,
-                number: n,
-                label: n.toString(),
-                onClick: (el, b) => {
-                    if (isWaiting) return;
-                    if (b.number === targetNum) {
-                        isWaiting = true;
-                        popBalloon(el, colorsShuffled[i % colorsShuffled.length].hex);
-                        document.getElementById('feedback').className = 'feedback positive';
-                        document.getElementById('feedback').textContent = `Yes! ${capitalize(NUMBERS_EN[targetNum])}! (${NUMBERS_FR[targetNum]})`;
-                        roundStars++;
-                        playSound('correct');
-                        setTimeout(() => { currentRound++; nextRound(); }, 1200);
-                    } else {
-                        el.classList.add('wrong-pop');
-                        document.getElementById('feedback').className = 'feedback info';
-                        document.getElementById('feedback').textContent = `That's ${NUMBERS_EN[n]}... Try again!`;
-                        playSound('wrong');
-                        setTimeout(() => el.classList.remove('wrong-pop'), 400);
-                    }
-                }
-            }));
-
-            placeBalloons(balloons);
-        }
-
-        // ===== LEVEL 3: COLOUR + NUMBER =====
-        function setupComboRound() {
-            const targetColour = COLOURS[randomInt(0, COLOURS.length - 1)];
-            catchNeeded = randomInt(2, 3);
-            catchCount = 0;
-
-            const commandEn = `Catch ${NUMBERS_EN[catchNeeded].toUpperCase()} ${targetColour.en} balloons!`;
-            const commandFr = `Attrape ${NUMBERS_FR[catchNeeded]} ballons ${targetColour.fr} !`;
-
-            document.getElementById('command-en').textContent = commandEn;
-            document.getElementById('command-fr').textContent = commandFr;
-            document.getElementById('catch-counter').textContent = `0 / ${catchNeeded}`;
-
-            speakEN(`Catch ${NUMBERS_EN[catchNeeded]} ${targetColour.en} balloons`);
-
-            // Create balloons: catchNeeded of target color + extras of other colors
-            const targets = [];
-            for (let i = 0; i < catchNeeded; i++) targets.push(targetColour);
-
-            const others = shuffle(COLOURS.filter(c => c.en !== targetColour.en));
-            const otherBalloons = [];
-            for (let i = 0; i < 4; i++) otherBalloons.push(others[i % others.length]);
-
-            const all = shuffle([...targets, ...otherBalloons]);
-
-            const balloons = all.map((c, i) => ({
-                color: c.hex,
-                colorEn: c.en,
-                label: '',
-                onClick: (el, b) => {
-                    if (isWaiting) return;
-                    if (b.colorEn === targetColour.en) {
-                        popBalloon(el, c.hex);
-                        catchCount++;
-                        document.getElementById('catch-counter').textContent = `${catchCount} / ${catchNeeded}`;
-                        playSound('pop');
-
-                        if (catchCount >= catchNeeded) {
-                            isWaiting = true;
-                            document.getElementById('feedback').className = 'feedback positive';
-                            document.getElementById('feedback').textContent = `Well done!`;
-                            roundStars++;
-                            playSound('correct');
-                            setTimeout(() => { currentRound++; nextRound(); }, 1200);
-                        }
-                    } else {
-                        el.classList.add('wrong-pop');
-                        document.getElementById('feedback').className = 'feedback info';
-                        document.getElementById('feedback').textContent = `That's ${c.en}... Find the ${targetColour.en} ones!`;
-                        playSound('wrong');
-                        setTimeout(() => el.classList.remove('wrong-pop'), 400);
-                    }
-                }
-            }));
-
-            placeBalloons(balloons);
-        }
-
-        // ===== LEVEL 4: SPEED ROUND =====
-        let speedTimer = 0;
-        let speedMax = 8000;
-
-        function setupSpeedRound() {
-            if (timerInterval) clearInterval(timerInterval);
-
-            const isColorRound = Math.random() > 0.5;
-
-            if (isColorRound) {
-                // Color task
-                const targetColour = COLOURS[randomInt(0, COLOURS.length - 1)];
-                const commandEn = `Quick! Touch ${targetColour.en.toUpperCase()}!`;
-                const commandFr = `Vite ! Touche le ${targetColour.fr} !`;
-
-                document.getElementById('command-en').textContent = commandEn;
-                document.getElementById('command-fr').textContent = commandFr;
-                speakEN(`Quick! Touch ${targetColour.en}`);
-
-                const others = shuffle(COLOURS.filter(c => c.en !== targetColour.en)).slice(0, 4);
-                const all = shuffle([targetColour, ...others]);
-
-                const balloons = all.map(c => ({
-                    color: c.hex,
-                    colorEn: c.en,
-                    label: '',
-                    onClick: (el, b) => {
-                        if (isWaiting) return;
-                        if (b.colorEn === targetColour.en) {
-                            isWaiting = true;
-                            clearInterval(timerInterval);
-                            popBalloon(el, targetColour.hex);
-                            document.getElementById('feedback').className = 'feedback positive';
-                            document.getElementById('feedback').textContent = 'Yes!';
-                            roundStars++;
-                            playSound('correct');
-                            setTimeout(() => { currentRound++; nextRound(); }, 800);
-                        } else {
-                            el.classList.add('wrong-pop');
-                            playSound('wrong');
-                            setTimeout(() => el.classList.remove('wrong-pop'), 400);
-                        }
-                    }
-                }));
-
-                placeBalloons(balloons);
-            } else {
-                // Number task
-                const targetNum = randomInt(1, 10);
-                const commandEn = `Quick! Catch ${NUMBERS_EN[targetNum].toUpperCase()}!`;
-                const commandFr = `Vite ! Attrape ${NUMBERS_FR[targetNum]} !`;
-
-                document.getElementById('command-en').textContent = commandEn;
-                document.getElementById('command-fr').textContent = commandFr;
-                speakEN(`Quick! Catch ${NUMBERS_EN[targetNum]}`);
-
-                const nums = [targetNum];
-                while (nums.length < 5) {
-                    const n = randomInt(1, 10);
-                    if (!nums.includes(n)) nums.push(n);
-                }
-                const shuffled = shuffle(nums);
-                const colorsS = shuffle(COLOURS);
-
-                const balloons = shuffled.map((n, i) => ({
-                    color: colorsS[i % colorsS.length].hex,
-                    number: n,
-                    label: n.toString(),
-                    onClick: (el, b) => {
-                        if (isWaiting) return;
-                        if (b.number === targetNum) {
-                            isWaiting = true;
-                            clearInterval(timerInterval);
-                            popBalloon(el, colorsS[i % colorsS.length].hex);
-                            document.getElementById('feedback').className = 'feedback positive';
-                            document.getElementById('feedback').textContent = 'Yes!';
-                            roundStars++;
-                            playSound('correct');
-                            setTimeout(() => { currentRound++; nextRound(); }, 800);
-                        } else {
-                            el.classList.add('wrong-pop');
-                            playSound('wrong');
-                            setTimeout(() => el.classList.remove('wrong-pop'), 400);
-                        }
-                    }
-                }));
-
-                placeBalloons(balloons);
-            }
-
-            // Timer
-            speedTimer = speedMax;
-            const timerFill = document.getElementById('timer-fill');
-            timerFill.style.width = '100%';
-
-            timerInterval = setInterval(() => {
-                speedTimer -= 100;
-                timerFill.style.width = `${(speedTimer / speedMax) * 100}%`;
-                if (speedTimer <= 0) {
-                    clearInterval(timerInterval);
-                    if (!isWaiting) {
-                        isWaiting = true;
-                        document.getElementById('feedback').className = 'feedback info';
-                        document.getElementById('feedback').textContent = 'Time\'s up!';
-                        playSound('wrong');
-                        setTimeout(() => { currentRound++; nextRound(); }, 1000);
-                    }
-                }
-            }, 100);
-        }
-
-        // ===== FINISH =====
-        function finishLevel() {
-            if (timerInterval) clearInterval(timerInterval);
-            const prev = state.levelStars[currentLevel];
-            if (roundStars > prev) state.levelStars[currentLevel] = roundStars;
-            state.levelsCompleted[currentLevel] = true;
-            saveState();
-
-            const pct = Math.round((roundStars / roundTotal) * 100);
-            let emoji, title, text;
-            if (pct === 100) {
-                emoji = '&#127775;'; title = 'PERFECT!'; text = 'All balloons caught!';
-            } else if (pct >= 60) {
-                emoji = '&#11088;'; title = 'Great job!'; text = `${roundStars} out of ${roundTotal} correct!`;
-            } else {
-                emoji = '&#128170;'; title = 'Keep trying!'; text = 'You\'ll do better next time!';
-            }
-
-            document.getElementById('result-emoji').innerHTML = emoji;
-            document.getElementById('result-title').textContent = title;
-            document.getElementById('result-text').textContent = text;
-            document.getElementById('result-stars').innerHTML = '&#11088;'.repeat(roundStars) + '&#9723;'.repeat(roundTotal - roundStars);
-
-            showScreen('result-screen');
-            if (pct >= 60) launchConfetti();
-            playSound(pct === 100 ? 'win' : 'correct');
-        }
-
-        function goMenu() {
-            playSound('click');
-            renderWelcome();
-            showScreen('welcome-screen');
-        }
-
-        // ===== UTILS =====
-        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-        function launchConfetti() {
-            const colors = ['#FFD700', '#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#E91E63'];
-            for (let i = 0; i < 40; i++) {
-                setTimeout(() => {
-                    const c = document.createElement('div');
-                    c.className = 'confetti';
-                    c.style.left = Math.random() * 100 + 'vw';
-                    c.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    c.style.animationDuration = (2 + Math.random() * 2) + 's';
-                    c.style.width = (6 + Math.random() * 8) + 'px';
-                    c.style.height = (6 + Math.random() * 8) + 'px';
-                    document.body.appendChild(c);
-                    setTimeout(() => c.remove(), 4000);
-                }, i * 50);
-            }
-        }
-
-        // ===== INIT =====
-        renderWelcome();
-    </script>
+      });
+    });
+    const cmdEn = `Catch number ${NUMBER_WORDS_EN[target].toUpperCase()}!`;
+    const cmdFr = `Attrape le nombre ${NUMBER_WORDS_FR[target]} !`;
+    commandEn.textContent = cmdEn;
+    commandFr.textContent = cmdFr;
+    speak(cmdEn, () => {
+      roundActive = true;
+      roundStart = Date.now();
+      speedTimer = setTimeout(() => {
+        if(roundActive){ roundActive = false; showFeedback('Trop lent !'); setTimeout(nextRound, 900); }
+      }, 4000);
+    });
+  }
+}
+
+// =============== LEVEL END ===============
+function endLevel(){
+  if(speedTimer){ clearTimeout(speedTimer); speedTimer = null; }
+  gameScreen.classList.add('hidden');
+  playLevelUp();
+  const maxScore = LEVELS[currentLevel - 1].rounds * (currentLevel === 4 ? 15 : 10);
+  const pct = roundScore / maxScore;
+  const starCount = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : 1;
+  lcTitle.textContent = 'Niveau termine !';
+  lcStars.textContent = '\u2B50'.repeat(starCount);
+  lcMsg.textContent = `Score du niveau : ${roundScore} points`;
+  if(currentLevel < 4 && currentLevel >= state.unlocked){
+    state.unlocked = currentLevel + 1;
+    saveState();
+  }
+  lcNext.classList.toggle('hidden', currentLevel >= 4);
+  lcOverlay.classList.remove('hidden');
+}
+
+lcNext.addEventListener('click', () => {
+  lcOverlay.classList.add('hidden');
+  startLevel(currentLevel + 1);
+});
+lcMenu.addEventListener('click', showMenu);
+
+// =============== INIT ===============
+buildMenu();
+scoreDisplay.textContent = score;
+</script>
 </body>
 </html>

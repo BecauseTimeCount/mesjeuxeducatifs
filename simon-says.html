@@ -1,1154 +1,1070 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Simon Says - Jeu Educatif</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Simon Says - JayJay</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #1B5E20 0%, #66BB6A 100%);
-            min-height: 100vh;
-            overflow: auto;
-            user-select: none;
-        }
+:root {
+  --bg-top: #1B5E20;
+  --bg-bottom: #66BB6A;
+  --white: #FFFFFF;
+  --card-bg: rgba(255,255,255,0.15);
+  --card-bg-solid: rgba(255,255,255,0.95);
+  --gold: #FFD600;
+  --correct: #43A047;
+  --wrong: #E53935;
+  --accent: #FFEB3B;
+  --shadow: rgba(0,0,0,0.2);
+}
 
-        .screen {
-            position: relative;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-            padding-top: 60px;
-            animation: fadeIn 0.5s ease;
-            overflow: auto;
-        }
+body {
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
+  color: var(--white);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
 
-        .screen.active { display: flex; }
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: clamp(12px, 3vw, 24px);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(8px, 2vw, 16px);
+}
 
-        .back-to-menu {
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            background: rgba(255,255,255,0.95);
-            border: none;
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-size: clamp(0.85rem, 2.5vw, 1rem);
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            color: #1B5E20;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            z-index: 100;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-        }
-        .back-to-menu:hover { transform: scale(1.05); background: #fff; }
+.back-btn {
+  background: var(--card-bg);
+  border: none;
+  color: var(--white);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: clamp(14px, 3.5vw, 18px);
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  min-height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+.back-btn:hover, .back-btn:active { background: rgba(255,255,255,0.25); }
 
-        /* ===== WELCOME ===== */
-        .welcome-title {
-            font-size: clamp(2rem, 7vw, 3.5rem);
-            font-weight: 800;
-            text-align: center;
-            color: #fff;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
-            margin-bottom: 5px;
-            line-height: 1.2;
-        }
+.score-display {
+  background: var(--card-bg);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: clamp(14px, 3.5vw, 18px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-        .welcome-subtitle {
-            font-size: clamp(1rem, 3.5vw, 1.4rem);
-            color: rgba(255,255,255,0.9);
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
+.title {
+  text-align: center;
+  font-size: clamp(22px, 6vw, 36px);
+  font-weight: 800;
+  text-shadow: 2px 2px 4px var(--shadow);
+  margin-bottom: clamp(4px, 1vw, 8px);
+}
 
-        .welcome-emoji {
-            font-size: clamp(3rem, 10vw, 5rem);
-            margin-bottom: 10px;
-            animation: bounce 2s ease infinite;
-        }
+.mascot {
+  font-size: clamp(36px, 9vw, 56px);
+  text-align: center;
+  margin-bottom: clamp(4px, 1vw, 8px);
+  filter: drop-shadow(2px 2px 4px var(--shadow));
+}
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+/* Level select */
+.level-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 2.5vw, 16px);
+  flex: 1;
+  align-content: center;
+}
 
-        .level-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-        }
+.level-card {
+  background: var(--card-bg);
+  border: 3px solid transparent;
+  border-radius: 16px;
+  padding: clamp(14px, 3vw, 24px);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.level-card.unlocked { border-color: var(--accent); background: rgba(255,255,255,0.2); }
+.level-card.unlocked:hover, .level-card.unlocked:active { transform: scale(1.04); background: rgba(255,255,255,0.3); }
+.level-card.locked { opacity: 0.5; cursor: not-allowed; }
+.level-card .icon { font-size: clamp(28px, 7vw, 44px); }
+.level-card .label { font-weight: 700; font-size: clamp(13px, 3.2vw, 16px); }
+.level-card .stars { font-size: clamp(16px, 4vw, 22px); margin-top: 4px; }
 
-        .level-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            min-height: 48px;
-            border: 3px solid transparent;
-        }
+/* Game area */
+.game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 14px);
+}
 
-        .level-card:hover:not(.locked) { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-        .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
-        .level-card.completed { border-color: #FFD700; }
-        .level-card-emoji { font-size: clamp(2rem, 6vw, 2.5rem); margin-bottom: 8px; }
-        .level-card-title { font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 800; color: #1B5E20; margin-bottom: 4px; }
-        .level-card-desc { font-size: clamp(0.8rem, 2.5vw, 0.9rem); color: #666; font-weight: 600; }
-        .level-card-stars { margin-top: 8px; font-size: clamp(0.9rem, 2.5vw, 1rem); color: #FFD700; }
-        .lock-icon { font-size: 1.5rem; margin-top: 5px; }
+.instruction {
+  text-align: center;
+  font-size: clamp(18px, 5vw, 28px);
+  font-weight: 800;
+  text-shadow: 1px 1px 3px var(--shadow);
+  min-height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        .total-stars-display {
-            background: rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 10px 25px;
-            color: #fff;
-            font-weight: 700;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            margin-bottom: 20px;
-        }
+.subtitle {
+  text-align: center;
+  font-size: clamp(14px, 3.5vw, 20px);
+  font-weight: 600;
+  opacity: 0.85;
+  min-height: 1.6em;
+}
 
-        /* ===== GAME ===== */
-        .game-header {
-            text-align: center;
-            margin-bottom: 10px;
-            width: 100%;
-            max-width: 500px;
-        }
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
 
-        .game-title {
-            font-size: clamp(1.3rem, 5vw, 2rem);
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            margin-bottom: 5px;
-        }
+/* Options grid for level 1 */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+  max-width: 400px;
+}
 
-        .progress-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 12px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px auto;
-        }
+.option-btn {
+  background: var(--card-bg-solid);
+  color: #1B5E20;
+  border: 3px solid transparent;
+  border-radius: 14px;
+  padding: clamp(12px, 3vw, 18px);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 22px);
+  cursor: pointer;
+  min-height: 48px;
+  transition: all 0.2s;
+}
+.option-btn:hover, .option-btn:active { transform: scale(1.03); border-color: var(--gold); }
+.option-btn.correct { background: #C8E6C9; border-color: var(--correct); }
+.option-btn.wrong { background: #FFCDD2; border-color: var(--wrong); }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA000);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
+/* Character */
+.character-container {
+  position: relative;
+  width: clamp(200px, 55vw, 300px);
+  height: clamp(300px, 75vw, 440px);
+  margin: 0 auto;
+}
 
-        .round-info {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            color: rgba(255,255,255,0.9);
-            font-weight: 600;
-        }
+.char-zone {
+  position: absolute;
+  border: 3px dashed rgba(255,255,255,0.5);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: clamp(10px, 2.5vw, 14px);
+  color: var(--white);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  transition: all 0.25s;
+  min-width: 48px;
+  min-height: 48px;
+  background: rgba(255,255,255,0.1);
+}
+.char-zone:hover, .char-zone:active { background: rgba(255,255,255,0.25); }
+.char-zone.highlight { background: var(--gold); border-color: var(--gold); color: #1B5E20; text-shadow: none; animation: pulse-zone 0.6s ease infinite alternate; }
+.char-zone.correct-zone { background: var(--correct); border-color: var(--correct); }
+.char-zone.wrong-zone { background: var(--wrong); border-color: var(--wrong); }
+.char-zone.song-active { background: var(--gold); border-color: #FFF; color: #1B5E20; text-shadow: none; animation: pulse-zone 0.4s ease infinite alternate; }
 
-        .stars-count {
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            color: #FFD700;
-            font-weight: 700;
-            margin-top: 5px;
-        }
+@keyframes pulse-zone { from { transform: scale(1); } to { transform: scale(1.08); } }
 
-        /* ===== COMMAND BAR ===== */
-        .command-bar {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 15px 25px;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 15px;
-        }
+/* Character body drawn with divs */
+.char-body {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 
-        .command-en {
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
-            font-weight: 800;
-            color: #fff;
-        }
+.char-head-circle {
+  position: absolute;
+  width: 35%;
+  height: 18%;
+  top: 2%;
+  left: 32.5%;
+  background: #FFCC80;
+  border-radius: 50%;
+  border: 3px solid #E6A84F;
+}
 
-        .command-fr {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            color: rgba(255,255,255,0.7);
-            font-weight: 600;
-            font-style: italic;
-            margin-top: 4px;
-        }
+.char-torso {
+  position: absolute;
+  width: 30%;
+  height: 25%;
+  top: 20%;
+  left: 35%;
+  background: #42A5F5;
+  border-radius: 10px;
+  border: 3px solid #1E88E5;
+}
 
-        .simon-badge {
-            display: inline-block;
-            background: #FFD700;
-            color: #333;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
+.char-arm-left, .char-arm-right {
+  position: absolute;
+  width: 8%;
+  height: 22%;
+  top: 22%;
+  background: #FFCC80;
+  border-radius: 8px;
+  border: 2px solid #E6A84F;
+}
+.char-arm-left { left: 18%; }
+.char-arm-right { right: 18%; }
 
-        .dont-touch-badge {
-            display: inline-block;
-            background: #F44336;
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
+.char-leg-left, .char-leg-right {
+  position: absolute;
+  width: 10%;
+  height: 28%;
+  top: 45%;
+  background: #5C6BC0;
+  border-radius: 8px;
+  border: 2px solid #3F51B5;
+}
+.char-leg-left { left: 33%; }
+.char-leg-right { right: 33%; }
 
-        /* ===== BODY FIGURE ===== */
-        .figure-container {
-            position: relative;
-            width: clamp(200px, 50vw, 300px);
-            height: clamp(340px, 60vh, 480px);
-            margin: 10px auto;
-        }
+.char-foot-left, .char-foot-right {
+  position: absolute;
+  width: 14%;
+  height: 8%;
+  top: 73%;
+  background: #795548;
+  border-radius: 6px 6px 10px 10px;
+  border: 2px solid #5D4037;
+}
+.char-foot-left { left: 28%; }
+.char-foot-right { right: 28%; }
 
-        .body-zone {
-            position: absolute;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            color: rgba(255,255,255,0.9);
-            background: rgba(255,255,255,0.15);
-            border: 3px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
-            min-width: 48px;
-            min-height: 48px;
-            text-align: center;
-            z-index: 2;
-        }
+.char-eye-left, .char-eye-right {
+  position: absolute;
+  width: 5%;
+  height: 3%;
+  top: 7%;
+  background: #333;
+  border-radius: 50%;
+}
+.char-eye-left { left: 38%; }
+.char-eye-right { right: 38%; }
 
-        .body-zone:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.05);
-        }
+.char-nose-dot {
+  position: absolute;
+  width: 4%;
+  height: 3%;
+  top: 11%;
+  left: 48%;
+  background: #E6A84F;
+  border-radius: 50%;
+}
 
-        .body-zone.highlight {
-            background: #FFD700 !important;
-            border-color: #FFD700 !important;
-            color: #333 !important;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
-            animation: pulseZone 0.6s ease;
-        }
+.char-mouth-line {
+  position: absolute;
+  width: 10%;
+  height: 2.5%;
+  top: 15%;
+  left: 45%;
+  background: #E57373;
+  border-radius: 0 0 8px 8px;
+}
 
-        .body-zone.correct-zone {
-            background: #4CAF50 !important;
-            border-color: #4CAF50 !important;
-            color: #fff !important;
-            box-shadow: 0 0 20px rgba(76,175,80,0.5);
-        }
+.char-ear-left, .char-ear-right {
+  position: absolute;
+  width: 5%;
+  height: 5%;
+  top: 7%;
+  background: #FFCC80;
+  border-radius: 50%;
+  border: 2px solid #E6A84F;
+}
+.char-ear-left { left: 28%; }
+.char-ear-right { right: 28%; }
 
-        .body-zone.wrong-zone {
-            background: #FF9800 !important;
-            border-color: #FF9800 !important;
-            animation: shake 0.4s ease;
-        }
+/* Feedback overlay */
+.feedback {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.feedback.show { opacity: 1; pointer-events: auto; }
+.feedback-content {
+  background: var(--card-bg-solid);
+  color: #1B5E20;
+  padding: clamp(24px, 6vw, 40px);
+  border-radius: 20px;
+  text-align: center;
+  font-size: clamp(20px, 5vw, 30px);
+  font-weight: 800;
+  box-shadow: 0 8px 30px var(--shadow);
+  max-width: 90%;
+}
 
-        @keyframes pulseZone {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+/* Level complete */
+.complete-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 20px);
+  text-align: center;
+}
+.complete-screen .big-icon { font-size: clamp(48px, 14vw, 80px); }
+.complete-screen .msg { font-size: clamp(20px, 5vw, 30px); font-weight: 800; }
+.complete-screen .stars-earned { font-size: clamp(28px, 8vw, 48px); }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
+.btn-primary {
+  background: var(--gold);
+  color: #1B5E20;
+  border: none;
+  border-radius: 14px;
+  padding: clamp(12px, 3vw, 18px) clamp(24px, 6vw, 40px);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: clamp(16px, 4vw, 22px);
+  cursor: pointer;
+  min-height: 48px;
+  transition: transform 0.2s;
+}
+.btn-primary:hover, .btn-primary:active { transform: scale(1.05); }
 
-        /* Stick figure body lines */
-        .stick-body {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+.song-info {
+  text-align: center;
+  font-size: clamp(14px, 3.5vw, 18px);
+  font-weight: 600;
+  opacity: 0.85;
+}
 
-        .stick-body line, .stick-body circle {
-            stroke: rgba(255,255,255,0.5);
-            stroke-width: 4;
-            fill: none;
-        }
+.timer-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.timer-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.1s linear;
+}
 
-        .stick-body circle.head-circle {
-            fill: rgba(255,255,255,0.15);
-        }
-
-        /* ===== OPTIONS ===== */
-        .options-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            max-width: 500px;
-            margin: 10px 0;
-        }
-
-        .option-btn {
-            background: #fff;
-            border: 3px solid #ddd;
-            border-radius: 20px;
-            padding: 15px 25px;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 48px;
-            min-width: 100px;
-        }
-
-        .option-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .option-btn.correct { background: #C8E6C9; border-color: #4CAF50; color: #2E7D32; }
-        .option-btn.wrong { background: #FFCDD2; border-color: #F44336; color: #C62828; }
-
-        /* ===== WORD DISPLAY ===== */
-        .word-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            padding: clamp(20px, 4vw, 35px);
-            text-align: center;
-            max-width: 350px;
-            width: 100%;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-        }
-
-        .word-emoji {
-            font-size: clamp(3rem, 10vw, 4.5rem);
-            margin-bottom: 8px;
-        }
-
-        .word-en {
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
-            font-weight: 800;
-            color: #1B5E20;
-            margin-bottom: 5px;
-        }
-
-        .word-phonetic {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            color: #888;
-            font-style: italic;
-        }
-
-        /* ===== FEEDBACK ===== */
-        .feedback {
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
-            font-weight: 800;
-            text-align: center;
-            margin: 10px 0;
-            min-height: 40px;
-            color: #fff;
-        }
-
-        .feedback.positive { color: #A5D6A7; }
-        .feedback.info { color: #FFCC80; }
-
-        /* ===== WAIT TIMER ===== */
-        .wait-timer {
-            font-size: clamp(2rem, 7vw, 3.5rem);
-            font-weight: 800;
-            color: #fff;
-            margin: 10px 0;
-            opacity: 0.7;
-        }
-
-        /* ===== SONG MODE ===== */
-        .song-sequence {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin: 10px 0;
-        }
-
-        .song-dot {
-            width: clamp(30px, 6vw, 40px);
-            height: clamp(30px, 6vw, 40px);
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-        }
-
-        .song-dot.active {
-            background: #FFD700;
-            color: #333;
-            transform: scale(1.2);
-        }
-
-        .song-dot.done {
-            background: #4CAF50;
-            color: #fff;
-        }
-
-        .song-dot.missed {
-            background: #FF9800;
-            color: #fff;
-        }
-
-        /* ===== RESULT ===== */
-        .result-container {
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            padding: clamp(20px, 5vw, 40px);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            animation: popIn 0.4s ease;
-        }
-
-        .result-emoji { font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 10px; }
-        .result-title { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: #1B5E20; margin-bottom: 10px; }
-        .result-text { font-size: clamp(1rem, 3vw, 1.2rem); color: #555; font-weight: 600; margin-bottom: 15px; }
-        .result-stars-display { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; }
-
-        .action-btn {
-            background: rgba(255,255,255,0.95);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            color: #1B5E20;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            min-height: 48px;
-            margin: 5px;
-        }
-
-        .action-btn:hover { transform: translateY(-2px); }
-        .action-btn.primary { background: linear-gradient(145deg, #FFD700, #FFA000); color: #fff; }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.15); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-            pointer-events: none;
-            z-index: 200;
-            animation: confettiFall 3s ease-out forwards;
-        }
-
-        @keyframes confettiFall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-        }
-    </style>
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
-
-    <!-- WELCOME SCREEN -->
-    <div id="welcome-screen" class="screen active">
-        <div class="welcome-emoji">&#129490;</div>
-        <div class="welcome-title">Simon Says</div>
-        <div class="welcome-subtitle">Apprends les parties du corps en anglais !</div>
-        <div class="total-stars-display" id="total-stars">&#11088; 0 etoile(s)</div>
-        <div class="level-grid" id="level-grid"></div>
-    </div>
-
-    <!-- GAME SCREEN -->
-    <div id="game-screen" class="screen">
-        <div class="game-header">
-            <div class="game-title" id="game-title"></div>
-            <div class="round-info" id="round-info"></div>
-            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-            <div class="stars-count" id="stars-count"></div>
-        </div>
-        <div id="game-content"></div>
-        <div class="feedback" id="feedback"></div>
-    </div>
-
-    <!-- RESULT SCREEN -->
-    <div id="result-screen" class="screen">
-        <div class="result-container">
-            <div class="result-emoji" id="result-emoji"></div>
-            <div class="result-title" id="result-title"></div>
-            <div class="result-stars-display" id="result-stars"></div>
-            <div class="result-text" id="result-text"></div>
-            <div>
-                <button class="action-btn primary" onclick="goMenu()">Menu &#127968;</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ===== AUDIO =====
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        function playSound(type) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                gain.gain.value = 0.15;
-                const now = audioCtx.currentTime;
-
-                if (type === 'click') {
-                    osc.frequency.value = 600;
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-                    osc.start(now); osc.stop(now + 0.15);
-                } else if (type === 'correct') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523, now);
-                    osc.frequency.setValueAtTime(659, now + 0.12);
-                    osc.frequency.setValueAtTime(784, now + 0.24);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-                    osc.start(now); osc.stop(now + 0.5);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.value = 200;
-                    gain.gain.value = 0.06;
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-                    osc.start(now); osc.stop(now + 0.25);
-                } else if (type === 'win') {
-                    osc.type = 'triangle';
-                    [523, 659, 784, 1047].forEach((f, i) => {
-                        osc.frequency.setValueAtTime(f, now + i * 0.15);
-                    });
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-                    osc.start(now); osc.stop(now + 0.8);
-                } else if (type === 'tick') {
-                    osc.type = 'sine';
-                    osc.frequency.value = 1000;
-                    gain.gain.value = 0.08;
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-                    osc.start(now); osc.stop(now + 0.08);
-                } else if (type === 'song') {
-                    osc.type = 'triangle';
-                    osc.frequency.value = 523;
-                    gain.gain.value = 0.1;
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-                    osc.start(now); osc.stop(now + 0.2);
-                }
-            } catch(e) {}
-        }
-
-        // ===== TTS =====
-        function speakEN(text, callback) {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'en-GB';
-                u.rate = 0.8;
-                u.volume = 1;
-                if (callback) u.onend = callback;
-                speechSynthesis.cancel();
-                speechSynthesis.speak(u);
-            } catch(e) { if (callback) setTimeout(callback, 1000); }
-        }
-
-        // ===== STATE =====
-        let state = JSON.parse(localStorage.getItem('simonSays') || 'null') || {
-            levelsCompleted: [false, false, false, false],
-            levelStars: [0, 0, 0, 0],
-            totalStars: 0
-        };
-
-        function saveState() {
-            state.totalStars = state.levelStars.reduce((a, b) => a + b, 0);
-            localStorage.setItem('simonSays', JSON.stringify(state));
-            localStorage.setItem('simonSaysScore', state.totalStars.toString());
-        }
-
-        // ===== DATA =====
-        const BODY_PARTS = [
-            { en: 'head', fr: 'tete', emoji: '&#128578;', zone: 'head' },
-            { en: 'shoulders', fr: 'epaules', emoji: '&#128170;', zone: 'shoulders' },
-            { en: 'knees', fr: 'genoux', emoji: '&#129510;', zone: 'knees' },
-            { en: 'toes', fr: 'pieds (orteils)', emoji: '&#129462;', zone: 'toes' },
-            { en: 'eyes', fr: 'yeux', emoji: '&#128064;', zone: 'eyes' },
-            { en: 'ears', fr: 'oreilles', emoji: '&#128066;', zone: 'ears' },
-            { en: 'mouth', fr: 'bouche', emoji: '&#128067;', zone: 'mouth' },
-            { en: 'nose', fr: 'nez', emoji: '&#128067;', zone: 'nose' },
-            { en: 'hands', fr: 'mains', emoji: '&#9995;', zone: 'hands' },
-            { en: 'feet', fr: 'pieds', emoji: '&#129462;', zone: 'feet' }
-        ];
-
-        // Zone positions (% based) for the stick figure
-        const ZONES = {
-            head:      { x: 38, y: 2, w: 24, h: 14, label: 'Head' },
-            eyes:      { x: 40, y: 4, w: 20, h: 7, label: 'Eyes' },
-            ears:      { x: 30, y: 5, w: 40, h: 8, label: 'Ears' },
-            nose:      { x: 43, y: 9, w: 14, h: 6, label: 'Nose' },
-            mouth:     { x: 40, y: 13, w: 20, h: 6, label: 'Mouth' },
-            shoulders: { x: 18, y: 20, w: 64, h: 10, label: 'Shoulders' },
-            hands:     { x: 5, y: 38, w: 20, h: 12, label: 'Hands' },
-            knees:     { x: 25, y: 62, w: 50, h: 10, label: 'Knees' },
-            feet:      { x: 22, y: 85, w: 56, h: 12, label: 'Feet' },
-            toes:      { x: 22, y: 88, w: 56, h: 10, label: 'Toes' }
-        };
-
-        let currentLevel = 0;
-        let currentRound = 0;
-        let roundStars = 0;
-        let roundTotal = 10;
-        let isWaiting = false;
-        let waitTimer = null;
-
-        // ===== SCREENS =====
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function renderWelcome() {
-            const grid = document.getElementById('level-grid');
-            grid.innerHTML = '';
-            document.getElementById('total-stars').innerHTML = `&#11088; ${state.totalStars} etoile(s)`;
-
-            const levels = [
-                { name: 'Learn the Words', emoji: '&#128218;', desc: '10 rounds' },
-                { name: 'Touch the Part', emoji: '&#128070;', desc: '10 rounds' },
-                { name: 'Simon Says', emoji: '&#129490;', desc: '12 rounds' },
-                { name: 'Head Shoulders...', emoji: '&#127925;', desc: 'Mode chanson' }
-            ];
-
-            levels.forEach((level, i) => {
-                const card = document.createElement('div');
-                card.className = 'level-card';
-                const unlocked = i === 0 || state.levelsCompleted[i - 1];
-                if (!unlocked) card.classList.add('locked');
-                if (state.levelsCompleted[i]) card.classList.add('completed');
-
-                card.innerHTML = `
-                    <div class="level-card-emoji">${level.emoji}</div>
-                    <div class="level-card-title">${level.name}</div>
-                    <div class="level-card-desc">${level.desc}</div>
-                    ${!unlocked ? '<div class="lock-icon">&#128274;</div>' : ''}
-                    ${state.levelStars[i] > 0 ? `<div class="level-card-stars">${'&#11088;'.repeat(state.levelStars[i])}</div>` : ''}
-                `;
-
-                if (unlocked) {
-                    card.onclick = () => { playSound('click'); startLevel(i); };
-                }
-                grid.appendChild(card);
-            });
-        }
-
-        // ===== START LEVEL =====
-        function startLevel(level) {
-            currentLevel = level;
-            currentRound = 0;
-            roundStars = 0;
-            isWaiting = false;
-
-            if (level === 2) roundTotal = 12;
-            else if (level === 3) roundTotal = 12;
-            else roundTotal = 10;
-
-            const titles = ['Learn the Words', 'Touch the Part', 'Simon Says', 'Head Shoulders Knees and Toes'];
-            document.getElementById('game-title').textContent = titles[level];
-
-            showScreen('game-screen');
-            nextRound();
-        }
-
-        function updateHeader() {
-            document.getElementById('round-info').textContent = `Round ${currentRound + 1} / ${roundTotal}`;
-            document.getElementById('progress-fill').style.width = `${((currentRound + 1) / roundTotal) * 100}%`;
-            document.getElementById('stars-count').innerHTML = `&#11088; ${roundStars}`;
-        }
-
-        function nextRound() {
-            if (currentRound >= roundTotal) {
-                finishLevel();
-                return;
-            }
-            isWaiting = false;
-            updateHeader();
-            document.getElementById('feedback').textContent = '';
-
-            if (currentLevel === 0) renderLevel1();
-            else if (currentLevel === 1) renderLevel2();
-            else if (currentLevel === 2) renderLevel3();
-            else if (currentLevel === 3) renderLevel4();
-        }
-
-        // ===== LEVEL 1: LEARN THE WORDS =====
-        function renderLevel1() {
-            const part = BODY_PARTS[currentRound % BODY_PARTS.length];
-            const content = document.getElementById('game-content');
-
-            // Generate wrong options
-            const wrongOptions = shuffle(BODY_PARTS.filter(p => p.en !== part.en)).slice(0, 2).map(p => p.fr);
-            const options = shuffle([part.fr, ...wrongOptions]);
-
-            content.innerHTML = `
-                <div class="word-card">
-                    <div class="word-emoji">${part.emoji}</div>
-                    <div class="word-en">${capitalize(part.en)}</div>
-                    <div class="word-phonetic">Body part</div>
-                </div>
-                <div class="command-bar">
-                    <div class="command-en">What does "${capitalize(part.en)}" mean?</div>
-                    <div class="command-fr">Que veut dire "${capitalize(part.en)}" ?</div>
-                </div>
-                <div class="options-row" id="options-row"></div>
-            `;
-
-            speakEN(part.en);
-
-            const row = document.getElementById('options-row');
-            options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = capitalize(opt);
-                btn.onclick = () => {
-                    if (isWaiting) return;
-                    isWaiting = true;
-
-                    const fb = document.getElementById('feedback');
-                    const buttons = row.querySelectorAll('.option-btn');
-
-                    if (opt === part.fr) {
-                        btn.classList.add('correct');
-                        fb.className = 'feedback positive';
-                        fb.textContent = `Oui ! "${capitalize(part.en)}" = ${capitalize(part.fr)} !`;
-                        roundStars++;
-                        playSound('correct');
-                    } else {
-                        btn.classList.add('wrong');
-                        buttons.forEach(b => { if (b.textContent.toLowerCase() === capitalize(part.fr).toLowerCase()) b.classList.add('correct'); });
-                        fb.className = 'feedback info';
-                        fb.textContent = `"${capitalize(part.en)}" = ${capitalize(part.fr)}`;
-                        playSound('wrong');
-                    }
-
-                    buttons.forEach(b => b.style.pointerEvents = 'none');
-                    setTimeout(() => { currentRound++; nextRound(); }, 1500);
-                };
-                row.appendChild(btn);
-            });
-        }
-
-        // ===== LEVEL 2: TOUCH THE PART =====
-        function renderLevel2() {
-            const part = BODY_PARTS[currentRound % BODY_PARTS.length];
-            const content = document.getElementById('game-content');
-
-            content.innerHTML = `
-                <div class="command-bar">
-                    <div class="command-en">Touch your ${part.en.toUpperCase()}!</div>
-                    <div class="command-fr">Touche : ${capitalize(part.fr)}</div>
-                </div>
-                ${buildFigure(part.zone)}
-            `;
-
-            speakEN(`Touch your ${part.en}`);
-
-            // Attach click handlers to zones
-            setTimeout(() => {
-                document.querySelectorAll('.body-zone').forEach(zone => {
-                    zone.onclick = () => {
-                        if (isWaiting) return;
-                        const zoneId = zone.dataset.zone;
-
-                        if (zoneId === part.zone) {
-                            isWaiting = true;
-                            zone.classList.add('correct-zone');
-                            document.getElementById('feedback').className = 'feedback positive';
-                            document.getElementById('feedback').textContent = `Yes! That's the ${part.en}! (${capitalize(part.fr)})`;
-                            roundStars++;
-                            playSound('correct');
-                            setTimeout(() => { currentRound++; nextRound(); }, 1300);
-                        } else {
-                            zone.classList.add('wrong-zone');
-                            document.getElementById('feedback').className = 'feedback info';
-                            const wrongPart = BODY_PARTS.find(p => p.zone === zoneId);
-                            document.getElementById('feedback').textContent = `That's the ${wrongPart ? wrongPart.en : zoneId}... Try again!`;
-                            playSound('wrong');
-                            setTimeout(() => zone.classList.remove('wrong-zone'), 400);
-                        }
-                    };
-                });
-            }, 100);
-        }
-
-        // ===== LEVEL 3: SIMON SAYS =====
-        function renderLevel3() {
-            const part = BODY_PARTS[currentRound % BODY_PARTS.length];
-            const isSimonSays = Math.random() > 0.35; // ~65% Simon says, ~35% trap
-            const content = document.getElementById('game-content');
-
-            const commandText = isSimonSays
-                ? `Simon says: touch your ${part.en.toUpperCase()}!`
-                : `Touch your ${part.en.toUpperCase()}!`;
-
-            const commandFr = isSimonSays
-                ? `Jacques a dit : touche ton/ta ${part.fr} !`
-                : `Touche ton/ta ${part.fr} ! (PIEGE !)`;
-
-            content.innerHTML = `
-                <div class="command-bar">
-                    ${isSimonSays ? '<div class="simon-badge">SIMON SAYS</div>' : '<div class="dont-touch-badge">ATTENTION !</div>'}
-                    <div class="command-en">${commandText}</div>
-                    <div class="command-fr">${isSimonSays ? `Jacques a dit : ${capitalize(part.fr)}` : `Sans "Simon says" = ne touche PAS !`}</div>
-                </div>
-                ${buildFigure(isSimonSays ? part.zone : null)}
-                <div class="wait-timer" id="wait-timer"></div>
-            `;
-
-            speakEN(isSimonSays ? `Simon says, touch your ${part.en}` : `Touch your ${part.en}`);
-
-            if (!isSimonSays) {
-                // Trap round: child must NOT tap for 3 seconds
-                let countdown = 3;
-                const timerEl = document.getElementById('wait-timer');
-                timerEl.textContent = countdown;
-                let tapped = false;
-
-                waitTimer = setInterval(() => {
-                    countdown--;
-                    timerEl.textContent = countdown > 0 ? countdown : '';
-                    playSound('tick');
-                    if (countdown <= 0) {
-                        clearInterval(waitTimer);
-                        if (!tapped) {
-                            // Success: didn't tap
-                            document.getElementById('feedback').className = 'feedback positive';
-                            document.getElementById('feedback').textContent = 'Bien joue ! Simon n\'a pas dit !';
-                            roundStars++;
-                            playSound('correct');
-                            setTimeout(() => { currentRound++; nextRound(); }, 1200);
-                        }
-                    }
-                }, 1000);
-
-                // If child taps any zone during trap
-                setTimeout(() => {
-                    document.querySelectorAll('.body-zone').forEach(zone => {
-                        zone.onclick = () => {
-                            if (tapped) return;
-                            tapped = true;
-                            clearInterval(waitTimer);
-                            zone.classList.add('wrong-zone');
-                            document.getElementById('feedback').className = 'feedback info';
-                            document.getElementById('feedback').textContent = 'Oups ! Simon n\'a pas dit !';
-                            document.getElementById('wait-timer').textContent = '';
-                            playSound('wrong');
-                            // No penalty, just info
-                            setTimeout(() => { currentRound++; nextRound(); }, 1500);
-                        };
-                    });
-                }, 100);
-            } else {
-                // Simon says: child must tap the right zone
-                setTimeout(() => {
-                    document.querySelectorAll('.body-zone').forEach(zone => {
-                        zone.onclick = () => {
-                            if (isWaiting) return;
-                            const zoneId = zone.dataset.zone;
-
-                            if (zoneId === part.zone) {
-                                isWaiting = true;
-                                zone.classList.add('correct-zone');
-                                document.getElementById('feedback').className = 'feedback positive';
-                                document.getElementById('feedback').textContent = `Bravo ! ${capitalize(part.en)} !`;
-                                roundStars++;
-                                playSound('correct');
-                                setTimeout(() => { currentRound++; nextRound(); }, 1200);
-                            } else {
-                                zone.classList.add('wrong-zone');
-                                document.getElementById('feedback').className = 'feedback info';
-                                document.getElementById('feedback').textContent = `Ce n'est pas le bon endroit... Essaie encore !`;
-                                playSound('wrong');
-                                setTimeout(() => zone.classList.remove('wrong-zone'), 400);
-                            }
-                        };
-                    });
-                }, 100);
-            }
-        }
-
-        // ===== LEVEL 4: SONG MODE =====
-        const SONG_SEQUENCE = ['head', 'shoulders', 'knees', 'toes', 'knees', 'toes',
-                               'head', 'shoulders', 'knees', 'toes', 'knees', 'toes'];
-        let songIndex = 0;
-
-        function renderLevel4() {
-            songIndex = 0;
-            const content = document.getElementById('game-content');
-
-            content.innerHTML = `
-                <div class="command-bar">
-                    <div class="command-en">&#127925; Head, Shoulders, Knees and Toes!</div>
-                    <div class="command-fr">Tete, Epaules, Genoux et Pieds !</div>
-                </div>
-                <div class="song-sequence" id="song-sequence"></div>
-                ${buildFigure(SONG_SEQUENCE[0])}
-            `;
-
-            // Build sequence dots
-            const seqEl = document.getElementById('song-sequence');
-            SONG_SEQUENCE.forEach((part, i) => {
-                const dot = document.createElement('div');
-                dot.className = 'song-dot' + (i === 0 ? ' active' : '');
-                dot.textContent = (i + 1);
-                dot.id = `song-dot-${i}`;
-                seqEl.appendChild(dot);
-            });
-
-            // Highlight first zone
-            highlightSongZone(SONG_SEQUENCE[0]);
-
-            speakEN('Head, shoulders, knees and toes, knees and toes');
-
-            // Attach handlers
-            setTimeout(() => {
-                document.querySelectorAll('.body-zone').forEach(zone => {
-                    zone.onclick = () => handleSongTap(zone);
-                });
-            }, 100);
-        }
-
-        function handleSongTap(zone) {
-            if (isWaiting) return;
-            const zoneId = zone.dataset.zone;
-            const expected = SONG_SEQUENCE[songIndex];
-
-            if (zoneId === expected) {
-                zone.classList.add('correct-zone');
-                const dot = document.getElementById(`song-dot-${songIndex}`);
-                if (dot) { dot.classList.remove('active'); dot.classList.add('done'); }
-                playSound('song');
-                roundStars++;
-                songIndex++;
-
-                if (songIndex >= SONG_SEQUENCE.length) {
-                    isWaiting = true;
-                    document.getElementById('feedback').className = 'feedback positive';
-                    document.getElementById('feedback').textContent = 'Bravo ! Tu connais la chanson !';
-                    playSound('win');
-                    currentRound = roundTotal; // End level
-                    setTimeout(() => finishLevel(), 1500);
-                    return;
-                }
-
-                // Next in sequence
-                setTimeout(() => {
-                    // Reset zone colors
-                    document.querySelectorAll('.body-zone').forEach(z => {
-                        z.classList.remove('correct-zone', 'wrong-zone');
-                    });
-                    highlightSongZone(SONG_SEQUENCE[songIndex]);
-                    const nextDot = document.getElementById(`song-dot-${songIndex}`);
-                    if (nextDot) nextDot.classList.add('active');
-                    updateHeader();
-                }, 400);
-            } else {
-                zone.classList.add('wrong-zone');
-                const dot = document.getElementById(`song-dot-${songIndex}`);
-                if (dot) { dot.classList.remove('active'); dot.classList.add('missed'); }
-                playSound('wrong');
-                songIndex++;
-
-                if (songIndex >= SONG_SEQUENCE.length) {
-                    isWaiting = true;
-                    currentRound = roundTotal;
-                    setTimeout(() => finishLevel(), 1000);
-                    return;
-                }
-
-                setTimeout(() => {
-                    document.querySelectorAll('.body-zone').forEach(z => z.classList.remove('wrong-zone'));
-                    highlightSongZone(SONG_SEQUENCE[songIndex]);
-                    const nextDot = document.getElementById(`song-dot-${songIndex}`);
-                    if (nextDot) nextDot.classList.add('active');
-                }, 400);
-            }
-        }
-
-        function highlightSongZone(zoneId) {
-            document.querySelectorAll('.body-zone').forEach(z => z.classList.remove('highlight'));
-            const target = document.querySelector(`.body-zone[data-zone="${zoneId}"]`);
-            if (target) target.classList.add('highlight');
-        }
-
-        // ===== BUILD FIGURE =====
-        function buildFigure(highlightZone) {
-            const visibleZones = ['head', 'shoulders', 'hands', 'knees', 'feet'];
-
-            let zonesHTML = '';
-            visibleZones.forEach(z => {
-                const zone = ZONES[z];
-                const isHighlight = z === highlightZone;
-                zonesHTML += `
-                    <div class="body-zone ${isHighlight ? 'highlight' : ''}"
-                         data-zone="${z}"
-                         style="left:${zone.x}%; top:${zone.y}%; width:${zone.w}%; height:${zone.h}%;">
-                        ${zone.label}
-                    </div>
-                `;
-            });
-
-            // Also add face zones if relevant
-            const faceZones = ['eyes', 'ears', 'nose', 'mouth'];
-            faceZones.forEach(z => {
-                const zone = ZONES[z];
-                const isHighlight = z === highlightZone;
-                zonesHTML += `
-                    <div class="body-zone ${isHighlight ? 'highlight' : ''}"
-                         data-zone="${z}"
-                         style="left:${zone.x}%; top:${zone.y}%; width:${zone.w}%; height:${zone.h}%; font-size:0.6rem;">
-                        ${zone.label}
-                    </div>
-                `;
-            });
-
-            // Also add toes
-            const toesZone = ZONES['toes'];
-            const isToeHL = highlightZone === 'toes';
-            zonesHTML += `
-                <div class="body-zone ${isToeHL ? 'highlight' : ''}"
-                     data-zone="toes"
-                     style="left:${toesZone.x}%; top:${toesZone.y}%; width:${toesZone.w}%; height:${toesZone.h}%; font-size:0.6rem;">
-                    ${toesZone.label}
-                </div>
-            `;
-
-            return `
-                <div class="figure-container">
-                    <svg class="stick-body" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-                        <!-- Head -->
-                        <circle class="head-circle" cx="50" cy="12" r="9"/>
-                        <!-- Body -->
-                        <line x1="50" y1="21" x2="50" y2="55"/>
-                        <!-- Arms -->
-                        <line x1="50" y1="28" x2="20" y2="45"/>
-                        <line x1="50" y1="28" x2="80" y2="45"/>
-                        <!-- Legs -->
-                        <line x1="50" y1="55" x2="30" y2="85"/>
-                        <line x1="50" y1="55" x2="70" y2="85"/>
-                        <!-- Feet -->
-                        <line x1="30" y1="85" x2="25" y2="92"/>
-                        <line x1="70" y1="85" x2="75" y2="92"/>
-                    </svg>
-                    ${zonesHTML}
-                </div>
-            `;
-        }
-
-        // ===== FINISH =====
-        function finishLevel() {
-            if (waitTimer) clearInterval(waitTimer);
-            const prev = state.levelStars[currentLevel];
-            if (roundStars > prev) state.levelStars[currentLevel] = roundStars;
-            state.levelsCompleted[currentLevel] = true;
+
+<div class="container">
+  <div class="header">
+    <button class="back-btn" onclick="goBack()">&#8592; Mes Jeux</button>
+    <div class="score-display">&#11088; <span id="totalScore">0</span></div>
+  </div>
+
+  <div class="mascot">&#129490;</div>
+  <h1 class="title">Simon Says</h1>
+
+  <!-- LEVEL SELECT -->
+  <div id="levelSelect" class="level-grid"></div>
+
+  <!-- GAME AREA -->
+  <div id="gameArea" class="game-area hidden"></div>
+
+  <!-- FEEDBACK OVERLAY -->
+  <div class="feedback" id="feedback">
+    <div class="feedback-content" id="feedbackContent"></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const BODY_PARTS = [
+  { en: 'head', fr: 'tete' },
+  { en: 'shoulders', fr: 'epaules' },
+  { en: 'knees', fr: 'genoux' },
+  { en: 'toes', fr: 'orteils' },
+  { en: 'eyes', fr: 'yeux' },
+  { en: 'ears', fr: 'oreilles' },
+  { en: 'mouth', fr: 'bouche' },
+  { en: 'nose', fr: 'nez' },
+  { en: 'hands', fr: 'mains' },
+  { en: 'feet', fr: 'pieds' }
+];
+
+const LEVELS = [
+  { id: 1, name: 'Apprends les mots', icon: '\uD83D\uDCD6', rounds: 10 },
+  { id: 2, name: 'Touche la partie', icon: '\uD83D\uDC46', rounds: 10 },
+  { id: 3, name: 'Simon Says', icon: '\uD83D\uDDE3\uFE0F', rounds: 12 },
+  { id: 4, name: 'Head Shoulders...', icon: '\uD83C\uDFB5', rounds: 1 }
+];
+
+const SONG_SEQUENCE = [
+  'head','shoulders','knees','toes','knees','toes',
+  'eyes','ears','mouth','nose',
+  'head','shoulders','knees','toes','knees','toes',
+  'eyes','ears','mouth','nose'
+];
+
+const POSITIVE_FR = [
+  'Super !', 'Bravo !', 'Genial !', 'Excellent !', 'Tres bien !', 'Fantastique !', 'Magnifique !'
+];
+
+// ===== STATE =====
+let state = JSON.parse(localStorage.getItem('simonSays') || '{}');
+if (!state.levels) {
+  state.levels = {
+    1: { unlocked: true, stars: 0 },
+    2: { unlocked: false, stars: 0 },
+    3: { unlocked: false, stars: 0 },
+    4: { unlocked: false, stars: 0 }
+  };
+}
+let totalScore = parseInt(localStorage.getItem('simonSaysScore') || '0');
+
+let currentLevel = 0;
+let currentRound = 0;
+let roundScore = 0;
+let roundErrors = 0;
+let gameActive = false;
+let noTapTimer = null;
+
+// ===== AUDIO =====
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, dur, type) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+
+function playCorrect() {
+  playTone(523, 0.15);
+  setTimeout(function() { playTone(659, 0.15); }, 100);
+  setTimeout(function() { playTone(784, 0.2); }, 200);
+}
+function playWrong() { playTone(200, 0.3, 'triangle'); }
+function playComplete() {
+  [0,100,200,300,400].forEach(function(d, i) {
+    setTimeout(function() { playTone(523 + i * 60, 0.2); }, d);
+  });
+}
+function playStar() {
+  playTone(880, 0.1);
+  setTimeout(function() { playTone(1108, 0.15); }, 80);
+}
+
+function speak(text, lang, rate) {
+  return new Promise(function(resolve) {
+    if (!window.speechSynthesis) { resolve(); return; }
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = lang || 'en-GB';
+    u.rate = rate || 0.8;
+    u.onend = resolve;
+    u.onerror = resolve;
+    speechSynthesis.speak(u);
+  });
+}
+
+// ===== SAVE =====
+function saveState() {
+  localStorage.setItem('simonSays', JSON.stringify(state));
+  localStorage.setItem('simonSaysScore', totalScore.toString());
+  document.getElementById('totalScore').textContent = totalScore;
+}
+
+// ===== NAVIGATION =====
+function goBack() { window.location.href = 'index.html'; }
+
+function showLevelSelect() {
+  document.getElementById('levelSelect').classList.remove('hidden');
+  document.getElementById('gameArea').classList.add('hidden');
+  gameActive = false;
+  if (noTapTimer) { clearTimeout(noTapTimer); noTapTimer = null; }
+  renderLevels();
+}
+
+function renderLevels() {
+  var grid = document.getElementById('levelSelect');
+  grid.innerHTML = '';
+  LEVELS.forEach(function(lv) {
+    var ls = state.levels[lv.id];
+    var card = document.createElement('div');
+    card.className = 'level-card ' + (ls.unlocked ? 'unlocked' : 'locked');
+    var starFull = ls.stars > 0 ? '\u2B50'.repeat(ls.stars) : '';
+    var starEmpty = '\u2606'.repeat(3 - ls.stars);
+    card.innerHTML = '<div class="icon">' + lv.icon + '</div>' +
+      '<div class="label">' + lv.name + '</div>' +
+      '<div class="stars">' + starFull + starEmpty + '</div>';
+    if (ls.unlocked) {
+      (function(id) { card.onclick = function() { startLevel(id); }; })(lv.id);
+    }
+    grid.appendChild(card);
+  });
+}
+
+// ===== FEEDBACK =====
+function showFeedback(html, duration) {
+  duration = duration || 1200;
+  return new Promise(function(resolve) {
+    var fb = document.getElementById('feedback');
+    document.getElementById('feedbackContent').innerHTML = html;
+    fb.classList.add('show');
+    setTimeout(function() {
+      fb.classList.remove('show');
+      setTimeout(resolve, 200);
+    }, duration);
+  });
+}
+
+// ===== SHUFFLE =====
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function randomPositive() { return POSITIVE_FR[Math.floor(Math.random() * POSITIVE_FR.length)]; }
+
+// ===== CHARACTER BUILDER =====
+function buildCharacter(container, clickHandler, showLabels, highlightPart) {
+  container.innerHTML = '';
+
+  var body = document.createElement('div');
+  body.className = 'char-body';
+  body.innerHTML =
+    '<div class="char-head-circle"></div>' +
+    '<div class="char-eye-left"></div><div class="char-eye-right"></div>' +
+    '<div class="char-ear-left"></div><div class="char-ear-right"></div>' +
+    '<div class="char-nose-dot"></div><div class="char-mouth-line"></div>' +
+    '<div class="char-torso"></div>' +
+    '<div class="char-arm-left"></div><div class="char-arm-right"></div>' +
+    '<div class="char-leg-left"></div><div class="char-leg-right"></div>' +
+    '<div class="char-foot-left"></div><div class="char-foot-right"></div>';
+  container.appendChild(body);
+
+  var zones = {
+    head:      { top: '0%',  left: '25%', width: '50%', height: '18%' },
+    eyes:      { top: '5%',  left: '30%', width: '40%', height: '6%' },
+    ears:      { top: '5%',  left: '10%', width: '18%', height: '8%', mirror: true },
+    nose:      { top: '11%', left: '38%', width: '24%', height: '5%' },
+    mouth:     { top: '15%', left: '35%', width: '30%', height: '5%' },
+    shoulders: { top: '20%', left: '8%',  width: '84%', height: '10%' },
+    hands:     { top: '32%', left: '5%',  width: '18%', height: '12%', mirror: true },
+    knees:     { top: '55%', left: '22%', width: '56%', height: '12%' },
+    toes:      { top: '82%', left: '18%', width: '64%', height: '12%' },
+    feet:      { top: '75%', left: '18%', width: '64%', height: '14%' }
+  };
+
+  var zoneEls = {};
+
+  Object.keys(zones).forEach(function(part) {
+    var pos = zones[part];
+    var el = document.createElement('div');
+    el.className = 'char-zone';
+    el.dataset.part = part;
+    el.style.top = pos.top;
+    el.style.left = pos.left;
+    el.style.width = pos.width;
+    el.style.height = pos.height;
+    if (showLabels) el.textContent = part.toUpperCase();
+    if (highlightPart === part) el.classList.add('highlight');
+    if (clickHandler) {
+      (function(p) { el.onclick = function() { clickHandler(p); }; })(part);
+    }
+    container.appendChild(el);
+    zoneEls[part] = el;
+
+    if (pos.mirror) {
+      var el2 = document.createElement('div');
+      el2.className = 'char-zone';
+      el2.dataset.part = part;
+      el2.style.top = pos.top;
+      el2.style.right = pos.left;
+      el2.style.width = pos.width;
+      el2.style.height = pos.height;
+      if (showLabels) el2.textContent = part.toUpperCase();
+      if (highlightPart === part) el2.classList.add('highlight');
+      if (clickHandler) {
+        (function(p) { el2.onclick = function() { clickHandler(p); }; })(part);
+      }
+      container.appendChild(el2);
+    }
+  });
+
+  return zoneEls;
+}
+
+// ===== START LEVEL =====
+function startLevel(levelId) {
+  getAudioCtx();
+  currentLevel = levelId;
+  currentRound = 0;
+  roundScore = 0;
+  roundErrors = 0;
+  gameActive = true;
+
+  document.getElementById('levelSelect').classList.add('hidden');
+  document.getElementById('gameArea').classList.remove('hidden');
+
+  if (levelId === 1) startLevel1();
+  else if (levelId === 2) startLevel2();
+  else if (levelId === 3) startLevel3();
+  else if (levelId === 4) startLevel4();
+}
+
+// ===== LEVEL 1: Learn the Words =====
+function startLevel1() {
+  var parts = shuffle(BODY_PARTS).slice(0, 10);
+  currentRound = 0;
+  roundScore = 0;
+  roundErrors = 0;
+
+  function nextRound() {
+    if (currentRound >= 10) { finishLevel(1, roundScore, 10); return; }
+    var target = parts[currentRound];
+    var wrongPool = BODY_PARTS.filter(function(b) { return b.en !== target.en; });
+    var wrongs = shuffle(wrongPool).slice(0, 2);
+    var options = shuffle([target, wrongs[0], wrongs[1]]);
+
+    var ga = document.getElementById('gameArea');
+    ga.innerHTML =
+      '<div class="progress-bar"><div class="progress-fill" style="width:' + (currentRound / 10 * 100) + '%"></div></div>' +
+      '<div class="instruction">' + target.en.toUpperCase() + '</div>' +
+      '<div class="subtitle">Quel est ce mot en francais ?</div>' +
+      '<div class="character-container" id="charContainer"></div>' +
+      '<div class="options-grid" id="optionsGrid"></div>';
+
+    buildCharacter(document.getElementById('charContainer'), null, false, target.en);
+    speak(target.en, 'en-GB', 0.8);
+
+    var grid = document.getElementById('optionsGrid');
+    options.forEach(function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt.fr;
+      (function(o) {
+        btn.onclick = function() {
+          if (!gameActive) return;
+          gameActive = false;
+          if (o.en === target.en) {
+            this.classList.add('correct');
+            playCorrect();
+            roundScore++;
+            totalScore += 10;
             saveState();
+            showFeedback('\u2705 ' + randomPositive() + '<br>' + target.en + ' = ' + target.fr).then(function() {
+              currentRound++;
+              gameActive = true;
+              nextRound();
+            });
+          } else {
+            this.classList.add('wrong');
+            playWrong();
+            roundErrors++;
+            var allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(function(b) { if (b.textContent === target.fr) b.classList.add('correct'); });
+            showFeedback(target.en + ' = ' + target.fr, 1500).then(function() {
+              currentRound++;
+              gameActive = true;
+              nextRound();
+            });
+          }
+        };
+      })(opt);
+      grid.appendChild(btn);
+    });
+  }
 
-            const pct = Math.round((roundStars / roundTotal) * 100);
-            let emoji, title, text;
-            if (pct >= 90) {
-                emoji = '&#127775;'; title = 'AMAZING!'; text = 'Tu maitrises les body parts !';
-            } else if (pct >= 60) {
-                emoji = '&#11088;'; title = 'Super travail !'; text = `${roundStars} bonnes reponses sur ${roundTotal} !`;
-            } else {
-                emoji = '&#128170;'; title = 'Continue !'; text = 'Tu feras encore mieux la prochaine fois !';
-            }
+  nextRound();
+}
 
-            document.getElementById('result-emoji').innerHTML = emoji;
-            document.getElementById('result-title').textContent = title;
-            document.getElementById('result-text').textContent = text;
-            document.getElementById('result-stars').innerHTML = '&#11088;'.repeat(Math.min(roundStars, roundTotal)) +
-                '&#9723;'.repeat(Math.max(0, roundTotal - roundStars));
+// ===== LEVEL 2: Touch the Part =====
+function startLevel2() {
+  var parts = shuffle(BODY_PARTS).slice(0, 10);
+  currentRound = 0;
+  roundScore = 0;
+  roundErrors = 0;
 
-            showScreen('result-screen');
-            if (pct >= 60) launchConfetti();
-            playSound(pct >= 90 ? 'win' : 'correct');
+  function nextRound() {
+    if (currentRound >= 10) { finishLevel(2, roundScore, 10); return; }
+    var target = parts[currentRound];
+
+    var ga = document.getElementById('gameArea');
+    ga.innerHTML =
+      '<div class="progress-bar"><div class="progress-fill" style="width:' + (currentRound / 10 * 100) + '%"></div></div>' +
+      '<div class="instruction">Touch your ' + target.en.toUpperCase() + '!</div>' +
+      '<div class="subtitle">Touche : ' + target.fr + '</div>' +
+      '<div class="character-container" id="charContainer"></div>';
+
+    speak('Touch your ' + target.en, 'en-GB', 0.8);
+
+    var answered = false;
+    buildCharacter(document.getElementById('charContainer'), function(part) {
+      if (answered || !gameActive) return;
+      answered = true;
+
+      var allZones = document.querySelectorAll('.char-zone');
+      if (part === target.en) {
+        allZones.forEach(function(z) { if (z.dataset.part === part) z.classList.add('correct-zone'); });
+        playCorrect();
+        roundScore++;
+        totalScore += 10;
+        saveState();
+        showFeedback('\u2705 ' + randomPositive()).then(function() {
+          currentRound++;
+          nextRound();
+        });
+      } else {
+        allZones.forEach(function(z) {
+          if (z.dataset.part === part) z.classList.add('wrong-zone');
+          if (z.dataset.part === target.en) z.classList.add('correct-zone');
+        });
+        playWrong();
+        roundErrors++;
+        showFeedback("C'etait : " + target.en.toUpperCase() + ' (' + target.fr + ')', 1500).then(function() {
+          currentRound++;
+          nextRound();
+        });
+      }
+    }, true, null);
+  }
+
+  nextRound();
+}
+
+// ===== LEVEL 3: Simon Says =====
+function startLevel3() {
+  var allParts = shuffle(BODY_PARTS);
+  currentRound = 0;
+  roundScore = 0;
+  roundErrors = 0;
+
+  function nextRound() {
+    if (currentRound >= 12) { finishLevel(3, roundScore, 12); return; }
+
+    var isSimonSays = Math.random() < 0.6;
+    var target = allParts[currentRound % allParts.length];
+
+    var prefix = isSimonSays ? 'Simon says t' : 'T';
+    var cmdText = prefix + 'ouch your ' + target.en.toUpperCase() + '!';
+    var frSub = isSimonSays
+      ? 'Jacques a dit : touche ton/ta ' + target.fr
+      : 'Touche ton/ta ' + target.fr + ' (PIEGE !)';
+
+    var ga = document.getElementById('gameArea');
+    ga.innerHTML =
+      '<div class="progress-bar"><div class="progress-fill" style="width:' + (currentRound / 12 * 100) + '%"></div></div>' +
+      '<div class="instruction">' + cmdText + '</div>' +
+      '<div class="subtitle">' + frSub + '</div>' +
+      '<div class="character-container" id="charContainer"></div>' +
+      '<div class="timer-bar" id="timerBar" style="display:' + (isSimonSays ? 'none' : 'block') + '"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>';
+
+    var speakText = isSimonSays ? 'Simon says touch your ' + target.en : 'Touch your ' + target.en;
+    speak(speakText, 'en-GB', 0.8);
+
+    var answered = false;
+
+    buildCharacter(document.getElementById('charContainer'), function(part) {
+      if (answered) return;
+      answered = true;
+      if (noTapTimer) { clearTimeout(noTapTimer); noTapTimer = null; }
+
+      var allZones = document.querySelectorAll('.char-zone');
+
+      if (isSimonSays) {
+        if (part === target.en) {
+          allZones.forEach(function(z) { if (z.dataset.part === part) z.classList.add('correct-zone'); });
+          playCorrect();
+          roundScore++;
+          totalScore += 10;
+          saveState();
+          showFeedback('\u2705 ' + randomPositive()).then(function() {
+            currentRound++;
+            nextRound();
+          });
+        } else {
+          allZones.forEach(function(z) {
+            if (z.dataset.part === part) z.classList.add('wrong-zone');
+            if (z.dataset.part === target.en) z.classList.add('correct-zone');
+          });
+          playWrong();
+          roundErrors++;
+          showFeedback("C'etait : " + target.en.toUpperCase(), 1500).then(function() {
+            currentRound++;
+            nextRound();
+          });
+        }
+      } else {
+        playWrong();
+        roundErrors++;
+        showFeedback("Oups ! Simon n'a pas dit !<br>Il ne fallait pas toucher !", 1800).then(function() {
+          currentRound++;
+          nextRound();
+        });
+      }
+    }, true, null);
+
+    // Timer for no-tap rounds
+    if (!isSimonSays) {
+      var startTime = Date.now();
+      var timerFill = document.getElementById('timerFill');
+
+      var timerInterval = setInterval(function() {
+        var elapsed = Date.now() - startTime;
+        var pct = Math.max(0, 100 - (elapsed / 3000) * 100);
+        if (timerFill) timerFill.style.width = pct + '%';
+        if (elapsed >= 3000) clearInterval(timerInterval);
+      }, 50);
+
+      noTapTimer = setTimeout(function() {
+        clearInterval(timerInterval);
+        if (!answered) {
+          answered = true;
+          playCorrect();
+          roundScore++;
+          totalScore += 10;
+          saveState();
+          showFeedback("\u2705 " + randomPositive() + "<br>Tu n'as pas touche, bien joue !").then(function() {
+            currentRound++;
+            nextRound();
+          });
+        }
+      }, 3000);
+    }
+  }
+
+  nextRound();
+}
+
+// ===== LEVEL 4: Song Mode =====
+function startLevel4() {
+  currentRound = 0;
+  roundScore = 0;
+  roundErrors = 0;
+  var songIndex = 0;
+  var songActive = false;
+
+  function renderSong() {
+    var ga = document.getElementById('gameArea');
+    ga.innerHTML =
+      '<div class="progress-bar"><div class="progress-fill" id="songProgress" style="width:0%"></div></div>' +
+      '<div class="instruction">\uD83C\uDFB5 Head, Shoulders, Knees and Toes!</div>' +
+      '<div class="subtitle">Touche les parties du corps en rythme !</div>' +
+      '<div class="character-container" id="charContainer"></div>' +
+      '<div class="song-info" id="songInfo">Appuie sur le bouton pour commencer</div>' +
+      '<button class="btn-primary" id="startSongBtn">\uD83C\uDFB5 C\'est parti !</button>';
+
+    buildCharacter(document.getElementById('charContainer'), null, true, null);
+
+    document.getElementById('startSongBtn').onclick = function() {
+      this.classList.add('hidden');
+      songActive = true;
+      songIndex = 0;
+      showFeedback('\uD83C\uDFB5 3... 2... 1... \uD83C\uDFB5', 1500).then(function() {
+        nextNote();
+      });
+    };
+  }
+
+  function nextNote() {
+    if (songIndex >= SONG_SEQUENCE.length) {
+      songActive = false;
+      finishLevel(4, roundScore, SONG_SEQUENCE.length);
+      return;
+    }
+
+    var target = SONG_SEQUENCE[songIndex];
+    var progressEl = document.getElementById('songProgress');
+    if (progressEl) progressEl.style.width = (songIndex / SONG_SEQUENCE.length * 100) + '%';
+
+    var info = document.getElementById('songInfo');
+    if (info) info.textContent = target.toUpperCase() + ' ! (' + (songIndex + 1) + '/' + SONG_SEQUENCE.length + ')';
+
+    var allZones = document.querySelectorAll('.char-zone');
+    allZones.forEach(function(z) { z.classList.remove('song-active', 'correct-zone', 'wrong-zone'); });
+    allZones.forEach(function(z) { if (z.dataset.part === target) z.classList.add('song-active'); });
+
+    speak(target, 'en-GB', 1.0);
+
+    var tapped = false;
+
+    allZones.forEach(function(z) {
+      z.onclick = function() {
+        var part = this.dataset.part;
+        if (tapped || !songActive) return;
+        tapped = true;
+
+        allZones.forEach(function(zz) { zz.onclick = null; zz.classList.remove('song-active'); });
+
+        if (part === target) {
+          playCorrect();
+          roundScore++;
+          totalScore += 5;
+          saveState();
+          allZones.forEach(function(zz) { if (zz.dataset.part === part) zz.classList.add('correct-zone'); });
+        } else {
+          playWrong();
+          roundErrors++;
+          allZones.forEach(function(zz) {
+            if (zz.dataset.part === part) zz.classList.add('wrong-zone');
+            if (zz.dataset.part === target) zz.classList.add('correct-zone');
+          });
         }
 
-        function goMenu() {
-            playSound('click');
-            renderWelcome();
-            showScreen('welcome-screen');
-        }
+        songIndex++;
+        setTimeout(function() {
+          allZones.forEach(function(zz) { zz.classList.remove('correct-zone', 'wrong-zone'); });
+          nextNote();
+        }, 600);
+      };
+    });
 
-        // ===== UTILS =====
-        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    // Auto-advance if no tap after 2.5s
+    setTimeout(function() {
+      if (!tapped && songActive) {
+        tapped = true;
+        roundErrors++;
+        allZones.forEach(function(zz) {
+          zz.onclick = null;
+          zz.classList.remove('song-active');
+          if (zz.dataset.part === target) zz.classList.add('wrong-zone');
+        });
+        songIndex++;
+        setTimeout(function() {
+          allZones.forEach(function(zz) { zz.classList.remove('wrong-zone'); });
+          nextNote();
+        }, 500);
+      }
+    }, 2500);
+  }
 
-        function shuffle(arr) {
-            const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
-        }
+  renderSong();
+}
 
-        function launchConfetti() {
-            const colors = ['#FFD700', '#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#1B5E20'];
-            for (let i = 0; i < 40; i++) {
-                setTimeout(() => {
-                    const c = document.createElement('div');
-                    c.className = 'confetti';
-                    c.style.left = Math.random() * 100 + 'vw';
-                    c.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    c.style.animationDuration = (2 + Math.random() * 2) + 's';
-                    c.style.width = (6 + Math.random() * 8) + 'px';
-                    c.style.height = (6 + Math.random() * 8) + 'px';
-                    document.body.appendChild(c);
-                    setTimeout(() => c.remove(), 4000);
-                }, i * 50);
-            }
-        }
+// ===== FINISH LEVEL =====
+function finishLevel(levelId, score, total) {
+  gameActive = false;
+  if (noTapTimer) { clearTimeout(noTapTimer); noTapTimer = null; }
+  playComplete();
 
-        // ===== INIT =====
-        renderWelcome();
-    </script>
+  var pct = score / total;
+  var stars = pct >= 0.9 ? 3 : pct >= 0.7 ? 2 : 1;
+
+  var prevStars = state.levels[levelId].stars;
+  if (stars > prevStars) state.levels[levelId].stars = stars;
+
+  // Unlock next level
+  if (levelId < 4 && !state.levels[levelId + 1].unlocked) {
+    state.levels[levelId + 1].unlocked = true;
+  }
+
+  saveState();
+
+  var starsHtml = '\u2B50'.repeat(stars) + '\u2606'.repeat(3 - stars);
+  var ga = document.getElementById('gameArea');
+  ga.innerHTML =
+    '<div class="complete-screen">' +
+      '<div class="big-icon">\uD83C\uDF89</div>' +
+      '<div class="msg">' + randomPositive() + '</div>' +
+      '<div class="subtitle">' + score + ' / ' + total + ' reussi' + (score > 1 ? 's' : '') + '</div>' +
+      '<div class="stars-earned">' + starsHtml + '</div>' +
+      (stars > prevStars ? '<div class="subtitle">Nouveau record !</div>' : '') +
+      '<button class="btn-primary" id="continueBtn">Continuer</button>' +
+    '</div>';
+
+  document.getElementById('continueBtn').onclick = showLevelSelect;
+
+  for (var i = 0; i < stars; i++) {
+    (function(idx) {
+      setTimeout(function() { playStar(); }, 400 + idx * 300);
+    })(i);
+  }
+}
+
+// ===== INIT =====
+saveState();
+renderLevels();
+</script>
 </body>
 </html>
