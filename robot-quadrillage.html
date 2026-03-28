@@ -360,7 +360,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
             width: 100%;
             max-width: 400px;
         }
@@ -422,10 +422,11 @@
         /* Arrow controls in cross pattern */
         .controls-area {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
+            margin-top: 4px;
         }
 
         .arrow-cross {
@@ -675,6 +676,22 @@
             .action-btn {
                 width: 46px;
                 height: 46px;
+            }
+        }
+
+        @media (min-width: 600px) and (orientation: portrait) {
+            .command-panel {
+                gap: 18px;
+            }
+            .controls-area {
+                gap: 28px;
+                margin-top: 8px;
+            }
+            .arrow-cross {
+                gap: 10px;
+            }
+            .action-buttons {
+                gap: 14px;
             }
         }
 
