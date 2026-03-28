@@ -872,10 +872,10 @@
 
     <!-- Ecran de felicitations -->
     <div id="celebration-screen" class="screen celebration-screen">
-        <div class="celebration-stars">🌟🌟🌟</div>
-        <h2 class="celebration-title">Super Champion !</h2>
+        <div class="celebration-stars" id="celebration-stars">🌟🌟🌟</div>
+        <h2 class="celebration-title" id="celebration-title">Super Champion !</h2>
         <div class="celebration-message" id="celebration-message">Tu as reussi !</div>
-        <button class="continue-btn" onclick="continuePlaying()">Continuer 🚀</button>
+        <button class="continue-btn" id="continue-btn" onclick="continuePlaying()">Continuer 🚀</button>
         <button class="home-from-celebration" onclick="goHome()">🏠 Accueil</button>
         <a href="index.html" class="home-from-celebration" style="margin-top: 10px; display: inline-block; text-decoration: none;">← Mes Jeux</a>
     </div>
@@ -1584,8 +1584,10 @@
             const levelConfig = LEVELS[gameState.currentLevel];
             const threshold = levelConfig.unlockThreshold;
             const passed = gameState.currentScore >= threshold;
+            const isLastLevel = gameState.currentLevel >= 5;
+            const isGameComplete = isLastLevel && passed;
 
-            if (passed && gameState.currentLevel < 5) {
+            if (passed && !isLastLevel) {
                 const nextLevel = gameState.currentLevel + 1;
                 if (!gameState.unlockedLevels.includes(nextLevel)) {
                     gameState.unlockedLevels.push(nextLevel);
@@ -1595,12 +1597,34 @@
                 }
             }
 
-            // Afficher celebration
-            const msg = passed
-                ? `${gameState.currentScore} / ${levelConfig.questionsCount} - Bravo !`
-                : `${gameState.currentScore} / ${levelConfig.questionsCount} - Continue a t'entrainer !`;
+            // Etoiles
+            const starsCount = gameState.currentScore >= levelConfig.questionsCount ? 5
+                : gameState.currentScore >= threshold ? 4
+                : gameState.currentScore >= Math.ceil(threshold * 0.75) ? 3
+                : gameState.currentScore >= Math.ceil(threshold * 0.5) ? 2 : 1;
+            document.getElementById('celebration-stars').textContent = '⭐'.repeat(starsCount);
 
-            document.getElementById('celebration-message').textContent = msg;
+            const continueBtn = document.getElementById('continue-btn');
+
+            if (isGameComplete) {
+                document.getElementById('celebration-title').textContent = 'Champion des Syllabes !';
+                document.getElementById('celebration-message').textContent =
+                    `${gameState.currentScore} / ${levelConfig.questionsCount} - Bravo, tu as reussi tous les niveaux ! Tu es maintenant un vrai champion des syllabes !`;
+                continueBtn.style.display = 'none';
+            } else if (passed) {
+                document.getElementById('celebration-title').textContent = 'Niveau reussi !';
+                document.getElementById('celebration-message').textContent =
+                    `${gameState.currentScore} / ${levelConfig.questionsCount} - Bravo !`;
+                continueBtn.style.display = '';
+                continueBtn.textContent = 'Niveau suivant 🚀';
+            } else {
+                document.getElementById('celebration-title').textContent = 'Bien joue !';
+                document.getElementById('celebration-message').textContent =
+                    `${gameState.currentScore} / ${levelConfig.questionsCount} - Il faut ${threshold} bonnes reponses pour passer au niveau suivant !`;
+                continueBtn.style.display = '';
+                continueBtn.textContent = 'Recommencer 🔄';
+            }
+
             showScreen('celebration-screen');
             launchConfetti();
             launchConfetti();
@@ -1620,9 +1644,13 @@
 
             setTimeout(() => {
                 overlay.classList.remove('show');
-                // Montrer celebration
+                // Montrer celebration avec bouton niveau suivant
+                document.getElementById('celebration-title').textContent = 'Niveau reussi !';
                 document.getElementById('celebration-message').textContent =
                     `${gameState.currentScore} / ${LEVELS[gameState.currentLevel].questionsCount} - Super !`;
+                const continueBtn = document.getElementById('continue-btn');
+                continueBtn.style.display = '';
+                continueBtn.textContent = 'Niveau suivant 🚀';
                 showScreen('celebration-screen');
                 launchConfetti();
             }, 2500);
@@ -1630,10 +1658,14 @@
 
         function continuePlaying() {
             playSound('click');
-            // Passer au niveau suivant si debloque, sinon rejouer le meme
-            if (gameState.currentLevel < 5 && gameState.unlockedLevels.includes(gameState.currentLevel + 1)) {
+            const levelConfig = LEVELS[gameState.currentLevel];
+            const passed = gameState.currentScore >= levelConfig.unlockThreshold;
+
+            if (passed && gameState.currentLevel < 5 && gameState.unlockedLevels.includes(gameState.currentLevel + 1)) {
+                // Passer au niveau suivant
                 gameState.currentLevel = gameState.currentLevel + 1;
             }
+            // Sinon rejouer le meme niveau
             startGame();
         }
 
