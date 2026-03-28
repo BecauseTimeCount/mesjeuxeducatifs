@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le Restaurant des Animaux - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #E65100 0%, #FFE0B2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* === BACK BUTTON === */
+        .back-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #BF360C;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            min-height: 48px;
+            min-width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover { background: #fff; }
+
+        /* === SCREENS === */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.4s ease;
+            overflow: auto;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === RESTAURANT COUNTER === */
+        .counter {
+            background: linear-gradient(180deg, #5D4037 0%, #795548 40%, #8D6E63 100%);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px 16px 0 0;
+            padding: clamp(8px, 2vw, 16px) clamp(12px, 3vw, 24px);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .counter::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px 16px 0 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 20px,
+                rgba(0,0,0,0.05) 20px,
+                rgba(0,0,0,0.05) 22px
+            );
+            pointer-events: none;
+        }
+
+        .counter-text {
+            color: #FFE0B2;
+            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+        }
+
+        .counter-bell {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+        }
+
+        /* === TITLE SCREEN === */
+        .title {
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #BF360C;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+        }
+
+        .title-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            display: block;
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: #5D4037;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* === LEVEL BUTTONS === */
+        .level-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .level-btn {
+            background: #fff;
+            border: 3px solid #FFB74D;
+            border-radius: 16px;
+            padding: clamp(12px, 3vw, 18px) 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            font-weight: 700;
+            color: #BF360C;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 56px;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .level-btn:hover:not(.locked) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            border-color: #FF9800;
+        }
+
+        .level-btn:active:not(.locked) {
+            transform: translateY(0);
+        }
+
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ccc;
+            color: #999;
+        }
+
+        .level-btn .level-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .level-btn .level-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .level-btn .level-name {
+            display: block;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
+        .level-btn .level-stars {
+            font-size: 0.8rem;
+            color: #FFA000;
+        }
+
+        .level-btn .lock-icon {
+            font-size: 1.2rem;
+        }
+
+        /* === TOTAL STARS === */
+        .total-stars {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #5D4037;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* === GAME AREA === */
+        .game-area {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(10px, 2vh, 20px);
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 12px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF9800, #FF5722);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            color: #5D4037;
+            font-weight: 600;
+        }
+
+        /* Stars earned */
+        .stars-display {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #FF8F00;
+            font-weight: 700;
+        }
+
+        /* Chef */
+        .chef {
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin-bottom: 5px;
+        }
+
+        .chef-speech {
+            background: #fff;
+            border-radius: 16px;
+            padding: clamp(8px, 2vw, 14px) clamp(14px, 3vw, 24px);
+            font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+            font-weight: 600;
+            color: #5D4037;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .chef-speech::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #fff;
+        }
+
+        /* Animal display */
+        .animal-display {
+            text-align: center;
+            min-height: clamp(80px, 15vh, 130px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animal-emoji {
+            font-size: clamp(3.5rem, 12vw, 5rem);
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .animal-emoji.happy {
+            animation: happyBounce 0.6s ease;
+        }
+
+        .animal-emoji.shake {
+            animation: gentleShake 0.5s ease;
+        }
+
+        @keyframes happyBounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.2) rotate(-5deg); }
+            60% { transform: scale(1.15) rotate(5deg); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes gentleShake {
+            0%, 100% { transform: rotate(0); }
+            20% { transform: rotate(-5deg); }
+            40% { transform: rotate(5deg); }
+            60% { transform: rotate(-3deg); }
+            80% { transform: rotate(3deg); }
+        }
+
+        .animal-name {
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            font-weight: 700;
+            color: #3E2723;
+            margin-top: 4px;
+        }
+
+        /* Plates (Level 1 & 2) */
+        .plates-container {
+            display: flex;
+            gap: clamp(12px, 4vw, 30px);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .plate {
+            width: clamp(80px, 22vw, 130px);
+            height: clamp(80px, 22vw, 130px);
+            background: radial-gradient(ellipse at 40% 30%, #fff 0%, #f5f5f5 70%, #e0e0e0 100%);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15), inset 0 -3px 6px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 3px solid #e0e0e0;
+            min-width: 80px;
+            min-height: 80px;
+        }
+
+        .plate:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            border-color: #FFB74D;
+        }
+
+        .plate:active {
+            transform: scale(0.97);
+        }
+
+        .plate.correct {
+            border-color: #4CAF50;
+            animation: plateGlow 0.5s ease;
+        }
+
+        .plate.wrong {
+            animation: plateSlide 0.5s ease;
+        }
+
+        @keyframes plateGlow {
+            0% { box-shadow: 0 0 0 0 rgba(76,175,80,0.5); }
+            50% { box-shadow: 0 0 20px 10px rgba(76,175,80,0.3); }
+            100% { box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        }
+
+        @keyframes plateSlide {
+            0% { transform: translateX(0); opacity: 1; }
+            50% { transform: translateX(30px); opacity: 0.5; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .plate-emoji {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+        }
+
+        .plate-label {
+            font-size: clamp(0.6rem, 2vw, 0.8rem);
+            font-weight: 600;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* Food items (Level 3) */
+        .food-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(8px, 2vw, 14px);
+            justify-content: center;
+            max-width: 500px;
+        }
+
+        .food-item {
+            width: clamp(64px, 18vw, 90px);
+            height: clamp(64px, 18vw, 90px);
+            background: #fff;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 3px solid #e0e0e0;
+            min-width: 64px;
+            min-height: 64px;
+        }
+
+        .food-item:hover {
+            transform: scale(1.05);
+            border-color: #FFB74D;
+        }
+
+        .food-item.selected {
+            border-color: #FF9800;
+            background: #FFF3E0;
+            box-shadow: 0 0 0 3px rgba(255,152,0,0.3);
+        }
+
+        .food-item .food-emoji {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+
+        .food-item .food-name {
+            font-size: clamp(0.5rem, 1.5vw, 0.65rem);
+            font-weight: 600;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* Validate button */
+        .validate-btn {
+            background: linear-gradient(180deg, #FF9800, #F57C00);
+            border: none;
+            border-radius: 14px;
+            padding: clamp(10px, 2.5vw, 16px) clamp(24px, 6vw, 40px);
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+            min-height: 48px;
+            transition: all 0.2s ease;
+        }
+
+        .validate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255,152,0,0.5);
+        }
+
+        .validate-btn:active {
+            transform: translateY(0);
+        }
+
+        .validate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Level 4: Columns */
+        .columns-container {
+            display: flex;
+            gap: clamp(6px, 1.5vw, 14px);
+            width: 100%;
+            max-width: 600px;
+            min-height: clamp(120px, 20vh, 180px);
+        }
+
+        .diet-column {
+            flex: 1;
+            background: rgba(255,255,255,0.3);
+            border-radius: 14px;
+            padding: clamp(6px, 1.5vw, 12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            border: 3px dashed transparent;
+            transition: all 0.2s ease;
+            min-height: 100px;
+            cursor: pointer;
+        }
+
+        .diet-column.herbivore {
+            background: rgba(76,175,80,0.15);
+            border-color: rgba(76,175,80,0.3);
+        }
+
+        .diet-column.carnivore {
+            background: rgba(244,67,54,0.15);
+            border-color: rgba(244,67,54,0.3);
+        }
+
+        .diet-column.omnivore {
+            background: rgba(33,150,243,0.15);
+            border-color: rgba(33,150,243,0.3);
+        }
+
+        .diet-column.highlight {
+            border-style: solid;
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        .column-title {
+            font-size: clamp(0.55rem, 2vw, 0.8rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .herbivore .column-title { background: #4CAF50; color: #fff; }
+        .carnivore .column-title { background: #F44336; color: #fff; }
+        .omnivore .column-title { background: #2196F3; color: #fff; }
+
+        .column-emoji {
+            font-size: clamp(0.8rem, 2vw, 1rem);
+        }
+
+        .column-animals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .column-animal {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            animation: popIn 0.3s ease;
+        }
+
+        /* Animal cards (Level 4) */
+        .animal-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(8px, 2vw, 12px);
+            justify-content: center;
+            max-width: 500px;
+        }
+
+        .animal-card {
+            width: clamp(64px, 18vw, 85px);
+            height: clamp(64px, 18vw, 85px);
+            background: #fff;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 3px solid #e0e0e0;
+            min-width: 64px;
+            min-height: 64px;
+        }
+
+        .animal-card:hover:not(.placed) {
+            transform: scale(1.08);
+            border-color: #FFB74D;
+        }
+
+        .animal-card.selected-card {
+            border-color: #FF5722;
+            background: #FFF3E0;
+            box-shadow: 0 0 0 3px rgba(255,87,34,0.3);
+            transform: scale(1.08);
+        }
+
+        .animal-card.placed {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: scale(0.9);
+        }
+
+        .animal-card .card-emoji {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+
+        .animal-card .card-name {
+            font-size: clamp(0.45rem, 1.5vw, 0.6rem);
+            font-weight: 600;
+            color: #666;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Feedback overlay */
+        .feedback {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            background: rgba(0,0,0,0.2);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .feedback.show {
+            display: flex;
+        }
+
+        .feedback-content {
+            background: #fff;
+            border-radius: 24px;
+            padding: clamp(20px, 5vw, 40px);
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease;
+            max-width: 90%;
+        }
+
+        .feedback-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            font-weight: 700;
+            color: #5D4037;
+        }
+
+        .feedback-stars {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #FFA000;
+            margin-top: 8px;
+        }
+
+        /* Level complete */
+        .level-complete {
+            text-align: center;
+        }
+
+        .level-complete h2 {
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            color: #BF360C;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .level-complete .big-stars {
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin-bottom: 10px;
+        }
+
+        .level-complete .score-text {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #5D4037;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: linear-gradient(180deg, #FF9800, #F57C00);
+            border: none;
+            border-radius: 14px;
+            padding: 12px 24px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+            min-height: 48px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(180deg, #8D6E63, #5D4037);
+            box-shadow: 0 4px 12px rgba(93,64,55,0.4);
+        }
+
+        /* Reset button */
+        .reset-btn {
+            background: none;
+            border: none;
+            color: rgba(93,64,55,0.5);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 20px;
+            padding: 8px;
+            min-height: 48px;
+        }
+
+        .reset-btn:hover {
+            color: #5D4037;
+        }
+
+        /* Galaxy Fold adjustments */
+        @media (max-width: 300px) {
+            .screen { padding: 10px; padding-top: 55px; }
+            .plates-container { gap: 8px; }
+            .plate { width: 72px; height: 72px; min-width: 64px; min-height: 64px; }
+            .food-item { width: 58px; height: 58px; min-width: 48px; min-height: 48px; }
+            .animal-card { width: 58px; height: 58px; min-width: 48px; min-height: 48px; }
+            .columns-container { gap: 4px; }
+            .diet-column { padding: 4px; }
+            .column-title { font-size: 0.5rem; padding: 2px 4px; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">&#8592; Mes Jeux</a>
+
+<!-- HOME SCREEN -->
+<div id="screen-home" class="screen active">
+    <span class="title-emoji">🍽️</span>
+    <h1 class="title">Le Restaurant des Animaux</h1>
+    <p class="subtitle">Sers le bon repas a chaque animal !</p>
+    <div class="total-stars" id="total-stars-home"></div>
+    <div class="level-buttons" id="level-buttons"></div>
+    <button class="reset-btn" onclick="resetGame()">Recommencer a zero</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="screen-game" class="screen">
+    <div class="game-area" id="game-area">
+        <div class="counter">
+            <span class="counter-text" id="counter-text">Bienvenue au restaurant !</span>
+            <span class="counter-bell">🔔</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text"></div>
+        <div class="stars-display" id="stars-display"></div>
+        <div class="chef">👨‍🍳</div>
+        <div class="chef-speech" id="chef-speech"></div>
+        <div class="animal-display" id="animal-display"></div>
+        <div id="game-content"></div>
+    </div>
+</div>
+
+<!-- LEVEL COMPLETE SCREEN -->
+<div id="screen-complete" class="screen">
+    <div class="level-complete" id="complete-content"></div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="feedback" id="feedback">
+    <div class="feedback-content">
+        <span class="feedback-emoji" id="feedback-emoji"></span>
+        <div class="feedback-text" id="feedback-text"></div>
+        <div class="feedback-stars" id="feedback-stars"></div>
+    </div>
+</div>
+
+<script>
+// === DATA ===
+const ANIMALS = {
+    vache:    { emoji: '🐄', name: 'Vache',    diet: 'herbivore' },
+    mouton:   { emoji: '🐑', name: 'Mouton',   diet: 'herbivore' },
+    loup:     { emoji: '🐺', name: 'Loup',     diet: 'carnivore' },
+    lion:     { emoji: '🦁', name: 'Lion',      diet: 'carnivore' },
+    lapin:    { emoji: '🐰', name: 'Lapin',     diet: 'herbivore' },
+    chat:     { emoji: '🐱', name: 'Chat',      diet: 'carnivore' },
+    cheval:   { emoji: '🐴', name: 'Cheval',    diet: 'herbivore' },
+    renard:   { emoji: '🦊', name: 'Renard',    diet: 'carnivore' },
+    elephant: { emoji: '🐘', name: 'Elephant',  diet: 'herbivore' },
+    aigle:    { emoji: '🦅', name: 'Aigle',     diet: 'carnivore' },
+    ours:     { emoji: '🐻', name: 'Ours',      diet: 'omnivore' },
+    cochon:   { emoji: '🐷', name: 'Cochon',    diet: 'omnivore' },
+    poule:    { emoji: '🐔', name: 'Poule',     diet: 'omnivore' },
+    singe:    { emoji: '🐵', name: 'Singe',     diet: 'omnivore' },
+    souris:   { emoji: '🐭', name: 'Souris',    diet: 'omnivore' },
+    tortue:   { emoji: '🐢', name: 'Tortue',    diet: 'herbivore' },
+};
+
+const LEVEL1_ANIMALS = ['vache','mouton','loup','lion','lapin','chat','cheval','renard','elephant','aigle'];
+const LEVEL2_ANIMALS = ['ours','cochon','poule','singe','vache','lion','lapin','loup','souris','tortue'];
+
+const FOODS = {
+    cereales:  { emoji: '🌾', name: 'Cereales',  forHerbivore: true,  forCarnivore: false },
+    carotte:   { emoji: '🥕', name: 'Carotte',   forHerbivore: true,  forCarnivore: false },
+    viande:    { emoji: '🥩', name: 'Viande',     forHerbivore: false, forCarnivore: true },
+    herbe:     { emoji: '🌿', name: 'Herbe',      forHerbivore: true,  forCarnivore: false },
+    poisson:   { emoji: '🐟', name: 'Poisson',    forHerbivore: false, forCarnivore: true },
+    pomme:     { emoji: '🍎', name: 'Pomme',      forHerbivore: true,  forCarnivore: false },
+    insecte:   { emoji: '🐛', name: 'Insecte',    forHerbivore: false, forCarnivore: true },
+    graines:   { emoji: '🌻', name: 'Graines',    forHerbivore: true,  forCarnivore: false },
+};
+
+const LEVEL3_QUESTIONS = [
+    { animal: 'vache',    foods: ['cereales','carotte','viande','herbe','poisson'],   correct: ['cereales','carotte','herbe'] },
+    { animal: 'lion',     foods: ['herbe','viande','graines','poisson','carotte'],    correct: ['viande','poisson'] },
+    { animal: 'ours',     foods: ['poisson','pomme','herbe','viande','insecte'],      correct: ['poisson','pomme','herbe','viande','insecte'] },
+    { animal: 'lapin',    foods: ['carotte','herbe','viande','graines','poisson'],    correct: ['carotte','herbe','graines'] },
+    { animal: 'renard',   foods: ['viande','pomme','cereales','insecte','poisson'],   correct: ['viande','insecte','poisson'] },
+    { animal: 'cochon',   foods: ['pomme','viande','cereales','herbe','insecte'],     correct: ['pomme','viande','cereales','herbe','insecte'] },
+    { animal: 'cheval',   foods: ['herbe','cereales','pomme','viande','poisson'],     correct: ['herbe','cereales','pomme'] },
+    { animal: 'poule',    foods: ['graines','insecte','cereales','viande','herbe'],   correct: ['graines','insecte','cereales'] },
+];
+
+const LEVEL4_ROUNDS = [
+    ['vache','lion','ours','lapin','chat','cochon'],
+    ['mouton','loup','poule','cheval','renard','singe'],
+    ['elephant','aigle','souris','tortue','lion','ours'],
+    ['lapin','chat','cochon','mouton','loup','poule'],
+    ['cheval','renard','singe','vache','aigle','souris'],
+];
+
+const LEVELS = [
+    { name: 'Herbivore ou Carnivore ?', icon: '🥬', questions: 10 },
+    { name: 'Et les Omnivores !',       icon: '🍽️', questions: 10 },
+    { name: 'Le Menu du Jour',          icon: '📋', questions: 8 },
+    { name: 'Classe les Animaux',       icon: '🏷️', questions: 5 },
+];
+
+const ENCOURAGEMENTS_CORRECT = [
+    'Bravo !', 'Super !', 'Excellent !', 'Genial !', 'Parfait !',
+    'Tu es un chef etoile !', 'Magnifique !', 'Formidable !',
+];
+
+const ENCOURAGEMENTS_TRY_AGAIN = [
+    'Essaie encore !', 'Presque !', 'Pas tout a fait...', 'Regarde bien !',
+    'Tu vas y arriver !', 'Reflechis encore un peu !',
+];
+
+// === GAME STATE ===
+let gameState = {
+    currentLevel: 0,
+    totalStars: 0,
+    bestScores: [0, 0, 0, 0],
+    unlockedLevels: [true, false, false, false],
+};
+
+let roundState = {
+    questionIndex: 0,
+    starsEarned: 0,
+    questions: [],
+    selectedFoods: [],
+    selectedAnimal: null,
+    placedAnimals: {},
+    animalsInColumns: { herbivore: [], carnivore: [], omnivore: [] },
+    answering: false,
+};
+
+// === AUDIO ===
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.value = 0.15;
+
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+        } else if (type === 'wrong') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(330, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(280, audioCtx.currentTime + 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'click') {
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'complete') {
+            osc.type = 'sine';
+            const notes = [523, 659, 784, 1047];
+            notes.forEach((f, i) => {
+                osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.15);
+            });
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.7);
+        } else if (type === 'place') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(550, audioCtx.currentTime + 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+        }
+    } catch(e) {}
+}
+
+// === SAVE / LOAD ===
+function saveGame() {
+    localStorage.setItem('leRestaurantDesAnimaux', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels,
+    }));
+    localStorage.setItem('restaurantScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('leRestaurantDesAnimaux'));
+        if (saved) {
+            gameState.totalStars = saved.totalStars || 0;
+            gameState.bestScores = saved.bestScores || [0,0,0,0];
+            gameState.unlockedLevels = saved.unlockedLevels || [true,false,false,false];
+        }
+    } catch(e) {}
+}
+
+function resetGame() {
+    if (confirm('Recommencer a zero ? Toute ta progression sera effacee.')) {
+        localStorage.removeItem('leRestaurantDesAnimaux');
+        localStorage.removeItem('restaurantScore');
+        gameState = { currentLevel: 0, totalStars: 0, bestScores: [0,0,0,0], unlockedLevels: [true,false,false,false] };
+        showScreen('home');
+    }
+}
+
+// === NAVIGATION ===
+function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    if (name === 'home') renderHome();
+}
+
+function renderHome() {
+    const starsEl = document.getElementById('total-stars-home');
+    starsEl.textContent = '⭐ ' + gameState.totalStars + ' etoile' + (gameState.totalStars > 1 ? 's' : '');
+
+    const container = document.getElementById('level-buttons');
+    container.innerHTML = '';
+
+    LEVELS.forEach((level, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'level-btn' + (gameState.unlockedLevels[i] ? '' : ' locked');
+        const best = gameState.bestScores[i];
+        const maxQ = level.questions;
+        const starsText = best > 0 ? '⭐'.repeat(Math.min(best, 5)) + ' ' + best + '/' + maxQ : '';
+        btn.innerHTML = `
+            <span class="level-icon">${level.icon}</span>
+            <span class="level-info">
+                <span class="level-name">${level.name}</span>
+                <span class="level-stars">${starsText}</span>
+            </span>
+            ${gameState.unlockedLevels[i] ? '' : '<span class="lock-icon">🔒</span>'}
+        `;
+        if (gameState.unlockedLevels[i]) {
+            btn.onclick = () => startLevel(i);
+        }
+        container.appendChild(btn);
+    });
+}
+
+// === HELPERS ===
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function randomPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function updateProgress() {
+    const total = LEVELS[gameState.currentLevel].questions;
+    const pct = (roundState.questionIndex / total) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = 'Question ' + (roundState.questionIndex + 1) + ' / ' + total;
+    document.getElementById('stars-display').textContent = '⭐ ' + roundState.starsEarned;
+}
+
+function showFeedback(correct, callback) {
+    const fb = document.getElementById('feedback');
+    const emoji = document.getElementById('feedback-emoji');
+    const text = document.getElementById('feedback-text');
+    const stars = document.getElementById('feedback-stars');
+
+    if (correct) {
+        emoji.textContent = randomPick(['🌟','🎉','👏','😄','🥳']);
+        text.textContent = randomPick(ENCOURAGEMENTS_CORRECT);
+        stars.textContent = '⭐ +1';
+        playSound('correct');
+    } else {
+        emoji.textContent = randomPick(['🤔','💭','👀']);
+        text.textContent = randomPick(ENCOURAGEMENTS_TRY_AGAIN);
+        stars.textContent = '';
+        playSound('wrong');
+    }
+
+    fb.classList.add('show');
+    setTimeout(() => {
+        fb.classList.remove('show');
+        if (callback) callback();
+    }, correct ? 1200 : 1000);
+}
+
+// === START LEVEL ===
+function startLevel(levelIndex) {
+    gameState.currentLevel = levelIndex;
+    roundState = {
+        questionIndex: 0,
+        starsEarned: 0,
+        questions: [],
+        selectedFoods: [],
+        selectedAnimal: null,
+        placedAnimals: {},
+        animalsInColumns: { herbivore: [], carnivore: [], omnivore: [] },
+        answering: false,
+    };
+
+    showScreen('game');
+
+    if (levelIndex === 0) {
+        roundState.questions = shuffle(LEVEL1_ANIMALS);
+    } else if (levelIndex === 1) {
+        roundState.questions = shuffle(LEVEL2_ANIMALS);
+    } else if (levelIndex === 2) {
+        roundState.questions = shuffle([...LEVEL3_QUESTIONS]);
+    } else if (levelIndex === 3) {
+        roundState.questions = LEVEL4_ROUNDS.map(r => shuffle(r));
+    }
+
+    renderQuestion();
+}
+
+function renderQuestion() {
+    const level = gameState.currentLevel;
+    roundState.answering = false;
+
+    if (roundState.questionIndex >= LEVELS[level].questions) {
+        finishLevel();
+        return;
+    }
+
+    updateProgress();
+
+    if (level === 0) renderLevel1();
+    else if (level === 1) renderLevel2();
+    else if (level === 2) renderLevel3();
+    else if (level === 3) renderLevel4();
+}
+
+// === LEVEL 1 ===
+function renderLevel1() {
+    const animalKey = roundState.questions[roundState.questionIndex];
+    const animal = ANIMALS[animalKey];
+
+    document.getElementById('chef-speech').textContent = animal.name + ' a faim ! Que mange-t-il ?';
+    document.getElementById('animal-display').innerHTML = `
+        <span class="animal-emoji" id="animal-anim">${animal.emoji}</span>
+        <span class="animal-name">${animal.name}</span>
+    `;
+
+    const content = document.getElementById('game-content');
+    content.innerHTML = `
+        <div class="plates-container">
+            <div class="plate" onclick="answerPlate('herbivore')" id="plate-herb">
+                <span class="plate-emoji">🥬</span>
+                <span class="plate-label">Plantes</span>
+            </div>
+            <div class="plate" onclick="answerPlate('carnivore')" id="plate-carn">
+                <span class="plate-emoji">🥩</span>
+                <span class="plate-label">Viande</span>
+            </div>
+        </div>
+    `;
+}
+
+function answerPlate(diet) {
+    if (roundState.answering) return;
+    roundState.answering = true;
+    playSound('click');
+
+    const animalKey = roundState.questions[roundState.questionIndex];
+    const animal = ANIMALS[animalKey];
+    const correct = animal.diet === diet;
+
+    const animalEl = document.getElementById('animal-anim');
+
+    if (correct) {
+        animalEl.classList.add('happy');
+        const plateId = diet === 'herbivore' ? 'plate-herb' : (diet === 'carnivore' ? 'plate-carn' : 'plate-omni');
+        const plateEl = document.getElementById(plateId);
+        if (plateEl) plateEl.classList.add('correct');
+
+        roundState.starsEarned++;
+        showFeedback(true, () => {
+            roundState.questionIndex++;
+            renderQuestion();
+        });
+    } else {
+        animalEl.classList.add('shake');
+        const wrongPlateId = diet === 'herbivore' ? 'plate-herb' : (diet === 'carnivore' ? 'plate-carn' : 'plate-omni');
+        const wrongEl = document.getElementById(wrongPlateId);
+        if (wrongEl) wrongEl.classList.add('wrong');
+
+        showFeedback(false, () => {
+            roundState.answering = false;
+            animalEl.classList.remove('shake');
+            if (wrongEl) wrongEl.classList.remove('wrong');
+        });
+    }
+}
+
+// === LEVEL 2 ===
+function renderLevel2() {
+    const animalKey = roundState.questions[roundState.questionIndex];
+    const animal = ANIMALS[animalKey];
+
+    document.getElementById('chef-speech').textContent = animal.name + ' est arrive ! Quel plat pour lui ?';
+    document.getElementById('animal-display').innerHTML = `
+        <span class="animal-emoji" id="animal-anim">${animal.emoji}</span>
+        <span class="animal-name">${animal.name}</span>
+    `;
+
+    const content = document.getElementById('game-content');
+    content.innerHTML = `
+        <div class="plates-container">
+            <div class="plate" onclick="answerPlate('herbivore')" id="plate-herb">
+                <span class="plate-emoji">🥬</span>
+                <span class="plate-label">Plantes</span>
+            </div>
+            <div class="plate" onclick="answerPlate('carnivore')" id="plate-carn">
+                <span class="plate-emoji">🥩</span>
+                <span class="plate-label">Viande</span>
+            </div>
+            <div class="plate" onclick="answerPlate('omnivore')" id="plate-omni">
+                <span class="plate-emoji">🥬🥩</span>
+                <span class="plate-label">Les deux !</span>
+            </div>
+        </div>
+    `;
+}
+
+// === LEVEL 3 ===
+function renderLevel3() {
+    const q = roundState.questions[roundState.questionIndex];
+    const animal = ANIMALS[q.animal];
+    roundState.selectedFoods = [];
+
+    document.getElementById('chef-speech').textContent = 'Choisis tout ce que ' + animal.name + ' peut manger !';
+    document.getElementById('animal-display').innerHTML = `
+        <span class="animal-emoji" id="animal-anim">${animal.emoji}</span>
+        <span class="animal-name">${animal.name}</span>
+    `;
+
+    const foodsHtml = q.foods.map(fKey => {
+        const f = FOODS[fKey];
+        return `<div class="food-item" data-food="${fKey}" onclick="toggleFood('${fKey}')">
+            <span class="food-emoji">${f.emoji}</span>
+            <span class="food-name">${f.name}</span>
+        </div>`;
+    }).join('');
+
+    const content = document.getElementById('game-content');
+    content.innerHTML = `
+        <div class="food-grid">${foodsHtml}</div>
+        <button class="validate-btn" id="validate-btn" onclick="validateLevel3()" disabled>Valider le menu !</button>
+    `;
+}
+
+function toggleFood(fKey) {
+    playSound('click');
+    const idx = roundState.selectedFoods.indexOf(fKey);
+    if (idx >= 0) {
+        roundState.selectedFoods.splice(idx, 1);
+    } else {
+        roundState.selectedFoods.push(fKey);
+    }
+
+    document.querySelectorAll('.food-item').forEach(el => {
+        el.classList.toggle('selected', roundState.selectedFoods.includes(el.dataset.food));
+    });
+
+    document.getElementById('validate-btn').disabled = roundState.selectedFoods.length === 0;
+}
+
+function validateLevel3() {
+    if (roundState.answering) return;
+    roundState.answering = true;
+
+    const q = roundState.questions[roundState.questionIndex];
+    const correct = q.correct.sort().join(',') === roundState.selectedFoods.sort().join(',');
+
+    const animalEl = document.getElementById('animal-anim');
+
+    if (correct) {
+        animalEl.classList.add('happy');
+        roundState.starsEarned++;
+        showFeedback(true, () => {
+            roundState.questionIndex++;
+            renderQuestion();
+        });
+    } else {
+        animalEl.classList.add('shake');
+        showFeedback(false, () => {
+            roundState.answering = false;
+            animalEl.classList.remove('shake');
+        });
+    }
+}
+
+// === LEVEL 4 ===
+function renderLevel4() {
+    const roundAnimals = roundState.questions[roundState.questionIndex];
+    roundState.selectedAnimal = null;
+    roundState.placedAnimals = {};
+    roundState.animalsInColumns = { herbivore: [], carnivore: [], omnivore: [] };
+
+    const placed = Object.keys(roundState.placedAnimals).length;
+    const total = roundAnimals.length;
+
+    document.getElementById('chef-speech').textContent = 'Classe chaque animal dans la bonne categorie !';
+    document.getElementById('animal-display').innerHTML = '';
+
+    const cardsHtml = roundAnimals.map(key => {
+        const a = ANIMALS[key];
+        return `<div class="animal-card" id="card-${key}" data-animal="${key}" onclick="selectAnimalCard('${key}')">
+            <span class="card-emoji">${a.emoji}</span>
+            <span class="card-name">${a.name}</span>
+        </div>`;
+    }).join('');
+
+    const content = document.getElementById('game-content');
+    content.innerHTML = `
+        <div class="animal-cards" id="animal-cards">${cardsHtml}</div>
+        <div class="columns-container">
+            <div class="diet-column herbivore" id="col-herbivore" onclick="placeInColumn('herbivore')">
+                <span class="column-title">Herbivore</span>
+                <span class="column-emoji">🥬</span>
+                <div class="column-animals" id="col-animals-herbivore"></div>
+            </div>
+            <div class="diet-column carnivore" id="col-carnivore" onclick="placeInColumn('carnivore')">
+                <span class="column-title">Carnivore</span>
+                <span class="column-emoji">🥩</span>
+                <div class="column-animals" id="col-animals-carnivore"></div>
+            </div>
+            <div class="diet-column omnivore" id="col-omnivore" onclick="placeInColumn('omnivore')">
+                <span class="column-title">Omnivore</span>
+                <span class="column-emoji">🥬🥩</span>
+                <div class="column-animals" id="col-animals-omnivore"></div>
+            </div>
+        </div>
+    `;
+}
+
+function selectAnimalCard(key) {
+    if (roundState.placedAnimals[key]) return;
+    playSound('click');
+
+    roundState.selectedAnimal = key;
+
+    document.querySelectorAll('.animal-card').forEach(el => {
+        el.classList.toggle('selected-card', el.dataset.animal === key && !roundState.placedAnimals[key]);
+    });
+
+    // Highlight columns
+    document.querySelectorAll('.diet-column').forEach(el => el.classList.add('highlight'));
+}
+
+function placeInColumn(diet) {
+    if (!roundState.selectedAnimal) return;
+    const key = roundState.selectedAnimal;
+    if (roundState.placedAnimals[key]) return;
+
+    const animal = ANIMALS[key];
+    const correct = animal.diet === diet;
+
+    if (correct) {
+        playSound('place');
+        roundState.placedAnimals[key] = diet;
+        roundState.animalsInColumns[diet].push(key);
+
+        // Add to column
+        const colAnimals = document.getElementById('col-animals-' + diet);
+        const span = document.createElement('span');
+        span.className = 'column-animal';
+        span.textContent = animal.emoji;
+        colAnimals.appendChild(span);
+
+        // Mark card as placed
+        const card = document.getElementById('card-' + key);
+        card.classList.add('placed');
+        card.classList.remove('selected-card');
+
+        roundState.selectedAnimal = null;
+        document.querySelectorAll('.diet-column').forEach(el => el.classList.remove('highlight'));
+
+        // Check if round is complete
+        const roundAnimals = roundState.questions[roundState.questionIndex];
+        if (Object.keys(roundState.placedAnimals).length === roundAnimals.length) {
+            roundState.starsEarned++;
+            showFeedback(true, () => {
+                roundState.questionIndex++;
+                renderQuestion();
+            });
+        }
+    } else {
+        playSound('wrong');
+        // Gentle shake on the selected card
+        const card = document.getElementById('card-' + key);
+        card.classList.remove('selected-card');
+        const cardEmoji = card.querySelector('.card-emoji');
+        card.style.animation = 'gentleShake 0.5s ease';
+        setTimeout(() => { card.style.animation = ''; }, 500);
+
+        roundState.selectedAnimal = null;
+        document.querySelectorAll('.diet-column').forEach(el => el.classList.remove('highlight'));
+
+        // Show gentle encouragement
+        const speech = document.getElementById('chef-speech');
+        speech.textContent = randomPick(ENCOURAGEMENTS_TRY_AGAIN) + ' ' + animal.name + ' n\'est pas ' + diet + '.';
+        setTimeout(() => {
+            speech.textContent = 'Classe chaque animal dans la bonne categorie !';
+        }, 2000);
+    }
+}
+
+// === FINISH LEVEL ===
+function finishLevel() {
+    playSound('complete');
+
+    const level = gameState.currentLevel;
+    const stars = roundState.starsEarned;
+    const maxQ = LEVELS[level].questions;
+
+    // Update best score
+    if (stars > gameState.bestScores[level]) {
+        const diff = stars - gameState.bestScores[level];
+        gameState.totalStars += diff;
+        gameState.bestScores[level] = stars;
+    }
+
+    // Unlock next level if enough stars (at least half)
+    if (level < 3 && stars >= Math.ceil(maxQ / 2)) {
+        gameState.unlockedLevels[level + 1] = true;
+    }
+
+    saveGame();
+
+    const starsEmoji = '⭐'.repeat(Math.min(stars, 10));
+    const nextUnlocked = level < 3 && gameState.unlockedLevels[level + 1];
+
+    let completeHtml = `
+        <span class="title-emoji">🎉</span>
+        <h2>Niveau termine !</h2>
+        <div class="big-stars">${starsEmoji}</div>
+        <div class="score-text">${stars} / ${maxQ} etoiles</div>
+    `;
+
+    if (stars === maxQ) {
+        completeHtml += `<div class="score-text" style="color:#FF6F00;">Score parfait ! Tu es un vrai chef !</div>`;
+    } else if (stars >= Math.ceil(maxQ / 2)) {
+        completeHtml += `<div class="score-text">Tres bien ! Continue comme ca !</div>`;
+    } else {
+        completeHtml += `<div class="score-text">Tu peux reessayer pour gagner plus d'etoiles !</div>`;
+    }
+
+    completeHtml += '<div class="btn-row" style="margin-top:20px;">';
+    completeHtml += `<button class="action-btn secondary" onclick="startLevel(${level})">Rejouer</button>`;
+    if (nextUnlocked && level < 3) {
+        completeHtml += `<button class="action-btn" onclick="startLevel(${level + 1})">Niveau suivant</button>`;
+    }
+    completeHtml += `<button class="action-btn secondary" onclick="showScreen('home')">Menu</button>`;
+    completeHtml += '</div>';
+
+    document.getElementById('complete-content').innerHTML = completeHtml;
+    showScreen('complete');
+}
+
+// === INIT ===
+loadGame();
+showScreen('home');
+</script>
+</body>
+</html>

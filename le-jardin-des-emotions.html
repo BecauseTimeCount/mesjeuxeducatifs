@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le Jardin des Emotions - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #2E7D32 0%, #C8E6C9 100%);
+            min-height: 100vh;
+            overflow: auto;
+            user-select: none;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: clamp(10px, 3vw, 20px);
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === BACK BUTTON === */
+        .back-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #2E7D32;
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .back-btn:hover { transform: scale(1.05); }
+
+        /* === HOME SCREEN === */
+        .title {
+            font-size: clamp(1.8rem, 6vw, 3.2rem);
+            font-weight: 800;
+            text-align: center;
+            margin-top: clamp(50px, 8vh, 70px);
+            margin-bottom: 5px;
+            color: #fff;
+            text-shadow: 2px 3px 0 rgba(0,0,0,0.2);
+        }
+
+        .title-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            display: block;
+            animation: sway 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: clamp(20px, 4vh, 35px);
+            text-align: center;
+        }
+
+        .total-stars {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin-bottom: clamp(15px, 3vh, 25px);
+        }
+
+        /* === LEVEL BUTTONS === */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: clamp(10px, 2vw, 15px);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .level-btn {
+            background: #fff;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: clamp(12px, 3vw, 18px) clamp(15px, 3vw, 20px);
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 60px;
+            text-align: left;
+        }
+        .level-btn:hover:not(.locked) { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+        .level-btn .lvl-emoji {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            flex-shrink: 0;
+        }
+        .level-btn .lvl-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .level-btn .lvl-name {
+            font-weight: 800;
+            color: #2E7D32;
+        }
+        .level-btn .lvl-desc {
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            color: #888;
+            font-weight: 600;
+        }
+        .level-btn .lvl-score {
+            margin-left: auto;
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+            color: #FF9800;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .level-btn .lock-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* === GARDEN PREVIEW === */
+        .garden-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(8px, 2vw, 12px);
+            margin-bottom: clamp(15px, 3vh, 25px);
+            background: rgba(255,255,255,0.15);
+            padding: clamp(12px, 3vw, 20px);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .garden-pot {
+            width: clamp(50px, 12vw, 70px);
+            height: clamp(50px, 12vw, 70px);
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            margin: 0 auto;
+            transition: all 0.5s ease;
+        }
+        .garden-pot.bloomed {
+            background: rgba(255,255,255,0.6);
+            animation: bloomPulse 2s ease-in-out infinite;
+        }
+        @keyframes bloomPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .garden-pot.just-bloomed {
+            animation: bloomIn 0.8s ease forwards;
+        }
+        @keyframes bloomIn {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* === GAME SCREEN === */
+        .game-header {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: clamp(50px, 8vh, 65px);
+            margin-bottom: clamp(10px, 2vh, 20px);
+            padding: 0 5px;
+        }
+        .game-header .level-label {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #fff;
+            background: rgba(0,0,0,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        .game-header .progress {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #fff;
+        }
+        .game-header .stars-display {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #FFD600;
+        }
+
+        /* Progress bar */
+        .progress-bar-container {
+            width: 100%;
+            max-width: 500px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin-bottom: clamp(10px, 2vh, 20px);
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD600, #FF9800);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mini garden in game */
+        .game-garden {
+            display: flex;
+            gap: clamp(6px, 1.5vw, 10px);
+            margin-bottom: clamp(8px, 2vh, 15px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .game-garden .mini-pot {
+            width: clamp(36px, 8vw, 48px);
+            height: clamp(36px, 8vw, 48px);
+            background: rgba(255,255,255,0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            transition: all 0.5s ease;
+        }
+        .game-garden .mini-pot.bloomed {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* === QUESTION CARD === */
+        .question-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: clamp(15px, 4vw, 30px);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            animation: slideUp 0.4s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-emoji {
+            font-size: clamp(4rem, 15vw, 6rem);
+            margin-bottom: 10px;
+            display: block;
+            animation: gentleBounce 2s ease-in-out infinite;
+        }
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .question-text {
+            font-size: clamp(0.95rem, 3vw, 1.2rem);
+            font-weight: 700;
+            color: #333;
+            margin-bottom: clamp(5px, 1.5vh, 10px);
+            line-height: 1.4;
+        }
+
+        .scenario-text {
+            font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+            font-weight: 600;
+            color: #555;
+            margin-bottom: clamp(10px, 2vh, 15px);
+            line-height: 1.5;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .listen-btn {
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 48px;
+            margin-bottom: clamp(10px, 2vh, 15px);
+            transition: transform 0.2s;
+            box-shadow: 0 3px 10px rgba(30,136,229,0.3);
+        }
+        .listen-btn:hover { transform: scale(1.05); }
+        .listen-btn:active { transform: scale(0.95); }
+
+        /* === CHOICES === */
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(8px, 2vw, 12px);
+            width: 100%;
+        }
+        .choices.single-col {
+            grid-template-columns: 1fr;
+        }
+
+        .choice-btn {
+            background: #f5f5f5;
+            border: 3px solid #e0e0e0;
+            border-radius: 16px;
+            padding: clamp(10px, 2.5vw, 16px);
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #333;
+            cursor: pointer;
+            min-height: 48px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .choice-btn:hover { border-color: #4CAF50; background: #E8F5E9; }
+        .choice-btn:active { transform: scale(0.95); }
+        .choice-btn.correct {
+            background: #C8E6C9;
+            border-color: #4CAF50;
+            animation: correctPop 0.5s ease;
+        }
+        .choice-btn.wrong {
+            background: #FFECB3;
+            border-color: #FFB74D;
+            animation: shake 0.5s ease;
+        }
+        .choice-btn.disabled {
+            pointer-events: none;
+        }
+
+        @keyframes correctPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* === FEEDBACK === */
+        .feedback {
+            margin-top: clamp(10px, 2vh, 15px);
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 800;
+            color: #2E7D32;
+            min-height: 2em;
+            text-align: center;
+        }
+
+        /* === RESULTS SCREEN === */
+        .results-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: clamp(20px, 5vw, 40px);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            margin-top: clamp(50px, 8vh, 70px);
+        }
+        .results-card .result-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .results-card .result-title {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+        .results-card .result-score {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .results-stars {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 15px;
+        }
+
+        .result-btn {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 48px;
+            margin: 5px;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+        }
+        .result-btn:hover { transform: scale(1.05); }
+        .result-btn.secondary {
+            background: linear-gradient(135deg, #78909C, #546E7A);
+            box-shadow: 0 4px 15px rgba(84,110,122,0.3);
+        }
+
+        /* === FINAL GARDEN BLOOM === */
+        .final-garden {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px, 3vw, 18px);
+            margin: 20px auto;
+            max-width: 280px;
+        }
+        .final-garden .flower-cell {
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin: 0 auto;
+        }
+        .final-garden .flower-cell.bloom-anim {
+            animation: finalBloom 0.6s ease forwards;
+        }
+        @keyframes finalBloom {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200;
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Reset button */
+        .reset-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            min-height: 48px;
+            transition: all 0.2s;
+        }
+        .reset-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* Sparkle effect */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkleAnim 0.8s ease forwards;
+        }
+        @keyframes sparkleAnim {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+        }
+
+        /* Galaxy Fold support */
+        @media (max-width: 300px) {
+            .choices {
+                grid-template-columns: 1fr;
+            }
+            .garden-preview {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding: 8px;
+            }
+            .garden-pot {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .question-card {
+                padding: 12px;
+            }
+            .level-btn {
+                padding: 10px 12px;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Mes Jeux</a>
+
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+        <span class="title-emoji">🌱</span>
+        <h1 class="title">Le Jardin des Emotions</h1>
+        <p class="subtitle">Fais pousser ton jardin en reconnaissant les emotions !</p>
+        <div id="home-total-stars" class="total-stars">0 etoiles</div>
+
+        <div id="home-garden" class="garden-preview"></div>
+
+        <div class="levels-grid" id="levels-grid"></div>
+
+        <button class="reset-btn" onclick="confirmReset()">Recommencer a zero</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="screen-game" class="screen">
+        <div class="game-header">
+            <span class="level-label" id="game-level-label"></span>
+            <span class="progress" id="game-progress"></span>
+            <span class="stars-display" id="game-stars"></span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <div class="game-garden" id="game-garden"></div>
+        <div class="question-card" id="question-card"></div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="screen-results" class="screen">
+        <div class="results-card" id="results-card"></div>
+    </div>
+
+    <!-- FINAL GARDEN SCREEN -->
+    <div id="screen-final" class="screen">
+        <div class="results-card">
+            <span class="result-emoji">🎉</span>
+            <div class="result-title">Ton jardin est magnifique !</div>
+            <div class="final-garden" id="final-garden"></div>
+            <p style="color:#666; font-weight:600; margin-bottom:20px;">Toutes les fleurs ont fleuri grace a toi !</p>
+            <button class="result-btn" onclick="showScreen('home')">Retour au jardin</button>
+        </div>
+    </div>
+
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <script>
+    // ============================================
+    // STATE
+    // ============================================
+    const FLOWERS = ['🌸', '🌻', '🌹', '🌺', '🌷', '🌼'];
+    const LEVEL_NAMES = [
+        'Reconnais l\'Emotion',
+        'Comment se sent...?',
+        'Que faire ?',
+        'Le Jardin Complet'
+    ];
+    const LEVEL_DESCS = [
+        'Associe le visage a l\'emotion',
+        'Trouve l\'emotion dans l\'histoire',
+        'Choisis la bonne reaction',
+        'Defi mixte — plante tes fleurs !'
+    ];
+    const LEVEL_EMOJIS = ['😊', '📖', '💡', '🌻'];
+    const LEVEL_QUESTIONS = [10, 10, 8, 6];
+
+    let gameState = {
+        currentLevel: 0,
+        totalStars: 0,
+        bestScores: [0, 0, 0, 0],
+        unlockedLevels: [true, false, false, false],
+        gardenFlowers: [false, false, false, false, false, false]
+    };
+
+    let currentGame = {
+        level: 0,
+        questionIndex: 0,
+        score: 0,
+        questions: [],
+        totalQuestions: 0
+    };
+
+    // ============================================
+    // DATA
+    // ============================================
+    const LEVEL1_DATA = [
+        { emoji: '😊', answer: 'Joyeux', options: ['Joyeux', 'Triste', 'En colere', 'Effraye'] },
+        { emoji: '😢', answer: 'Triste', options: ['Surpris', 'Triste', 'Fatigue', 'Frustre'] },
+        { emoji: '😠', answer: 'En colere', options: ['Decu', 'Amoureux', 'En colere', 'Degoute'] },
+        { emoji: '😨', answer: 'Effraye', options: ['Effraye', 'Triste', 'Fatigue', 'Surpris'] },
+        { emoji: '😲', answer: 'Surpris', options: ['En colere', 'Surpris', 'Joyeux', 'Decu'] },
+        { emoji: '🥰', answer: 'Amoureux', options: ['Triste', 'Fatigue', 'Amoureux', 'Frustre'] },
+        { emoji: '😤', answer: 'Frustre', options: ['Frustre', 'Effraye', 'Joyeux', 'Degoute'] },
+        { emoji: '😔', answer: 'Decu', options: ['Surpris', 'Decu', 'Amoureux', 'En colere'] },
+        { emoji: '🤢', answer: 'Degoute', options: ['Degoute', 'Triste', 'Fatigue', 'Joyeux'] },
+        { emoji: '😴', answer: 'Fatigue', options: ['En colere', 'Surpris', 'Fatigue', 'Effraye'] }
+    ];
+
+    const LEVEL2_DATA = [
+        { scenario: 'Leo a perdu son doudou.', emoji: '🧸', answer: 'Triste', options: ['Joyeux', 'Triste', 'Surpris', 'En colere'] },
+        { scenario: 'Marie a recu un cadeau.', emoji: '🎁', answer: 'Joyeuse', options: ['Joyeuse', 'Effrayee', 'Decue', 'Fatiguee'] },
+        { scenario: 'Tom s\'est fait gronder.', emoji: '😶', answer: 'Decu', options: ['Surpris', 'Decu', 'Amoureux', 'Fatigue'] },
+        { scenario: 'Lina voit un gros chien.', emoji: '🐕', answer: 'Effrayee', options: ['Joyeuse', 'En colere', 'Effrayee', 'Amoureuse'] },
+        { scenario: 'Jules a gagne la course.', emoji: '🏆', answer: 'Fier', options: ['Triste', 'Fier', 'Effraye', 'Frustre'] },
+        { scenario: 'Emma a casse le vase.', emoji: '💐', answer: 'Inquiete', options: ['Joyeuse', 'Surprise', 'Inquiete', 'Fatiguee'] },
+        { scenario: 'Paul n\'a pas eu de dessert.', emoji: '🍰', answer: 'En colere', options: ['En colere', 'Amoureux', 'Surpris', 'Joyeux'] },
+        { scenario: 'Sophie retrouve sa meilleure amie.', emoji: '👧', answer: 'Heureuse', options: ['Effrayee', 'Heureuse', 'Decue', 'Fatiguee'] },
+        { scenario: 'Lucas entend un bruit bizarre.', emoji: '👂', answer: 'Effraye', options: ['Joyeux', 'Degoute', 'Effraye', 'Frustre'] },
+        { scenario: 'Nina a fini un puzzle difficile.', emoji: '🧩', answer: 'Fiere', options: ['Fiere', 'Triste', 'En colere', 'Effrayee'] }
+    ];
+
+    const LEVEL3_DATA = [
+        {
+            scenario: 'Leo est triste parce qu\'il a perdu son doudou. Que peut-il faire ?',
+            emoji: '🧸',
+            emotion: 'Triste',
+            correct: 1,
+            options: [
+                'Crier sur ses amis',
+                'Demander de l\'aide a un adulte',
+                'Rester seul et pleurer'
+            ]
+        },
+        {
+            scenario: 'Marie est en colere parce que Tom lui a pris son jouet. Que peut-elle faire ?',
+            emoji: '🧸',
+            emotion: 'En colere',
+            correct: 1,
+            options: [
+                'Frapper Tom',
+                'Respirer un grand coup et lui demander de le rendre',
+                'Casser le jouet'
+            ]
+        },
+        {
+            scenario: 'Jules a peur du noir dans sa chambre. Que peut-il faire ?',
+            emoji: '🌙',
+            emotion: 'Effraye',
+            correct: 2,
+            options: [
+                'Ne jamais aller dans sa chambre',
+                'Crier tres fort',
+                'Appeler ses parents et mettre une petite lumiere'
+            ]
+        },
+        {
+            scenario: 'Emma est triste parce que personne ne joue avec elle. Que peut-elle faire ?',
+            emoji: '😔',
+            emotion: 'Triste',
+            correct: 0,
+            options: [
+                'Proposer un jeu a un camarade',
+                'Pousser les autres enfants',
+                'Bouder dans un coin'
+            ]
+        },
+        {
+            scenario: 'Paul est frustre parce qu\'il n\'arrive pas a dessiner. Que peut-il faire ?',
+            emoji: '🎨',
+            emotion: 'Frustre',
+            correct: 1,
+            options: [
+                'Dechirer sa feuille',
+                'Demander a un copain de l\'aider',
+                'Ne plus jamais dessiner'
+            ]
+        },
+        {
+            scenario: 'Lina est jalouse du nouveau jouet de Sophie. Que peut-elle faire ?',
+            emoji: '🎀',
+            emotion: 'Jalouse',
+            correct: 2,
+            options: [
+                'Prendre le jouet de Sophie',
+                'Dire du mal de Sophie',
+                'Demander gentiment si elle peut jouer avec'
+            ]
+        },
+        {
+            scenario: 'Tom est en colere car il a perdu au jeu. Que peut-il faire ?',
+            emoji: '🎲',
+            emotion: 'En colere',
+            correct: 0,
+            options: [
+                'Dire "bravo" au gagnant et rejouer',
+                'Renverser le jeu',
+                'Insulter le gagnant'
+            ]
+        },
+        {
+            scenario: 'Nina a fait tomber le gateau de Lucas. Que peut-elle faire ?',
+            emoji: '🎂',
+            emotion: 'Coupable',
+            correct: 1,
+            options: [
+                'Faire comme si de rien n\'etait',
+                'S\'excuser et proposer de partager le sien',
+                'Dire que c\'est la faute de quelqu\'un d\'autre'
+            ]
+        }
+    ];
+
+    const LEVEL4_DATA = [
+        { type: 'emotion', emoji: '😊', answer: 'Joyeux', options: ['Joyeux', 'Triste', 'Effraye', 'Decu'] },
+        { type: 'scenario', scenario: 'Mia a gagne une medaille a l\'ecole.', emoji: '🏅', answer: 'Fiere', options: ['Triste', 'Fiere', 'Effrayee', 'En colere'] },
+        {
+            type: 'reaction',
+            scenario: 'Theo est triste car son ami demenage. Que peut-il faire ?',
+            emoji: '📦',
+            emotion: 'Triste',
+            correct: 2,
+            options: [
+                'Etre mechant avec son ami',
+                'Ne plus parler a personne',
+                'Faire un dessin pour son ami et garder contact'
+            ]
+        },
+        { type: 'emotion', emoji: '😨', answer: 'Effraye', options: ['Joyeux', 'Frustre', 'Effraye', 'Fatigue'] },
+        { type: 'scenario', scenario: 'Camille voit une araignee sur son livre.', emoji: '🕷️', answer: 'Effrayee', options: ['Amoureuse', 'Fatiguee', 'Effrayee', 'Joyeuse'] },
+        {
+            type: 'reaction',
+            scenario: 'Lea est en colere car sa soeur a pris ses crayons. Que peut-elle faire ?',
+            emoji: '✏️',
+            emotion: 'En colere',
+            correct: 1,
+            options: [
+                'Taper sa soeur',
+                'Lui expliquer calmement qu\'elle en a besoin',
+                'Cacher tous les crayons'
+            ]
+        }
+    ];
+
+    // ============================================
+    // AUDIO
+    // ============================================
+    let audioCtx = null;
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+    }
+
+    function playSound(type) {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523, ctx.currentTime);
+                osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, ctx.currentTime);
+                osc.frequency.setValueAtTime(250, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.3);
+            } else if (type === 'bloom') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.3);
+                osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.6);
+            } else if (type === 'win') {
+                const notes = [523, 659, 784, 1047];
+                notes.forEach((freq, i) => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+                    g.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.15);
+                    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.3);
+                    o.start(ctx.currentTime + i * 0.15);
+                    o.stop(ctx.currentTime + i * 0.15 + 0.3);
+                });
+            } else if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.1);
+            }
+        } catch(e) {}
+    }
+
+    // ============================================
+    // TTS
+    // ============================================
+    function speak(text) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'fr-FR';
+        u.rate = 0.8;
+        const voices = window.speechSynthesis.getVoices();
+        const frVoice = voices.find(v => v.lang.startsWith('fr'));
+        if (frVoice) u.voice = frVoice;
+        window.speechSynthesis.speak(u);
+    }
+
+    // Preload voices
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // ============================================
+    // SAVE / LOAD
+    // ============================================
+    function saveGame() {
+        localStorage.setItem('leJardinDesEmotions', JSON.stringify({
+            currentLevel: gameState.currentLevel,
+            totalStars: gameState.totalStars,
+            bestScores: gameState.bestScores,
+            unlockedLevels: gameState.unlockedLevels,
+            gardenFlowers: gameState.gardenFlowers
+        }));
+        localStorage.setItem('emotionsScore', gameState.totalStars.toString());
+    }
+
+    function loadGame() {
+        try {
+            const saved = localStorage.getItem('leJardinDesEmotions');
+            if (saved) {
+                const data = JSON.parse(saved);
+                gameState.currentLevel = data.currentLevel || 0;
+                gameState.totalStars = data.totalStars || 0;
+                gameState.bestScores = data.bestScores || [0, 0, 0, 0];
+                gameState.unlockedLevels = data.unlockedLevels || [true, false, false, false];
+                gameState.gardenFlowers = data.gardenFlowers || [false, false, false, false, false, false];
+            }
+        } catch(e) {}
+    }
+
+    // ============================================
+    // SCREENS
+    // ============================================
+    function showScreen(name) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-' + name).classList.add('active');
+        if (name === 'home') renderHome();
+    }
+
+    // ============================================
+    // HOME
+    // ============================================
+    function renderHome() {
+        // Total stars
+        document.getElementById('home-total-stars').textContent = gameState.totalStars + ' etoile' + (gameState.totalStars > 1 ? 's' : '');
+
+        // Garden
+        const gardenEl = document.getElementById('home-garden');
+        gardenEl.innerHTML = '';
+        FLOWERS.forEach((flower, i) => {
+            const pot = document.createElement('div');
+            pot.className = 'garden-pot' + (gameState.gardenFlowers[i] ? ' bloomed' : '');
+            pot.textContent = gameState.gardenFlowers[i] ? flower : '🌱';
+            gardenEl.appendChild(pot);
+        });
+
+        // Levels
+        const grid = document.getElementById('levels-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < 4; i++) {
+            const btn = document.createElement('button');
+            const unlocked = gameState.unlockedLevels[i];
+            btn.className = 'level-btn' + (unlocked ? '' : ' locked');
+            btn.innerHTML = `
+                <span class="lvl-emoji">${LEVEL_EMOJIS[i]}</span>
+                <span class="lvl-info">
+                    <span class="lvl-name">Niveau ${i + 1} : ${LEVEL_NAMES[i]}</span>
+                    <span class="lvl-desc">${LEVEL_DESCS[i]}</span>
+                </span>
+                ${unlocked
+                    ? `<span class="lvl-score">${gameState.bestScores[i]}/${LEVEL_QUESTIONS[i]} ⭐</span>`
+                    : '<span class="lock-icon">🔒</span>'
+                }
+            `;
+            if (unlocked) {
+                btn.onclick = () => startLevel(i);
+            }
+            grid.appendChild(btn);
+        }
+    }
+
+    // ============================================
+    // SHUFFLE
+    // ============================================
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // ============================================
+    // START LEVEL
+    // ============================================
+    function startLevel(level) {
+        playSound('click');
+        currentGame.level = level;
+        currentGame.questionIndex = 0;
+        currentGame.score = 0;
+
+        if (level === 0) {
+            currentGame.questions = shuffle(LEVEL1_DATA);
+        } else if (level === 1) {
+            currentGame.questions = shuffle(LEVEL2_DATA);
+        } else if (level === 2) {
+            currentGame.questions = shuffle(LEVEL3_DATA);
+        } else {
+            currentGame.questions = shuffle(LEVEL4_DATA);
+        }
+
+        currentGame.totalQuestions = LEVEL_QUESTIONS[level];
+        showScreen('game');
+        renderGame();
+    }
+
+    // ============================================
+    // GAME RENDERING
+    // ============================================
+    function renderGame() {
+        const level = currentGame.level;
+        const qi = currentGame.questionIndex;
+        const total = currentGame.totalQuestions;
+
+        // Header
+        document.getElementById('game-level-label').textContent = 'Niveau ' + (level + 1);
+        document.getElementById('game-progress').textContent = (qi + 1) + '/' + total;
+        document.getElementById('game-stars').textContent = currentGame.score + ' ⭐';
+        document.getElementById('progress-bar').style.width = ((qi / total) * 100) + '%';
+
+        // Mini garden (level 4 only)
+        const gardenEl = document.getElementById('game-garden');
+        gardenEl.innerHTML = '';
+        if (level === 3) {
+            FLOWERS.forEach((flower, i) => {
+                const pot = document.createElement('div');
+                const isBloomed = gameState.gardenFlowers[i] || (i < qi && currentGame.score > i);
+                pot.className = 'mini-pot' + (i < currentGame.score ? ' bloomed' : '');
+                pot.textContent = i < currentGame.score ? flower : '🌱';
+                gardenEl.appendChild(pot);
+            });
+        }
+
+        // Feedback clear
+        document.getElementById('feedback').textContent = '';
+
+        // Question card
+        const card = document.getElementById('question-card');
+
+        if (level === 0) {
+            renderLevel1Question(card);
+        } else if (level === 1) {
+            renderLevel2Question(card);
+        } else if (level === 2) {
+            renderLevel3Question(card);
+        } else {
+            renderLevel4Question(card);
+        }
+    }
+
+    function renderLevel1Question(card) {
+        const q = currentGame.questions[currentGame.questionIndex];
+        const shuffledOpts = shuffle(q.options);
+        card.innerHTML = `
+            <span class="question-emoji">${q.emoji}</span>
+            <p class="question-text">Quelle emotion montre ce visage ?</p>
+            <div class="choices">
+                ${shuffledOpts.map(opt => `
+                    <button class="choice-btn" onclick="checkAnswer(this, '${opt}', '${q.answer}')">${opt}</button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function renderLevel2Question(card) {
+        const q = currentGame.questions[currentGame.questionIndex];
+        const shuffledOpts = shuffle(q.options);
+        card.innerHTML = `
+            <span class="question-emoji">${q.emoji}</span>
+            <div class="scenario-text">${q.scenario}</div>
+            <button class="listen-btn" onclick="speak('${q.scenario.replace(/'/g, "\\'")}')">🔊 Ecouter l'histoire</button>
+            <p class="question-text">Comment se sent cette personne ?</p>
+            <div class="choices">
+                ${shuffledOpts.map(opt => `
+                    <button class="choice-btn" onclick="checkAnswer(this, '${opt}', '${q.answer}')">${opt}</button>
+                `).join('')}
+            </div>
+        `;
+        // Auto TTS
+        setTimeout(() => speak(q.scenario), 300);
+    }
+
+    function renderLevel3Question(card) {
+        const q = currentGame.questions[currentGame.questionIndex];
+        card.innerHTML = `
+            <span class="question-emoji">${q.emoji}</span>
+            <div class="scenario-text">${q.scenario}</div>
+            <button class="listen-btn" onclick="speak(\`${q.scenario.replace(/`/g, '\\`')}\`)">🔊 Ecouter l'histoire</button>
+            <p class="question-text" style="margin-top:10px;">Quelle est la meilleure chose a faire ?</p>
+            <div class="choices single-col">
+                ${q.options.map((opt, idx) => `
+                    <button class="choice-btn" onclick="checkReaction(this, ${idx}, ${q.correct})">${opt}</button>
+                `).join('')}
+            </div>
+        `;
+        setTimeout(() => speak(q.scenario), 300);
+    }
+
+    function renderLevel4Question(card) {
+        const q = currentGame.questions[currentGame.questionIndex];
+        if (q.type === 'emotion') {
+            const shuffledOpts = shuffle(q.options);
+            card.innerHTML = `
+                <span class="question-emoji">${q.emoji}</span>
+                <p class="question-text">Quelle emotion montre ce visage ?</p>
+                <div class="choices">
+                    ${shuffledOpts.map(opt => `
+                        <button class="choice-btn" onclick="checkAnswer(this, '${opt}', '${q.answer}')">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+        } else if (q.type === 'scenario') {
+            const shuffledOpts = shuffle(q.options);
+            card.innerHTML = `
+                <span class="question-emoji">${q.emoji}</span>
+                <div class="scenario-text">${q.scenario}</div>
+                <button class="listen-btn" onclick="speak('${q.scenario.replace(/'/g, "\\'")}')">🔊 Ecouter l'histoire</button>
+                <p class="question-text">Comment se sent cette personne ?</p>
+                <div class="choices">
+                    ${shuffledOpts.map(opt => `
+                        <button class="choice-btn" onclick="checkAnswer(this, '${opt}', '${q.answer}')">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+            setTimeout(() => speak(q.scenario), 300);
+        } else if (q.type === 'reaction') {
+            card.innerHTML = `
+                <span class="question-emoji">${q.emoji}</span>
+                <div class="scenario-text">${q.scenario}</div>
+                <button class="listen-btn" onclick="speak(\`${q.scenario.replace(/`/g, '\\`')}\`)">🔊 Ecouter l'histoire</button>
+                <p class="question-text" style="margin-top:10px;">Quelle est la meilleure chose a faire ?</p>
+                <div class="choices single-col">
+                    ${q.options.map((opt, idx) => `
+                        <button class="choice-btn" onclick="checkReaction(this, ${idx}, ${q.correct})">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+            setTimeout(() => speak(q.scenario), 300);
+        }
+    }
+
+    // ============================================
+    // ANSWER CHECKING
+    // ============================================
+    const ENCOURAGEMENTS = [
+        'Super !', 'Bravo !', 'Excellent !', 'Genial !',
+        'Magnifique !', 'Tres bien !', 'Fantastique !', 'Parfait !'
+    ];
+    const GENTLE_RETRY = [
+        'Presque ! Essaie encore !', 'Pas tout a fait, mais tu y es presque !',
+        'Continue, tu vas y arriver !', 'Encore un effort !'
+    ];
+
+    function checkAnswer(btn, selected, correct) {
+        const allBtns = btn.parentElement.querySelectorAll('.choice-btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (selected === correct) {
+            btn.classList.add('correct');
+            playSound('correct');
+            currentGame.score++;
+            document.getElementById('game-stars').textContent = currentGame.score + ' ⭐';
+            document.getElementById('feedback').textContent = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+
+            // Bloom a flower in level 4
+            if (currentGame.level === 3) {
+                bloomGameFlower();
+            }
+
+            setTimeout(nextQuestion, 1200);
+        } else {
+            btn.classList.add('wrong');
+            playSound('wrong');
+            document.getElementById('feedback').textContent = GENTLE_RETRY[Math.floor(Math.random() * GENTLE_RETRY.length)];
+
+            // Re-enable after a moment for retry
+            setTimeout(() => {
+                allBtns.forEach(b => {
+                    if (!b.classList.contains('wrong')) b.classList.remove('disabled');
+                });
+                btn.classList.add('disabled');
+            }, 800);
+        }
+    }
+
+    function checkReaction(btn, selected, correct) {
+        const allBtns = btn.parentElement.querySelectorAll('.choice-btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (selected === correct) {
+            btn.classList.add('correct');
+            playSound('correct');
+            currentGame.score++;
+            document.getElementById('game-stars').textContent = currentGame.score + ' ⭐';
+            document.getElementById('feedback').textContent = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+
+            if (currentGame.level === 3) {
+                bloomGameFlower();
+            }
+
+            setTimeout(nextQuestion, 1200);
+        } else {
+            btn.classList.add('wrong');
+            playSound('wrong');
+            document.getElementById('feedback').textContent = GENTLE_RETRY[Math.floor(Math.random() * GENTLE_RETRY.length)];
+
+            setTimeout(() => {
+                allBtns.forEach(b => {
+                    if (!b.classList.contains('wrong')) b.classList.remove('disabled');
+                });
+                btn.classList.add('disabled');
+            }, 800);
+        }
+    }
+
+    function bloomGameFlower() {
+        const gardenEl = document.getElementById('game-garden');
+        const pots = gardenEl.querySelectorAll('.mini-pot');
+        const idx = currentGame.score - 1;
+        if (pots[idx]) {
+            pots[idx].classList.add('bloomed');
+            pots[idx].textContent = FLOWERS[idx] || '🌸';
+            playSound('bloom');
+        }
+    }
+
+    // ============================================
+    // NEXT QUESTION / END LEVEL
+    // ============================================
+    function nextQuestion() {
+        currentGame.questionIndex++;
+        if (currentGame.questionIndex >= currentGame.totalQuestions) {
+            endLevel();
+        } else {
+            renderGame();
+        }
+    }
+
+    function endLevel() {
+        const level = currentGame.level;
+        const score = currentGame.score;
+        const total = currentGame.totalQuestions;
+
+        // Update best score
+        if (score > gameState.bestScores[level]) {
+            gameState.bestScores[level] = score;
+        }
+
+        // Update total stars
+        gameState.totalStars = gameState.bestScores.reduce((a, b) => a + b, 0);
+
+        // Unlock next level if score >= 60%
+        if (score >= Math.ceil(total * 0.6) && level < 3) {
+            gameState.unlockedLevels[level + 1] = true;
+        }
+
+        // Update garden flowers based on total progress
+        updateGardenFlowers();
+
+        saveGame();
+
+        // Level 4 complete with good score — show final garden
+        if (level === 3 && score >= 4) {
+            showFinalGarden();
+            return;
+        }
+
+        showResults(score, total, level);
+    }
+
+    function updateGardenFlowers() {
+        const totalBest = gameState.bestScores.reduce((a, b) => a + b, 0);
+        const maxPossible = LEVEL_QUESTIONS.reduce((a, b) => a + b, 0);
+        const ratio = totalBest / maxPossible;
+
+        // Unlock flowers based on overall progress
+        const flowersToBloom = Math.min(6, Math.floor(ratio * 8));
+        for (let i = 0; i < flowersToBloom; i++) {
+            gameState.gardenFlowers[i] = true;
+        }
+    }
+
+    function showResults(score, total, level) {
+        playSound('win');
+        const pct = score / total;
+        let emoji, title;
+
+        if (pct >= 0.9) {
+            emoji = '🌟';
+            title = 'Extraordinaire !';
+        } else if (pct >= 0.7) {
+            emoji = '🌻';
+            title = 'Tres bien !';
+        } else if (pct >= 0.5) {
+            emoji = '🌱';
+            title = 'Bien joue !';
+        } else {
+            emoji = '🌱';
+            title = 'Continue comme ca !';
+        }
+
+        const starsHtml = Array(score).fill('⭐').join('') + Array(total - score).fill('☆').join('');
+        const nextUnlocked = level < 3 && gameState.unlockedLevels[level + 1];
+
+        const card = document.getElementById('results-card');
+        card.innerHTML = `
+            <span class="result-emoji">${emoji}</span>
+            <div class="result-title">${title}</div>
+            <div class="results-stars">${starsHtml}</div>
+            <div class="result-score">${score} / ${total} bonnes reponses</div>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+                <button class="result-btn secondary" onclick="showScreen('home')">Menu</button>
+                <button class="result-btn" onclick="startLevel(${level})">Rejouer</button>
+                ${nextUnlocked ? `<button class="result-btn" onclick="startLevel(${level + 1})">Niveau suivant</button>` : ''}
+            </div>
+        `;
+
+        showScreen('results');
+        launchConfetti();
+    }
+
+    function showFinalGarden() {
+        playSound('win');
+        const gardenEl = document.getElementById('final-garden');
+        gardenEl.innerHTML = '';
+        FLOWERS.forEach((flower, i) => {
+            const cell = document.createElement('div');
+            cell.className = 'flower-cell';
+            cell.textContent = '🌱';
+            gardenEl.appendChild(cell);
+
+            // Staggered bloom animation
+            setTimeout(() => {
+                cell.textContent = flower;
+                cell.classList.add('bloom-anim');
+                playSound('bloom');
+            }, 500 + i * 400);
+        });
+
+        showScreen('final');
+
+        // Confetti after all flowers bloom
+        setTimeout(() => launchConfetti(), 500 + 6 * 400 + 300);
+    }
+
+    // ============================================
+    // CONFETTI
+    // ============================================
+    function launchConfetti() {
+        const container = document.getElementById('confetti-container');
+        const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF78C4', '#A66DD4'];
+        for (let i = 0; i < 40; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + '%';
+            c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+            c.style.animationDelay = (Math.random() * 0.5) + 's';
+            c.style.width = (6 + Math.random() * 8) + 'px';
+            c.style.height = (6 + Math.random() * 8) + 'px';
+            container.appendChild(c);
+        }
+        setTimeout(() => container.innerHTML = '', 4000);
+    }
+
+    // ============================================
+    // RESET
+    // ============================================
+    function confirmReset() {
+        if (confirm('Recommencer a zero ? Tout le jardin sera reinitialise.')) {
+            gameState = {
+                currentLevel: 0,
+                totalStars: 0,
+                bestScores: [0, 0, 0, 0],
+                unlockedLevels: [true, false, false, false],
+                gardenFlowers: [false, false, false, false, false, false]
+            };
+            saveGame();
+            renderHome();
+        }
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    loadGame();
+    showScreen('home');
+    </script>
+</body>
+</html>
