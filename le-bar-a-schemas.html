@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le Bar a Schemas - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #00796B 0%, #B2DFDB 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* === BACK BUTTON === */
+        .back-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 700;
+            color: #004D40;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* === SCREENS === */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 65px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === HOME SCREEN === */
+        .title-emoji {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            display: block;
+            margin-bottom: 5px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .title {
+            font-size: clamp(1.8rem, 7vw, 3.2rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 5px;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stars-display {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #FFD600;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* === LEVEL BUTTONS === */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 25px;
+        }
+
+        .level-btn {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 18px 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            min-height: 80px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .level-btn:hover:not(.locked), .level-btn:active:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        }
+
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+
+        .level-icon {
+            font-size: 2rem;
+            min-width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            flex-shrink: 0;
+        }
+
+        .level-icon.l1 { background: #E8F5E9; }
+        .level-icon.l2 { background: #FFF3E0; }
+        .level-icon.l3 { background: #F3E5F5; }
+        .level-icon.l4 { background: #E3F2FD; }
+
+        .level-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .level-name {
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .level-desc {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .level-stars {
+            font-size: 0.85rem;
+            color: #FFB800;
+            margin-top: 3px;
+        }
+
+        .level-lock {
+            font-size: 1.2rem;
+            color: #999;
+        }
+
+        /* === HOME STATS === */
+        .home-stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 12px 22px;
+            border-radius: 18px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.85);
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        /* === GAME SCREEN === */
+        .game-header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .game-level-label {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .game-progress {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.done { background: #FFD600; }
+        .progress-dot.current { background: white; transform: scale(1.3); }
+
+        .game-stars {
+            font-size: 1rem;
+            color: #FFD600;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* === PROBLEM CARD === */
+        .problem-card {
+            background: white;
+            border-radius: 24px;
+            padding: clamp(15px, 4vw, 25px);
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .problem-emoji {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            margin-bottom: 8px;
+        }
+
+        .problem-text {
+            font-size: clamp(0.95rem, 3vw, 1.15rem);
+            color: #333;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        .tts-btn {
+            background: #E0F2F1;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: transform 0.2s;
+        }
+
+        .tts-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* === BAR DIAGRAM === */
+        .bar-diagram {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 15px;
+        }
+
+        .bar-row {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: stretch;
+        }
+
+        .bar-label {
+            font-size: clamp(0.65rem, 2vw, 0.8rem);
+            font-weight: 700;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 3px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+        }
+
+        .bar-whole {
+            flex: 1;
+            background: linear-gradient(135deg, #43A047, #66BB6A);
+            border-radius: 14px;
+            min-height: clamp(50px, 10vw, 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(67,160,71,0.3);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .bar-parts-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .bar-part {
+            border-radius: 14px;
+            min-height: clamp(50px, 10vw, 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .bar-part1 {
+            background: linear-gradient(135deg, #1565C0, #42A5F5);
+        }
+
+        .bar-part2 {
+            background: linear-gradient(135deg, #E65100, #FF9800);
+        }
+
+        .bar-missing {
+            border: 3px dashed #FFD600;
+            background: rgba(255,215,0,0.15) !important;
+            cursor: pointer;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        .bar-missing .missing-q {
+            color: #FFD600;
+            font-weight: 800;
+            text-shadow: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { border-color: #FFD600; }
+            50% { border-color: #FFF176; box-shadow: 0 0 20px rgba(255,214,0,0.3); }
+        }
+
+        .bar-filled-answer {
+            animation: popIn 0.4s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .bar-connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-weight: 800;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            padding: 2px 0;
+        }
+
+        /* === OPERATION CHOICE === */
+        .operation-choice {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .op-btn {
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
+            border-radius: 20px;
+            border: 3px solid transparent;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .op-btn-plus {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .op-btn-minus {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .op-btn:active {
+            transform: scale(0.92);
+        }
+
+        .op-btn.selected {
+            border-color: #FFD600;
+            box-shadow: 0 0 20px rgba(255,214,0,0.4);
+            transform: scale(1.05);
+        }
+
+        .op-btn.correct-op {
+            border-color: #43A047;
+            background: #C8E6C9;
+        }
+
+        .op-btn.wrong-op {
+            border-color: #EF5350;
+            opacity: 0.5;
+        }
+
+        /* === NUMBER PAD === */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: clamp(6px, 1.5vw, 10px);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+        }
+
+        .num-btn {
+            min-height: 48px;
+            border: none;
+            border-radius: 14px;
+            font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            background: white;
+            color: #333;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .num-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+
+        .num-btn.ok-btn {
+            background: linear-gradient(135deg, #43A047, #66BB6A);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .num-btn.clear-btn {
+            background: #FFCDD2;
+            color: #C62828;
+        }
+
+        .answer-display {
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .answer-display .cursor-blink {
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* === LEVEL 4: BUILD SCHEMA === */
+        .build-zone {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 15px;
+        }
+
+        .number-chips {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .number-chip {
+            min-width: 56px;
+            min-height: 48px;
+            padding: 8px 16px;
+            border-radius: 16px;
+            background: white;
+            border: 3px solid #E0E0E0;
+            font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .number-chip:active {
+            transform: scale(0.92);
+        }
+
+        .number-chip.selected-chip {
+            border-color: #FFD600;
+            background: #FFFDE7;
+            box-shadow: 0 0 15px rgba(255,214,0,0.3);
+        }
+
+        .number-chip.placed {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .drop-slot {
+            min-height: clamp(50px, 10vw, 70px);
+            border: 3px dashed rgba(255,255,255,0.5);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.2s ease;
+        }
+
+        .drop-slot.active-slot {
+            border-color: #FFD600;
+            background: rgba(255,214,0,0.15);
+        }
+
+        .drop-slot.filled-slot {
+            border-style: solid;
+            border-color: rgba(255,255,255,0.7);
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* === FEEDBACK === */
+        .feedback-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            background: rgba(0,0,0,0.3);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .feedback-overlay.show {
+            display: flex;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 28px;
+            padding: clamp(25px, 6vw, 40px);
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            animation: popIn 0.4s ease;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .feedback-emoji {
+            font-size: clamp(3rem, 10vw, 4.5rem);
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .feedback-sub {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .feedback-btn {
+            min-height: 48px;
+            padding: 12px 35px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00796B, #26A69A);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,121,107,0.3);
+            transition: transform 0.2s;
+        }
+
+        .feedback-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* === RESULTS SCREEN === */
+        .results-stars {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        .results-msg {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 25px;
+        }
+
+        .results-btns {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .result-btn {
+            min-height: 48px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 22px;
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+        }
+
+        .result-btn:active {
+            transform: scale(0.95);
+        }
+
+        .result-btn.primary {
+            background: white;
+            color: #00796B;
+        }
+
+        .result-btn.secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        /* === INSTRUCTIONS HINT === */
+        .hint-text {
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 280px) {
+            .numpad {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .operation-choice {
+                gap: 10px;
+            }
+            .op-btn {
+                width: 55px;
+                height: 55px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn" id="backBtn">&#8592; Mes Jeux</a>
+
+<!-- HOME SCREEN -->
+<div class="screen active" id="homeScreen">
+    <div class="title-emoji">📊</div>
+    <h1 class="title">Le Bar a Schemas</h1>
+    <p class="subtitle">Resous les problemes avec les diagrammes !</p>
+
+    <div class="home-stats">
+        <div class="stat-box">
+            <div class="stat-label">Etoiles</div>
+            <div class="stat-value" id="homeTotalStars">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Niveaux</div>
+            <div class="stat-value" id="homeUnlocked">1/4</div>
+        </div>
+    </div>
+
+    <div class="level-grid" id="levelGrid"></div>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="screen" id="gameScreen">
+    <div class="game-header">
+        <div class="game-level-label" id="gameLevelLabel">Niveau 1</div>
+        <div class="game-progress" id="gameProgress"></div>
+        <div class="game-stars" id="gameStarsCount">0 &#11088;</div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-emoji" id="problemEmoji"></div>
+        <div class="problem-text" id="problemText"></div>
+        <button class="tts-btn" id="ttsBtn" title="Ecouter">&#128264;</button>
+    </div>
+
+    <div class="bar-diagram" id="barDiagram"></div>
+
+    <div class="operation-choice" id="operationChoice" style="display:none;"></div>
+
+    <div class="build-zone" id="buildZone" style="display:none;"></div>
+
+    <div class="hint-text" id="hintText"></div>
+
+    <div class="answer-display" id="answerDisplay" style="display:none;">
+        <span id="answerValue"></span><span class="cursor-blink">|</span>
+    </div>
+
+    <div class="numpad" id="numpad" style="display:none;"></div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="resultsScreen">
+    <div class="title-emoji">&#127942;</div>
+    <div class="results-stars" id="resultsStarsEmoji"></div>
+    <div class="results-score" id="resultsScoreText"></div>
+    <div class="results-msg" id="resultsMsg"></div>
+    <div class="results-btns">
+        <button class="result-btn primary" onclick="replayLevel()">&#128260; Rejouer</button>
+        <button class="result-btn secondary" onclick="goHome()">&#127968; Menu</button>
+    </div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-card">
+        <div class="feedback-emoji" id="feedbackEmoji"></div>
+        <div class="feedback-text" id="feedbackText"></div>
+        <div class="feedback-sub" id="feedbackSub"></div>
+        <button class="feedback-btn" id="feedbackBtn" onclick="closeFeedback()">Suivant</button>
+    </div>
+</div>
+
+<script>
+// === AUDIO ===
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+
+function ensureAudio() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+}
+
+function playSound(freq, duration, type) {
+    try {
+        ensureAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+}
+
+function playCorrect() {
+    playSound(523, 0.15, 'sine');
+    setTimeout(() => playSound(659, 0.15, 'sine'), 100);
+    setTimeout(() => playSound(784, 0.3, 'sine'), 200);
+}
+
+function playWrong() {
+    playSound(300, 0.3, 'triangle');
+}
+
+function playClick() {
+    playSound(440, 0.08, 'sine');
+}
+
+function playLevelComplete() {
+    [523, 587, 659, 784, 880].forEach((f, i) => {
+        setTimeout(() => playSound(f, 0.2, 'sine'), i * 120);
+    });
+}
+
+// === TTS ===
+function speak(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    window.speechSynthesis.speak(u);
+}
+
+// === PROBLEMS DATA ===
+const PROBLEMS = {
+    1: [
+        { text: "Leo a 3 billes rouges et 4 billes bleues. Combien en a-t-il en tout ?", emoji: "🔴🔵", part1: 3, part2: 4, whole: 7, missing: 'whole' },
+        { text: "Marie a 2 pommes et 5 oranges. Combien de fruits en tout ?", emoji: "🍎🍊", part1: 2, part2: 5, whole: 7, missing: 'whole' },
+        { text: "Il y a 4 chats et 3 chiens dans le jardin. Combien d'animaux ?", emoji: "🐱🐶", part1: 4, part2: 3, whole: 7, missing: 'whole' },
+        { text: "Lina a 1 crayon rouge et 6 crayons bleus. Combien de crayons ?", emoji: "🖍️✏️", part1: 1, part2: 6, whole: 7, missing: 'whole' },
+        { text: "Papa a cueilli 5 fraises et 2 cerises. Combien de fruits ?", emoji: "🍓🍒", part1: 5, part2: 2, whole: 7, missing: 'whole' },
+        { text: "Il y a 3 garcons et 6 filles dans le groupe. Combien d'enfants ?", emoji: "👦👧", part1: 3, part2: 6, whole: 9, missing: 'whole' },
+        { text: "Tom a 4 voitures bleues et 4 voitures rouges. Combien de voitures ?", emoji: "🚙🚗", part1: 4, part2: 4, whole: 8, missing: 'whole' },
+        { text: "Il y a 2 oiseaux et 3 papillons. Combien en tout ?", emoji: "🐦🦋", part1: 2, part2: 3, whole: 5, missing: 'whole' },
+        { text: "Maman a achete 6 roses et 4 tulipes. Combien de fleurs ?", emoji: "🌹🌷", part1: 6, part2: 4, whole: 10, missing: 'whole' },
+        { text: "Au gouter, il y a 5 gateaux et 3 biscuits. Combien en tout ?", emoji: "🍰🍪", part1: 5, part2: 3, whole: 8, missing: 'whole' }
+    ],
+    2: [
+        { text: "Leo a 8 billes. 3 sont rouges. Combien sont bleues ?", emoji: "🔴🔵", part1: 3, part2: 5, whole: 8, missing: 'part2' },
+        { text: "Marie a 10 fruits. 4 sont des pommes. Combien d'oranges ?", emoji: "🍎🍊", part1: 4, part2: 6, whole: 10, missing: 'part2' },
+        { text: "Il y a 12 animaux. 7 sont des chats. Combien de chiens ?", emoji: "🐱🐶", part1: 7, part2: 5, whole: 12, missing: 'part2' },
+        { text: "Dans la classe il y a 15 enfants. 8 sont des garcons. Combien de filles ?", emoji: "👦👧", part1: 8, part2: 7, whole: 15, missing: 'part2' },
+        { text: "Tom a 9 bonbons. Il en donne 4. Combien lui en reste-t-il ?", emoji: "🍬🎁", part1: 4, part2: 5, whole: 9, missing: 'part2' },
+        { text: "Lina a 14 crayons. 6 sont bleus. Combien ne sont pas bleus ?", emoji: "🖍️✏️", part1: 6, part2: 8, whole: 14, missing: 'part2' },
+        { text: "Il y a 11 legumes. 5 sont des carottes. Combien d'autres legumes ?", emoji: "🥕🥦", part1: 5, part2: 6, whole: 11, missing: 'part2' },
+        { text: "Papa a 16 livres. 9 sont sur l'etagere. Combien sont ailleurs ?", emoji: "📚📖", part1: 9, part2: 7, whole: 16, missing: 'part2' },
+        { text: "Il y a 13 fleurs. 8 sont des roses. Combien de tulipes ?", emoji: "🌹🌷", part1: 8, part2: 5, whole: 13, missing: 'part2' },
+        { text: "Maman a 20 perles. 12 sont rouges. Combien sont bleues ?", emoji: "🔴🔵", part1: 12, part2: 8, whole: 20, missing: 'part2' }
+    ],
+    3: [
+        { text: "Marie a 5 bonbons. Elle en recoit 7. Combien en a-t-elle maintenant ?", emoji: "🍬🎉", part1: 5, part2: 7, whole: 12, missing: 'whole', op: '+' },
+        { text: "Tom a 14 billes. Il en perd 6. Combien lui en reste-t-il ?", emoji: "🎯😮", part1: 6, part2: 8, whole: 14, missing: 'part2', op: '-' },
+        { text: "Il y a 8 oiseaux sur l'arbre. 5 autres arrivent. Combien en tout ?", emoji: "🐦🌳", part1: 8, part2: 5, whole: 13, missing: 'whole', op: '+' },
+        { text: "Leo a 15 images. Il en donne 9. Combien lui en reste-t-il ?", emoji: "🖼️🎁", part1: 9, part2: 6, whole: 15, missing: 'part2', op: '-' },
+        { text: "Dans le bus il y a 11 personnes. 4 descendent. Combien restent ?", emoji: "🚌👋", part1: 4, part2: 7, whole: 11, missing: 'part2', op: '-' },
+        { text: "Lina a 6 fleurs. Elle en cueille 8 de plus. Combien en tout ?", emoji: "🌸🌺", part1: 6, part2: 8, whole: 14, missing: 'whole', op: '+' },
+        { text: "Il y a 18 enfants a la cantine. 10 sont des filles. Combien de garcons ?", emoji: "👧👦", part1: 10, part2: 8, whole: 18, missing: 'part2', op: '-' },
+        { text: "Papa a 9 pommes. Il en achete 7 de plus. Combien en tout ?", emoji: "🍎🛒", part1: 9, part2: 7, whole: 16, missing: 'whole', op: '+' },
+        { text: "Marie a 5 bonbons. Elle en donne 2. Combien lui en reste-t-il ?", emoji: "🍬👋", part1: 2, part2: 3, whole: 5, missing: 'part2', op: '-' },
+        { text: "Il y a 7 poissons dans l'aquarium. On en ajoute 6. Combien maintenant ?", emoji: "🐟🐠", part1: 7, part2: 6, whole: 13, missing: 'whole', op: '+' }
+    ],
+    4: [
+        { text: "Dans la cour, il y a 25 enfants. 14 jouent au foot. Combien jouent a autre chose ?", emoji: "⚽🏃", part1: 14, part2: 11, whole: 25, op: '-' },
+        { text: "Le boulanger a fait 18 croissants et 22 pains au chocolat. Combien de viennoiseries ?", emoji: "🥐🍫", part1: 18, part2: 22, whole: 40, op: '+' },
+        { text: "La maitresse a 35 cahiers. Elle en distribue 20. Combien lui en reste-t-il ?", emoji: "📓✏️", part1: 20, part2: 15, whole: 35, op: '-' },
+        { text: "Tom a 27 cartes. Son ami lui en donne 15 de plus. Combien en a-t-il ?", emoji: "🃏🎴", part1: 27, part2: 15, whole: 42, op: '+' },
+        { text: "Il y a 45 livres dans la bibliotheque. 28 sont des BD. Combien ne sont pas des BD ?", emoji: "📚📖", part1: 28, part2: 17, whole: 45, op: '-' },
+        { text: "Au marche, maman achete 16 pommes et 24 poires. Combien de fruits ?", emoji: "🍎🍐", part1: 16, part2: 24, whole: 40, op: '+' }
+    ]
+};
+
+const LEVEL_NAMES = [
+    '',
+    'Parties et Tout — Addition',
+    'Parties et Tout — Soustraction',
+    'Choisis l\'Operation',
+    'Construis le Schema'
+];
+
+const LEVEL_ICONS = ['', '🧩', '🔍', '🤔', '🏗️'];
+const LEVEL_DESCS = ['', 'Trouve le tout', 'Trouve la partie manquante', 'Addition ou soustraction ?', 'Place les nombres toi-meme'];
+const LEVEL_COUNTS = [0, 10, 10, 10, 6];
+
+const POSITIVE_MESSAGES = [
+    "Bravo !", "Super !", "Genial !", "Excellent !",
+    "Magnifique !", "Formidable !", "Tres bien !", "Fantastique !",
+    "Parfait !", "Champion !"
+];
+
+const POSITIVE_EMOJIS = ["🌟", "🎉", "💪", "🏆", "⭐", "🎊", "👏", "🚀"];
+
+const ENCOURAGEMENTS = [
+    "Presque ! Essaie encore !",
+    "Continue, tu vas y arriver !",
+    "Pas tout a fait, regarde bien !",
+    "Encore un petit effort !"
+];
+
+// === GAME STATE ===
+let gameState = {
+    currentLevel: 0,
+    currentQuestion: 0,
+    levelStars: 0,
+    totalStars: 0,
+    bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+    unlockedLevels: [1],
+    problems: [],
+    currentAnswer: '',
+    selectedOp: null,
+    opValidated: false,
+    // level 4
+    selectedChip: null,
+    placedNumbers: {},
+    buildPhase: 'place', // 'place', 'op', 'answer'
+    attempts: 0
+};
+
+// === SAVE / LOAD ===
+function saveGame() {
+    localStorage.setItem('leBarASchemas', JSON.stringify({
+        currentLevel: gameState.currentLevel,
+        totalStars: gameState.totalStars,
+        bestScores: gameState.bestScores,
+        unlockedLevels: gameState.unlockedLevels
+    }));
+    localStorage.setItem('barSchemasScore', gameState.totalStars.toString());
+}
+
+function loadGame() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('leBarASchemas'));
+        if (saved) {
+            gameState.totalStars = saved.totalStars || 0;
+            gameState.bestScores = saved.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+            gameState.unlockedLevels = saved.unlockedLevels || [1];
+        }
+    } catch(e) {}
+}
+
+// === SCREEN NAVIGATION ===
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+    showScreen('homeScreen');
+    renderHome();
+}
+
+// === HOME SCREEN ===
+function renderHome() {
+    document.getElementById('homeTotalStars').textContent = gameState.totalStars + ' ⭐';
+    document.getElementById('homeUnlocked').textContent = gameState.unlockedLevels.length + '/4';
+
+    const grid = document.getElementById('levelGrid');
+    grid.innerHTML = '';
+
+    for (let l = 1; l <= 4; l++) {
+        const unlocked = gameState.unlockedLevels.includes(l);
+        const best = gameState.bestScores[l] || 0;
+        const total = LEVEL_COUNTS[l];
+
+        const btn = document.createElement('button');
+        btn.className = 'level-btn' + (unlocked ? '' : ' locked');
+        btn.innerHTML = `
+            <div class="level-icon l${l}">${LEVEL_ICONS[l]}</div>
+            <div class="level-info">
+                <div class="level-name">${LEVEL_NAMES[l]}</div>
+                <div class="level-desc">${LEVEL_DESCS[l]}</div>
+                <div class="level-stars">${unlocked ? '⭐'.repeat(best) + '☆'.repeat(total - best) : ''}</div>
+            </div>
+            ${unlocked ? '' : '<div class="level-lock">🔒</div>'}
+        `;
+
+        if (unlocked) {
+            btn.onclick = () => startLevel(l);
+        }
+
+        grid.appendChild(btn);
+    }
+}
+
+// === START LEVEL ===
+function startLevel(level) {
+    playClick();
+    gameState.currentLevel = level;
+    gameState.currentQuestion = 0;
+    gameState.levelStars = 0;
+    gameState.attempts = 0;
+
+    // shuffle and pick problems
+    const pool = [...PROBLEMS[level]];
+    shuffleArray(pool);
+    gameState.problems = pool.slice(0, LEVEL_COUNTS[level]);
+
+    showScreen('gameScreen');
+    loadQuestion();
+}
+
+function replayLevel() {
+    playClick();
+    startLevel(gameState.currentLevel);
+}
+
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+// === LOAD QUESTION ===
+function loadQuestion() {
+    const level = gameState.currentLevel;
+    const qi = gameState.currentQuestion;
+    const total = gameState.problems.length;
+
+    if (qi >= total) {
+        finishLevel();
+        return;
+    }
+
+    const problem = gameState.problems[qi];
+    gameState.currentAnswer = '';
+    gameState.selectedOp = null;
+    gameState.opValidated = false;
+    gameState.selectedChip = null;
+    gameState.placedNumbers = {};
+    gameState.buildPhase = 'place';
+    gameState.attempts = 0;
+
+    // header
+    document.getElementById('gameLevelLabel').textContent = 'Niveau ' + level;
+    document.getElementById('gameStarsCount').textContent = gameState.levelStars + ' ⭐';
+
+    // progress dots
+    const progEl = document.getElementById('gameProgress');
+    progEl.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot' + (i < qi ? ' done' : (i === qi ? ' current' : ''));
+        progEl.appendChild(dot);
+    }
+
+    // problem
+    document.getElementById('problemEmoji').textContent = problem.emoji;
+    document.getElementById('problemText').textContent = problem.text;
+
+    // bar diagram
+    const barEl = document.getElementById('barDiagram');
+    const opEl = document.getElementById('operationChoice');
+    const buildEl = document.getElementById('buildZone');
+    const ansEl = document.getElementById('answerDisplay');
+    const numEl = document.getElementById('numpad');
+    const hintEl = document.getElementById('hintText');
+
+    barEl.innerHTML = '';
+    opEl.innerHTML = '';
+    opEl.style.display = 'none';
+    buildEl.innerHTML = '';
+    buildEl.style.display = 'none';
+    ansEl.style.display = 'none';
+    numEl.style.display = 'none';
+    hintEl.textContent = '';
+
+    if (level <= 2) {
+        renderBarDiagram(problem);
+        showNumpad();
+        hintEl.textContent = 'Tape le nombre manquant';
+    } else if (level === 3) {
+        renderBarDiagram(problem);
+        showOperationChoice();
+        hintEl.textContent = 'Choisis d\'abord l\'operation';
+    } else if (level === 4) {
+        renderBuildMode(problem);
+    }
+}
+
+// === BAR DIAGRAM RENDERING ===
+function renderBarDiagram(problem) {
+    const barEl = document.getElementById('barDiagram');
+    const missing = problem.missing || (problem.op === '+' ? 'whole' : 'part2');
+
+    const totalWidth = problem.whole;
+    const p1Flex = problem.part1 / totalWidth;
+    const p2Flex = problem.part2 / totalWidth;
+
+    barEl.innerHTML = `
+        <div class="bar-label">TOUT</div>
+        <div class="bar-row">
+            <div class="bar-whole ${missing === 'whole' ? 'bar-missing' : ''}" id="barWhole"
+                 style="flex: 1">
+                ${missing === 'whole' ? '<span class="missing-q">?</span>' : problem.whole}
+            </div>
+        </div>
+        <div class="bar-connector">=</div>
+        <div class="bar-label">PARTIES</div>
+        <div class="bar-row bar-parts-row">
+            <div class="bar-part bar-part1 ${missing === 'part1' ? 'bar-missing' : ''}" id="barPart1"
+                 style="flex: ${p1Flex}">
+                ${missing === 'part1' ? '<span class="missing-q">?</span>' : problem.part1}
+            </div>
+            <div class="bar-part bar-part2 ${missing === 'part2' ? 'bar-missing' : ''}" id="barPart2"
+                 style="flex: ${p2Flex}">
+                ${missing === 'part2' ? '<span class="missing-q">?</span>' : problem.part2}
+            </div>
+        </div>
+    `;
+}
+
+// === OPERATION CHOICE (Level 3) ===
+function showOperationChoice() {
+    const opEl = document.getElementById('operationChoice');
+    opEl.style.display = 'flex';
+    opEl.innerHTML = `
+        <button class="op-btn op-btn-plus" onclick="selectOperation('+')">+</button>
+        <button class="op-btn op-btn-minus" onclick="selectOperation('−')">−</button>
+    `;
+}
+
+function selectOperation(op) {
+    if (gameState.opValidated) return;
+    playClick();
+    const normalOp = op === '−' ? '-' : '+';
+    gameState.selectedOp = normalOp;
+
+    document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('selected'));
+    const btns = document.querySelectorAll('.op-btn');
+    if (normalOp === '+') btns[0].classList.add('selected');
+    else btns[1].classList.add('selected');
+
+    // validate operation immediately
+    const problem = gameState.problems[gameState.currentQuestion];
+    if (normalOp === problem.op) {
+        gameState.opValidated = true;
+        playCorrect();
+        if (normalOp === '+') btns[0].classList.add('correct-op');
+        else btns[1].classList.add('correct-op');
+
+        document.getElementById('hintText').textContent = 'Maintenant, tape le resultat !';
+        showNumpad();
+    } else {
+        playWrong();
+        if (normalOp === '+') { btns[0].classList.add('wrong-op'); setTimeout(() => btns[0].classList.remove('wrong-op', 'selected'), 600); }
+        else { btns[1].classList.add('wrong-op'); setTimeout(() => btns[1].classList.remove('wrong-op', 'selected'), 600); }
+        gameState.selectedOp = null;
+    }
+}
+
+// === BUILD MODE (Level 4) ===
+function renderBuildMode(problem) {
+    const buildEl = document.getElementById('buildZone');
+    buildEl.style.display = 'block';
+
+    // number chips (shuffled)
+    const numbers = [problem.part1, problem.part2, problem.whole];
+    shuffleArray(numbers);
+
+    const hintEl = document.getElementById('hintText');
+    hintEl.textContent = 'Choisis un nombre, puis place-le dans le schema';
+
+    buildEl.innerHTML = `
+        <div class="number-chips" id="numberChips">
+            ${numbers.map((n, i) => `<button class="number-chip" data-value="${n}" data-idx="${i}" onclick="selectChip(this)">${n}</button>`).join('')}
+        </div>
+    `;
+
+    // Empty bar diagram for placement
+    const barEl = document.getElementById('barDiagram');
+    barEl.innerHTML = `
+        <div class="bar-label">TOUT</div>
+        <div class="bar-row">
+            <div class="bar-whole drop-slot" id="dropWhole" data-slot="whole" onclick="placeChip('whole')" style="flex:1">
+                ?
+            </div>
+        </div>
+        <div class="bar-connector">=</div>
+        <div class="bar-label">PARTIES</div>
+        <div class="bar-row bar-parts-row">
+            <div class="bar-part bar-part1 drop-slot" id="dropPart1" data-slot="part1" onclick="placeChip('part1')" style="flex:1">
+                ?
+            </div>
+            <div class="bar-part bar-part2 drop-slot" id="dropPart2" data-slot="part2" onclick="placeChip('part2')" style="flex:1">
+                ?
+            </div>
+        </div>
+    `;
+}
+
+function selectChip(el) {
+    if (el.classList.contains('placed')) return;
+    playClick();
+
+    document.querySelectorAll('.number-chip').forEach(c => c.classList.remove('selected-chip'));
+    el.classList.add('selected-chip');
+    gameState.selectedChip = { value: parseInt(el.dataset.value), idx: parseInt(el.dataset.idx), el: el };
+}
+
+function placeChip(slot) {
+    if (!gameState.selectedChip) return;
+    if (gameState.placedNumbers[slot] !== undefined) {
+        // unplace: return chip
+        const prev = gameState.placedNumbers[slot];
+        const prevChip = document.querySelector(`.number-chip[data-idx="${prev.idx}"]`);
+        if (prevChip) prevChip.classList.remove('placed');
+        delete gameState.placedNumbers[slot];
+    }
+
+    playClick();
+    const chip = gameState.selectedChip;
+    gameState.placedNumbers[slot] = { value: chip.value, idx: chip.idx };
+    chip.el.classList.add('placed');
+    chip.el.classList.remove('selected-chip');
+    gameState.selectedChip = null;
+
+    // update slot visual
+    const slotEl = document.getElementById('drop' + slot.charAt(0).toUpperCase() + slot.slice(1));
+    if (slotEl) {
+        slotEl.textContent = chip.value;
+        slotEl.classList.add('filled-slot');
+        slotEl.classList.remove('drop-slot');
+    }
+
+    // check if all 3 placed
+    if (Object.keys(gameState.placedNumbers).length === 3) {
+        // Validate placement
+        setTimeout(() => validateBuildPlacement(), 400);
+    }
+}
+
+function validateBuildPlacement() {
+    const problem = gameState.problems[gameState.currentQuestion];
+    const placed = gameState.placedNumbers;
+
+    const pWhole = placed.whole ? placed.whole.value : -1;
+    const pPart1 = placed.part1 ? placed.part1.value : -1;
+    const pPart2 = placed.part2 ? placed.part2.value : -1;
+
+    // Check: whole must be correct, and parts must match (in any order)
+    const correctWhole = pWhole === problem.whole;
+    const correctParts = (pPart1 === problem.part1 && pPart2 === problem.part2) ||
+                         (pPart1 === problem.part2 && pPart2 === problem.part1);
+
+    if (correctWhole && correctParts) {
+        playCorrect();
+        // Show operation choice and answer
+        gameState.buildPhase = 'op';
+        document.getElementById('hintText').textContent = 'Maintenant choisis l\'operation';
+        showBuildOperationChoice();
+    } else {
+        gameState.attempts++;
+        playWrong();
+        // Reset
+        showFeedbackTemp("Pas tout a fait... Le grand nombre va en haut !", false);
+        setTimeout(() => {
+            gameState.placedNumbers = {};
+            gameState.selectedChip = null;
+            renderBuildMode(problem);
+            renderBuildEmptyBar(problem);
+        }, 1200);
+    }
+}
+
+function renderBuildEmptyBar(problem) {
+    const barEl = document.getElementById('barDiagram');
+    barEl.innerHTML = `
+        <div class="bar-label">TOUT</div>
+        <div class="bar-row">
+            <div class="bar-whole drop-slot" id="dropWhole" data-slot="whole" onclick="placeChip('whole')" style="flex:1">?</div>
+        </div>
+        <div class="bar-connector">=</div>
+        <div class="bar-label">PARTIES</div>
+        <div class="bar-row bar-parts-row">
+            <div class="bar-part bar-part1 drop-slot" id="dropPart1" data-slot="part1" onclick="placeChip('part1')" style="flex:1">?</div>
+            <div class="bar-part bar-part2 drop-slot" id="dropPart2" data-slot="part2" onclick="placeChip('part2')" style="flex:1">?</div>
+        </div>
+    `;
+}
+
+function showBuildOperationChoice() {
+    const opEl = document.getElementById('operationChoice');
+    opEl.style.display = 'flex';
+    opEl.innerHTML = `
+        <button class="op-btn op-btn-plus" onclick="selectBuildOp('+')">+</button>
+        <button class="op-btn op-btn-minus" onclick="selectBuildOp('−')">−</button>
+    `;
+}
+
+function selectBuildOp(op) {
+    if (gameState.buildPhase !== 'op') return;
+    playClick();
+    const normalOp = op === '−' ? '-' : '+';
+    const problem = gameState.problems[gameState.currentQuestion];
+
+    const btns = document.querySelectorAll('.op-btn');
+
+    if (normalOp === problem.op) {
+        gameState.buildPhase = 'answer';
+        playCorrect();
+        if (normalOp === '+') btns[0].classList.add('correct-op');
+        else btns[1].classList.add('correct-op');
+
+        document.getElementById('hintText').textContent = 'Tape le resultat !';
+
+        // Determine what the missing value is for L4
+        // For addition: whole is missing. For subtraction: part2 is missing.
+        showNumpad();
+    } else {
+        playWrong();
+        if (normalOp === '+') { btns[0].classList.add('wrong-op'); setTimeout(() => btns[0].classList.remove('wrong-op'), 600); }
+        else { btns[1].classList.add('wrong-op'); setTimeout(() => btns[1].classList.remove('wrong-op'), 600); }
+    }
+}
+
+// === NUMPAD ===
+function showNumpad() {
+    const numEl = document.getElementById('numpad');
+    const ansEl = document.getElementById('answerDisplay');
+    numEl.style.display = 'grid';
+    ansEl.style.display = 'flex';
+    document.getElementById('answerValue').textContent = '';
+    gameState.currentAnswer = '';
+
+    numEl.innerHTML = '';
+    for (let i = 1; i <= 9; i++) {
+        numEl.innerHTML += `<button class="num-btn" onclick="pressNum(${i})">${i}</button>`;
+    }
+    numEl.innerHTML += `<button class="num-btn" onclick="pressNum(0)">0</button>`;
+    numEl.innerHTML += `<button class="num-btn clear-btn" onclick="clearAnswer()">&#10060;</button>`;
+    numEl.innerHTML += `<button class="num-btn ok-btn" onclick="validateAnswer()">OK ✓</button>`;
+    // fill remaining to keep grid nice
+    numEl.innerHTML += `<button class="num-btn" style="visibility:hidden"></button>`;
+}
+
+function pressNum(n) {
+    playClick();
+    if (gameState.currentAnswer.length >= 3) return;
+    gameState.currentAnswer += n.toString();
+    document.getElementById('answerValue').textContent = gameState.currentAnswer;
+}
+
+function clearAnswer() {
+    playClick();
+    gameState.currentAnswer = '';
+    document.getElementById('answerValue').textContent = '';
+}
+
+function validateAnswer() {
+    if (!gameState.currentAnswer) return;
+
+    const answer = parseInt(gameState.currentAnswer);
+    const problem = gameState.problems[gameState.currentQuestion];
+    const level = gameState.currentLevel;
+
+    let correctAnswer;
+    if (level <= 2) {
+        if (problem.missing === 'whole') correctAnswer = problem.whole;
+        else if (problem.missing === 'part1') correctAnswer = problem.part1;
+        else correctAnswer = problem.part2;
+    } else if (level === 3) {
+        if (problem.missing === 'whole') correctAnswer = problem.whole;
+        else correctAnswer = problem.part2;
+    } else {
+        // level 4: answer depends on operation
+        if (problem.op === '+') correctAnswer = problem.whole;
+        else correctAnswer = problem.part2;
+    }
+
+    if (answer === correctAnswer) {
+        gameState.levelStars++;
+        gameState.attempts = 0;
+        playCorrect();
+        updateBarWithAnswer(problem, correctAnswer);
+        showCorrectFeedback();
+    } else {
+        gameState.attempts++;
+        playWrong();
+        clearAnswer();
+
+        if (gameState.attempts >= 3) {
+            // Show the correct answer after 3 attempts
+            showHelpFeedback(correctAnswer);
+        } else {
+            showFeedbackTemp(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)], false);
+        }
+    }
+}
+
+function updateBarWithAnswer(problem, answer) {
+    const level = gameState.currentLevel;
+    let missing;
+    if (level <= 2) {
+        missing = problem.missing;
+    } else if (level === 3) {
+        missing = problem.missing;
+    } else {
+        missing = problem.op === '+' ? 'whole' : 'part2';
+    }
+
+    const el = document.getElementById(level === 4 ? ('drop' + missing.charAt(0).toUpperCase() + missing.slice(1)) : ('bar' + missing.charAt(0).toUpperCase() + missing.slice(1)));
+    if (el) {
+        el.classList.remove('bar-missing');
+        el.classList.add('bar-filled-answer');
+        el.innerHTML = answer;
+    }
+}
+
+// === FEEDBACK ===
+function showCorrectFeedback() {
+    const msg = POSITIVE_MESSAGES[Math.floor(Math.random() * POSITIVE_MESSAGES.length)];
+    const emoji = POSITIVE_EMOJIS[Math.floor(Math.random() * POSITIVE_EMOJIS.length)];
+
+    document.getElementById('feedbackEmoji').textContent = emoji;
+    document.getElementById('feedbackText').textContent = msg;
+    document.getElementById('feedbackSub').textContent = '+1 etoile ⭐';
+    document.getElementById('feedbackBtn').textContent = 'Suivant →';
+    document.getElementById('feedbackOverlay').classList.add('show');
+}
+
+function showHelpFeedback(correctAnswer) {
+    document.getElementById('feedbackEmoji').textContent = '💡';
+    document.getElementById('feedbackText').textContent = 'La reponse etait ' + correctAnswer;
+    document.getElementById('feedbackSub').textContent = 'Ce n\'est pas grave, tu feras mieux la prochaine fois !';
+    document.getElementById('feedbackBtn').textContent = 'Suivant →';
+    document.getElementById('feedbackOverlay').classList.add('show');
+}
+
+function showFeedbackTemp(msg, isGood) {
+    const hintEl = document.getElementById('hintText');
+    hintEl.textContent = msg;
+    hintEl.style.color = isGood ? '#C8E6C9' : '#FFECB3';
+    setTimeout(() => {
+        hintEl.style.color = 'rgba(255,255,255,0.8)';
+        if (gameState.currentLevel <= 2) {
+            hintEl.textContent = 'Tape le nombre manquant';
+        } else if (gameState.currentLevel === 3) {
+            if (!gameState.opValidated) hintEl.textContent = 'Choisis d\'abord l\'operation';
+            else hintEl.textContent = 'Maintenant, tape le resultat !';
+        }
+    }, 1500);
+}
+
+function closeFeedback() {
+    playClick();
+    document.getElementById('feedbackOverlay').classList.remove('show');
+    gameState.currentQuestion++;
+    loadQuestion();
+}
+
+// === FINISH LEVEL ===
+function finishLevel() {
+    playLevelComplete();
+    const level = gameState.currentLevel;
+    const stars = gameState.levelStars;
+    const total = gameState.problems.length;
+
+    // update best
+    if (stars > gameState.bestScores[level]) {
+        const diff = stars - gameState.bestScores[level];
+        gameState.totalStars += diff;
+        gameState.bestScores[level] = stars;
+    }
+
+    // unlock next level
+    if (stars >= Math.ceil(total * 0.6) && level < 4) {
+        if (!gameState.unlockedLevels.includes(level + 1)) {
+            gameState.unlockedLevels.push(level + 1);
+        }
+    }
+
+    saveGame();
+
+    // show results
+    showScreen('resultsScreen');
+
+    let starEmojis = '';
+    for (let i = 0; i < total; i++) {
+        starEmojis += i < stars ? '⭐' : '☆';
+    }
+    document.getElementById('resultsStarsEmoji').textContent = starEmojis;
+    document.getElementById('resultsScoreText').textContent = stars + ' / ' + total + ' etoiles';
+
+    let msg;
+    if (stars === total) msg = 'Parfait ! Tu es un champion !';
+    else if (stars >= total * 0.8) msg = 'Tres bien ! Continue comme ca !';
+    else if (stars >= total * 0.6) msg = 'Bien joue ! Le niveau suivant est debloque !';
+    else msg = 'Continue de t\'entrainer, tu vas y arriver !';
+
+    document.getElementById('resultsMsg').textContent = msg;
+}
+
+// === TTS ===
+document.getElementById('ttsBtn').addEventListener('click', function() {
+    playClick();
+    const text = document.getElementById('problemText').textContent;
+    speak(text);
+});
+
+// === INIT ===
+loadGame();
+renderHome();
+</script>
+</body>
+</html>

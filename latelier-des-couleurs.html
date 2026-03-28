@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>L'Atelier des Couleurs - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #F5F5F5 0%, #E0E0E0 100%);
+            min-height: 100vh;
+            overflow: auto;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #E91E63;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover { transform: scale(1.05); background: #fff; }
+
+        /* ===== WELCOME ===== */
+        .welcome-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            color: #E91E63;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .welcome-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .level-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            min-height: 48px;
+            border: 3px solid transparent;
+        }
+
+        .level-card:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
+        .level-card.completed { border-color: #FFD700; }
+
+        .level-card-emoji { font-size: clamp(2rem, 6vw, 2.5rem); margin-bottom: 8px; }
+        .level-card-title { font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 800; color: #E91E63; margin-bottom: 4px; }
+        .level-card-desc { font-size: clamp(0.8rem, 2.5vw, 0.9rem); color: #666; font-weight: 600; }
+        .level-card-stars { margin-top: 8px; font-size: clamp(0.9rem, 2.5vw, 1rem); color: #FFD700; }
+        .lock-icon { font-size: 1.5rem; margin-top: 5px; }
+
+        .total-stars-display {
+            background: #E91E63;
+            border-radius: 20px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 20px;
+        }
+
+        /* ===== GAME COMMON ===== */
+        .game-header {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-title {
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #E91E63;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 12px;
+            background: rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA000);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .round-info {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: #888;
+            font-weight: 600;
+        }
+
+        .stars-count {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #FFD700;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* ===== LEVEL 1: COLOR SWATCHES ===== */
+        .color-swatch-big {
+            width: clamp(120px, 30vw, 180px);
+            height: clamp(120px, 30vw, 180px);
+            border-radius: 25px;
+            margin: 20px auto;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            animation: popIn 0.4s ease;
+        }
+
+        .question-text {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .options-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            max-width: 500px;
+        }
+
+        .option-btn {
+            background: #fff;
+            border: 3px solid #ddd;
+            border-radius: 20px;
+            padding: 15px 30px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            min-width: 100px;
+        }
+
+        .option-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .option-btn.correct { background: #C8E6C9; border-color: #4CAF50; color: #2E7D32; }
+        .option-btn.wrong { background: #FFCDD2; border-color: #F44336; color: #C62828; }
+
+        /* ===== LEVEL 2: MIXING ===== */
+        .mixing-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(15px, 4vw, 30px);
+            margin: 20px 0;
+            position: relative;
+            min-height: 180px;
+        }
+
+        .paint-pot {
+            width: clamp(80px, 20vw, 120px);
+            height: clamp(80px, 20vw, 120px);
+            border-radius: 50%;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+            position: relative;
+            transition: all 0.6s ease;
+        }
+
+        .paint-pot::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.6;
+            animation: drip 2s ease-in-out infinite;
+        }
+
+        @keyframes drip {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+            50% { transform: translateX(-50%) translateY(8px); opacity: 0.3; }
+        }
+
+        .mix-plus {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 800;
+            color: #888;
+        }
+
+        .mix-equals {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 800;
+            color: #888;
+        }
+
+        .result-pot {
+            width: clamp(90px, 22vw, 130px);
+            height: clamp(90px, 22vw, 130px);
+            border-radius: 50%;
+            background: #ddd;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transition: all 0.8s ease;
+        }
+
+        .result-pot.revealed {
+            transform: scale(1.1);
+        }
+
+        .mix-btn {
+            background: linear-gradient(145deg, #E91E63, #C2185B);
+            color: #fff;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 25px;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(233,30,99,0.3);
+            transition: all 0.3s ease;
+            min-height: 48px;
+            margin: 10px 0;
+        }
+
+        .mix-btn:hover { transform: translateY(-2px); }
+
+        /* ===== MERGING ANIMATION ===== */
+        .mixing-area.merging .paint-pot:first-child {
+            transform: translateX(40px);
+        }
+
+        .mixing-area.merging .paint-pot:nth-child(3) {
+            transform: translateX(-40px);
+        }
+
+        /* ===== LEVEL 4: FREE CANVAS ===== */
+        .canvas-grid {
+            display: inline-grid;
+            gap: 1px;
+            background: rgba(0,0,0,0.1);
+            padding: 4px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .canvas-cell {
+            width: clamp(28px, 6vw, 40px);
+            height: clamp(28px, 6vw, 40px);
+            background: #fff;
+            cursor: pointer;
+            transition: background 0.1s ease;
+            min-width: 28px;
+            min-height: 28px;
+        }
+
+        .free-palette {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+            max-width: 450px;
+        }
+
+        .free-color-btn {
+            width: clamp(36px, 8vw, 44px);
+            height: clamp(36px, 8vw, 44px);
+            border-radius: 50%;
+            border: 3px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 36px;
+            min-height: 36px;
+        }
+
+        .free-color-btn:hover, .free-color-btn.active {
+            transform: scale(1.15);
+            border-color: #E91E63;
+            box-shadow: 0 0 12px rgba(233,30,99,0.4);
+        }
+
+        .action-btn {
+            background: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #E91E63;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            min-height: 48px;
+            margin: 5px;
+        }
+
+        .action-btn:hover { transform: translateY(-2px); }
+        .action-btn.primary { background: linear-gradient(145deg, #E91E63, #C2185B); color: #fff; }
+
+        /* ===== FEEDBACK ===== */
+        .feedback {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 800;
+            text-align: center;
+            margin: 15px 0;
+            min-height: 50px;
+            animation: popIn 0.3s ease;
+        }
+
+        .feedback.positive { color: #4CAF50; }
+        .feedback.info { color: #E91E63; }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== RESULT ===== */
+        .result-container {
+            background: #fff;
+            border-radius: 25px;
+            padding: clamp(20px, 5vw, 40px);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            animation: popIn 0.4s ease;
+        }
+
+        .result-emoji { font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 10px; }
+        .result-title { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: #E91E63; margin-bottom: 10px; }
+        .result-text { font-size: clamp(1rem, 3vw, 1.2rem); color: #555; font-weight: 600; margin-bottom: 15px; }
+        .result-stars-display { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; }
+
+        /* ===== CONFETTI ===== */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 200;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-emoji">&#127912;</div>
+        <div class="welcome-title">L'Atelier<br>des Couleurs</div>
+        <div class="welcome-subtitle">Decouvre la magie des couleurs !</div>
+        <div class="total-stars-display" id="total-stars">&#11088; 0 etoile(s)</div>
+        <div class="level-grid" id="level-grid"></div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title" id="game-title"></div>
+            <div class="round-info" id="round-info"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="stars-count" id="stars-count"></div>
+        </div>
+        <div id="game-content"></div>
+    </div>
+
+    <!-- FREE MODE SCREEN -->
+    <div id="free-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title">&#127912; Mode Libre</div>
+            <div class="round-info">Peins librement !</div>
+        </div>
+        <div class="canvas-grid" id="free-canvas"></div>
+        <div class="free-palette" id="free-palette"></div>
+        <div>
+            <button class="action-btn" onclick="clearFreeCanvas()">Effacer</button>
+            <button class="action-btn" onclick="showScreen('welcome-screen'); playSound('click');">&#8592; Retour</button>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div class="result-container">
+            <div class="result-emoji" id="result-emoji"></div>
+            <div class="result-title" id="result-title"></div>
+            <div class="result-stars-display" id="result-stars"></div>
+            <div class="result-text" id="result-text"></div>
+            <div>
+                <button class="action-btn primary" id="result-next-btn" onclick="nextRound()">Suivant &#9654;</button>
+                <button class="action-btn" onclick="showScreen('welcome-screen'); renderWelcome(); playSound('click');">Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUDIO =====
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                gain.gain.value = 0.15;
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.frequency.value = 600;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start(now); osc.stop(now + 0.15);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523, now);
+                    osc.frequency.setValueAtTime(659, now + 0.12);
+                    osc.frequency.setValueAtTime(784, now + 0.24);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = 200;
+                    gain.gain.value = 0.08;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'mix') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.5);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                    osc.start(now); osc.stop(now + 0.6);
+                } else if (type === 'win') {
+                    osc.type = 'triangle';
+                    [523, 659, 784, 1047].forEach((f, i) => {
+                        osc.frequency.setValueAtTime(f, now + i * 0.15);
+                    });
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                    osc.start(now); osc.stop(now + 0.8);
+                } else if (type === 'paint') {
+                    osc.type = 'sine';
+                    osc.frequency.value = 440 + Math.random() * 200;
+                    gain.gain.value = 0.05;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.start(now); osc.stop(now + 0.06);
+                }
+            } catch(e) {}
+        }
+
+        // ===== STATE =====
+        let state = JSON.parse(localStorage.getItem('lAtelierDesCouleurs') || 'null') || {
+            levelsCompleted: [false, false, false, false],
+            levelStars: [0, 0, 0, 0],
+            totalStars: 0
+        };
+
+        function saveState() {
+            state.totalStars = state.levelStars.reduce((a, b) => a + b, 0);
+            localStorage.setItem('lAtelierDesCouleurs', JSON.stringify(state));
+            localStorage.setItem('atelierCouleursScore', state.totalStars.toString());
+        }
+
+        // ===== DATA =====
+        const COLOR_MAP = {
+            rouge: '#F44336',
+            bleu: '#2196F3',
+            jaune: '#FFEB3B',
+            vert: '#4CAF50',
+            orange: '#FF9800',
+            violet: '#9C27B0',
+            marron: '#795548',
+            rose: '#E91E63',
+            gris: '#9E9E9E',
+            noir: '#333333',
+            blanc: '#FFFFFF'
+        };
+
+        // Level 1: Identify primary colors
+        const LEVEL1_QUESTIONS = [
+            { color: 'rouge', hex: '#F44336', options: ['Rouge', 'Bleu', 'Jaune'], correct: 0 },
+            { color: 'bleu', hex: '#2196F3', options: ['Vert', 'Bleu', 'Violet'], correct: 1 },
+            { color: 'jaune', hex: '#FFEB3B', options: ['Orange', 'Rouge', 'Jaune'], correct: 2 },
+            { color: 'rouge', hex: '#F44336', options: ['Rouge', 'Orange', 'Rose'], correct: 0 },
+            { color: 'bleu', hex: '#2196F3', options: ['Bleu', 'Violet', 'Vert'], correct: 0 },
+            { color: 'jaune', hex: '#FFEB3B', options: ['Blanc', 'Jaune', 'Orange'], correct: 1 }
+        ];
+
+        // Level 2: Color mixing
+        const LEVEL2_MIXES = [
+            { c1: 'rouge', c2: 'bleu', result: 'violet', h1: '#F44336', h2: '#2196F3', hr: '#9C27B0', options: ['Vert', 'Violet', 'Orange'], correct: 1 },
+            { c1: 'rouge', c2: 'jaune', result: 'orange', h1: '#F44336', h2: '#FFEB3B', hr: '#FF9800', options: ['Orange', 'Violet', 'Marron'], correct: 0 },
+            { c1: 'bleu', c2: 'jaune', result: 'vert', h1: '#2196F3', h2: '#FFEB3B', hr: '#4CAF50', options: ['Violet', 'Orange', 'Vert'], correct: 2 },
+            { c1: 'blanc', c2: 'rouge', result: 'rose', h1: '#FFFFFF', h2: '#F44336', hr: '#E91E63', options: ['Rose', 'Violet', 'Orange'], correct: 0 },
+            { c1: 'noir', c2: 'blanc', result: 'gris', h1: '#333333', h2: '#FFFFFF', hr: '#9E9E9E', options: ['Gris', 'Bleu', 'Marron'], correct: 0 },
+            { c1: 'rouge', c2: 'vert', result: 'marron', h1: '#F44336', h2: '#4CAF50', hr: '#795548', options: ['Violet', 'Marron', 'Orange'], correct: 1 }
+        ];
+
+        // Level 3: Find the mix
+        const LEVEL3_QUESTIONS = [
+            { target: 'Vert', hex: '#4CAF50', options: ['Rouge + Bleu', 'Bleu + Jaune', 'Rouge + Jaune'], correct: 1 },
+            { target: 'Orange', hex: '#FF9800', options: ['Bleu + Jaune', 'Rouge + Bleu', 'Rouge + Jaune'], correct: 2 },
+            { target: 'Violet', hex: '#9C27B0', options: ['Rouge + Bleu', 'Bleu + Jaune', 'Rouge + Jaune'], correct: 0 },
+            { target: 'Rose', hex: '#E91E63', options: ['Noir + Rouge', 'Blanc + Rouge', 'Bleu + Rouge'], correct: 1 },
+            { target: 'Gris', hex: '#9E9E9E', options: ['Noir + Blanc', 'Bleu + Blanc', 'Rouge + Noir'], correct: 0 },
+            { target: 'Vert', hex: '#4CAF50', options: ['Rouge + Jaune', 'Rouge + Bleu', 'Bleu + Jaune'], correct: 2 },
+            { target: 'Orange', hex: '#FF9800', options: ['Rouge + Jaune', 'Bleu + Jaune', 'Rouge + Bleu'], correct: 0 },
+            { target: 'Violet', hex: '#9C27B0', options: ['Bleu + Jaune', 'Rouge + Jaune', 'Rouge + Bleu'], correct: 2 }
+        ];
+
+        let currentLevel = 0;
+        let currentRound = 0;
+        let roundStars = 0;
+        let roundTotal = 0;
+        let isWaiting = false;
+
+        // ===== SCREENS =====
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function renderWelcome() {
+            const grid = document.getElementById('level-grid');
+            grid.innerHTML = '';
+            document.getElementById('total-stars').innerHTML = `&#11088; ${state.totalStars} etoile(s)`;
+
+            const levelData = [
+                { name: 'Les Couleurs Primaires', emoji: '&#127912;', desc: '6 questions' },
+                { name: 'Melange Magique', emoji: '&#129514;', desc: '6 experiences' },
+                { name: 'Trouve le Melange', emoji: '&#128269;', desc: '8 questions' },
+                { name: 'Mode Libre', emoji: '&#128396;', desc: 'Peins librement' }
+            ];
+
+            levelData.forEach((level, i) => {
+                const card = document.createElement('div');
+                card.className = 'level-card';
+
+                const unlocked = i === 0 || state.levelsCompleted[i - 1] || i === 3;
+                if (!unlocked) card.classList.add('locked');
+                if (state.levelsCompleted[i]) card.classList.add('completed');
+
+                card.innerHTML = `
+                    <div class="level-card-emoji">${level.emoji}</div>
+                    <div class="level-card-title">${level.name}</div>
+                    <div class="level-card-desc">${level.desc}</div>
+                    ${!unlocked ? '<div class="lock-icon">&#128274;</div>' : ''}
+                    ${state.levelStars[i] > 0 ? `<div class="level-card-stars">${'&#11088;'.repeat(state.levelStars[i])}</div>` : ''}
+                `;
+
+                if (unlocked) {
+                    card.onclick = () => {
+                        playSound('click');
+                        if (i === 3) {
+                            startFreeMode();
+                        } else {
+                            startLevel(i);
+                        }
+                    };
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== LEVEL START =====
+        function startLevel(level) {
+            currentLevel = level;
+            currentRound = 0;
+            roundStars = 0;
+
+            if (level === 0) roundTotal = LEVEL1_QUESTIONS.length;
+            else if (level === 1) roundTotal = LEVEL2_MIXES.length;
+            else if (level === 2) roundTotal = LEVEL3_QUESTIONS.length;
+
+            const titles = ['Les Couleurs Primaires', 'Melange Magique', 'Trouve le Melange'];
+            document.getElementById('game-title').textContent = titles[level];
+
+            showScreen('game-screen');
+            nextGameRound();
+        }
+
+        function updateHeader() {
+            document.getElementById('round-info').textContent = `Question ${currentRound + 1} / ${roundTotal}`;
+            document.getElementById('progress-fill').style.width = `${((currentRound + 1) / roundTotal) * 100}%`;
+            document.getElementById('stars-count').innerHTML = `&#11088; ${roundStars}`;
+        }
+
+        function nextGameRound() {
+            if (currentRound >= roundTotal) {
+                finishLevel();
+                return;
+            }
+            isWaiting = false;
+            updateHeader();
+
+            if (currentLevel === 0) renderLevel1();
+            else if (currentLevel === 1) renderLevel2();
+            else if (currentLevel === 2) renderLevel3();
+        }
+
+        // ===== LEVEL 1 =====
+        function renderLevel1() {
+            const q = LEVEL1_QUESTIONS[currentRound];
+            const content = document.getElementById('game-content');
+            content.innerHTML = `
+                <div class="color-swatch-big" style="background:${q.hex}"></div>
+                <div class="question-text">Quelle est cette couleur ?</div>
+                <div class="options-row" id="options-row"></div>
+                <div class="feedback" id="feedback"></div>
+            `;
+
+            const row = document.getElementById('options-row');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => answerLevel1(i, q.correct, btn);
+                row.appendChild(btn);
+            });
+        }
+
+        function answerLevel1(picked, correct, btn) {
+            if (isWaiting) return;
+            isWaiting = true;
+
+            const row = document.getElementById('options-row');
+            const buttons = row.querySelectorAll('.option-btn');
+            const fb = document.getElementById('feedback');
+
+            if (picked === correct) {
+                btn.classList.add('correct');
+                fb.className = 'feedback positive';
+                fb.textContent = 'Bravo ! Bonne reponse !';
+                roundStars++;
+                playSound('correct');
+            } else {
+                btn.classList.add('wrong');
+                buttons[correct].classList.add('correct');
+                fb.className = 'feedback info';
+                fb.textContent = `C'etait ${LEVEL1_QUESTIONS[currentRound].options[correct]} !`;
+                playSound('wrong');
+            }
+
+            buttons.forEach(b => b.style.pointerEvents = 'none');
+            setTimeout(() => { currentRound++; nextGameRound(); }, 1500);
+        }
+
+        // ===== LEVEL 2 =====
+        function renderLevel2() {
+            const mix = LEVEL2_MIXES[currentRound];
+            const content = document.getElementById('game-content');
+            content.innerHTML = `
+                <div class="mixing-area" id="mixing-area">
+                    <div class="paint-pot" style="background:${mix.h1}"></div>
+                    <div class="mix-plus">+</div>
+                    <div class="paint-pot" style="background:${mix.h2}"></div>
+                    <div class="mix-equals">=</div>
+                    <div class="result-pot" id="result-pot">?</div>
+                </div>
+                <div class="question-text">${capitalize(mix.c1)} + ${capitalize(mix.c2)} = ?</div>
+                <div class="options-row" id="options-row"></div>
+                <button class="mix-btn" id="mix-btn" style="display:none;" onclick="revealMix()">Melanger !</button>
+                <div class="feedback" id="feedback"></div>
+            `;
+
+            const row = document.getElementById('options-row');
+            mix.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => answerLevel2(i, mix, btn);
+                row.appendChild(btn);
+            });
+        }
+
+        function answerLevel2(picked, mix, btn) {
+            if (isWaiting) return;
+            isWaiting = true;
+
+            const row = document.getElementById('options-row');
+            const buttons = row.querySelectorAll('.option-btn');
+            const fb = document.getElementById('feedback');
+            const area = document.getElementById('mixing-area');
+            const resultPot = document.getElementById('result-pot');
+
+            buttons.forEach(b => b.style.pointerEvents = 'none');
+
+            // Merge animation
+            area.classList.add('merging');
+            playSound('mix');
+
+            setTimeout(() => {
+                resultPot.textContent = '';
+                resultPot.style.background = mix.hr;
+                resultPot.classList.add('revealed');
+
+                if (picked === mix.correct) {
+                    btn.classList.add('correct');
+                    fb.className = 'feedback positive';
+                    fb.textContent = `Oui ! Ca fait du ${capitalize(mix.result)} !`;
+                    roundStars++;
+                    playSound('correct');
+                } else {
+                    btn.classList.add('wrong');
+                    buttons[mix.correct].classList.add('correct');
+                    fb.className = 'feedback info';
+                    fb.textContent = `C'etait ${capitalize(mix.result)} !`;
+                    playSound('wrong');
+                }
+
+                setTimeout(() => { currentRound++; nextGameRound(); }, 1800);
+            }, 700);
+        }
+
+        // ===== LEVEL 3 =====
+        function renderLevel3() {
+            const q = LEVEL3_QUESTIONS[currentRound];
+            const content = document.getElementById('game-content');
+            content.innerHTML = `
+                <div class="color-swatch-big" style="background:${q.hex}"></div>
+                <div class="question-text">Comment faire du ${q.target} ?</div>
+                <div class="options-row" id="options-row"></div>
+                <div class="feedback" id="feedback"></div>
+            `;
+
+            const row = document.getElementById('options-row');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => answerLevel3(i, q.correct, q, btn);
+                row.appendChild(btn);
+            });
+        }
+
+        function answerLevel3(picked, correct, q, btn) {
+            if (isWaiting) return;
+            isWaiting = true;
+
+            const row = document.getElementById('options-row');
+            const buttons = row.querySelectorAll('.option-btn');
+            const fb = document.getElementById('feedback');
+
+            if (picked === correct) {
+                btn.classList.add('correct');
+                fb.className = 'feedback positive';
+                fb.textContent = `Bravo ! ${q.options[correct]} = ${q.target} !`;
+                roundStars++;
+                playSound('correct');
+            } else {
+                btn.classList.add('wrong');
+                buttons[correct].classList.add('correct');
+                fb.className = 'feedback info';
+                fb.textContent = `${q.options[correct]} donne du ${q.target} !`;
+                playSound('wrong');
+            }
+
+            buttons.forEach(b => b.style.pointerEvents = 'none');
+            setTimeout(() => { currentRound++; nextGameRound(); }, 1500);
+        }
+
+        // ===== FINISH LEVEL =====
+        function finishLevel() {
+            const prev = state.levelStars[currentLevel];
+            if (roundStars > prev) state.levelStars[currentLevel] = roundStars;
+            state.levelsCompleted[currentLevel] = true;
+            saveState();
+
+            let emoji, title, text;
+            const pct = Math.round((roundStars / roundTotal) * 100);
+            if (pct === 100) {
+                emoji = '&#127775;'; title = 'PARFAIT !'; text = 'Toutes les reponses sont correctes !';
+            } else if (pct >= 60) {
+                emoji = '&#11088;'; title = 'Super travail !'; text = `Tu as eu ${roundStars} bonnes reponses !`;
+            } else {
+                emoji = '&#128170;'; title = 'Continue !'; text = 'Tu feras encore mieux la prochaine fois !';
+            }
+
+            document.getElementById('result-emoji').innerHTML = emoji;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-text').textContent = text;
+            document.getElementById('result-stars').innerHTML = '&#11088;'.repeat(roundStars) + '&#9723;'.repeat(roundTotal - roundStars);
+
+            showScreen('result-screen');
+            if (pct >= 60) launchConfetti();
+            playSound(pct === 100 ? 'win' : 'correct');
+        }
+
+        function nextRound() {
+            playSound('click');
+            renderWelcome();
+            showScreen('welcome-screen');
+        }
+
+        // ===== FREE MODE =====
+        let freeColor = '#F44336';
+        let freePainting = false;
+
+        const FREE_COLORS = [
+            '#F44336', '#2196F3', '#FFEB3B', '#4CAF50', '#FF9800',
+            '#9C27B0', '#E91E63', '#795548', '#9E9E9E', '#333333', '#FFFFFF'
+        ];
+
+        function startFreeMode() {
+            const canvas = document.getElementById('free-canvas');
+            canvas.innerHTML = '';
+            canvas.style.gridTemplateColumns = 'repeat(10, clamp(28px, 6vw, 40px))';
+
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 10; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'canvas-cell';
+                    cell.style.background = '#FFFFFF';
+
+                    cell.addEventListener('pointerdown', (e) => {
+                        e.preventDefault();
+                        freePainting = true;
+                        cell.style.background = freeColor;
+                        playSound('paint');
+                    });
+                    cell.addEventListener('pointerenter', () => {
+                        if (freePainting) cell.style.background = freeColor;
+                    });
+
+                    canvas.appendChild(cell);
+                }
+            }
+
+            document.addEventListener('pointerup', () => { freePainting = false; });
+
+            // Palette
+            const palette = document.getElementById('free-palette');
+            palette.innerHTML = '';
+            FREE_COLORS.forEach(hex => {
+                const btn = document.createElement('div');
+                btn.className = 'free-color-btn' + (hex === freeColor ? ' active' : '');
+                btn.style.background = hex;
+                if (hex === '#FFFFFF') btn.style.border = '3px solid #ccc';
+                btn.onclick = () => {
+                    freeColor = hex;
+                    palette.querySelectorAll('.free-color-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    playSound('click');
+                };
+                palette.appendChild(btn);
+            });
+
+            showScreen('free-screen');
+        }
+
+        function clearFreeCanvas() {
+            playSound('click');
+            document.getElementById('free-canvas').querySelectorAll('.canvas-cell').forEach(c => {
+                c.style.background = '#FFFFFF';
+            });
+        }
+
+        // ===== UTILS =====
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        function launchConfetti() {
+            const colors = ['#FFD700', '#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.className = 'confetti';
+                    c.style.left = Math.random() * 100 + 'vw';
+                    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    c.style.width = (6 + Math.random() * 8) + 'px';
+                    c.style.height = (6 + Math.random() * 8) + 'px';
+                    document.body.appendChild(c);
+                    setTimeout(() => c.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        // ===== INIT =====
+        renderWelcome();
+    </script>
+</body>
+</html>

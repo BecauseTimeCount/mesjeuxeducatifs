@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Qui Parle ? - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #1B5E20 0%, #A5D6A7 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 15px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #666;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
+        }
+        .back-to-menu:hover { transform: scale(1.05); background: #f0f0f0; }
+
+        .title {
+            font-size: clamp(2.2rem, 8vw, 3.8rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #1B5E20, #43A047, #2E7D32, #66BB6A);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .mascot {
+            font-size: 4rem;
+            animation: wave 2s ease infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        .animated-icons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .animated-icon {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            animation: bounce 2s ease infinite;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .animated-icon:nth-child(1) { animation-delay: 0s; }
+        .animated-icon:nth-child(2) { animation-delay: 0.3s; }
+        .animated-icon:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .play-btn {
+            background: linear-gradient(145deg, #43A047, #1B5E20);
+            color: white;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            padding: 22px 55px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(27,94,32,0.4), inset 0 -4px 0 rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+        .play-btn:hover, .play-btn:active { transform: scale(1.05); }
+
+        .stats-display {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 12px 22px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-label { font-size: 0.9rem; color: #666; margin-bottom: 4px; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; color: #2E7D32; }
+
+        .level-select {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+            max-width: 400px;
+        }
+
+        .level-btn {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .level-btn.unlocked {
+            background: linear-gradient(145deg, #43A047, #1B5E20);
+            color: white;
+        }
+        .level-btn.unlocked:hover { transform: scale(1.1); }
+        .level-btn.locked { background: #ccc; color: #999; cursor: not-allowed; }
+        .level-btn .lock-icon { font-size: 1.2rem; }
+
+        /* === GAME SCREEN === */
+        .screen.game-screen {
+            padding: 10px;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+        .home-btn {
+            background: white;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .home-btn:hover { transform: scale(1.1); }
+
+        .score-display {
+            background: white;
+            padding: 8px 22px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #FFB800;
+        }
+
+        .level-display {
+            background: linear-gradient(145deg, #43A047, #1B5E20);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 10px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 10px;
+            margin: 5px auto 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #43A047, #1B5E20);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Story / text area */
+        .story-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            min-height: 0;
+            padding: 10px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 25px;
+            padding: clamp(15px, 3vw, 25px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 550px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .story-text {
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            line-height: 1.7;
+            color: #333;
+            text-align: left;
+        }
+
+        .story-text .highlight {
+            background: #FFF9C4;
+            color: #E65100;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 8px;
+            display: inline;
+        }
+
+        .story-question {
+            font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+            font-weight: 700;
+            color: #1B5E20;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .speak-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #E8F5E9;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .speak-btn:hover { transform: scale(1.1); background: #C8E6C9; }
+
+        /* Choices */
+        .choices-zone {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .choice-btn {
+            min-width: 80px;
+            min-height: 60px;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 20px;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.12), inset 0 -3px 0 rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .choice-btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.18); }
+        .choice-btn:active { transform: translateY(0); }
+
+        .choice-btn.color-1 { background: #FFB3BA; color: #8B4557; }
+        .choice-btn.color-2 { background: #BAFFC9; color: #4A7C59; }
+        .choice-btn.color-3 { background: #BAE1FF; color: #4A6B8A; }
+        .choice-btn.color-4 { background: #FFE4BA; color: #8B7355; }
+        .choice-btn.color-5 { background: #E2BAFF; color: #6B4A7C; }
+
+        .choice-btn.correct {
+            background: #4ECDC4 !important;
+            color: white !important;
+            animation: correctAnswer 0.5s ease;
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .choice-btn.wrong {
+            animation: shake 0.5s ease;
+            opacity: 0.4;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        .choice-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+        /* Feedback */
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px 45px;
+            border-radius: 30px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            text-align: center;
+        }
+        .feedback-message.show { opacity: 1; }
+        .feedback-message.success { color: #4ECDC4; }
+        .feedback-message.retry { color: #FF7043; }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; overflow: hidden; z-index: 50;
+        }
+        .confetti {
+            position: absolute; width: 12px; height: 12px; border-radius: 3px;
+            animation: confettiFall 3s ease forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Celebration */
+        .celebration-screen { background: linear-gradient(180deg, #FFE66D 0%, #FFB347 100%); }
+
+        .celebration-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .celebration-stars {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            animation: starPulse 1s ease infinite;
+        }
+        @keyframes starPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .celebration-message {
+            font-size: 1.4rem;
+            color: white;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .continue-btn {
+            background: white;
+            color: #FFB347;
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        .continue-btn:hover { transform: scale(1.05); }
+
+        .home-from-celebration {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            padding: 14px 32px;
+            border: 2px solid white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .home-from-celebration:hover { background: rgba(255,255,255,0.5); }
+
+        /* Level up overlay */
+        .level-up-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .level-up-overlay.show { opacity: 1; pointer-events: auto; }
+        .level-up-text {
+            font-size: 3rem; color: #FFE66D; font-weight: 900;
+            animation: levelUpBounce 0.5s ease;
+        }
+        @keyframes levelUpBounce {
+            0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); }
+        }
+        .level-up-stars { font-size: 4rem; margin-top: 20px; }
+        .level-up-desc { color: white; font-size: 1.2rem; font-weight: 700; margin-top: 15px; text-align: center; }
+
+        @media (max-width: 480px) {
+            .choice-btn { min-width: 70px; min-height: 55px; padding: 10px 16px; }
+            .story-card { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <a href="index.html" class="back-to-menu">← Mes Jeux</a>
+        <div class="mascot">🔍</div>
+        <h1 class="title">Qui Parle ?</h1>
+        <div class="animated-icons">
+            <span class="animated-icon">👧</span>
+            <span class="animated-icon">💬</span>
+            <span class="animated-icon">👦</span>
+        </div>
+        <button class="play-btn" onclick="startGame()">🎮 Jouer</button>
+        <div class="stats-display">
+            <div class="stat-item">
+                <div class="stat-label">Etoiles</div>
+                <div class="stat-value" id="total-stars">0 ⭐</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Niveau</div>
+                <div class="stat-value" id="current-level">1</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Record</div>
+                <div class="stat-value" id="best-score">0 ⭐</div>
+            </div>
+        </div>
+        <div class="level-select" id="level-select"></div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen game-screen">
+        <div class="game-header">
+            <button class="home-btn" onclick="goHome()">🏠</button>
+            <div class="level-display" id="game-level">Niveau 1</div>
+            <div class="score-display" id="game-score">0 ⭐</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="story-zone" id="story-zone"></div>
+        <div class="choices-zone" id="choices-zone"></div>
+    </div>
+
+    <!-- Celebration Screen -->
+    <div id="celebration-screen" class="screen celebration-screen">
+        <div class="celebration-stars">🌟🌟🌟</div>
+        <h2 class="celebration-title">Super Detective !</h2>
+        <div class="celebration-message" id="celebration-message">Tu as tout trouve !</div>
+        <button class="continue-btn" onclick="continuePlaying()">Continuer 🚀</button>
+        <button class="home-from-celebration" onclick="goHome()">🏠 Accueil</button>
+        <a href="index.html" class="home-from-celebration" style="margin-top:10px;display:inline-block;text-decoration:none;">← Mes Jeux</a>
+    </div>
+
+    <!-- Level Up Overlay -->
+    <div class="level-up-overlay" id="level-up-overlay">
+        <div class="level-up-text" id="level-up-text">Niveau 2 !</div>
+        <div class="level-up-stars">⭐🌟⭐</div>
+        <div class="level-up-desc" id="level-up-desc"></div>
+    </div>
+
+    <div class="confetti-container" id="confetti-container"></div>
+    <div class="feedback-message" id="feedback-message"></div>
+
+    <script>
+        // === DATA ===
+        const LEVELS = {
+            1: { name: "Trouve le personnage", icon: "1️⃣", questionsCount: 10, unlockThreshold: 7 },
+            2: { name: "Qui fait quoi ?", icon: "2️⃣", questionsCount: 10, unlockThreshold: 7 },
+            3: { name: "Le Detective", icon: "3️⃣", questionsCount: 8, unlockThreshold: 6 },
+            4: { name: "L'Histoire Complete", icon: "4️⃣", questionsCount: 6, unlockThreshold: 5 }
+        };
+
+        const LEVEL1_QUESTIONS = [
+            { text: "Marie joue dans le jardin. <hl>ELLE</hl> est contente.", pronoun: "ELLE", question: "Qui est ELLE ?", choices: [{label:"🧒 Marie", correct:true},{label:"🧑 Tom", correct:false}] },
+            { text: "Tom mange une pomme. <hl>IL</hl> a tres faim.", pronoun: "IL", question: "Qui est IL ?", choices: [{label:"🧑 Tom", correct:true},{label:"🧒 Marie", correct:false}] },
+            { text: "Le chat dort sur le canape. <hl>IL</hl> ronronne.", pronoun: "IL", question: "Qui est IL ?", choices: [{label:"🐱 Le chat", correct:true},{label:"🐶 Le chien", correct:false}] },
+            { text: "Sophie lit un livre. <hl>ELLE</hl> adore les histoires.", pronoun: "ELLE", question: "Qui est ELLE ?", choices: [{label:"🧒 Sophie", correct:true},{label:"🧑 Lucas", correct:false},{label:"🐱 Le chat", correct:false}] },
+            { text: "Lucas court dans la cour. <hl>IL</hl> est rapide.", pronoun: "IL", question: "Qui est IL ?", choices: [{label:"🧑 Lucas", correct:true},{label:"🧒 Sophie", correct:false}] },
+            { text: "La maman prepare le repas. <hl>ELLE</hl> coupe les legumes.", pronoun: "ELLE", question: "Qui est ELLE ?", choices: [{label:"👩 La maman", correct:true},{label:"👨 Le papa", correct:false},{label:"🧒 L'enfant", correct:false}] },
+            { text: "Le chien court apres le ballon. <hl>IL</hl> aboie.", pronoun: "IL", question: "Qui est IL ?", choices: [{label:"🐶 Le chien", correct:true},{label:"⚽ Le ballon", correct:false}] },
+            { text: "Emma dessine une fleur. <hl>ELLE</hl> utilise des crayons.", pronoun: "ELLE", question: "Qui est ELLE ?", choices: [{label:"🧒 Emma", correct:true},{label:"🌸 La fleur", correct:false}] },
+            { text: "Le papa lave la voiture. <hl>IL</hl> utilise une eponge.", pronoun: "IL", question: "Qui est IL ?", choices: [{label:"👨 Le papa", correct:true},{label:"🚗 La voiture", correct:false},{label:"🧽 L'eponge", correct:false}] },
+            { text: "La poule picore du mais. <hl>ELLE</hl> a faim.", pronoun: "ELLE", question: "Qui est ELLE ?", choices: [{label:"🐔 La poule", correct:true},{label:"🌽 Le mais", correct:false}] },
+            { text: "Leo joue avec sa soeur. <hl>IL</hl> est content.", pronoun: "IL", question: "Qui est IL ?", choices: [{label:"🧑 Leo", correct:true},{label:"🧒 Sa soeur", correct:false}] },
+            { text: "Julie chante une chanson. <hl>ELLE</hl> a une belle voix.", pronoun: "ELLE", question: "Qui est ELLE ?", choices: [{label:"🧒 Julie", correct:true},{label:"🎵 La chanson", correct:false}] }
+        ];
+
+        const LEVEL2_QUESTIONS = [
+            { text: "Tom et Marie jouent. Tom <hl>lance</hl> le ballon. Marie le rattrape.", question: "Qui lance le ballon ?", choices: [{label:"🧑 Tom", correct:true},{label:"🧒 Marie", correct:false}] },
+            { text: "Le chat et le chien sont dans le jardin. Le chat <hl>grimpe</hl> dans l'arbre.", question: "Qui grimpe dans l'arbre ?", choices: [{label:"🐱 Le chat", correct:true},{label:"🐶 Le chien", correct:false}] },
+            { text: "Sophie et Lucas font un gateau. Lucas <hl>casse</hl> les oeufs. Sophie melange.", question: "Qui casse les oeufs ?", choices: [{label:"🧑 Lucas", correct:true},{label:"🧒 Sophie", correct:false}] },
+            { text: "Maman et Papa sont au jardin. Maman <hl>arrose</hl> les fleurs. Papa tond la pelouse.", question: "Qui arrose les fleurs ?", choices: [{label:"👩 Maman", correct:true},{label:"👨 Papa", correct:false}] },
+            { text: "Leo et Emma dessinent. Emma <hl>colorie</hl> un soleil.", question: "Qui colorie le soleil ?", choices: [{label:"🧒 Emma", correct:true},{label:"🧑 Leo", correct:false}] },
+            { text: "Le lapin et la tortue font la course. La tortue <hl>avance</hl> lentement.", question: "Qui avance lentement ?", choices: [{label:"🐢 La tortue", correct:true},{label:"🐰 Le lapin", correct:false}] },
+            { text: "Anna, Tom et Lili jouent. Tom <hl>se cache</hl> sous la table. Anna cherche.", question: "Qui se cache ?", choices: [{label:"🧑 Tom", correct:true},{label:"🧒 Anna", correct:false},{label:"🧒 Lili", correct:false}] },
+            { text: "Le coq et les poules sont dans la cour. Le coq <hl>chante</hl> tres fort.", question: "Qui chante tres fort ?", choices: [{label:"🐓 Le coq", correct:true},{label:"🐔 Les poules", correct:false}] },
+            { text: "Pierre et Julie lisent. Julie <hl>tourne</hl> les pages.", question: "Qui tourne les pages ?", choices: [{label:"🧒 Julie", correct:true},{label:"🧑 Pierre", correct:false}] },
+            { text: "Grand-mere et Lola cuisinent. Grand-mere <hl>prepare</hl> la pate. Lola ajoute le sucre.", question: "Qui prepare la pate ?", choices: [{label:"👵 Grand-mere", correct:true},{label:"🧒 Lola", correct:false}] },
+            { text: "Le papa et le fils bricolent. Le fils <hl>tient</hl> le marteau.", question: "Qui tient le marteau ?", choices: [{label:"🧒 Le fils", correct:true},{label:"👨 Le papa", correct:false}] },
+            { text: "Deux amis jouent au ballon. Marc <hl>tire</hl> dans le but. Paul garde le but.", question: "Qui tire dans le but ?", choices: [{label:"🧑 Marc", correct:true},{label:"🧑 Paul", correct:false}] }
+        ];
+
+        const LEVEL3_QUESTIONS = [
+            { text: "Sophie met son maillot de bain et prend sa serviette. Elle met ses lunettes de plongee.", question: "Ou va Sophie ?", choices: [{label:"🏊 A la piscine", correct:true},{label:"🏫 A l'ecole", correct:false},{label:"🏠 A la maison", correct:false}] },
+            { text: "Tom met son manteau, son echarpe et ses gants. Il prend son bonnet.", question: "Quel temps fait-il ?", choices: [{label:"❄️ Il fait froid", correct:true},{label:"☀️ Il fait chaud", correct:false},{label:"🌧️ Il pleut", correct:false}] },
+            { text: "Marie souffle ses bougies. Ses amis chantent. Il y a un gros gateau.", question: "Que fete Marie ?", choices: [{label:"🎂 Son anniversaire", correct:true},{label:"🎄 Noel", correct:false},{label:"📚 La rentree", correct:false}] },
+            { text: "Lucas met ses chaussures de sport. Il prend son ballon et sa gourde.", question: "Que va faire Lucas ?", choices: [{label:"⚽ Du sport", correct:true},{label:"🛏️ Dormir", correct:false},{label:"🍽️ Manger", correct:false}] },
+            { text: "Le bebe pleure. Maman lui donne son biberon. Le bebe boit et ferme les yeux.", question: "Que fait le bebe apres ?", choices: [{label:"😴 Il s'endort", correct:true},{label:"🏃 Il court", correct:false},{label:"📖 Il lit", correct:false}] },
+            { text: "Emma prend un livre, un crayon et une gomme. Elle met tout dans son cartable.", question: "Ou va Emma ?", choices: [{label:"🏫 A l'ecole", correct:true},{label:"🏖️ A la plage", correct:false},{label:"🛒 Au magasin", correct:false}] },
+            { text: "Le ciel est tout gris. Papa ferme les fenetres. On entend le tonnerre.", question: "Que va-t-il se passer ?", choices: [{label:"🌧️ Il va pleuvoir", correct:true},{label:"☀️ Il va faire beau", correct:false},{label:"❄️ Il va neiger", correct:false}] },
+            { text: "La petite fille baille. Elle frotte ses yeux. Maman lui met son pyjama.", question: "La fille est...", choices: [{label:"😴 Fatiguee", correct:true},{label:"😄 Contente", correct:false},{label:"😢 Triste", correct:false}] },
+            { text: "Le chien remue la queue. Il saute partout. Il aboie quand il voit sa gamelle pleine.", question: "Le chien est...", choices: [{label:"🐶 Content", correct:true},{label:"😢 Triste", correct:false},{label:"😴 Fatigue", correct:false}] },
+            { text: "Papa prend la farine, les oeufs et le chocolat. Il allume le four.", question: "Que fait Papa ?", choices: [{label:"🍰 Un gateau", correct:true},{label:"🧹 Le menage", correct:false},{label:"🎨 De la peinture", correct:false}] }
+        ];
+
+        const LEVEL4_QUESTIONS = [
+            {
+                text: "Ce matin, Tom se reveille tres tot. Il met son beau costume et son noeud papillon. Maman lui dit de ne pas se salir. Papa prepare l'appareil photo. Toute la famille monte dans la voiture.",
+                questions: [
+                    { question: "Comment est habille Tom ?", choices: [{label:"👔 En costume", correct:true},{label:"👕 En pyjama", correct:false},{label:"🩳 En short", correct:false}] },
+                    { question: "Ou va la famille ?", choices: [{label:"🎉 A une fete", correct:true},{label:"🏖️ A la plage", correct:false},{label:"🛒 Au marche", correct:false}] }
+                ]
+            },
+            {
+                text: "Sophie a un nouveau chaton. Il est tout petit et tout gris. Sophie lui donne du lait dans une soucoupe. Le chaton ronronne quand Sophie le caresse. Le soir, le chaton dort sur son lit.",
+                questions: [
+                    { question: "De quelle couleur est le chaton ?", choices: [{label:"🩶 Gris", correct:true},{label:"🤍 Blanc", correct:false},{label:"🖤 Noir", correct:false}] },
+                    { question: "Ou dort le chaton le soir ?", choices: [{label:"🛏️ Sur le lit de Sophie", correct:true},{label:"🧺 Dans un panier", correct:false},{label:"🛋️ Sur le canape", correct:false}] }
+                ]
+            },
+            {
+                text: "C'est mercredi. Lucas va au parc avec Grand-pere. Ils donnent du pain aux canards du lac. Ensuite, Lucas fait de la balancoire. Grand-pere le pousse tres haut. Lucas rit et demande encore plus haut !",
+                questions: [
+                    { question: "Avec qui est Lucas ?", choices: [{label:"👴 Grand-pere", correct:true},{label:"👩 Maman", correct:false},{label:"👨 Papa", correct:false}] },
+                    { question: "Que font-ils en premier ?", choices: [{label:"🦆 Nourrir les canards", correct:true},{label:"🎢 La balancoire", correct:false},{label:"🍦 Manger une glace", correct:false}] }
+                ]
+            },
+            {
+                text: "Emma est malade. Elle a mal a la gorge et elle tousse. Maman lui fait un chocolat chaud avec du miel. Emma reste au lit avec son doudou. Papa lui lit une histoire pour l'endormir.",
+                questions: [
+                    { question: "Pourquoi Emma reste au lit ?", choices: [{label:"🤒 Elle est malade", correct:true},{label:"😴 Elle est fatiguee", correct:false},{label:"😢 Elle est triste", correct:false}] },
+                    { question: "Que fait Papa ?", choices: [{label:"📖 Il lit une histoire", correct:true},{label:"🍫 Il fait du chocolat", correct:false},{label:"💊 Il donne un medicament", correct:false}] }
+                ]
+            },
+            {
+                text: "Aujourd'hui, c'est la sortie de l'ecole au zoo. Les enfants montent dans le bus. Ils voient des lions, des singes et des girafes. Leo prefere les singes parce qu'ils font des grimaces. A midi, tout le monde pique-nique sur l'herbe.",
+                questions: [
+                    { question: "Ou vont les enfants ?", choices: [{label:"🦁 Au zoo", correct:true},{label:"🏖️ A la plage", correct:false},{label:"🏔️ A la montagne", correct:false}] },
+                    { question: "Quel animal prefere Leo ?", choices: [{label:"🐵 Les singes", correct:true},{label:"🦁 Les lions", correct:false},{label:"🦒 Les girafes", correct:false}] }
+                ]
+            },
+            {
+                text: "Julie et son frere Paul construisent une cabane dans le jardin. Paul apporte les planches. Julie tape les clous avec le marteau. Quand la cabane est finie, ils mettent des coussins a l'interieur. C'est leur maison secrete.",
+                questions: [
+                    { question: "Qui tape les clous ?", choices: [{label:"🧒 Julie", correct:true},{label:"🧑 Paul", correct:false}] },
+                    { question: "Que mettent-ils dans la cabane ?", choices: [{label:"🛋️ Des coussins", correct:true},{label:"📚 Des livres", correct:false},{label:"🧸 Des jouets", correct:false}] }
+                ]
+            }
+        ];
+
+        // === STATE ===
+        let gameState = {
+            currentLevel: 1,
+            currentScore: 0,
+            totalStars: 0,
+            bestScore: 0,
+            unlockedLevels: [1],
+            questionIndex: 0,
+            subQuestionIndex: 0,
+            questionsForRound: [],
+            isAnswering: false
+        };
+
+        // === AUDIO ===
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioContext) return;
+            const now = audioContext.currentTime;
+            if (type === 'victory') {
+                playNote(262, now, 0.15); playNote(330, now + 0.15, 0.15); playNote(392, now + 0.3, 0.3);
+            } else if (type === 'encourage') {
+                playNote(440, now, 0.2, 0.3);
+            } else if (type === 'click') {
+                playNote(600, now, 0.05, 0.2);
+            } else if (type === 'levelup') {
+                playNote(262, now, 0.1); playNote(330, now + 0.1, 0.1);
+                playNote(392, now + 0.2, 0.1); playNote(523, now + 0.3, 0.4);
+            }
+        }
+
+        function playNote(frequency, startTime, duration, volume = 0.5) {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.frequency.value = frequency; osc.type = 'sine';
+            gain.gain.setValueAtTime(volume, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            osc.start(startTime); osc.stop(startTime + duration);
+        }
+
+        // === TTS ===
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const clean = text.replace(/<[^>]*>/g, '');
+            const utterance = new SpeechSynthesisUtterance(clean);
+            utterance.lang = 'fr-FR';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.1;
+            const voices = window.speechSynthesis.getVoices();
+            const frVoice = voices.find(v => v.lang.startsWith('fr'));
+            if (frVoice) utterance.voice = frVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // === LOCALSTORAGE ===
+        function saveGame() {
+            const saveData = {
+                currentLevel: gameState.currentLevel,
+                totalStars: gameState.totalStars,
+                bestScore: gameState.bestScore,
+                unlockedLevels: gameState.unlockedLevels
+            };
+            localStorage.setItem('quiParle', JSON.stringify(saveData));
+            localStorage.setItem('quiParleScore', gameState.totalStars.toString());
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('quiParle');
+            if (saved) {
+                const data = JSON.parse(saved);
+                gameState.currentLevel = data.currentLevel || 1;
+                gameState.totalStars = data.totalStars || 0;
+                gameState.bestScore = data.bestScore || 0;
+                gameState.unlockedLevels = data.unlockedLevels || [1];
+            }
+            updateHomeStats();
+            renderLevelSelect();
+        }
+
+        function updateHomeStats() {
+            document.getElementById('total-stars').textContent = gameState.totalStars + ' ⭐';
+            document.getElementById('current-level').textContent = gameState.currentLevel;
+            document.getElementById('best-score').textContent = gameState.bestScore + ' ⭐';
+        }
+
+        // === LEVEL SELECT ===
+        function renderLevelSelect() {
+            const container = document.getElementById('level-select');
+            container.innerHTML = '';
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.createElement('button');
+                const isUnlocked = gameState.unlockedLevels.includes(i);
+                btn.className = 'level-btn ' + (isUnlocked ? 'unlocked' : 'locked');
+                if (isUnlocked) {
+                    btn.textContent = LEVELS[i].icon;
+                    btn.onclick = () => selectLevel(i);
+                } else {
+                    btn.innerHTML = '<span class="lock-icon">🔒</span>';
+                }
+                container.appendChild(btn);
+            }
+        }
+
+        function selectLevel(level) {
+            playSound('click');
+            gameState.currentLevel = level;
+            startGame();
+        }
+
+        // === NAVIGATION ===
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startGame() {
+            initAudio();
+            playSound('click');
+            gameState.currentScore = 0;
+            gameState.questionIndex = 0;
+            gameState.subQuestionIndex = 0;
+            gameState.isAnswering = false;
+            prepareQuestions();
+            updateGameUI();
+            showScreen('game-screen');
+            generateNewQuestion();
+        }
+
+        function goHome() {
+            playSound('click');
+            window.speechSynthesis && window.speechSynthesis.cancel();
+            showScreen('home-screen');
+            updateHomeStats();
+            renderLevelSelect();
+        }
+
+        function updateGameUI() {
+            document.getElementById('game-level').textContent = LEVELS[gameState.currentLevel].name;
+            document.getElementById('game-score').textContent = gameState.currentScore + ' ⭐';
+        }
+
+        // === PREPARE QUESTIONS ===
+        function prepareQuestions() {
+            const level = gameState.currentLevel;
+            const count = LEVELS[level].questionsCount;
+            let pool;
+            switch (level) {
+                case 1: pool = [...LEVEL1_QUESTIONS]; break;
+                case 2: pool = [...LEVEL2_QUESTIONS]; break;
+                case 3: pool = [...LEVEL3_QUESTIONS]; break;
+                case 4: pool = [...LEVEL4_QUESTIONS]; break;
+            }
+            gameState.questionsForRound = shuffleArray(pool).slice(0, count);
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // === QUESTION GENERATION ===
+        function generateNewQuestion() {
+            const level = gameState.currentLevel;
+            const cfg = LEVELS[level];
+            if (gameState.questionIndex >= cfg.questionsCount) {
+                showLevelComplete();
+                return;
+            }
+            gameState.isAnswering = false;
+            updateProgress();
+
+            if (level === 4) {
+                generateLevel4();
+            } else {
+                const q = gameState.questionsForRound[gameState.questionIndex];
+                renderStoryQuestion(q.text, q.question, q.choices);
+            }
+        }
+
+        function updateProgress() {
+            const cfg = LEVELS[gameState.currentLevel];
+            const pct = (gameState.questionIndex / cfg.questionsCount) * 100;
+            document.getElementById('progress-fill').style.width = pct + '%';
+        }
+
+        // === RENDER STORY QUESTION ===
+        function renderStoryQuestion(storyHtml, question, choices) {
+            const storyZone = document.getElementById('story-zone');
+            const displayText = storyHtml.replace(/<hl>/g, '<span class="highlight">').replace(/<\/hl>/g, '</span>');
+            storyZone.innerHTML = `
+                <div class="story-card">
+                    <button class="speak-btn" onclick="speakText(\`${storyHtml.replace(/<[^>]*>/g, '').replace(/`/g, "'")}\`)">🔊</button>
+                    <div class="story-text">${displayText}</div>
+                </div>
+                <div class="story-question">${question}</div>
+            `;
+
+            const choicesZone = document.getElementById('choices-zone');
+            choicesZone.innerHTML = '';
+            const shuffled = shuffleArray(choices);
+            shuffled.forEach((c, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn color-' + ((i % 5) + 1);
+                btn.textContent = c.label;
+                btn.onclick = () => checkAnswer(c.correct, btn);
+                choicesZone.appendChild(btn);
+            });
+
+            // Auto-read
+            const rawText = storyHtml.replace(/<[^>]*>/g, '');
+            setTimeout(() => speakText(rawText), 400);
+        }
+
+        // === LEVEL 4 ===
+        function generateLevel4() {
+            const q = gameState.questionsForRound[gameState.questionIndex];
+            if (gameState.subQuestionIndex >= q.questions.length) {
+                gameState.subQuestionIndex = 0;
+                gameState.questionIndex++;
+                generateNewQuestion();
+                return;
+            }
+            const sub = q.questions[gameState.subQuestionIndex];
+            renderStoryQuestion(q.text, sub.question, sub.choices);
+        }
+
+        // === CHECK ANSWER ===
+        function checkAnswer(isCorrect, btn) {
+            if (gameState.isAnswering) return;
+            gameState.isAnswering = true;
+
+            document.querySelectorAll('.choice-btn').forEach(b => b.classList.add('disabled'));
+
+            if (isCorrect) {
+                btn.classList.remove('disabled');
+                btn.classList.add('correct');
+                gameState.currentScore++;
+                updateGameUI();
+                playSound('victory');
+                showFeedback(getPositiveFeedback(), 'success');
+                launchConfetti();
+
+                setTimeout(() => {
+                    if (gameState.currentLevel === 4) {
+                        gameState.subQuestionIndex++;
+                        const q = gameState.questionsForRound[gameState.questionIndex];
+                        if (gameState.subQuestionIndex >= q.questions.length) {
+                            gameState.subQuestionIndex = 0;
+                            gameState.questionIndex++;
+                        }
+                    } else {
+                        gameState.questionIndex++;
+                    }
+                    generateNewQuestion();
+                }, 1500);
+            } else {
+                btn.classList.add('wrong');
+                playSound('encourage');
+                showFeedback("Essaie encore !", 'retry');
+                setTimeout(() => {
+                    gameState.isAnswering = false;
+                    btn.classList.add('disabled');
+                    document.querySelectorAll('.choice-btn:not(.wrong):not(.disabled)').forEach(b => b.classList.remove('disabled'));
+                }, 1000);
+            }
+        }
+
+        // === FEEDBACK ===
+        const POSITIVE_MESSAGES = ["Bravo !", "Super !", "Genial !", "Excellent !", "Fantastique !", "Bien joue !", "Magnifique !", "Trop fort !"];
+
+        function getPositiveFeedback() {
+            return POSITIVE_MESSAGES[Math.floor(Math.random() * POSITIVE_MESSAGES.length)];
+        }
+
+        function showFeedback(msg, type) {
+            const el = document.getElementById('feedback-message');
+            el.textContent = msg;
+            el.className = 'feedback-message ' + type + ' show';
+            setTimeout(() => el.classList.remove('show'), 1200);
+        }
+
+        // === CONFETTI ===
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FF6B6B','#4ECDC4','#FFE66D','#FF8A5C','#A8E6CF','#DDA0DD','#98D8C8'];
+            for (let i = 0; i < 25; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + '%';
+                c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                c.style.animationDelay = Math.random() * 0.5 + 's';
+                c.style.animationDuration = (2 + Math.random() * 2) + 's';
+                container.appendChild(c);
+                setTimeout(() => c.remove(), 4000);
+            }
+        }
+
+        // === LEVEL COMPLETE ===
+        function showLevelComplete() {
+            const level = gameState.currentLevel;
+            const cfg = LEVELS[level];
+            const score = gameState.currentScore;
+            const threshold = cfg.unlockThreshold;
+
+            gameState.totalStars += score;
+            if (score > gameState.bestScore) gameState.bestScore = score;
+
+            if (score >= threshold && level < 4) {
+                if (!gameState.unlockedLevels.includes(level + 1)) {
+                    gameState.unlockedLevels.push(level + 1);
+                }
+                showLevelUp(level + 1);
+            }
+
+            saveGame();
+
+            const msg = score >= threshold
+                ? `Tu as obtenu ${score} ⭐ ! Super detective !`
+                : `Tu as obtenu ${score} ⭐. Continue a t'entrainer !`;
+            document.getElementById('celebration-message').textContent = msg;
+
+            setTimeout(() => {
+                showScreen('celebration-screen');
+                launchConfetti();
+                playSound('levelup');
+            }, score >= threshold && level < 4 ? 3000 : 500);
+        }
+
+        function showLevelUp(newLevel) {
+            const overlay = document.getElementById('level-up-overlay');
+            document.getElementById('level-up-text').textContent = 'Niveau ' + newLevel + ' !';
+            document.getElementById('level-up-desc').textContent = LEVELS[newLevel].name + ' debloqu\u00e9 !';
+            overlay.classList.add('show');
+            playSound('levelup');
+            setTimeout(() => overlay.classList.remove('show'), 2500);
+        }
+
+        function continuePlaying() {
+            playSound('click');
+            const nextLevel = gameState.currentLevel < 4 && gameState.unlockedLevels.includes(gameState.currentLevel + 1)
+                ? gameState.currentLevel + 1 : gameState.currentLevel;
+            gameState.currentLevel = nextLevel;
+            startGame();
+        }
+
+        // === INIT ===
+        window.addEventListener('DOMContentLoaded', () => {
+            loadGame();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
+        });
+    </script>
+</body>
+</html>

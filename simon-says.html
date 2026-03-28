@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Simon Says - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1B5E20 0%, #66BB6A 100%);
+            min-height: 100vh;
+            overflow: auto;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 60px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #1B5E20;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .back-to-menu:hover { transform: scale(1.05); background: #fff; }
+
+        /* ===== WELCOME ===== */
+        .welcome-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .welcome-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 48px;
+            border: 3px solid transparent;
+        }
+
+        .level-card:hover:not(.locked) { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
+        .level-card.completed { border-color: #FFD700; }
+        .level-card-emoji { font-size: clamp(2rem, 6vw, 2.5rem); margin-bottom: 8px; }
+        .level-card-title { font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 800; color: #1B5E20; margin-bottom: 4px; }
+        .level-card-desc { font-size: clamp(0.8rem, 2.5vw, 0.9rem); color: #666; font-weight: 600; }
+        .level-card-stars { margin-top: 8px; font-size: clamp(0.9rem, 2.5vw, 1rem); color: #FFD700; }
+        .lock-icon { font-size: 1.5rem; margin-top: 5px; }
+
+        .total-stars-display {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 20px;
+        }
+
+        /* ===== GAME ===== */
+        .game-header {
+            text-align: center;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-title {
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA000);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .round-info {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+
+        .stars-count {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #FFD700;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* ===== COMMAND BAR ===== */
+        .command-bar {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 15px 25px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 15px;
+        }
+
+        .command-en {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .command-fr {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        .simon-badge {
+            display: inline-block;
+            background: #FFD700;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .dont-touch-badge {
+            display: inline-block;
+            background: #F44336;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        /* ===== BODY FIGURE ===== */
+        .figure-container {
+            position: relative;
+            width: clamp(200px, 50vw, 300px);
+            height: clamp(340px, 60vh, 480px);
+            margin: 10px auto;
+        }
+
+        .body-zone {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.15);
+            border: 3px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            min-width: 48px;
+            min-height: 48px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .body-zone:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .body-zone.highlight {
+            background: #FFD700 !important;
+            border-color: #FFD700 !important;
+            color: #333 !important;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            animation: pulseZone 0.6s ease;
+        }
+
+        .body-zone.correct-zone {
+            background: #4CAF50 !important;
+            border-color: #4CAF50 !important;
+            color: #fff !important;
+            box-shadow: 0 0 20px rgba(76,175,80,0.5);
+        }
+
+        .body-zone.wrong-zone {
+            background: #FF9800 !important;
+            border-color: #FF9800 !important;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes pulseZone {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* Stick figure body lines */
+        .stick-body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .stick-body line, .stick-body circle {
+            stroke: rgba(255,255,255,0.5);
+            stroke-width: 4;
+            fill: none;
+        }
+
+        .stick-body circle.head-circle {
+            fill: rgba(255,255,255,0.15);
+        }
+
+        /* ===== OPTIONS ===== */
+        .options-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            max-width: 500px;
+            margin: 10px 0;
+        }
+
+        .option-btn {
+            background: #fff;
+            border: 3px solid #ddd;
+            border-radius: 20px;
+            padding: 15px 25px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            min-width: 100px;
+        }
+
+        .option-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .option-btn.correct { background: #C8E6C9; border-color: #4CAF50; color: #2E7D32; }
+        .option-btn.wrong { background: #FFCDD2; border-color: #F44336; color: #C62828; }
+
+        /* ===== WORD DISPLAY ===== */
+        .word-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: clamp(20px, 4vw, 35px);
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .word-emoji {
+            font-size: clamp(3rem, 10vw, 4.5rem);
+            margin-bottom: 8px;
+        }
+
+        .word-en {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 800;
+            color: #1B5E20;
+            margin-bottom: 5px;
+        }
+
+        .word-phonetic {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #888;
+            font-style: italic;
+        }
+
+        /* ===== FEEDBACK ===== */
+        .feedback {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: 800;
+            text-align: center;
+            margin: 10px 0;
+            min-height: 40px;
+            color: #fff;
+        }
+
+        .feedback.positive { color: #A5D6A7; }
+        .feedback.info { color: #FFCC80; }
+
+        /* ===== WAIT TIMER ===== */
+        .wait-timer {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            color: #fff;
+            margin: 10px 0;
+            opacity: 0.7;
+        }
+
+        /* ===== SONG MODE ===== */
+        .song-sequence {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .song-dot {
+            width: clamp(30px, 6vw, 40px);
+            height: clamp(30px, 6vw, 40px);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .song-dot.active {
+            background: #FFD700;
+            color: #333;
+            transform: scale(1.2);
+        }
+
+        .song-dot.done {
+            background: #4CAF50;
+            color: #fff;
+        }
+
+        .song-dot.missed {
+            background: #FF9800;
+            color: #fff;
+        }
+
+        /* ===== RESULT ===== */
+        .result-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: clamp(20px, 5vw, 40px);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: popIn 0.4s ease;
+        }
+
+        .result-emoji { font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 10px; }
+        .result-title { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: #1B5E20; margin-bottom: 10px; }
+        .result-text { font-size: clamp(1rem, 3vw, 1.2rem); color: #555; font-weight: 600; margin-bottom: 15px; }
+        .result-stars-display { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; }
+
+        .action-btn {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #1B5E20;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            min-height: 48px;
+            margin: 5px;
+        }
+
+        .action-btn:hover { transform: translateY(-2px); }
+        .action-btn.primary { background: linear-gradient(145deg, #FFD700, #FFA000); color: #fff; }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 200;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-emoji">&#129490;</div>
+        <div class="welcome-title">Simon Says</div>
+        <div class="welcome-subtitle">Apprends les parties du corps en anglais !</div>
+        <div class="total-stars-display" id="total-stars">&#11088; 0 etoile(s)</div>
+        <div class="level-grid" id="level-grid"></div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title" id="game-title"></div>
+            <div class="round-info" id="round-info"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="stars-count" id="stars-count"></div>
+        </div>
+        <div id="game-content"></div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div class="result-container">
+            <div class="result-emoji" id="result-emoji"></div>
+            <div class="result-title" id="result-title"></div>
+            <div class="result-stars-display" id="result-stars"></div>
+            <div class="result-text" id="result-text"></div>
+            <div>
+                <button class="action-btn primary" onclick="goMenu()">Menu &#127968;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUDIO =====
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                gain.gain.value = 0.15;
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.frequency.value = 600;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start(now); osc.stop(now + 0.15);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523, now);
+                    osc.frequency.setValueAtTime(659, now + 0.12);
+                    osc.frequency.setValueAtTime(784, now + 0.24);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = 200;
+                    gain.gain.value = 0.06;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.start(now); osc.stop(now + 0.25);
+                } else if (type === 'win') {
+                    osc.type = 'triangle';
+                    [523, 659, 784, 1047].forEach((f, i) => {
+                        osc.frequency.setValueAtTime(f, now + i * 0.15);
+                    });
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                    osc.start(now); osc.stop(now + 0.8);
+                } else if (type === 'tick') {
+                    osc.type = 'sine';
+                    osc.frequency.value = 1000;
+                    gain.gain.value = 0.08;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now); osc.stop(now + 0.08);
+                } else if (type === 'song') {
+                    osc.type = 'triangle';
+                    osc.frequency.value = 523;
+                    gain.gain.value = 0.1;
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.start(now); osc.stop(now + 0.2);
+                }
+            } catch(e) {}
+        }
+
+        // ===== TTS =====
+        function speakEN(text, callback) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'en-GB';
+                u.rate = 0.8;
+                u.volume = 1;
+                if (callback) u.onend = callback;
+                speechSynthesis.cancel();
+                speechSynthesis.speak(u);
+            } catch(e) { if (callback) setTimeout(callback, 1000); }
+        }
+
+        // ===== STATE =====
+        let state = JSON.parse(localStorage.getItem('simonSays') || 'null') || {
+            levelsCompleted: [false, false, false, false],
+            levelStars: [0, 0, 0, 0],
+            totalStars: 0
+        };
+
+        function saveState() {
+            state.totalStars = state.levelStars.reduce((a, b) => a + b, 0);
+            localStorage.setItem('simonSays', JSON.stringify(state));
+            localStorage.setItem('simonSaysScore', state.totalStars.toString());
+        }
+
+        // ===== DATA =====
+        const BODY_PARTS = [
+            { en: 'head', fr: 'tete', emoji: '&#128578;', zone: 'head' },
+            { en: 'shoulders', fr: 'epaules', emoji: '&#128170;', zone: 'shoulders' },
+            { en: 'knees', fr: 'genoux', emoji: '&#129510;', zone: 'knees' },
+            { en: 'toes', fr: 'pieds (orteils)', emoji: '&#129462;', zone: 'toes' },
+            { en: 'eyes', fr: 'yeux', emoji: '&#128064;', zone: 'eyes' },
+            { en: 'ears', fr: 'oreilles', emoji: '&#128066;', zone: 'ears' },
+            { en: 'mouth', fr: 'bouche', emoji: '&#128067;', zone: 'mouth' },
+            { en: 'nose', fr: 'nez', emoji: '&#128067;', zone: 'nose' },
+            { en: 'hands', fr: 'mains', emoji: '&#9995;', zone: 'hands' },
+            { en: 'feet', fr: 'pieds', emoji: '&#129462;', zone: 'feet' }
+        ];
+
+        // Zone positions (% based) for the stick figure
+        const ZONES = {
+            head:      { x: 38, y: 2, w: 24, h: 14, label: 'Head' },
+            eyes:      { x: 40, y: 4, w: 20, h: 7, label: 'Eyes' },
+            ears:      { x: 30, y: 5, w: 40, h: 8, label: 'Ears' },
+            nose:      { x: 43, y: 9, w: 14, h: 6, label: 'Nose' },
+            mouth:     { x: 40, y: 13, w: 20, h: 6, label: 'Mouth' },
+            shoulders: { x: 18, y: 20, w: 64, h: 10, label: 'Shoulders' },
+            hands:     { x: 5, y: 38, w: 20, h: 12, label: 'Hands' },
+            knees:     { x: 25, y: 62, w: 50, h: 10, label: 'Knees' },
+            feet:      { x: 22, y: 85, w: 56, h: 12, label: 'Feet' },
+            toes:      { x: 22, y: 88, w: 56, h: 10, label: 'Toes' }
+        };
+
+        let currentLevel = 0;
+        let currentRound = 0;
+        let roundStars = 0;
+        let roundTotal = 10;
+        let isWaiting = false;
+        let waitTimer = null;
+
+        // ===== SCREENS =====
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function renderWelcome() {
+            const grid = document.getElementById('level-grid');
+            grid.innerHTML = '';
+            document.getElementById('total-stars').innerHTML = `&#11088; ${state.totalStars} etoile(s)`;
+
+            const levels = [
+                { name: 'Learn the Words', emoji: '&#128218;', desc: '10 rounds' },
+                { name: 'Touch the Part', emoji: '&#128070;', desc: '10 rounds' },
+                { name: 'Simon Says', emoji: '&#129490;', desc: '12 rounds' },
+                { name: 'Head Shoulders...', emoji: '&#127925;', desc: 'Mode chanson' }
+            ];
+
+            levels.forEach((level, i) => {
+                const card = document.createElement('div');
+                card.className = 'level-card';
+                const unlocked = i === 0 || state.levelsCompleted[i - 1];
+                if (!unlocked) card.classList.add('locked');
+                if (state.levelsCompleted[i]) card.classList.add('completed');
+
+                card.innerHTML = `
+                    <div class="level-card-emoji">${level.emoji}</div>
+                    <div class="level-card-title">${level.name}</div>
+                    <div class="level-card-desc">${level.desc}</div>
+                    ${!unlocked ? '<div class="lock-icon">&#128274;</div>' : ''}
+                    ${state.levelStars[i] > 0 ? `<div class="level-card-stars">${'&#11088;'.repeat(state.levelStars[i])}</div>` : ''}
+                `;
+
+                if (unlocked) {
+                    card.onclick = () => { playSound('click'); startLevel(i); };
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== START LEVEL =====
+        function startLevel(level) {
+            currentLevel = level;
+            currentRound = 0;
+            roundStars = 0;
+            isWaiting = false;
+
+            if (level === 2) roundTotal = 12;
+            else if (level === 3) roundTotal = 12;
+            else roundTotal = 10;
+
+            const titles = ['Learn the Words', 'Touch the Part', 'Simon Says', 'Head Shoulders Knees and Toes'];
+            document.getElementById('game-title').textContent = titles[level];
+
+            showScreen('game-screen');
+            nextRound();
+        }
+
+        function updateHeader() {
+            document.getElementById('round-info').textContent = `Round ${currentRound + 1} / ${roundTotal}`;
+            document.getElementById('progress-fill').style.width = `${((currentRound + 1) / roundTotal) * 100}%`;
+            document.getElementById('stars-count').innerHTML = `&#11088; ${roundStars}`;
+        }
+
+        function nextRound() {
+            if (currentRound >= roundTotal) {
+                finishLevel();
+                return;
+            }
+            isWaiting = false;
+            updateHeader();
+            document.getElementById('feedback').textContent = '';
+
+            if (currentLevel === 0) renderLevel1();
+            else if (currentLevel === 1) renderLevel2();
+            else if (currentLevel === 2) renderLevel3();
+            else if (currentLevel === 3) renderLevel4();
+        }
+
+        // ===== LEVEL 1: LEARN THE WORDS =====
+        function renderLevel1() {
+            const part = BODY_PARTS[currentRound % BODY_PARTS.length];
+            const content = document.getElementById('game-content');
+
+            // Generate wrong options
+            const wrongOptions = shuffle(BODY_PARTS.filter(p => p.en !== part.en)).slice(0, 2).map(p => p.fr);
+            const options = shuffle([part.fr, ...wrongOptions]);
+
+            content.innerHTML = `
+                <div class="word-card">
+                    <div class="word-emoji">${part.emoji}</div>
+                    <div class="word-en">${capitalize(part.en)}</div>
+                    <div class="word-phonetic">Body part</div>
+                </div>
+                <div class="command-bar">
+                    <div class="command-en">What does "${capitalize(part.en)}" mean?</div>
+                    <div class="command-fr">Que veut dire "${capitalize(part.en)}" ?</div>
+                </div>
+                <div class="options-row" id="options-row"></div>
+            `;
+
+            speakEN(part.en);
+
+            const row = document.getElementById('options-row');
+            options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = capitalize(opt);
+                btn.onclick = () => {
+                    if (isWaiting) return;
+                    isWaiting = true;
+
+                    const fb = document.getElementById('feedback');
+                    const buttons = row.querySelectorAll('.option-btn');
+
+                    if (opt === part.fr) {
+                        btn.classList.add('correct');
+                        fb.className = 'feedback positive';
+                        fb.textContent = `Oui ! "${capitalize(part.en)}" = ${capitalize(part.fr)} !`;
+                        roundStars++;
+                        playSound('correct');
+                    } else {
+                        btn.classList.add('wrong');
+                        buttons.forEach(b => { if (b.textContent.toLowerCase() === capitalize(part.fr).toLowerCase()) b.classList.add('correct'); });
+                        fb.className = 'feedback info';
+                        fb.textContent = `"${capitalize(part.en)}" = ${capitalize(part.fr)}`;
+                        playSound('wrong');
+                    }
+
+                    buttons.forEach(b => b.style.pointerEvents = 'none');
+                    setTimeout(() => { currentRound++; nextRound(); }, 1500);
+                };
+                row.appendChild(btn);
+            });
+        }
+
+        // ===== LEVEL 2: TOUCH THE PART =====
+        function renderLevel2() {
+            const part = BODY_PARTS[currentRound % BODY_PARTS.length];
+            const content = document.getElementById('game-content');
+
+            content.innerHTML = `
+                <div class="command-bar">
+                    <div class="command-en">Touch your ${part.en.toUpperCase()}!</div>
+                    <div class="command-fr">Touche : ${capitalize(part.fr)}</div>
+                </div>
+                ${buildFigure(part.zone)}
+            `;
+
+            speakEN(`Touch your ${part.en}`);
+
+            // Attach click handlers to zones
+            setTimeout(() => {
+                document.querySelectorAll('.body-zone').forEach(zone => {
+                    zone.onclick = () => {
+                        if (isWaiting) return;
+                        const zoneId = zone.dataset.zone;
+
+                        if (zoneId === part.zone) {
+                            isWaiting = true;
+                            zone.classList.add('correct-zone');
+                            document.getElementById('feedback').className = 'feedback positive';
+                            document.getElementById('feedback').textContent = `Yes! That's the ${part.en}! (${capitalize(part.fr)})`;
+                            roundStars++;
+                            playSound('correct');
+                            setTimeout(() => { currentRound++; nextRound(); }, 1300);
+                        } else {
+                            zone.classList.add('wrong-zone');
+                            document.getElementById('feedback').className = 'feedback info';
+                            const wrongPart = BODY_PARTS.find(p => p.zone === zoneId);
+                            document.getElementById('feedback').textContent = `That's the ${wrongPart ? wrongPart.en : zoneId}... Try again!`;
+                            playSound('wrong');
+                            setTimeout(() => zone.classList.remove('wrong-zone'), 400);
+                        }
+                    };
+                });
+            }, 100);
+        }
+
+        // ===== LEVEL 3: SIMON SAYS =====
+        function renderLevel3() {
+            const part = BODY_PARTS[currentRound % BODY_PARTS.length];
+            const isSimonSays = Math.random() > 0.35; // ~65% Simon says, ~35% trap
+            const content = document.getElementById('game-content');
+
+            const commandText = isSimonSays
+                ? `Simon says: touch your ${part.en.toUpperCase()}!`
+                : `Touch your ${part.en.toUpperCase()}!`;
+
+            const commandFr = isSimonSays
+                ? `Jacques a dit : touche ton/ta ${part.fr} !`
+                : `Touche ton/ta ${part.fr} ! (PIEGE !)`;
+
+            content.innerHTML = `
+                <div class="command-bar">
+                    ${isSimonSays ? '<div class="simon-badge">SIMON SAYS</div>' : '<div class="dont-touch-badge">ATTENTION !</div>'}
+                    <div class="command-en">${commandText}</div>
+                    <div class="command-fr">${isSimonSays ? `Jacques a dit : ${capitalize(part.fr)}` : `Sans "Simon says" = ne touche PAS !`}</div>
+                </div>
+                ${buildFigure(isSimonSays ? part.zone : null)}
+                <div class="wait-timer" id="wait-timer"></div>
+            `;
+
+            speakEN(isSimonSays ? `Simon says, touch your ${part.en}` : `Touch your ${part.en}`);
+
+            if (!isSimonSays) {
+                // Trap round: child must NOT tap for 3 seconds
+                let countdown = 3;
+                const timerEl = document.getElementById('wait-timer');
+                timerEl.textContent = countdown;
+                let tapped = false;
+
+                waitTimer = setInterval(() => {
+                    countdown--;
+                    timerEl.textContent = countdown > 0 ? countdown : '';
+                    playSound('tick');
+                    if (countdown <= 0) {
+                        clearInterval(waitTimer);
+                        if (!tapped) {
+                            // Success: didn't tap
+                            document.getElementById('feedback').className = 'feedback positive';
+                            document.getElementById('feedback').textContent = 'Bien joue ! Simon n\'a pas dit !';
+                            roundStars++;
+                            playSound('correct');
+                            setTimeout(() => { currentRound++; nextRound(); }, 1200);
+                        }
+                    }
+                }, 1000);
+
+                // If child taps any zone during trap
+                setTimeout(() => {
+                    document.querySelectorAll('.body-zone').forEach(zone => {
+                        zone.onclick = () => {
+                            if (tapped) return;
+                            tapped = true;
+                            clearInterval(waitTimer);
+                            zone.classList.add('wrong-zone');
+                            document.getElementById('feedback').className = 'feedback info';
+                            document.getElementById('feedback').textContent = 'Oups ! Simon n\'a pas dit !';
+                            document.getElementById('wait-timer').textContent = '';
+                            playSound('wrong');
+                            // No penalty, just info
+                            setTimeout(() => { currentRound++; nextRound(); }, 1500);
+                        };
+                    });
+                }, 100);
+            } else {
+                // Simon says: child must tap the right zone
+                setTimeout(() => {
+                    document.querySelectorAll('.body-zone').forEach(zone => {
+                        zone.onclick = () => {
+                            if (isWaiting) return;
+                            const zoneId = zone.dataset.zone;
+
+                            if (zoneId === part.zone) {
+                                isWaiting = true;
+                                zone.classList.add('correct-zone');
+                                document.getElementById('feedback').className = 'feedback positive';
+                                document.getElementById('feedback').textContent = `Bravo ! ${capitalize(part.en)} !`;
+                                roundStars++;
+                                playSound('correct');
+                                setTimeout(() => { currentRound++; nextRound(); }, 1200);
+                            } else {
+                                zone.classList.add('wrong-zone');
+                                document.getElementById('feedback').className = 'feedback info';
+                                document.getElementById('feedback').textContent = `Ce n'est pas le bon endroit... Essaie encore !`;
+                                playSound('wrong');
+                                setTimeout(() => zone.classList.remove('wrong-zone'), 400);
+                            }
+                        };
+                    });
+                }, 100);
+            }
+        }
+
+        // ===== LEVEL 4: SONG MODE =====
+        const SONG_SEQUENCE = ['head', 'shoulders', 'knees', 'toes', 'knees', 'toes',
+                               'head', 'shoulders', 'knees', 'toes', 'knees', 'toes'];
+        let songIndex = 0;
+
+        function renderLevel4() {
+            songIndex = 0;
+            const content = document.getElementById('game-content');
+
+            content.innerHTML = `
+                <div class="command-bar">
+                    <div class="command-en">&#127925; Head, Shoulders, Knees and Toes!</div>
+                    <div class="command-fr">Tete, Epaules, Genoux et Pieds !</div>
+                </div>
+                <div class="song-sequence" id="song-sequence"></div>
+                ${buildFigure(SONG_SEQUENCE[0])}
+            `;
+
+            // Build sequence dots
+            const seqEl = document.getElementById('song-sequence');
+            SONG_SEQUENCE.forEach((part, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'song-dot' + (i === 0 ? ' active' : '');
+                dot.textContent = (i + 1);
+                dot.id = `song-dot-${i}`;
+                seqEl.appendChild(dot);
+            });
+
+            // Highlight first zone
+            highlightSongZone(SONG_SEQUENCE[0]);
+
+            speakEN('Head, shoulders, knees and toes, knees and toes');
+
+            // Attach handlers
+            setTimeout(() => {
+                document.querySelectorAll('.body-zone').forEach(zone => {
+                    zone.onclick = () => handleSongTap(zone);
+                });
+            }, 100);
+        }
+
+        function handleSongTap(zone) {
+            if (isWaiting) return;
+            const zoneId = zone.dataset.zone;
+            const expected = SONG_SEQUENCE[songIndex];
+
+            if (zoneId === expected) {
+                zone.classList.add('correct-zone');
+                const dot = document.getElementById(`song-dot-${songIndex}`);
+                if (dot) { dot.classList.remove('active'); dot.classList.add('done'); }
+                playSound('song');
+                roundStars++;
+                songIndex++;
+
+                if (songIndex >= SONG_SEQUENCE.length) {
+                    isWaiting = true;
+                    document.getElementById('feedback').className = 'feedback positive';
+                    document.getElementById('feedback').textContent = 'Bravo ! Tu connais la chanson !';
+                    playSound('win');
+                    currentRound = roundTotal; // End level
+                    setTimeout(() => finishLevel(), 1500);
+                    return;
+                }
+
+                // Next in sequence
+                setTimeout(() => {
+                    // Reset zone colors
+                    document.querySelectorAll('.body-zone').forEach(z => {
+                        z.classList.remove('correct-zone', 'wrong-zone');
+                    });
+                    highlightSongZone(SONG_SEQUENCE[songIndex]);
+                    const nextDot = document.getElementById(`song-dot-${songIndex}`);
+                    if (nextDot) nextDot.classList.add('active');
+                    updateHeader();
+                }, 400);
+            } else {
+                zone.classList.add('wrong-zone');
+                const dot = document.getElementById(`song-dot-${songIndex}`);
+                if (dot) { dot.classList.remove('active'); dot.classList.add('missed'); }
+                playSound('wrong');
+                songIndex++;
+
+                if (songIndex >= SONG_SEQUENCE.length) {
+                    isWaiting = true;
+                    currentRound = roundTotal;
+                    setTimeout(() => finishLevel(), 1000);
+                    return;
+                }
+
+                setTimeout(() => {
+                    document.querySelectorAll('.body-zone').forEach(z => z.classList.remove('wrong-zone'));
+                    highlightSongZone(SONG_SEQUENCE[songIndex]);
+                    const nextDot = document.getElementById(`song-dot-${songIndex}`);
+                    if (nextDot) nextDot.classList.add('active');
+                }, 400);
+            }
+        }
+
+        function highlightSongZone(zoneId) {
+            document.querySelectorAll('.body-zone').forEach(z => z.classList.remove('highlight'));
+            const target = document.querySelector(`.body-zone[data-zone="${zoneId}"]`);
+            if (target) target.classList.add('highlight');
+        }
+
+        // ===== BUILD FIGURE =====
+        function buildFigure(highlightZone) {
+            const visibleZones = ['head', 'shoulders', 'hands', 'knees', 'feet'];
+
+            let zonesHTML = '';
+            visibleZones.forEach(z => {
+                const zone = ZONES[z];
+                const isHighlight = z === highlightZone;
+                zonesHTML += `
+                    <div class="body-zone ${isHighlight ? 'highlight' : ''}"
+                         data-zone="${z}"
+                         style="left:${zone.x}%; top:${zone.y}%; width:${zone.w}%; height:${zone.h}%;">
+                        ${zone.label}
+                    </div>
+                `;
+            });
+
+            // Also add face zones if relevant
+            const faceZones = ['eyes', 'ears', 'nose', 'mouth'];
+            faceZones.forEach(z => {
+                const zone = ZONES[z];
+                const isHighlight = z === highlightZone;
+                zonesHTML += `
+                    <div class="body-zone ${isHighlight ? 'highlight' : ''}"
+                         data-zone="${z}"
+                         style="left:${zone.x}%; top:${zone.y}%; width:${zone.w}%; height:${zone.h}%; font-size:0.6rem;">
+                        ${zone.label}
+                    </div>
+                `;
+            });
+
+            // Also add toes
+            const toesZone = ZONES['toes'];
+            const isToeHL = highlightZone === 'toes';
+            zonesHTML += `
+                <div class="body-zone ${isToeHL ? 'highlight' : ''}"
+                     data-zone="toes"
+                     style="left:${toesZone.x}%; top:${toesZone.y}%; width:${toesZone.w}%; height:${toesZone.h}%; font-size:0.6rem;">
+                    ${toesZone.label}
+                </div>
+            `;
+
+            return `
+                <div class="figure-container">
+                    <svg class="stick-body" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                        <!-- Head -->
+                        <circle class="head-circle" cx="50" cy="12" r="9"/>
+                        <!-- Body -->
+                        <line x1="50" y1="21" x2="50" y2="55"/>
+                        <!-- Arms -->
+                        <line x1="50" y1="28" x2="20" y2="45"/>
+                        <line x1="50" y1="28" x2="80" y2="45"/>
+                        <!-- Legs -->
+                        <line x1="50" y1="55" x2="30" y2="85"/>
+                        <line x1="50" y1="55" x2="70" y2="85"/>
+                        <!-- Feet -->
+                        <line x1="30" y1="85" x2="25" y2="92"/>
+                        <line x1="70" y1="85" x2="75" y2="92"/>
+                    </svg>
+                    ${zonesHTML}
+                </div>
+            `;
+        }
+
+        // ===== FINISH =====
+        function finishLevel() {
+            if (waitTimer) clearInterval(waitTimer);
+            const prev = state.levelStars[currentLevel];
+            if (roundStars > prev) state.levelStars[currentLevel] = roundStars;
+            state.levelsCompleted[currentLevel] = true;
+            saveState();
+
+            const pct = Math.round((roundStars / roundTotal) * 100);
+            let emoji, title, text;
+            if (pct >= 90) {
+                emoji = '&#127775;'; title = 'AMAZING!'; text = 'Tu maitrises les body parts !';
+            } else if (pct >= 60) {
+                emoji = '&#11088;'; title = 'Super travail !'; text = `${roundStars} bonnes reponses sur ${roundTotal} !`;
+            } else {
+                emoji = '&#128170;'; title = 'Continue !'; text = 'Tu feras encore mieux la prochaine fois !';
+            }
+
+            document.getElementById('result-emoji').innerHTML = emoji;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-text').textContent = text;
+            document.getElementById('result-stars').innerHTML = '&#11088;'.repeat(Math.min(roundStars, roundTotal)) +
+                '&#9723;'.repeat(Math.max(0, roundTotal - roundStars));
+
+            showScreen('result-screen');
+            if (pct >= 60) launchConfetti();
+            playSound(pct >= 90 ? 'win' : 'correct');
+        }
+
+        function goMenu() {
+            playSound('click');
+            renderWelcome();
+            showScreen('welcome-screen');
+        }
+
+        // ===== UTILS =====
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function launchConfetti() {
+            const colors = ['#FFD700', '#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#1B5E20'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.className = 'confetti';
+                    c.style.left = Math.random() * 100 + 'vw';
+                    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    c.style.width = (6 + Math.random() * 8) + 'px';
+                    c.style.height = (6 + Math.random() * 8) + 'px';
+                    document.body.appendChild(c);
+                    setTimeout(() => c.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        // ===== INIT =====
+        renderWelcome();
+    </script>
+</body>
+</html>

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Le Miroir Pixel</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, #4527A0, #B39DDB);
+  min-height: 100vh;
+  color: #fff;
+  overflow-x: hidden;
+  padding: clamp(8px, 2vw, 20px);
+  user-select: none;
+  -webkit-user-select: none;
+}
+a { text-decoration: none; color: inherit; }
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(14px, 2.5vw, 18px);
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 48px;
+}
+.back-btn:hover, .back-btn:active { background: rgba(255,255,255,0.25); }
+header {
+  text-align: center;
+  margin: clamp(4px, 1vw, 12px) 0 clamp(8px, 2vw, 16px);
+}
+header h1 {
+  font-size: clamp(24px, 5vw, 42px);
+  font-weight: 800;
+  text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+}
+.mascot { font-size: clamp(32px, 6vw, 56px); }
+.score-bar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(8px, 2vw, 16px);
+}
+.score-bar span {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: clamp(13px, 2.2vw, 16px);
+}
+
+/* Level select */
+.level-select {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: clamp(10px, 2vw, 20px);
+  max-width: 700px;
+  margin: 0 auto;
+}
+.level-card {
+  background: rgba(255,255,255,0.13);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: clamp(16px, 3vw, 28px);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s;
+  border: 2px solid transparent;
+  min-height: 48px;
+}
+.level-card:hover:not(.locked) { transform: scale(1.03); background: rgba(255,255,255,0.2); }
+.level-card.locked { opacity: 0.45; cursor: not-allowed; }
+.level-card.locked::after { content: '🔒'; display: block; font-size: 28px; margin-top: 6px; }
+.level-card h2 { font-size: clamp(16px, 3vw, 22px); font-weight: 800; margin-bottom: 4px; }
+.level-card p { font-size: clamp(12px, 2vw, 15px); opacity: 0.85; }
+.level-stars { font-size: clamp(16px, 2.5vw, 22px); margin-top: 6px; }
+
+/* Game area */
+.game-area { max-width: 750px; margin: 0 auto; text-align: center; }
+.game-area h2 {
+  font-size: clamp(18px, 3.5vw, 28px);
+  font-weight: 800;
+  margin-bottom: clamp(4px, 1vw, 10px);
+}
+.puzzle-counter {
+  font-size: clamp(13px, 2.2vw, 16px);
+  opacity: 0.8;
+  margin-bottom: clamp(6px, 1.5vw, 12px);
+}
+.grids-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(10px, 3vw, 30px);
+  flex-wrap: wrap;
+  margin-bottom: clamp(8px, 2vw, 14px);
+}
+.grid-wrapper { text-align: center; }
+.grid-wrapper h3 {
+  font-size: clamp(13px, 2.3vw, 17px);
+  font-weight: 700;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+.pixel-grid {
+  display: inline-grid;
+  gap: 2px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 8px;
+  padding: 4px;
+}
+.pixel-grid .cell {
+  width: clamp(36px, 7vw, 50px);
+  height: clamp(36px, 7vw, 50px);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: background 0.12s, transform 0.1s;
+  border: 2px solid rgba(0,0,0,0.08);
+  min-width: 36px;
+  min-height: 36px;
+}
+.pixel-grid .cell:active { transform: scale(0.92); }
+.pixel-grid .cell.model-cell { cursor: default; }
+.pixel-grid .cell.model-cell:active { transform: none; }
+
+/* Mirror grid with axis line */
+.mirror-grid-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.mirror-axis {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 3px;
+  background: #fff;
+  transform: translateX(-50%);
+  z-index: 2;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255,255,255,0.6);
+}
+
+/* Palette */
+.palette {
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 1.5vw, 12px);
+  flex-wrap: wrap;
+  margin-bottom: clamp(8px, 2vw, 14px);
+}
+.palette-btn {
+  width: clamp(42px, 8vw, 54px);
+  height: clamp(42px, 8vw, 54px);
+  border-radius: 12px;
+  border: 3px solid rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.15s;
+  min-width: 42px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+}
+.palette-btn:active { transform: scale(0.9); }
+.palette-btn.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 12px rgba(255,255,255,0.5); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 14px;
+  padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 32px);
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(15px, 2.8vw, 20px);
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.12s;
+  min-height: 48px;
+  margin: 4px;
+}
+.btn:hover { background: rgba(255,255,255,0.3); }
+.btn:active { transform: scale(0.95); }
+.btn-primary { background: #7c4dff; }
+.btn-primary:hover { background: #651fff; }
+
+/* Feedback */
+.feedback {
+  font-size: clamp(18px, 4vw, 30px);
+  font-weight: 800;
+  margin: clamp(8px, 2vw, 16px) 0;
+  min-height: 40px;
+}
+.feedback.success { color: #a5d6a7; }
+.feedback.tryagain { color: #ffcc80; }
+
+/* Hidden */
+.hidden { display: none !important; }
+
+/* Animations */
+@keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes starBounce { 0% { transform: scale(0); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+.pop-in { animation: pop 0.35s ease-out; }
+.star-bounce { animation: starBounce 0.5s ease-out; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">← Mes Jeux</a>
+
+<header>
+  <div class="mascot">🪞</div>
+  <h1>Le Miroir Pixel</h1>
+</header>
+
+<div class="score-bar">
+  <span id="scoreDisplay">Score : 0</span>
+  <span id="starsDisplay">Etoiles : 0</span>
+</div>
+
+<!-- Level Select -->
+<div id="levelSelect" class="level-select"></div>
+
+<!-- Game Area -->
+<div id="gameArea" class="game-area hidden">
+  <h2 id="levelTitle"></h2>
+  <div class="puzzle-counter" id="puzzleCounter"></div>
+  <div id="gridsContainer" class="grids-container"></div>
+  <div class="palette" id="palette"></div>
+  <div>
+    <button class="btn btn-primary" id="validateBtn">Verifier</button>
+    <button class="btn" id="clearBtn">Effacer tout</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+  <div>
+    <button class="btn hidden" id="nextBtn">Suivant →</button>
+    <button class="btn hidden" id="backToLevels">← Niveaux</button>
+  </div>
+</div>
+
+<script>
+// ===== Audio =====
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function ensureAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+
+function playTone(freq, dur, type='sine', vol=0.13) {
+  try {
+    ensureAudio();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.value = vol;
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch(e) {}
+}
+function sndClick() { playTone(600, 0.08, 'sine', 0.1); }
+function sndPaint() { playTone(880, 0.1, 'triangle', 0.1); }
+function sndErase() { playTone(300, 0.1, 'sine', 0.08); }
+function sndSuccess() { playTone(523, 0.15); setTimeout(()=>playTone(659, 0.15), 120); setTimeout(()=>playTone(784, 0.25), 240); }
+function sndStar() { playTone(784, 0.12); setTimeout(()=>playTone(988, 0.12), 100); setTimeout(()=>playTone(1175, 0.3), 200); }
+function sndTryAgain() { playTone(400, 0.15, 'triangle', 0.1); setTimeout(()=>playTone(350, 0.2, 'triangle', 0.1), 150); }
+
+// ===== State =====
+const COLORS = {
+  R: '#e74c3c',
+  B: '#3498db',
+  Y: '#f1c40f',
+  G: '#2ecc71',
+  W: 'rgba(255,255,255,0.85)'
+};
+const PALETTE_ITEMS = [
+  { id: 'R', color: '#e74c3c', label: '' },
+  { id: 'B', color: '#3498db', label: '' },
+  { id: 'Y', color: '#f1c40f', label: '' },
+  { id: 'G', color: '#2ecc71', label: '' },
+  { id: 'W', color: '#fff', label: '✕' }
+];
+
+let state = loadState();
+let currentLevel = null;
+let currentPuzzle = 0;
+let selectedColor = 'R';
+let playerGrid = [];
+
+function defaultState() {
+  return { levels: [{ unlocked: true, stars: [] }, { unlocked: false, stars: [] }, { unlocked: false, stars: [] }, { unlocked: false, stars: [] }], score: 0, totalStars: 0 };
+}
+function loadState() {
+  try {
+    const s = localStorage.getItem('leMiroirPixel');
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return defaultState();
+}
+function saveState() {
+  localStorage.setItem('leMiroirPixel', JSON.stringify(state));
+  localStorage.setItem('miroirPixelScore', String(state.score));
+}
+function updateScoreDisplay() {
+  document.getElementById('scoreDisplay').textContent = 'Score : ' + state.score;
+  document.getElementById('starsDisplay').textContent = 'Etoiles : ' + state.totalStars;
+}
+
+// ===== Puzzle Data =====
+const _ = 'W';
+const R = 'R', B = 'B', Y = 'Y', G = 'G';
+
+const LEVELS = [
+  {
+    name: 'Copie le Modele',
+    desc: 'Reproduis le dessin',
+    type: 'copy',
+    rows: 3, cols: 3,
+    puzzles: [
+      [[R,_,R],[_,R,_],[R,_,R]],
+      [[B,B,B],[B,_,B],[B,B,B]],
+      [[_,Y,_],[Y,Y,Y],[_,Y,_]],
+      [[G,_,G],[_,G,_],[G,_,G]],
+      [[R,B,R],[B,R,B],[R,B,R]],
+      [[Y,Y,_],[Y,_,_],[_,_,G]],
+      [[B,_,B],[_,Y,_],[B,_,B]],
+      [[R,G,R],[G,R,G],[R,G,R]]
+    ]
+  },
+  {
+    name: 'Le Miroir',
+    desc: 'Complete la symetrie',
+    type: 'mirror',
+    rows: 4, cols: 6,
+    puzzles: [
+      [[R,_,_,_,_,_],[_,R,_,_,_,_],[_,R,_,_,_,_],[R,_,_,_,_,_]],
+      [[B,B,_,_,_,_],[B,_,_,_,_,_],[B,_,_,_,_,_],[B,B,_,_,_,_]],
+      [[_,G,_,_,_,_],[G,G,_,_,_,_],[G,G,_,_,_,_],[_,G,_,_,_,_]],
+      [[Y,_,_,_,_,_],[Y,Y,_,_,_,_],[_,Y,_,_,_,_],[_,_,_,_,_,_]],
+      [[R,B,_,_,_,_],[B,R,_,_,_,_],[R,B,_,_,_,_],[B,R,_,_,_,_]],
+      [[_,R,_,_,_,_],[R,R,_,_,_,_],[R,_,_,_,_,_],[_,_,_,_,_,_]],
+      [[G,_,_,_,_,_],[G,G,_,_,_,_],[G,G,_,_,_,_],[G,_,_,_,_,_]],
+      [[B,Y,_,_,_,_],[Y,B,_,_,_,_],[B,Y,_,_,_,_],[Y,B,_,_,_,_]]
+    ]
+  },
+  {
+    name: 'Pixel Art',
+    desc: 'Reproduis la figure',
+    type: 'copy',
+    rows: 5, cols: 5,
+    puzzles: [
+      // Heart
+      [[_,R,_,R,_],[R,R,R,R,R],[R,R,R,R,R],[_,R,R,R,_],[_,_,R,_,_]],
+      // Star
+      [[_,_,Y,_,_],[_,Y,Y,Y,_],[Y,Y,Y,Y,Y],[_,Y,Y,Y,_],[_,_,Y,_,_]],
+      // House
+      [[_,_,R,_,_],[_,R,R,R,_],[R,R,R,R,R],[R,B,R,B,R],[R,R,R,R,R]],
+      // Tree
+      [[_,_,G,_,_],[_,G,G,G,_],[G,G,G,G,G],[_,_,R,_,_],[_,_,R,_,_]],
+      // Cat face
+      [[R,_,_,_,R],[R,R,_,R,R],[_,B,_,B,_],[_,_,R,_,_],[_,R,R,R,_]],
+      // Boat
+      [[_,_,B,_,_],[_,_,B,_,_],[B,B,B,B,B],[_,R,R,R,_],[_,_,R,_,_]]
+    ]
+  },
+  {
+    name: 'Le Miroir Difficile',
+    desc: 'Symetrie avancee',
+    type: 'mirror',
+    rows: 6, cols: 6,
+    puzzles: [
+      [[R,B,_,_,_,_],[B,R,B,_,_,_],[R,B,R,_,_,_],[R,B,R,_,_,_],[B,R,B,_,_,_],[R,B,_,_,_,_]],
+      [[G,G,G,_,_,_],[G,_,_,_,_,_],[G,G,_,_,_,_],[G,G,_,_,_,_],[G,_,_,_,_,_],[G,G,G,_,_,_]],
+      [[_,Y,R,_,_,_],[Y,_,Y,_,_,_],[R,Y,_,_,_,_],[_,Y,R,_,_,_],[Y,_,Y,_,_,_],[R,Y,_,_,_,_]],
+      [[B,_,B,_,_,_],[_,B,_,_,_,_],[B,B,B,_,_,_],[B,B,B,_,_,_],[_,B,_,_,_,_],[B,_,B,_,_,_]],
+      [[R,G,B,_,_,_],[G,R,G,_,_,_],[B,G,R,_,_,_],[R,G,B,_,_,_],[G,R,G,_,_,_],[B,G,R,_,_,_]],
+      [[Y,R,Y,_,_,_],[R,Y,R,_,_,_],[Y,R,Y,_,_,_],[R,Y,R,_,_,_],[Y,R,Y,_,_,_],[R,Y,R,_,_,_]]
+    ]
+  }
+];
+
+// ===== Rendering =====
+function renderLevelSelect() {
+  document.getElementById('levelSelect').classList.remove('hidden');
+  document.getElementById('gameArea').classList.add('hidden');
+  const cont = document.getElementById('levelSelect');
+  cont.innerHTML = '';
+  LEVELS.forEach((lv, i) => {
+    const card = document.createElement('div');
+    card.className = 'level-card' + (state.levels[i].unlocked ? '' : ' locked');
+    const earned = state.levels[i].stars.filter(Boolean).length;
+    const total = lv.puzzles.length;
+    card.innerHTML = '<h2>' + (i+1) + '. ' + lv.name + '</h2><p>' + lv.desc + '</p><div class="level-stars">' + '⭐'.repeat(earned) + '☆'.repeat(total - earned) + '</div>';
+    if (state.levels[i].unlocked) {
+      card.onclick = () => { sndClick(); startLevel(i); };
+    }
+    cont.appendChild(card);
+  });
+  updateScoreDisplay();
+}
+
+function startLevel(idx) {
+  currentLevel = idx;
+  currentPuzzle = 0;
+  document.getElementById('levelSelect').classList.add('hidden');
+  document.getElementById('gameArea').classList.remove('hidden');
+  selectedColor = 'R';
+  renderPuzzle();
+}
+
+function renderPuzzle() {
+  const lv = LEVELS[currentLevel];
+  const puzzle = lv.puzzles[currentPuzzle];
+  document.getElementById('levelTitle').textContent = lv.name;
+  document.getElementById('puzzleCounter').textContent = 'Puzzle ' + (currentPuzzle+1) + ' / ' + lv.puzzles.length;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('backToLevels').classList.add('hidden');
+  document.getElementById('validateBtn').classList.remove('hidden');
+  document.getElementById('clearBtn').classList.remove('hidden');
+
+  const container = document.getElementById('gridsContainer');
+  container.innerHTML = '';
+
+  if (lv.type === 'copy') {
+    renderCopyMode(container, puzzle, lv.rows, lv.cols);
+  } else {
+    renderMirrorMode(container, puzzle, lv.rows, lv.cols);
+  }
+
+  renderPalette();
+}
+
+function renderCopyMode(container, puzzle, rows, cols) {
+  // Model grid
+  const modelWrap = document.createElement('div');
+  modelWrap.className = 'grid-wrapper';
+  modelWrap.innerHTML = '<h3>Modele</h3>';
+  const modelGrid = document.createElement('div');
+  modelGrid.className = 'pixel-grid';
+  modelGrid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell model-cell';
+      cell.style.background = COLORS[puzzle[r][c]];
+      modelGrid.appendChild(cell);
+    }
+  }
+  modelWrap.appendChild(modelGrid);
+  container.appendChild(modelWrap);
+
+  // Player grid
+  playerGrid = [];
+  for (let r = 0; r < rows; r++) {
+    playerGrid[r] = [];
+    for (let c = 0; c < cols; c++) playerGrid[r][c] = 'W';
+  }
+  const playerWrap = document.createElement('div');
+  playerWrap.className = 'grid-wrapper';
+  playerWrap.innerHTML = '<h3>Ta grille</h3>';
+  const pGrid = document.createElement('div');
+  pGrid.className = 'pixel-grid';
+  pGrid.id = 'playerGrid';
+  pGrid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      cell.style.background = COLORS['W'];
+      cell.onclick = () => paintCell(r, c, cell);
+      pGrid.appendChild(cell);
+    }
+  }
+  playerWrap.appendChild(pGrid);
+  container.appendChild(playerWrap);
+}
+
+function renderMirrorMode(container, puzzle, rows, cols) {
+  const halfCols = cols / 2;
+  // Build full solution: left half is given, right half is mirror
+  // For mirror levels, puzzle contains left half data in first halfCols, rest is blank
+  playerGrid = [];
+  const fullModel = [];
+  for (let r = 0; r < rows; r++) {
+    fullModel[r] = [];
+    playerGrid[r] = [];
+    for (let c = 0; c < cols; c++) {
+      if (c < halfCols) {
+        fullModel[r][c] = puzzle[r][c];
+        playerGrid[r][c] = puzzle[r][c]; // left half pre-filled
+      } else {
+        // mirror: col position from axis
+        const mirrorC = cols - 1 - c;
+        fullModel[r][c] = puzzle[r][mirrorC];
+        playerGrid[r][c] = 'W'; // player must fill
+      }
+    }
+  }
+
+  const mirrorWrap = document.createElement('div');
+  mirrorWrap.className = 'grid-wrapper mirror-grid-wrapper';
+  mirrorWrap.innerHTML = '<h3>Complete le miroir</h3>';
+  const grid = document.createElement('div');
+  grid.className = 'pixel-grid';
+  grid.id = 'playerGrid';
+  grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      if (c < halfCols) {
+        cell.classList.add('model-cell');
+        cell.style.background = COLORS[puzzle[r][c]];
+        cell.style.opacity = '1';
+      } else {
+        cell.style.background = COLORS['W'];
+        cell.onclick = () => paintCell(r, c, cell);
+      }
+      grid.appendChild(cell);
+    }
+  }
+  // Axis line
+  const axis = document.createElement('div');
+  axis.className = 'mirror-axis';
+  mirrorWrap.appendChild(grid);
+  mirrorWrap.appendChild(axis);
+  container.appendChild(mirrorWrap);
+}
+
+function renderPalette() {
+  const pal = document.getElementById('palette');
+  pal.innerHTML = '';
+  PALETTE_ITEMS.forEach(item => {
+    const btn = document.createElement('div');
+    btn.className = 'palette-btn' + (selectedColor === item.id ? ' active' : '');
+    btn.style.background = item.color;
+    if (item.id === 'W') {
+      btn.style.color = '#999';
+    }
+    btn.textContent = item.label;
+    btn.onclick = () => {
+      sndClick();
+      selectedColor = item.id;
+      renderPalette();
+    };
+    pal.appendChild(btn);
+  });
+}
+
+function paintCell(r, c, cell) {
+  if (playerGrid[r][c] === selectedColor && selectedColor !== 'W') {
+    // unpaint
+    playerGrid[r][c] = 'W';
+    cell.style.background = COLORS['W'];
+    sndErase();
+  } else {
+    playerGrid[r][c] = selectedColor;
+    cell.style.background = COLORS[selectedColor];
+    if (selectedColor === 'W') sndErase(); else sndPaint();
+  }
+}
+
+// ===== Validation =====
+document.getElementById('validateBtn').onclick = validate;
+document.getElementById('clearBtn').onclick = clearPlayerGrid;
+document.getElementById('nextBtn').onclick = nextPuzzle;
+document.getElementById('backToLevels').onclick = () => { sndClick(); renderLevelSelect(); };
+
+function getExpectedGrid() {
+  const lv = LEVELS[currentLevel];
+  const puzzle = lv.puzzles[currentPuzzle];
+  if (lv.type === 'copy') {
+    return puzzle;
+  } else {
+    // Mirror: build full expected
+    const rows = lv.rows, cols = lv.cols, half = cols / 2;
+    const expected = [];
+    for (let r = 0; r < rows; r++) {
+      expected[r] = [];
+      for (let c = 0; c < cols; c++) {
+        if (c < half) {
+          expected[r][c] = puzzle[r][c];
+        } else {
+          expected[r][c] = puzzle[r][cols - 1 - c];
+        }
+      }
+    }
+    return expected;
+  }
+}
+
+function validate() {
+  const lv = LEVELS[currentLevel];
+  const expected = getExpectedGrid();
+  const rows = lv.rows, cols = lv.cols;
+  let total = 0, correct = 0;
+
+  if (lv.type === 'mirror') {
+    const half = cols / 2;
+    for (let r = 0; r < rows; r++) {
+      for (let c = half; c < cols; c++) {
+        total++;
+        if (playerGrid[r][c] === expected[r][c]) correct++;
+      }
+    }
+  } else {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        total++;
+        if (playerGrid[r][c] === expected[r][c]) correct++;
+      }
+    }
+  }
+
+  const pct = Math.round((correct / total) * 100);
+  const fb = document.getElementById('feedback');
+  const gotStar = pct >= 80;
+
+  if (pct === 100) {
+    fb.textContent = 'Parfait ! 100% ! ⭐';
+    fb.className = 'feedback success star-bounce';
+    sndStar();
+  } else if (gotStar) {
+    fb.textContent = 'Tres bien ! ' + pct + '% ⭐';
+    fb.className = 'feedback success pop-in';
+    sndSuccess();
+  } else {
+    fb.textContent = 'Continue ! ' + pct + '% — Tu peux y arriver !';
+    fb.className = 'feedback tryagain pop-in';
+    sndTryAgain();
+    return; // Don't advance, let them retry
+  }
+
+  // Award points
+  const pts = pct === 100 ? 15 : 10;
+  state.score += pts;
+  if (!state.levels[currentLevel].stars[currentPuzzle]) {
+    state.levels[currentLevel].stars[currentPuzzle] = true;
+    state.totalStars++;
+  }
+
+  // Unlock next level if all puzzles starred
+  const allStarred = state.levels[currentLevel].stars.filter(Boolean).length >= lv.puzzles.length;
+  if (allStarred && currentLevel < LEVELS.length - 1) {
+    state.levels[currentLevel + 1].unlocked = true;
+  }
+
+  saveState();
+  updateScoreDisplay();
+
+  document.getElementById('validateBtn').classList.add('hidden');
+  document.getElementById('clearBtn').classList.add('hidden');
+  if (currentPuzzle < lv.puzzles.length - 1) {
+    document.getElementById('nextBtn').classList.remove('hidden');
+  } else {
+    document.getElementById('backToLevels').classList.remove('hidden');
+  }
+}
+
+function clearPlayerGrid() {
+  sndErase();
+  const lv = LEVELS[currentLevel];
+  const rows = lv.rows, cols = lv.cols;
+  const half = lv.type === 'mirror' ? cols / 2 : 0;
+  const cells = document.querySelectorAll('#playerGrid .cell');
+  let idx = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (lv.type === 'mirror' && c < half) { idx++; continue; }
+      playerGrid[r][c] = 'W';
+      cells[idx].style.background = COLORS['W'];
+      idx++;
+    }
+  }
+}
+
+function nextPuzzle() {
+  sndClick();
+  currentPuzzle++;
+  selectedColor = 'R';
+  renderPuzzle();
+}
+
+// ===== Init =====
+renderLevelSelect();
+</script>
+</body>
+</html>
