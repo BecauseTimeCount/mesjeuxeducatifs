@@ -1294,11 +1294,14 @@
             if (usedMoves <= optimalMoves) stars = 2;
 
             gameState.starsThisSession += stars;
-            gameState.totalStars += stars;
 
             const lvl = gameState.currentLevel;
-            const puzzleStars = gameState.bestScores[lvl] || 0;
-            gameState.bestScores[lvl] = puzzleStars + stars;
+            const prevBest = gameState.bestScores[lvl] || 0;
+            const newBest = Math.max(prevBest, gameState.starsThisSession);
+            if (newBest > prevBest) {
+                gameState.totalStars += (newBest - prevBest);
+                gameState.bestScores[lvl] = newBest;
+            }
 
             saveGame();
 

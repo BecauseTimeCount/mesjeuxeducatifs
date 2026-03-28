@@ -1027,11 +1027,9 @@ function placeInSlot(slotEl) {
         placedItems[position] = value;
         roundCorrectCount++;
         gameState.starsThisSession++;
-        gameState.totalStars++;
         updateGameBadge();
         playCorrect();
         setMascotMessage(randomFrom(ENCOURAGEMENTS));
-        saveGame();
 
         // Check if all placed
         if (Object.keys(placedItems).length === correctOrder.length) {
@@ -1098,11 +1096,9 @@ function placeInSeasonSlot(slotEl) {
 
         roundCorrectCount++;
         gameState.starsThisSession++;
-        gameState.totalStars++;
         updateGameBadge();
         playCorrect();
         setMascotMessage(randomFrom(ENCOURAGEMENTS));
-        saveGame();
 
         // Check if all 12 placed
         const filledCount = document.querySelectorAll('.season-slot.filled').length;
@@ -1189,11 +1185,9 @@ function answerQuiz(el) {
         document.querySelectorAll('.quiz-option').forEach(o => o.classList.add('disabled'));
 
         gameState.starsThisSession++;
-        gameState.totalStars++;
         updateGameBadge();
         playCorrect();
         setMascotMessage(randomFrom(ENCOURAGEMENTS));
-        saveGame();
 
         setTimeout(() => nextRound(), 1200);
     } else {
@@ -1206,36 +1200,53 @@ function answerQuiz(el) {
 }
 
 // ===== FINISH LEVEL =====
+function getMaxStars(level) {
+    if (level === 1) return LEVELS[0].rounds * DAYS.length;       // 5 * 7 = 35
+    if (level === 2) return LEVELS[1].rounds * MONTHS.length;     // 3 * 12 = 36
+    if (level === 3) return LEVELS[2].rounds * 12;                // 1 * 12 = 12
+    if (level === 4) return LEVELS[3].rounds;                     // 10
+    return 1;
+}
+
 function finishLevel() {
-    const stars = gameState.starsThisSession;
+    const sessionScore = gameState.starsThisSession;
     const level = gameState.currentLevel;
 
-    if (stars > (gameState.bestScores[level] || 0)) {
-        gameState.bestScores[level] = stars;
+    // Update totalStars with diff (no inflation)
+    const prevBest = gameState.bestScores[level] || 0;
+    if (sessionScore > prevBest) {
+        gameState.totalStars += (sessionScore - prevBest);
+        gameState.bestScores[level] = sessionScore;
     }
 
-    // Unlock next level
-    if (level < 4 && !gameState.unlockedLevels.includes(level + 1)) {
+    // Unlock next level only if score >= 60%
+    const maxStars = getMaxStars(level);
+    const passed = sessionScore >= Math.ceil(maxStars * 0.6);
+    if (passed && level < 4 && !gameState.unlockedLevels.includes(level + 1)) {
         gameState.unlockedLevels.push(level + 1);
     }
 
     saveGame();
-    showCelebration(stars, level);
+    showCelebration(sessionScore, level, passed);
 }
 
-function showCelebration(stars, level) {
+function showCelebration(stars, level, passed) {
     showScreen('celebrationScreen');
     playCelebration();
 
-    const messages = [
-        'Tu connais bien les jours !',
-        'Les mois n\'ont plus de secret !',
-        'Les saisons, c\'est facile !',
-        'Tu es un champion du temps !'
-    ];
-
-    document.getElementById('celTitle').textContent = 'Bravo !';
-    document.getElementById('celSubtitle').textContent = messages[level - 1] || 'Tres bien !';
+    if (passed) {
+        const messages = [
+            'Tu connais bien les jours !',
+            'Les mois n\'ont plus de secret !',
+            'Les saisons, c\'est facile !',
+            'Tu es un champion du temps !'
+        ];
+        document.getElementById('celTitle').textContent = 'Bravo !';
+        document.getElementById('celSubtitle').textContent = messages[level - 1] || 'Tres bien !';
+    } else {
+        document.getElementById('celTitle').textContent = 'Bien essaye !';
+        document.getElementById('celSubtitle').textContent = 'Continue a t\'entrainer, tu vas y arriver !';
+    }
 
     // Stars display
     const display = document.getElementById('starsDisplay');
@@ -1261,7 +1272,7 @@ function showCelebration(stars, level) {
 
     // Continue button logic
     const continueBtn = document.getElementById('celContinue');
-    if (level < 4 && gameState.unlockedLevels.includes(level + 1)) {
+    if (passed && level < 4 && gameState.unlockedLevels.includes(level + 1)) {
         continueBtn.style.display = 'inline-block';
         continueBtn.textContent = 'Niveau suivant';
     } else if (level === 4) {
@@ -1269,7 +1280,7 @@ function showCelebration(stars, level) {
         continueBtn.textContent = 'Rejouer';
     } else {
         continueBtn.style.display = 'inline-block';
-        continueBtn.textContent = 'Continuer';
+        continueBtn.textContent = 'Reessayer';
     }
 
     // Confetti
@@ -1278,10 +1289,10 @@ function showCelebration(stars, level) {
 
 function continueAfterCelebration() {
     const level = gameState.currentLevel;
-    if (level < 4) {
+    if (level < 4 && gameState.unlockedLevels.includes(level + 1)) {
         startLevel(level + 1);
     } else {
-        startLevel(1);
+        startLevel(level);
     }
 }
 

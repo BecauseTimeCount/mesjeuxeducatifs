@@ -1615,12 +1615,12 @@
             const level = gameState.currentLevel;
             const stars = gameState.starsThisSession;
 
-            // Update best score
-            if (stars > gameState.bestScores[level]) {
+            // Update best score (delta only)
+            const prevBest = gameState.bestScores[level] || 0;
+            if (stars > prevBest) {
+                gameState.totalStars += (stars - prevBest);
                 gameState.bestScores[level] = stars;
             }
-
-            gameState.totalStars += stars;
 
             // Unlock next level if scored at least 6/10 or 4/6
             const threshold = (level <= 2) ? 6 : 4;

@@ -644,20 +644,9 @@ function renderLevel4(gc) {
 function updateSlots() {
   const sub = SUBJECTS[slotIdx[0]];
   document.getElementById('slot-val-0').textContent = sub.text;
-  // Show the raw verb form as user picks — they must find the right combo
   const verb = VERBS[slotIdx[1]];
-  // Show both forms and let them pick? No — show form based on current subject for feedback
-  // Actually for the game to work, we show the verb conjugation matching the subject
-  // But the child needs to verify it's correct. Let's show raw verb and they validate agreement.
-  // Better approach: show the verb as-is (singular form) and user must match subject number
-  // Simplest: always show the singular form, child must pair singular subject with it
-  // Actually let's just show the verb in the form matching current subject, and randomly
-  // sometimes mismatch to create wrong combos.
-
-  // New approach: column 1 shows verb in a fixed form (alternating s/p per index),
-  // so child must scroll subject to match.
-  // Let's show verb independently: even index=singular, odd index=plural form
-  const verbDisplay = slotIdx[1] % 2 === 0 ? verb.s : verb.p;
+  // Afficher la forme du verbe correspondant au sujet selectionne
+  const verbDisplay = sub.num === 'p' ? verb.p : verb.s;
   document.getElementById('slot-val-1').textContent = verbDisplay;
   document.getElementById('slot-val-2').textContent = COMPLEMENTS[slotIdx[2]];
 }
