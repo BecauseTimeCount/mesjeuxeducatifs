@@ -220,6 +220,43 @@
             font-size: 1.5rem;
         }
 
+        /* ===== CATEGORY TABS ===== */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .category-tab {
+            background: rgba(255,255,255,0.7);
+            border: 3px solid transparent;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .category-tab:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .category-tab.active {
+            background: white;
+            border-color: #3498db;
+            color: #3498db;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
         /* ===== GAMES GRID ===== */
         .games-grid {
             display: grid;
@@ -261,14 +298,9 @@
             border-color: var(--card-color);
         }
 
-        .game-card.lettres { --card-color: #e74c3c; }
-        .game-card.calculs { --card-color: #3498db; }
-        .game-card.images { --card-color: #2ecc71; }
-        .game-card.temps { --card-color: #9b59b6; }
-        .game-card.mots-images { --card-color: #00BCD4; }
-        .game-card.syllabes { --card-color: #FF7043; }
-        .game-card.logique { --card-color: #5C6BC0; }
-        .game-card.sudoku { --card-color: #E91E63; }
+        .game-card.hidden {
+            display: none;
+        }
 
         .game-icon {
             font-size: 4rem;
@@ -283,16 +315,6 @@
             50% { transform: translateY(-10px); }
         }
 
-        .game-card:nth-child(1) .game-icon { --delay: 0s; }
-        .game-card:nth-child(2) .game-icon { --delay: 0.2s; }
-        .game-card:nth-child(3) .game-icon { --delay: 0.4s; }
-        .game-card:nth-child(4) .game-icon { --delay: 0.6s; }
-        .game-card:nth-child(5) .game-icon { --delay: 0.8s; }
-        .game-card:nth-child(6) .game-icon { --delay: 1.0s; }
-        .game-card:nth-child(7) .game-icon { --delay: 1.2s; }
-        .game-card:nth-child(8) .game-icon { --delay: 1.4s; }
-        .game-card:nth-child(9) .game-icon { --delay: 1.6s; }
-
         .game-title {
             font-size: 1.5rem;
             font-weight: 800;
@@ -305,6 +327,18 @@
             color: #666;
             margin-bottom: 15px;
             line-height: 1.4;
+        }
+
+        .game-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            background: var(--card-color);
+            opacity: 0.8;
         }
 
         .game-score {
@@ -587,6 +621,14 @@
                 margin-left: 5px;
                 margin-right: 5px;
             }
+
+            .category-tabs {
+                gap: 6px;
+            }
+
+            .category-tab {
+                padding: 8px 14px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -621,9 +663,7 @@
     </header>
 
     <!-- Profile Bar -->
-    <div class="profile-bar" id="profileBar">
-        <!-- Profile buttons rendered by JS -->
-    </div>
+    <div class="profile-bar" id="profileBar"></div>
 
     <!-- Profile Form (create/edit) -->
     <div class="profile-form" id="profileForm">
@@ -644,64 +684,11 @@
         </div>
     </section>
 
-    <!-- Games Grid -->
-    <main class="games-grid">
-        <a href="trouve-la-lettre.html" class="game-card lettres">
-            <span class="game-icon">🔤</span>
-            <h2 class="game-title">Trouve la Lettre</h2>
-            <p class="game-description">Apprends l'alphabet en retrouvant les lettres !</p>
-            <div class="game-score">⭐ <span id="scoreLettres">0</span></div>
-        </a>
+    <!-- Category Tabs -->
+    <nav class="category-tabs" id="categoryTabs"></nav>
 
-        <a href="calcul-aventure.html" class="game-card calculs">
-            <span class="game-icon">🔢</span>
-            <h2 class="game-title">Calcul Aventure</h2>
-            <p class="game-description">Deviens un champion des additions et soustractions !</p>
-            <div class="game-score">⭐ <span id="scoreCalculs">0</span></div>
-        </a>
-
-        <a href="premiere-lettre.html" class="game-card images">
-            <span class="game-icon">🖼️</span>
-            <h2 class="game-title">Premiere Lettre</h2>
-            <p class="game-description">Trouve la premiere lettre des images !</p>
-            <div class="game-score">⭐ <span id="scoreImages">0</span></div>
-        </a>
-
-        <a href="le-temps-qui-passe.html" class="game-card temps">
-            <span class="game-icon">🕐</span>
-            <h2 class="game-title">Le Temps qui Passe</h2>
-            <p class="game-description">Decouvre les heures et les moments de la journee !</p>
-            <div class="game-score">⭐ <span id="scoreTemps">0</span></div>
-        </a>
-
-        <a href="mots-et-images.html" class="game-card mots-images">
-            <span class="game-icon">📖</span>
-            <h2 class="game-title">Mots et Images</h2>
-            <p class="game-description">Associe les mots a leurs images !</p>
-            <div class="game-score">⭐ <span id="scoreMotsImages">0</span></div>
-        </a>
-
-        <a href="les-syllabes.html" class="game-card syllabes">
-            <span class="game-icon">🔊</span>
-            <h2 class="game-title">Les Syllabes</h2>
-            <p class="game-description">Decouvre les syllabes et recompose les mots !</p>
-            <div class="game-score">⭐ <span id="scoreSyllabes">0</span></div>
-        </a>
-
-        <a href="suite-logique.html" class="game-card logique">
-            <span class="game-icon">🧠</span>
-            <h2 class="game-title">Suite Logique</h2>
-            <p class="game-description">Trouve la suite et developpe ta logique !</p>
-            <div class="game-score">⭐ <span id="scoreLogique">0</span></div>
-        </a>
-
-        <a href="sudoku-des-petits.html" class="game-card sudoku">
-            <span class="game-icon">🧩</span>
-            <h2 class="game-title">Sudoku des Petits</h2>
-            <p class="game-description">Complete les grilles avec ta reflexion !</p>
-            <div class="game-score">⭐ <span id="scoreSudoku">0</span></div>
-        </a>
-    </main>
+    <!-- Games Grid (generated dynamically) -->
+    <main class="games-grid" id="gamesGrid"></main>
 
     <!-- Settings Toggle -->
     <button class="settings-toggle" onclick="toggleSettings()">⚙️ Parametres</button>
@@ -712,40 +699,7 @@
 
         <div class="settings-section">
             <div class="settings-section-title">Remettre a zero un jeu</div>
-            <div class="reset-game-list">
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🔤 Trouve la Lettre</span>
-                    <button class="btn-reset" onclick="confirmResetGame('lettres')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🔢 Calcul Aventure</span>
-                    <button class="btn-reset" onclick="confirmResetGame('calculs')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🖼️ Premiere Lettre</span>
-                    <button class="btn-reset" onclick="confirmResetGame('images')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🕐 Le Temps qui Passe</span>
-                    <button class="btn-reset" onclick="confirmResetGame('temps')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">📖 Mots et Images</span>
-                    <button class="btn-reset" onclick="confirmResetGame('motsImages')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🔊 Les Syllabes</span>
-                    <button class="btn-reset" onclick="confirmResetGame('syllabes')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🧠 Suite Logique</span>
-                    <button class="btn-reset" onclick="confirmResetGame('logique')">Reset</button>
-                </div>
-                <div class="reset-game-row">
-                    <span class="reset-game-name">🧩 Sudoku des Petits</span>
-                    <button class="btn-reset" onclick="confirmResetGame('sudoku')">Reset</button>
-                </div>
-            </div>
+            <div class="reset-game-list" id="resetGameList"></div>
         </div>
 
         <div class="settings-section">
@@ -779,20 +733,149 @@
     </footer>
 
     <script>
-        // ===== GAME KEYS MAPPING =====
-        // Each game has: a full state key (JSON) and a score key (simple integer string)
+        // ===== GAME REGISTRY =====
+        // Single source of truth: add a new game = add an entry here
         const GAMES = {
-            lettres:    { stateKey: 'trouveLaLettre',  scoreKey: 'lettresScore',        displayId: 'scoreLettres' },
-            calculs:    { stateKey: 'calculAventure',   scoreKey: 'calculScore',          displayId: 'scoreCalculs' },
-            images:     { stateKey: 'premiereLettre',   scoreKey: 'premiereLettreScore',  displayId: 'scoreImages' },
-            temps:      { stateKey: 'tempsQuiPasse',    scoreKey: 'tempsScore',           displayId: 'scoreTemps' },
-            motsImages: { stateKey: 'motsEtImages',     scoreKey: 'motsImagesScore',      displayId: 'scoreMotsImages' },
-            syllabes:   { stateKey: 'lesSyllabes',      scoreKey: 'syllabesScore',        displayId: 'scoreSyllabes' },
-            logique:    { stateKey: 'suiteLogique',      scoreKey: 'logiqueScore',         displayId: 'scoreLogique' },
-            sudoku:     { stateKey: 'sudokuDesPetits',   scoreKey: 'sudokuScore',          displayId: 'scoreSudoku' }
+            lettres: {
+                stateKey: 'trouveLaLettre', scoreKey: 'lettresScore',
+                title: 'Trouve la Lettre', icon: '🔤', color: '#e74c3c',
+                description: 'Apprends l\'alphabet en retrouvant les lettres !',
+                href: 'trouve-la-lettre.html', category: 'francais'
+            },
+            calculs: {
+                stateKey: 'calculAventure', scoreKey: 'calculScore',
+                title: 'Calcul Aventure', icon: '🔢', color: '#3498db',
+                description: 'Deviens un champion des additions et soustractions !',
+                href: 'calcul-aventure.html', category: 'maths'
+            },
+            images: {
+                stateKey: 'premiereLettre', scoreKey: 'premiereLettreScore',
+                title: 'Premiere Lettre', icon: '🖼️', color: '#2ecc71',
+                description: 'Trouve la premiere lettre des images !',
+                href: 'premiere-lettre.html', category: 'francais'
+            },
+            temps: {
+                stateKey: 'tempsQuiPasse', scoreKey: 'tempsScore',
+                title: 'Le Temps qui Passe', icon: '🕐', color: '#9b59b6',
+                description: 'Decouvre les heures et les moments de la journee !',
+                href: 'le-temps-qui-passe.html', category: 'explorer'
+            },
+            motsImages: {
+                stateKey: 'motsEtImages', scoreKey: 'motsImagesScore',
+                title: 'Mots et Images', icon: '📖', color: '#00BCD4',
+                description: 'Associe les mots a leurs images !',
+                href: 'mots-et-images.html', category: 'francais'
+            },
+            syllabes: {
+                stateKey: 'lesSyllabes', scoreKey: 'syllabesScore',
+                title: 'Les Syllabes', icon: '🔊', color: '#FF7043',
+                description: 'Decouvre les syllabes et recompose les mots !',
+                href: 'les-syllabes.html', category: 'francais'
+            },
+            logique: {
+                stateKey: 'suiteLogique', scoreKey: 'logiqueScore',
+                title: 'Suite Logique', icon: '🧠', color: '#5C6BC0',
+                description: 'Trouve la suite et developpe ta logique !',
+                href: 'suite-logique.html', category: 'logique'
+            },
+            sudoku: {
+                stateKey: 'sudokuDesPetits', scoreKey: 'sudokuScore',
+                title: 'Sudoku des Petits', icon: '🧩', color: '#E91E63',
+                description: 'Complete les grilles avec ta reflexion !',
+                href: 'sudoku-des-petits.html', category: 'logique'
+            },
+            semaine: {
+                stateKey: 'maSemaineEnOrdre', scoreKey: 'semaineScore',
+                title: 'Ma Semaine en Ordre', icon: '📅', color: '#8E24AA',
+                description: 'Apprends les jours, les mois et les saisons !',
+                href: 'ma-semaine-en-ordre.html', category: 'explorer'
+            },
+            journeeLeo: {
+                stateKey: 'laJourneeDeLeo', scoreKey: 'journeeLeoScore',
+                title: 'La Journee de Leo', icon: '🌅', color: '#F57C00',
+                description: 'Decouvre ce que fait Leo a chaque moment de la journee !',
+                href: 'la-journee-de-leo.html', category: 'explorer'
+            },
+            robotQuadrillage: {
+                stateKey: 'robotQuadrillage', scoreKey: 'robotScore',
+                title: 'Robot Quadrillage', icon: '🤖', color: '#00897B',
+                description: 'Programme le robot pour atteindre le tresor !',
+                href: 'robot-quadrillage.html', category: 'maths'
+            },
+            planEcole: {
+                stateKey: 'lePlanDeLEcole', scoreKey: 'planEcoleScore',
+                title: 'Le Plan de l\'Ecole', icon: '🗺️', color: '#43A047',
+                description: 'Repere-toi dans l\'ecole avec gauche et droite !',
+                href: 'le-plan-de-lecole.html', category: 'explorer'
+            }
         };
 
-        // All localStorage keys that belong to games (for backup/restore)
+        // ===== CATEGORIES =====
+        const CATEGORIES = {
+            tous:     { label: 'Tous', icon: '🎮' },
+            francais: { label: 'Francais', icon: '📚' },
+            maths:    { label: 'Maths', icon: '🔢' },
+            explorer: { label: 'Explorer le Monde', icon: '🌍' },
+            logique:  { label: 'Logique', icon: '🧠' }
+        };
+
+        let activeCategory = 'tous';
+
+        // ===== DYNAMIC RENDERING =====
+        function renderCategoryTabs() {
+            const container = document.getElementById('categoryTabs');
+            let html = '';
+            Object.entries(CATEGORIES).forEach(([key, cat]) => {
+                html += `<button class="category-tab ${key === activeCategory ? 'active' : ''}" onclick="filterCategory('${key}')">${cat.icon} ${cat.label}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderGameCards() {
+            const container = document.getElementById('gamesGrid');
+            let html = '';
+            let index = 0;
+            Object.entries(GAMES).forEach(([id, game]) => {
+                const isHidden = activeCategory !== 'tous' && game.category !== activeCategory;
+                const catLabel = CATEGORIES[game.category] ? CATEGORIES[game.category].label : '';
+                html += `<a href="${game.href}" class="game-card ${isHidden ? 'hidden' : ''}" data-category="${game.category}" style="--card-color: ${game.color}; --delay: ${(index % 8) * 0.2}s">
+                    <span class="game-icon">${game.icon}</span>
+                    <div class="game-badge">${catLabel}</div>
+                    <h2 class="game-title">${game.title}</h2>
+                    <p class="game-description">${game.description}</p>
+                    <div class="game-score">⭐ <span id="score_${id}">0</span></div>
+                </a>`;
+                index++;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderResetList() {
+            const container = document.getElementById('resetGameList');
+            let html = '';
+            Object.entries(GAMES).forEach(([id, game]) => {
+                html += `<div class="reset-game-row">
+                    <span class="reset-game-name">${game.icon} ${game.title}</span>
+                    <button class="btn-reset" onclick="confirmResetGame('${id}')">Reset</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            renderCategoryTabs();
+
+            document.querySelectorAll('.game-card').forEach(card => {
+                if (cat === 'tous' || card.dataset.category === cat) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ===== HELPER: all game keys for backup/restore =====
         function getAllGameKeys() {
             const keys = ['playerName'];
             Object.values(GAMES).forEach(g => {
@@ -802,11 +885,6 @@
         }
 
         // ===== PROFILE SYSTEM =====
-        // Profiles are stored as:
-        //   jayjay_profiles = [{id: "abc123", name: "JayJay"}, ...]
-        //   jayjay_active = "abc123"
-        //   jayjay_profile_abc123 = JSON blob of all game localStorage data
-
         function generateId() {
             return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
         }
@@ -828,7 +906,6 @@
             localStorage.setItem('jayjay_active', id);
         }
 
-        // Save current game data into a profile backup
         function backupCurrentData(profileId) {
             const data = {};
             getAllGameKeys().forEach(key => {
@@ -838,11 +915,8 @@
             localStorage.setItem('jayjay_profile_' + profileId, JSON.stringify(data));
         }
 
-        // Restore a profile's data into the game keys
         function restoreProfileData(profileId) {
-            // Clear current game keys
             getAllGameKeys().forEach(key => localStorage.removeItem(key));
-
             const raw = localStorage.getItem('jayjay_profile_' + profileId);
             if (raw) {
                 const data = JSON.parse(raw);
@@ -854,17 +928,12 @@
 
         function switchToProfile(profileId) {
             const currentId = getActiveProfileId();
-
-            // Save current profile's data (if there is one)
             if (currentId) {
                 backupCurrentData(currentId);
             }
-
-            // Restore new profile's data
             restoreProfileData(profileId);
             setActiveProfileId(profileId);
 
-            // Update UI
             const profiles = getProfiles();
             const profile = profiles.find(p => p.id === profileId);
             if (profile) {
@@ -912,7 +981,6 @@
             const profiles = getProfiles();
 
             if (form.dataset.mode === 'edit') {
-                // Edit existing profile name
                 const activeId = getActiveProfileId();
                 const profile = profiles.find(p => p.id === activeId);
                 if (profile) {
@@ -922,7 +990,6 @@
                     document.getElementById('playerName').textContent = name;
                 }
             } else {
-                // Create new profile
                 const currentId = getActiveProfileId();
                 if (currentId) {
                     backupCurrentData(currentId);
@@ -932,7 +999,6 @@
                 profiles.push({ id: newId, name: name });
                 setProfiles(profiles);
 
-                // Clear game data for fresh profile
                 getAllGameKeys().forEach(key => localStorage.removeItem(key));
                 localStorage.setItem('playerName', name);
 
@@ -952,39 +1018,32 @@
             const activeId = getActiveProfileId();
 
             let html = '';
-
             profiles.forEach(p => {
                 const isActive = p.id === activeId;
                 html += `<button class="profile-btn ${isActive ? 'active' : ''}" onclick="switchToProfile('${p.id}')">${p.name}</button>`;
             });
 
-            // Edit current name button
             if (activeId) {
                 html += `<button class="profile-btn" onclick="showProfileForm(true)" title="Modifier le prenom">✏️</button>`;
             }
 
-            // Add new profile button
             html += `<button class="profile-btn add-profile" onclick="showProfileForm(false)">+ Ajouter</button>`;
-
             bar.innerHTML = html;
 
-            // Update delete button visibility
             const deleteBtn = document.getElementById('btnDeleteProfile');
             if (deleteBtn) {
                 deleteBtn.style.display = profiles.length > 1 ? 'block' : 'none';
             }
         }
 
-        // ===== MIGRATION: handle existing data without profiles =====
+        // ===== MIGRATION =====
         function migrateIfNeeded() {
             const profiles = getProfiles();
             if (profiles.length === 0) {
-                // First time with profile system — create a profile from existing data
                 const existingName = localStorage.getItem('playerName') || '';
                 const newId = generateId();
 
                 if (existingName) {
-                    // Backup existing data under new profile
                     const data = {};
                     getAllGameKeys().forEach(key => {
                         const val = localStorage.getItem(key);
@@ -994,7 +1053,6 @@
                     setProfiles([{ id: newId, name: existingName }]);
                     setActiveProfileId(newId);
                 } else {
-                    // No existing data — show form to create first profile
                     setProfiles([]);
                     showProfileForm(false);
                 }
@@ -1004,9 +1062,9 @@
         // ===== SCORE MANAGEMENT =====
         function loadScores() {
             let total = 0;
-            Object.values(GAMES).forEach(game => {
+            Object.entries(GAMES).forEach(([id, game]) => {
                 const score = parseInt(localStorage.getItem(game.scoreKey)) || 0;
-                const el = document.getElementById(game.displayId);
+                const el = document.getElementById('score_' + id);
                 if (el) el.textContent = score;
                 total += score;
             });
@@ -1021,7 +1079,6 @@
             localStorage.removeItem(game.scoreKey);
             loadScores();
 
-            // Also update backup
             const activeId = getActiveProfileId();
             if (activeId) backupCurrentData(activeId);
 
@@ -1044,16 +1101,12 @@
         function deleteCurrentProfile() {
             const profiles = getProfiles();
             const activeId = getActiveProfileId();
-            if (profiles.length <= 1) return; // Can't delete last profile
+            if (profiles.length <= 1) return;
 
-            // Remove profile data
             localStorage.removeItem('jayjay_profile_' + activeId);
-
-            // Remove from list
             const remaining = profiles.filter(p => p.id !== activeId);
             setProfiles(remaining);
 
-            // Switch to first remaining profile
             switchToProfile(remaining[0].id);
             showToast('Profil supprime !');
         }
@@ -1078,12 +1131,9 @@
         }
 
         function confirmResetGame(gameId) {
-            const names = {
-                lettres: 'Trouve la Lettre', calculs: 'Calcul Aventure', images: 'Premiere Lettre',
-                temps: 'Le Temps qui Passe', motsImages: 'Mots et Images',
-                syllabes: 'Les Syllabes', logique: 'Suite Logique', sudoku: 'Sudoku des Petits'
-            };
-            showConfirm('Remettre a zero "' + names[gameId] + '" ?', () => resetGame(gameId));
+            const game = GAMES[gameId];
+            if (!game) return;
+            showConfirm('Remettre a zero "' + game.title + '" ?', () => resetGame(gameId));
         }
 
         function confirmResetAll() {
@@ -1168,14 +1218,16 @@
                 }
             }
 
+            // Render dynamic content
+            renderCategoryTabs();
+            renderGameCards();
+            renderResetList();
             renderProfileBar();
             loadScores();
 
-            // Refresh scores periodically
             setInterval(loadScores, 2000);
         });
 
-        // Reload scores when page becomes visible
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) loadScores();
         });

@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Le Plan de l'Ecole - Jeu Educatif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #43A047 0%, #C8E6C9 100%);
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* === ECRANS === */
+        .screen {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 15px;
+            animation: fadeIn 0.5s ease;
+            overflow: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-to-menu {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #666;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
+        }
+
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        /* === ACCUEIL === */
+        .mascot {
+            font-size: 4rem;
+            animation: wave 2s ease infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        .title {
+            font-size: clamp(1.8rem, 7vw, 3.2rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #2E7D32, #43A047, #1B5E20, #66BB6A);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .animated-icons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .animated-icon {
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            animation: bounce 2s ease infinite;
+        }
+
+        .animated-icon:nth-child(1) { animation-delay: 0s; }
+        .animated-icon:nth-child(2) { animation-delay: 0.3s; }
+        .animated-icon:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .play-btn {
+            background: linear-gradient(145deg, #43A047, #2E7D32);
+            color: white;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 700;
+            padding: 20px 55px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(67, 160, 71, 0.4),
+                        inset 0 -4px 0 rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .play-btn:hover, .play-btn:active {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(67, 160, 71, 0.5);
+        }
+
+        .play-btn:active {
+            transform: scale(0.98);
+        }
+
+        .stats-display {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2E7D32;
+        }
+
+        .level-select {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 500px;
+        }
+
+        .level-btn {
+            background: white;
+            border: 3px solid #C8E6C9;
+            padding: 10px 16px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #2E7D32;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .level-btn:hover { transform: scale(1.05); }
+
+        .level-btn.unlocked { border-color: #43A047; }
+
+        .level-btn.locked {
+            opacity: 0.5;
+            pointer-events: none;
+            color: #999;
+            border-color: #ddd;
+        }
+
+        .level-btn.current {
+            background: linear-gradient(145deg, #43A047, #2E7D32);
+            color: white;
+            border-color: #2E7D32;
+        }
+
+        /* === ECRAN DE JEU === */
+        .screen.game-screen {
+            padding: 8px;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        .home-btn {
+            background: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-btn:hover { transform: scale(1.1); }
+
+        .score-display {
+            background: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #FFB800;
+        }
+
+        .level-display {
+            background: linear-gradient(145deg, #43A047, #2E7D32);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 700px;
+            height: 10px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 5px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD54F, #FFB300);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* === QUESTION PANEL === */
+        .question-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 12px 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .question-text {
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            font-weight: 700;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .steps-info {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* === GAME AREA (grid + optional side panel) === */
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        /* === SCHOOL GRID === */
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: clamp(2px, 0.5vw, 4px);
+            width: clamp(250px, 65vw, 500px);
+            height: clamp(250px, 65vw, 500px);
+            background: #795548;
+            padding: clamp(3px, 0.5vw, 5px);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .grid-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .grid-cell .cell-emoji {
+            font-size: clamp(1.2rem, 3.5vw, 2.2rem);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .grid-cell .cell-label {
+            font-size: clamp(0.4rem, 1.2vw, 0.65rem);
+            font-weight: 700;
+            color: rgba(0,0,0,0.6);
+            text-align: center;
+            line-height: 1;
+            pointer-events: none;
+            margin-top: 1px;
+        }
+
+        /* Room type colors */
+        .cell-entree { background: #FFECB3; }
+        .cell-jardin { background: #C8E6C9; }
+        .cell-bureau { background: #D1C4E9; }
+        .cell-toilettes { background: #B3E5FC; }
+        .cell-biblio { background: #FFE0B2; }
+        .cell-couloir { background: #f0f0f0; }
+        .cell-arts { background: #F8BBD0; }
+        .cell-classe1 { background: #DCEDC8; }
+        .cell-cour { background: #FFF9C4; }
+        .cell-classe2 { background: #DCEDC8; }
+        .cell-musique { background: #E1BEE7; }
+        .cell-sciences { background: #B2EBF2; }
+        .cell-cantine { background: #FFCCBC; }
+        .cell-preau { background: #FFF9C4; }
+        .cell-sortie { background: #CFD8DC; }
+
+        .grid-cell:hover {
+            filter: brightness(0.92);
+            transform: scale(1.03);
+        }
+
+        .grid-cell.correct-cell {
+            background: #A5D6A7 !important;
+            animation: correctPulse 0.5s ease;
+            box-shadow: inset 0 0 0 3px #2E7D32;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .grid-cell.wrong-cell {
+            animation: gentleShake 0.4s ease;
+        }
+
+        @keyframes gentleShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        .grid-cell.character-cell {
+            box-shadow: inset 0 0 0 3px #FFB300;
+            z-index: 2;
+        }
+
+        .grid-cell.target-cell {
+            animation: targetPulse 1.5s ease infinite;
+        }
+
+        @keyframes targetPulse {
+            0%, 100% { box-shadow: inset 0 0 0 2px #E91E63; }
+            50% { box-shadow: inset 0 0 12px rgba(233, 30, 99, 0.4); }
+        }
+
+        .grid-cell.highlight-cell {
+            animation: highlightPulse 1s ease infinite;
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { box-shadow: inset 0 0 0 2px #2196F3; }
+            50% { box-shadow: inset 0 0 10px rgba(33, 150, 243, 0.3); }
+        }
+
+        .grid-cell.path-cell {
+            background: #E8F5E9 !important;
+        }
+
+        .character-overlay {
+            position: absolute;
+            font-size: clamp(1.4rem, 4vw, 2.5rem);
+            z-index: 5;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+        }
+
+        /* === DIRECTION BUTTONS (Level 3) === */
+        .direction-controls {
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left . right"
+                ". down .";
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .dir-btn {
+            width: clamp(55px, 14vw, 75px);
+            height: clamp(55px, 14vw, 75px);
+            border: none;
+            border-radius: 16px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .dir-btn:active { transform: scale(0.9); }
+
+        .dir-up { grid-area: up; background: linear-gradient(145deg, #42A5F5, #1E88E5); color: white; }
+        .dir-down { grid-area: down; background: linear-gradient(145deg, #42A5F5, #1E88E5); color: white; }
+        .dir-left { grid-area: left; background: linear-gradient(145deg, #42A5F5, #1E88E5); color: white; }
+        .dir-right { grid-area: right; background: linear-gradient(145deg, #42A5F5, #1E88E5); color: white; }
+
+        /* === MULTIPLE CHOICE (Level 4) === */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 8px;
+        }
+
+        .choice-btn {
+            background: white;
+            border: 3px solid #C8E6C9;
+            border-radius: 16px;
+            padding: 14px 20px;
+            font-size: clamp(0.9rem, 2.8vw, 1.1rem);
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            text-align: left;
+            min-height: 48px;
+        }
+
+        .choice-btn:hover {
+            transform: scale(1.02);
+            border-color: #43A047;
+            background: #f9fff9;
+        }
+
+        .choice-btn:active { transform: scale(0.98); }
+
+        .choice-btn.correct-choice {
+            background: #C8E6C9 !important;
+            border-color: #2E7D32 !important;
+        }
+
+        .choice-btn.wrong-choice {
+            animation: gentleShake 0.4s ease;
+            opacity: 0.6;
+        }
+
+        /* === CELEBRATION SCREEN === */
+        .celebration-screen {
+            background: linear-gradient(180deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+        }
+
+        .celebration-stars {
+            font-size: clamp(3rem, 12vw, 5rem);
+            animation: bounce 1s ease infinite;
+        }
+
+        .celebration-title {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 800;
+            color: #FFE066;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 15px 0;
+        }
+
+        .celebration-message {
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            color: white;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .celebration-score {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: #FFD54F;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .continue-btn {
+            background: linear-gradient(145deg, #FFD54F, #FFB300);
+            color: #333;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 700;
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 179, 0, 0.4);
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .continue-btn:hover { transform: scale(1.05); }
+        .continue-btn:active { transform: scale(0.98); }
+
+        .home-from-celebration {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 30px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .home-from-celebration:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* === FEEDBACK MESSAGE === */
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 20px 40px;
+            border-radius: 25px;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 800;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 200;
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
+
+        .feedback-message.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .feedback-message.positive { color: #2E7D32; }
+        .feedback-message.encourage { color: #F57C00; }
+
+        /* === LEVEL UP OVERLAY === */
+        .level-up-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .level-up-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .level-up-text {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            color: #FFE66D;
+            font-weight: 800;
+            animation: levelUpBounce 0.5s ease;
+        }
+
+        @keyframes levelUpBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .level-up-stars {
+            font-size: 4rem;
+            margin-top: 20px;
+        }
+
+        /* === CONFETTI === */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 150;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            top: -10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                top: 110vh;
+                transform: rotate(720deg);
+            }
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 360px) {
+            .grid-cell .cell-label { display: none; }
+            .school-grid { width: clamp(240px, 90vw, 280px); height: clamp(240px, 90vw, 280px); }
+        }
+
+        @media (max-width: 480px) {
+            .grid-cell .cell-label { font-size: 0.35rem; }
+        }
+
+        @media (min-width: 768px) and (orientation: landscape) {
+            .game-area {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+            }
+
+            .question-panel {
+                max-width: 300px;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .school-grid {
+                width: clamp(300px, 55vw, 480px);
+                height: clamp(300px, 55vw, 480px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ecran d'accueil -->
+    <div id="home-screen" class="screen active">
+        <a href="index.html" class="back-to-menu">&larr; Mes Jeux</a>
+        <div class="mascot">&#x1F5FA;&#xFE0F;</div>
+        <h1 class="title">Le Plan de l'Ecole</h1>
+        <div class="animated-icons">
+            <span class="animated-icon">&#x1F3EB;</span>
+            <span class="animated-icon">&#x1F9D2;</span>
+            <span class="animated-icon">&#x1F5FA;&#xFE0F;</span>
+        </div>
+        <button class="play-btn" onclick="startGame()">&#x1F3AE; Jouer</button>
+        <div class="stats-display">
+            <div class="stat-item">
+                <div class="stat-label">Etoiles</div>
+                <div class="stat-value" id="total-stars">0 &#x2B50;</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Niveau</div>
+                <div class="stat-value" id="current-level">1</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Record</div>
+                <div class="stat-value" id="best-score">0 &#x2B50;</div>
+            </div>
+        </div>
+        <div class="level-select" id="level-select"></div>
+    </div>
+
+    <!-- Ecran de jeu -->
+    <div id="game-screen" class="screen game-screen">
+        <div class="game-header">
+            <button class="home-btn" onclick="goHome()">&#x1F3E0;</button>
+            <div class="level-display" id="game-level">Niveau 1</div>
+            <div class="score-display" id="game-score">0 &#x2B50;</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <div class="question-panel">
+            <div class="question-text" id="question-text">Question...</div>
+            <div class="steps-info" id="steps-info"></div>
+        </div>
+
+        <div class="game-area" id="game-area">
+            <div class="school-grid" id="school-grid"></div>
+            <div id="controls-area"></div>
+        </div>
+    </div>
+
+    <!-- Ecran de felicitations -->
+    <div id="celebration-screen" class="screen celebration-screen">
+        <div class="celebration-stars">&#x1F31F;&#x1F31F;&#x1F31F;</div>
+        <h2 class="celebration-title">Super Champion !</h2>
+        <div class="celebration-message" id="celebration-message">Tu as reussi ce niveau !</div>
+        <div class="celebration-score" id="celebration-score"></div>
+        <button class="continue-btn" onclick="continueToNextLevel()">Continuer &#x1F680;</button>
+        <button class="home-from-celebration" onclick="goHome()">&#x1F3E0; Accueil</button>
+        <a href="index.html" class="home-from-celebration" style="margin-top: 10px;">&larr; Mes Jeux</a>
+    </div>
+
+    <!-- Overlay de niveau superieur -->
+    <div class="level-up-overlay" id="level-up-overlay">
+        <div class="level-up-text" id="level-up-text">Niveau 2 !</div>
+        <div class="level-up-stars">&#x2B50;&#x1F31F;&#x2B50;</div>
+    </div>
+
+    <!-- Conteneur de confettis -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <!-- Message de feedback -->
+    <div class="feedback-message" id="feedback-message"></div>
+
+    <script>
+        // === SCHOOL MAP DEFINITION ===
+        const SCHOOL_MAP = [
+            [
+                { id: 'entree',    emoji: '\u{1F3EB}', label: 'Entree',    cls: 'cell-entree',    walkable: false },
+                { id: 'jardin1',   emoji: '\u{1F333}', label: 'Jardin',    cls: 'cell-jardin',    walkable: false },
+                { id: 'jardin2',   emoji: '\u{1F333}', label: 'Jardin',    cls: 'cell-jardin',    walkable: false },
+                { id: 'bureau',    emoji: '\u{1F3E2}', label: 'Bureau',    cls: 'cell-bureau',    walkable: false },
+                { id: 'toilettes', emoji: '\u{1F6BB}', label: 'Toilettes', cls: 'cell-toilettes', walkable: false }
+            ],
+            [
+                { id: 'biblio',    emoji: '\u{1F4DA}', label: 'Biblio',    cls: 'cell-biblio',    walkable: false },
+                { id: 'c01',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'c02',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'c03',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'arts',      emoji: '\u{1F3A8}', label: 'Arts',      cls: 'cell-arts',      walkable: false }
+            ],
+            [
+                { id: 'classe1',   emoji: '\u{1F4D0}', label: 'Classe 1',  cls: 'cell-classe1',   walkable: false },
+                { id: 'c10',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'cour',      emoji: '\u{1F3C3}', label: 'Cour',      cls: 'cell-cour',      walkable: false },
+                { id: 'c12',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'classe2',   emoji: '\u{1F4D0}', label: 'Classe 2',  cls: 'cell-classe2',   walkable: false }
+            ],
+            [
+                { id: 'musique',   emoji: '\u{1F3B5}', label: 'Musique',   cls: 'cell-musique',   walkable: false },
+                { id: 'c21',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'c22',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'c23',       emoji: '',           label: '',          cls: 'cell-couloir',   walkable: true },
+                { id: 'sciences',  emoji: '\u{1F52C}', label: 'Sciences',  cls: 'cell-sciences',  walkable: false }
+            ],
+            [
+                { id: 'cantine',   emoji: '\u{1F37D}\uFE0F', label: 'Cantine',  cls: 'cell-cantine',  walkable: false },
+                { id: 'jardin3',   emoji: '\u{1F333}', label: 'Jardin',    cls: 'cell-jardin',    walkable: false },
+                { id: 'preau',     emoji: '\u{1F3C3}', label: 'Preau',     cls: 'cell-preau',     walkable: false },
+                { id: 'jardin4',   emoji: '\u{1F333}', label: 'Jardin',    cls: 'cell-jardin',    walkable: false },
+                { id: 'sortie',    emoji: '\u{1F3E0}', label: 'Sortie',    cls: 'cell-sortie',    walkable: false }
+            ]
+        ];
+
+        // Named rooms for questions (id -> display name + position)
+        const ROOMS = {};
+        for (let r = 0; r < 5; r++) {
+            for (let c = 0; c < 5; c++) {
+                const cell = SCHOOL_MAP[r][c];
+                if (cell.label && !cell.walkable) {
+                    ROOMS[cell.id] = { name: cell.label, row: r, col: c, emoji: cell.emoji };
+                }
+            }
+        }
+
+        // === LEVEL DEFINITIONS ===
+
+        // Level 1: "Ou est...?"
+        const LEVEL1_QUESTIONS = [
+            { question: 'Ou est la Cantine ?', answer: 'cantine' },
+            { question: 'Ou est la Bibliotheque ?', answer: 'biblio' },
+            { question: 'Ou sont les Toilettes ?', answer: 'toilettes' },
+            { question: 'Ou est la Cour de recreation ?', answer: 'cour' },
+            { question: 'Ou est la salle de Musique ?', answer: 'musique' },
+            { question: 'Ou est la salle de Sciences ?', answer: 'sciences' },
+            { question: 'Ou est la salle des Arts ?', answer: 'arts' },
+            { question: 'Ou est la Classe 1 ?', answer: 'classe1' },
+            { question: 'Ou est la Classe 2 ?', answer: 'classe2' },
+            { question: 'Ou est le Bureau ?', answer: 'bureau' },
+            { question: 'Ou est l\'Entree ?', answer: 'entree' },
+            { question: 'Ou est la Sortie ?', answer: 'sortie' },
+            { question: 'Ou est le Preau ?', answer: 'preau' }
+        ];
+
+        // Level 2: relative positions — character placed, find what's left/right/above/below
+        function generateLevel2Questions() {
+            const questions = [];
+            const directions = [
+                { label: 'a GAUCHE', dr: 0, dc: -1 },
+                { label: 'a DROITE', dr: 0, dc: 1 },
+                { label: 'AU-DESSUS', dr: -1, dc: 0 },
+                { label: 'EN-DESSOUS', dr: 1, dc: 0 }
+            ];
+
+            // Pairs of (character position, direction) that yield a named room
+            const pairs = [];
+            for (let r = 0; r < 5; r++) {
+                for (let c = 0; c < 5; c++) {
+                    for (const dir of directions) {
+                        const nr = r + dir.dr;
+                        const nc = c + dir.dc;
+                        if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5) {
+                            const neighbor = SCHOOL_MAP[nr][nc];
+                            if (neighbor.label && !neighbor.walkable) {
+                                const current = SCHOOL_MAP[r][c];
+                                const currentName = current.label || 'le couloir';
+                                pairs.push({
+                                    charRow: r, charCol: c,
+                                    question: `Le personnage est ${current.label ? 'a ' + current.label : 'dans le couloir'}. Qu'est-ce qui se trouve ${dir.label} ?`,
+                                    answerRow: nr, answerCol: nc,
+                                    answerId: neighbor.id
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            return pairs;
+        }
+
+        // Level 3: navigate through corridors
+        const LEVEL3_CHALLENGES = [
+            { startId: 'entree', endId: 'cantine', desc: 'Va de l\'Entree a la Cantine' },
+            { startId: 'classe1', endId: 'classe2', desc: 'Va de la Classe 1 a la Classe 2' },
+            { startId: 'biblio', endId: 'arts', desc: 'Va de la Biblio aux Arts' },
+            { startId: 'musique', endId: 'sciences', desc: 'Va de la Musique aux Sciences' },
+            { startId: 'entree', endId: 'sortie', desc: 'Va de l\'Entree a la Sortie' }
+        ];
+
+        // Level 4: verbal directions — multiple choice
+        const LEVEL4_CHALLENGES = [
+            {
+                startId: 'biblio', endId: 'arts',
+                question: 'Pour aller de la Biblio aux Arts, il faut :',
+                choices: [
+                    'Aller tout droit a droite',
+                    'Descendre puis aller a droite',
+                    'Monter puis aller a gauche'
+                ],
+                correct: 0
+            },
+            {
+                startId: 'entree', endId: 'cantine',
+                question: 'Pour aller de l\'Entree a la Cantine, il faut :',
+                choices: [
+                    'Aller a droite puis descendre',
+                    'Descendre tout en bas',
+                    'Aller a gauche puis descendre'
+                ],
+                correct: 1
+            },
+            {
+                startId: 'musique', endId: 'sciences',
+                question: 'Pour aller de la Musique aux Sciences, il faut :',
+                choices: [
+                    'Monter puis aller a droite',
+                    'Aller tout droit a droite',
+                    'Descendre puis aller a droite'
+                ],
+                correct: 1
+            },
+            {
+                startId: 'classe1', endId: 'classe2',
+                question: 'Pour aller de la Classe 1 a la Classe 2, il faut :',
+                choices: [
+                    'Monter, aller a droite, puis descendre',
+                    'Aller tout droit a droite',
+                    'Descendre, aller a droite, puis monter'
+                ],
+                correct: 0
+            },
+            {
+                startId: 'cantine', endId: 'toilettes',
+                question: 'Pour aller de la Cantine aux Toilettes, il faut :',
+                choices: [
+                    'Aller a droite puis monter',
+                    'Monter tout en haut puis aller a droite',
+                    'Monter puis aller a droite puis monter'
+                ],
+                correct: 1
+            }
+        ];
+
+        // === GAME STATE ===
+        const gameState = {
+            currentLevel: 1,
+            totalStars: 0,
+            bestScores: { 1: 0, 2: 0, 3: 0, 4: 0 },
+            unlockedLevels: [1],
+            currentRound: 0,
+            starsThisSession: 0,
+            isAnswering: false,
+            // Level 3 specific
+            charRow: 0,
+            charCol: 0,
+            targetRow: 0,
+            targetCol: 0,
+            stepsUsed: 0,
+            maxSteps: 10,
+            // Question pools
+            questionPool: [],
+            questionIndex: 0
+        };
+
+        // === AUDIO ===
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioContext) return;
+            const now = audioContext.currentTime;
+
+            if (type === 'correct') {
+                playNote(523, now, 0.12);
+                playNote(659, now + 0.12, 0.12);
+                playNote(784, now + 0.24, 0.25);
+            } else if (type === 'encourage') {
+                playNote(440, now, 0.2, 0.3);
+            } else if (type === 'click') {
+                playNote(600, now, 0.05, 0.2);
+            } else if (type === 'move') {
+                playNote(500, now, 0.06, 0.15);
+            } else if (type === 'levelup') {
+                playNote(262, now, 0.1);
+                playNote(330, now + 0.1, 0.1);
+                playNote(392, now + 0.2, 0.1);
+                playNote(523, now + 0.3, 0.4);
+            } else if (type === 'victory') {
+                playNote(523, now, 0.15);
+                playNote(659, now + 0.15, 0.15);
+                playNote(784, now + 0.3, 0.15);
+                playNote(1047, now + 0.45, 0.4);
+            } else if (type === 'arrive') {
+                playNote(784, now, 0.15);
+                playNote(1047, now + 0.15, 0.3);
+            }
+        }
+
+        function playNote(frequency, startTime, duration, volume = 0.5) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(volume, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        }
+
+        // === SAVE / LOAD ===
+        function saveGame() {
+            localStorage.setItem('lePlanDeLEcole', JSON.stringify({
+                currentLevel: gameState.currentLevel,
+                totalStars: gameState.totalStars,
+                bestScores: gameState.bestScores,
+                unlockedLevels: gameState.unlockedLevels
+            }));
+            localStorage.setItem('planEcoleScore', gameState.totalStars.toString());
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('lePlanDeLEcole');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    gameState.currentLevel = data.currentLevel || 1;
+                    gameState.totalStars = data.totalStars || 0;
+                    gameState.bestScores = data.bestScores || { 1: 0, 2: 0, 3: 0, 4: 0 };
+                    gameState.unlockedLevels = data.unlockedLevels || [1];
+                } catch (e) {}
+            }
+            updateHomeStats();
+            renderLevelSelect();
+        }
+
+        function updateHomeStats() {
+            document.getElementById('total-stars').textContent = gameState.totalStars + ' \u2B50';
+            document.getElementById('current-level').textContent = gameState.currentLevel;
+            const bestForLevel = gameState.bestScores[gameState.currentLevel] || 0;
+            document.getElementById('best-score').textContent = bestForLevel + ' \u2B50';
+        }
+
+        // === NAVIGATION ===
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goHome() {
+            playSound('click');
+            showScreen('home-screen');
+            updateHomeStats();
+            renderLevelSelect();
+        }
+
+        // === LEVEL SELECT ===
+        const LEVEL_NAMES = {
+            1: 'Ou est... ?',
+            2: 'Gauche ou Droite ?',
+            3: 'Guide le Personnage',
+            4: 'Donne les Directions'
+        };
+
+        function renderLevelSelect() {
+            const container = document.getElementById('level-select');
+            container.innerHTML = '';
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'level-btn';
+                const isUnlocked = gameState.unlockedLevels.includes(i);
+                const isCurrent = i === gameState.currentLevel;
+
+                if (isCurrent) btn.classList.add('current');
+                else if (isUnlocked) btn.classList.add('unlocked');
+                else btn.classList.add('locked');
+
+                btn.textContent = isUnlocked ? LEVEL_NAMES[i] : '\u{1F512} ' + LEVEL_NAMES[i];
+                if (isUnlocked) {
+                    btn.onclick = () => {
+                        gameState.currentLevel = i;
+                        saveGame();
+                        updateHomeStats();
+                        renderLevelSelect();
+                        startGame();
+                    };
+                }
+                container.appendChild(btn);
+            }
+        }
+
+        // === UTILITY ===
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function getTotalForLevel(level) {
+            if (level === 1 || level === 2) return 10;
+            return 5;
+        }
+
+        function getThresholdForLevel(level) {
+            if (level === 1 || level === 2) return 7;
+            return 3;
+        }
+
+        // === RENDER GRID ===
+        function renderGrid(options = {}) {
+            const grid = document.getElementById('school-grid');
+            grid.innerHTML = '';
+
+            for (let r = 0; r < 5; r++) {
+                for (let c = 0; c < 5; c++) {
+                    const cellData = SCHOOL_MAP[r][c];
+                    const div = document.createElement('div');
+                    div.className = `grid-cell ${cellData.cls}`;
+                    div.dataset.row = r;
+                    div.dataset.col = c;
+                    div.dataset.id = cellData.id;
+
+                    // Corridors show a subtle dot
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.className = 'cell-emoji';
+                    emojiSpan.textContent = cellData.emoji || '\u00B7';
+
+                    div.appendChild(emojiSpan);
+
+                    if (cellData.label) {
+                        const labelSpan = document.createElement('span');
+                        labelSpan.className = 'cell-label';
+                        labelSpan.textContent = cellData.label;
+                        div.appendChild(labelSpan);
+                    }
+
+                    // Click handler
+                    if (options.onCellClick) {
+                        div.addEventListener('click', () => options.onCellClick(r, c, cellData));
+                    }
+
+                    grid.appendChild(div);
+                }
+            }
+
+            // Character overlay
+            if (options.showCharacter) {
+                const charEl = document.createElement('div');
+                charEl.className = 'character-overlay';
+                charEl.id = 'character';
+                charEl.textContent = '\u{1F9D2}';
+                grid.appendChild(charEl);
+                positionCharacter(options.charRow, options.charCol);
+            }
+        }
+
+        function positionCharacter(row, col) {
+            const charEl = document.getElementById('character');
+            if (!charEl) return;
+            const cellSize = 100 / 5; // percentage
+            charEl.style.left = `${col * cellSize + cellSize / 2}%`;
+            charEl.style.top = `${row * cellSize + cellSize / 2}%`;
+            charEl.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function getCellElement(row, col) {
+            return document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
+        }
+
+        function highlightCell(row, col, className) {
+            const cell = getCellElement(row, col);
+            if (cell) cell.classList.add(className);
+        }
+
+        function clearAllHighlights() {
+            document.querySelectorAll('.grid-cell').forEach(c => {
+                c.classList.remove('correct-cell', 'wrong-cell', 'character-cell', 'target-cell', 'highlight-cell', 'path-cell');
+            });
+        }
+
+        // === FEEDBACK ===
+        const POSITIVE_MESSAGES = [
+            'Bravo !', 'Super !', 'Genial !', 'Excellent !', 'Magnifique !',
+            'Tres bien !', 'Parfait !', 'Champion !', 'Formidable !', 'Fantastique !'
+        ];
+
+        const ENCOURAGE_MESSAGES = [
+            'Essaie encore !', 'Presque !', 'Continue !', 'Tu vas y arriver !', 'Cherche bien !'
+        ];
+
+        function showFeedback(positive) {
+            const el = document.getElementById('feedback-message');
+            const msgs = positive ? POSITIVE_MESSAGES : ENCOURAGE_MESSAGES;
+            el.textContent = positive ? '\u2B50 ' + msgs[Math.floor(Math.random() * msgs.length)] : msgs[Math.floor(Math.random() * msgs.length)];
+            el.className = 'feedback-message ' + (positive ? 'positive' : 'encourage');
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 1200);
+        }
+
+        function updateProgress() {
+            const total = getTotalForLevel(gameState.currentLevel);
+            const pct = (gameState.currentRound / total) * 100;
+            document.getElementById('progress-fill').style.width = pct + '%';
+        }
+
+        function updateGameScore() {
+            document.getElementById('game-score').textContent = gameState.starsThisSession + ' \u2B50';
+        }
+
+        // === CONFETTI ===
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE'];
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                confetti.style.animationDelay = Math.random() * 1.5 + 's';
+                confetti.style.width = (6 + Math.random() * 8) + 'px';
+                confetti.style.height = (6 + Math.random() * 8) + 'px';
+                container.appendChild(confetti);
+            }
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        // === START GAME ===
+        function startGame() {
+            initAudio();
+            playSound('click');
+
+            gameState.currentRound = 0;
+            gameState.starsThisSession = 0;
+            gameState.isAnswering = false;
+
+            document.getElementById('game-level').textContent = 'Niveau ' + gameState.currentLevel;
+            document.getElementById('game-score').textContent = '0 \u2B50';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('steps-info').textContent = '';
+            document.getElementById('controls-area').innerHTML = '';
+
+            showScreen('game-screen');
+
+            switch (gameState.currentLevel) {
+                case 1: startLevel1(); break;
+                case 2: startLevel2(); break;
+                case 3: startLevel3(); break;
+                case 4: startLevel4(); break;
+            }
+        }
+
+        // ===========================
+        // LEVEL 1: "Ou est...?"
+        // ===========================
+        function startLevel1() {
+            const pool = shuffleArray(LEVEL1_QUESTIONS).slice(0, 10);
+            gameState.questionPool = pool;
+            gameState.questionIndex = 0;
+            showLevel1Question();
+        }
+
+        function showLevel1Question() {
+            if (gameState.questionIndex >= 10) {
+                endLevel();
+                return;
+            }
+
+            gameState.currentRound = gameState.questionIndex;
+            updateProgress();
+            gameState.isAnswering = false;
+
+            const q = gameState.questionPool[gameState.questionIndex];
+            document.getElementById('question-text').textContent = q.question;
+
+            renderGrid({
+                onCellClick: (r, c, cellData) => {
+                    if (gameState.isAnswering) return;
+                    if (cellData.walkable) return; // ignore corridors
+
+                    gameState.isAnswering = true;
+
+                    if (cellData.id === q.answer) {
+                        // Correct
+                        playSound('correct');
+                        highlightCell(r, c, 'correct-cell');
+                        showFeedback(true);
+                        gameState.starsThisSession++;
+                        updateGameScore();
+                        setTimeout(() => {
+                            gameState.questionIndex++;
+                            showLevel1Question();
+                        }, 1200);
+                    } else {
+                        // Wrong — positive encouragement only
+                        playSound('encourage');
+                        highlightCell(r, c, 'wrong-cell');
+                        showFeedback(false);
+                        // Highlight correct answer
+                        const correctRoom = ROOMS[q.answer];
+                        setTimeout(() => {
+                            highlightCell(correctRoom.row, correctRoom.col, 'highlight-cell');
+                        }, 500);
+                        setTimeout(() => {
+                            gameState.questionIndex++;
+                            showLevel1Question();
+                        }, 2000);
+                    }
+                }
+            });
+        }
+
+        // ===========================
+        // LEVEL 2: Relative position
+        // ===========================
+        function startLevel2() {
+            const allQ = generateLevel2Questions();
+            gameState.questionPool = shuffleArray(allQ).slice(0, 10);
+            gameState.questionIndex = 0;
+            showLevel2Question();
+        }
+
+        function showLevel2Question() {
+            if (gameState.questionIndex >= 10) {
+                endLevel();
+                return;
+            }
+
+            gameState.currentRound = gameState.questionIndex;
+            updateProgress();
+            gameState.isAnswering = false;
+
+            const q = gameState.questionPool[gameState.questionIndex];
+            document.getElementById('question-text').textContent = q.question;
+
+            renderGrid({
+                showCharacter: true,
+                charRow: q.charRow,
+                charCol: q.charCol,
+                onCellClick: (r, c, cellData) => {
+                    if (gameState.isAnswering) return;
+                    if (cellData.walkable) return;
+
+                    gameState.isAnswering = true;
+
+                    if (r === q.answerRow && c === q.answerCol) {
+                        playSound('correct');
+                        highlightCell(r, c, 'correct-cell');
+                        showFeedback(true);
+                        gameState.starsThisSession++;
+                        updateGameScore();
+                        setTimeout(() => {
+                            gameState.questionIndex++;
+                            showLevel2Question();
+                        }, 1200);
+                    } else {
+                        playSound('encourage');
+                        highlightCell(r, c, 'wrong-cell');
+                        showFeedback(false);
+                        setTimeout(() => {
+                            highlightCell(q.answerRow, q.answerCol, 'highlight-cell');
+                        }, 500);
+                        setTimeout(() => {
+                            gameState.questionIndex++;
+                            showLevel2Question();
+                        }, 2000);
+                    }
+                }
+            });
+
+            // Mark character cell
+            setTimeout(() => highlightCell(q.charRow, q.charCol, 'character-cell'), 50);
+        }
+
+        // ===========================
+        // LEVEL 3: Navigate character
+        // ===========================
+        function startLevel3() {
+            gameState.questionPool = shuffleArray(LEVEL3_CHALLENGES).slice(0, 5);
+            gameState.questionIndex = 0;
+            showLevel3Challenge();
+        }
+
+        function findCellPosition(id) {
+            for (let r = 0; r < 5; r++) {
+                for (let c = 0; c < 5; c++) {
+                    if (SCHOOL_MAP[r][c].id === id) return { row: r, col: c };
+                }
+            }
+            return null;
+        }
+
+        // BFS to find adjacent corridor to a room
+        function findAdjacentCorridor(roomRow, roomCol) {
+            const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+            for (const [dr, dc] of dirs) {
+                const nr = roomRow + dr;
+                const nc = roomCol + dc;
+                if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5 && SCHOOL_MAP[nr][nc].walkable) {
+                    return { row: nr, col: nc };
+                }
+            }
+            return null;
+        }
+
+        function showLevel3Challenge() {
+            if (gameState.questionIndex >= 5) {
+                endLevel();
+                return;
+            }
+
+            gameState.currentRound = gameState.questionIndex;
+            updateProgress();
+
+            const challenge = gameState.questionPool[gameState.questionIndex];
+            const startPos = findCellPosition(challenge.startId);
+            const endPos = findCellPosition(challenge.endId);
+
+            // Place character on adjacent corridor to start room
+            const startCorridor = findAdjacentCorridor(startPos.row, startPos.col);
+            gameState.charRow = startCorridor.row;
+            gameState.charCol = startCorridor.col;
+            gameState.targetRow = endPos.row;
+            gameState.targetCol = endPos.col;
+            gameState.stepsUsed = 0;
+            gameState.maxSteps = 10;
+            gameState.isAnswering = false;
+
+            document.getElementById('question-text').textContent = challenge.desc;
+            document.getElementById('steps-info').textContent = `Pas : 0 / ${gameState.maxSteps}`;
+
+            renderGrid({
+                showCharacter: true,
+                charRow: gameState.charRow,
+                charCol: gameState.charCol
+            });
+
+            // Highlight start room and target room
+            setTimeout(() => {
+                highlightCell(startPos.row, startPos.col, 'highlight-cell');
+                highlightCell(endPos.row, endPos.col, 'target-cell');
+                highlightCell(gameState.charRow, gameState.charCol, 'character-cell');
+            }, 50);
+
+            // Render direction controls
+            const controlsArea = document.getElementById('controls-area');
+            controlsArea.innerHTML = `
+                <div class="direction-controls">
+                    <button class="dir-btn dir-up" onclick="moveCharacter(-1, 0)">\u2B06\uFE0F</button>
+                    <button class="dir-btn dir-left" onclick="moveCharacter(0, -1)">\u2B05\uFE0F</button>
+                    <button class="dir-btn dir-right" onclick="moveCharacter(0, 1)">\u27A1\uFE0F</button>
+                    <button class="dir-btn dir-down" onclick="moveCharacter(1, 0)">\u2B07\uFE0F</button>
+                </div>
+            `;
+        }
+
+        function moveCharacter(dr, dc) {
+            if (gameState.isAnswering) return;
+
+            const newRow = gameState.charRow + dr;
+            const newCol = gameState.charCol + dc;
+
+            // Bounds check
+            if (newRow < 0 || newRow >= 5 || newCol < 0 || newCol >= 5) {
+                playSound('encourage');
+                return;
+            }
+
+            const targetCell = SCHOOL_MAP[newRow][newCol];
+
+            // Can walk on corridors or the destination room
+            const isDestination = (newRow === gameState.targetRow && newCol === gameState.targetCol);
+            if (!targetCell.walkable && !isDestination) {
+                playSound('encourage');
+                return;
+            }
+
+            // Move
+            playSound('move');
+            gameState.stepsUsed++;
+
+            // Mark old position as path
+            highlightCell(gameState.charRow, gameState.charCol, 'path-cell');
+            const oldCell = getCellElement(gameState.charRow, gameState.charCol);
+            if (oldCell) oldCell.classList.remove('character-cell');
+
+            gameState.charRow = newRow;
+            gameState.charCol = newCol;
+            positionCharacter(newRow, newCol);
+            highlightCell(newRow, newCol, 'character-cell');
+
+            document.getElementById('steps-info').textContent = `Pas : ${gameState.stepsUsed} / ${gameState.maxSteps}`;
+
+            // Check arrival
+            if (isDestination) {
+                gameState.isAnswering = true;
+                playSound('arrive');
+                showFeedback(true);
+                highlightCell(newRow, newCol, 'correct-cell');
+                gameState.starsThisSession++;
+                updateGameScore();
+                document.getElementById('controls-area').innerHTML = '';
+                setTimeout(() => {
+                    gameState.questionIndex++;
+                    showLevel3Challenge();
+                }, 1500);
+                return;
+            }
+
+            // Check step limit
+            if (gameState.stepsUsed >= gameState.maxSteps) {
+                gameState.isAnswering = true;
+                showFeedback(false);
+                playSound('encourage');
+                document.getElementById('controls-area').innerHTML = '';
+                setTimeout(() => {
+                    gameState.questionIndex++;
+                    showLevel3Challenge();
+                }, 1500);
+            }
+        }
+
+        // ===========================
+        // LEVEL 4: Verbal directions
+        // ===========================
+        function startLevel4() {
+            gameState.questionPool = shuffleArray(LEVEL4_CHALLENGES).slice(0, 5);
+            gameState.questionIndex = 0;
+            showLevel4Challenge();
+        }
+
+        function showLevel4Challenge() {
+            if (gameState.questionIndex >= 5) {
+                endLevel();
+                return;
+            }
+
+            gameState.currentRound = gameState.questionIndex;
+            updateProgress();
+            gameState.isAnswering = false;
+
+            const challenge = gameState.questionPool[gameState.questionIndex];
+            const startPos = findCellPosition(challenge.startId);
+            const endPos = findCellPosition(challenge.endId);
+
+            document.getElementById('question-text').textContent = challenge.question;
+            document.getElementById('steps-info').textContent = '';
+
+            renderGrid({
+                showCharacter: true,
+                charRow: startPos.row,
+                charCol: startPos.col
+            });
+
+            setTimeout(() => {
+                highlightCell(startPos.row, startPos.col, 'character-cell');
+                highlightCell(endPos.row, endPos.col, 'target-cell');
+            }, 50);
+
+            // Render choices
+            const controlsArea = document.getElementById('controls-area');
+            controlsArea.innerHTML = '<div class="choices-container" id="choices-container"></div>';
+            const choicesDiv = document.getElementById('choices-container');
+
+            challenge.choices.forEach((text, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = String.fromCharCode(65 + idx) + ') ' + text;
+                btn.onclick = () => handleLevel4Choice(idx, challenge, btn);
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function handleLevel4Choice(idx, challenge, btnEl) {
+            if (gameState.isAnswering) return;
+            gameState.isAnswering = true;
+
+            if (idx === challenge.correct) {
+                playSound('correct');
+                btnEl.classList.add('correct-choice');
+                showFeedback(true);
+                gameState.starsThisSession++;
+                updateGameScore();
+            } else {
+                playSound('encourage');
+                btnEl.classList.add('wrong-choice');
+                showFeedback(false);
+                // Highlight correct
+                const correctBtn = document.querySelectorAll('.choice-btn')[challenge.correct];
+                setTimeout(() => correctBtn.classList.add('correct-choice'), 500);
+            }
+
+            setTimeout(() => {
+                gameState.questionIndex++;
+                showLevel4Challenge();
+            }, 1800);
+        }
+
+        // === END LEVEL ===
+        function endLevel() {
+            const total = getTotalForLevel(gameState.currentLevel);
+            const threshold = getThresholdForLevel(gameState.currentLevel);
+            const stars = gameState.starsThisSession;
+            const passed = stars >= threshold;
+
+            // Update best score
+            if (stars > (gameState.bestScores[gameState.currentLevel] || 0)) {
+                gameState.bestScores[gameState.currentLevel] = stars;
+            }
+
+            gameState.totalStars += stars;
+
+            // Unlock next level
+            if (passed && gameState.currentLevel < 4) {
+                const next = gameState.currentLevel + 1;
+                if (!gameState.unlockedLevels.includes(next)) {
+                    gameState.unlockedLevels.push(next);
+                }
+            }
+
+            saveGame();
+
+            // Show celebration
+            playSound('victory');
+            launchConfetti();
+
+            document.getElementById('celebration-message').textContent =
+                passed
+                    ? `Bravo ! Tu as trouve ${stars} bonnes reponses sur ${total} !`
+                    : `Tu as trouve ${stars} bonnes reponses sur ${total}. Continue a t'entrainer !`;
+            document.getElementById('celebration-score').textContent = `+ ${stars} \u2B50`;
+
+            showScreen('celebration-screen');
+        }
+
+        function continueToNextLevel() {
+            playSound('click');
+            const threshold = getThresholdForLevel(gameState.currentLevel);
+            const passed = gameState.starsThisSession >= threshold;
+
+            if (passed && gameState.currentLevel < 4) {
+                const nextLevel = gameState.currentLevel + 1;
+
+                // Show level up overlay
+                document.getElementById('level-up-text').textContent = 'Niveau ' + nextLevel + ' !';
+                const overlay = document.getElementById('level-up-overlay');
+                overlay.classList.add('show');
+                playSound('levelup');
+
+                setTimeout(() => {
+                    overlay.classList.remove('show');
+                    gameState.currentLevel = nextLevel;
+                    saveGame();
+                    startGame();
+                }, 2000);
+            } else {
+                // Replay same level or go home
+                startGame();
+            }
+        }
+
+        // === INIT ===
+        loadGame();
+    </script>
+</body>
+</html>
