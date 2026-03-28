@@ -10,15 +10,18 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html, body {
             height: 100vh;
             overflow: hidden;
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 100%);
+            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
+            user-select: none;
         }
 
+        /* === ECRANS === */
         .screen {
             display: none;
             flex-direction: column;
@@ -27,78 +30,149 @@
             padding: 15px;
             overflow: hidden;
             position: relative;
+            animation: fadeIn 0.4s ease;
         }
 
         .screen.active {
             display: flex;
         }
 
-        /* === MENU === */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === ECRAN D'ACCUEIL === */
         .home-screen {
             justify-content: center;
-            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
+            overflow: auto;
         }
 
-        .main-title {
-            font-size: clamp(1.5rem, 5vw, 2.2rem);
+        .title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
             font-weight: 900;
-            color: #2E7D32;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
+            color: #2E7D32;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
         }
 
-        .title-icon {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 8px;
+        .title-emoji {
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            animation: bounce 2s ease infinite;
         }
 
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* Boutons de niveau */
+        .level-buttons {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            max-width: 320px;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            max-width: 400px;
+            width: 100%;
         }
 
-        .module-btn {
+        .level-btn {
             background: white;
             border: none;
-            border-radius: 20px;
-            padding: 15px 10px;
+            border-radius: 25px;
+            padding: 18px 22px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1),
+                        inset 0 -4px 0 rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .level-btn:hover:not(.locked), .level-btn:active:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+
+        .level-btn .level-icon {
+            font-size: 2.2rem;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .level-btn .level-info {
+            flex: 1;
+        }
+
+        .level-btn .level-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .level-btn .level-desc {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .level-btn .level-status {
+            font-size: 1.3rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .level-btn.niveau-1 { border-left: 5px solid #2196F3; }
+        .level-btn.niveau-2 { border-left: 5px solid #4CAF50; }
+        .level-btn.niveau-3 { border-left: 5px solid #FF9800; }
+        .level-btn.niveau-4 { border-left: 5px solid #9C27B0; }
+
+        .back-to-menu {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            color: #666;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
+            text-decoration: none;
+            z-index: 10;
         }
 
-        .module-btn:hover {
-            transform: translateY(-3px);
+        .back-to-menu:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
         }
 
-        .module-btn .icon { font-size: 2rem; }
-        .module-btn .label { font-size: 0.9rem; font-weight: 700; color: #333; }
-        .module-btn .stars { font-size: 0.8rem; color: #FFB800; }
-
-        .module-btn.clock { border-top: 4px solid #2196F3; }
-        .module-btn.days { border-top: 4px solid #4CAF50; }
-        .module-btn.months { border-top: 4px solid #FF9800; }
-        .module-btn.daytime { border-top: 4px solid #9C27B0; }
-
-        .total-score {
-            background: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #FFB800;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        /* === ECRAN DE JEU === */
+        .game-screen {
+            justify-content: flex-start;
+            padding-top: 20px;
         }
 
-        /* === HEADER === */
         .game-header {
             display: flex;
             justify-content: space-between;
@@ -107,54 +181,66 @@
             max-width: 500px;
             margin-bottom: 10px;
             flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .home-btn {
             background: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-btn:hover, .home-btn:active {
+            transform: scale(1.1);
+        }
+
+        .level-badge {
+            background: linear-gradient(145deg, #2E7D32, #1B5E20);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 8px;
+        }
+
+        .progress-badge {
+            background: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #FF6B35;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         .score-badge {
             background: white;
-            padding: 8px 18px;
+            padding: 8px 14px;
             border-radius: 20px;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #FFB800;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        .activity-selector {
-            display: flex;
-            gap: 8px;
-        }
-
-        .activity-btn {
-            background: white;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            padding: 6px 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .activity-btn.active {
-            border-color: #2196F3;
-            background: #E3F2FD;
-        }
-
-        /* === HORLOGE SVG === */
-        .clock-screen {
-            background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 100%);
-        }
-
-        .clock-wrapper {
+        /* === ZONE DE JEU === */
+        .game-content {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -164,10 +250,11 @@
             max-width: 500px;
         }
 
+        /* === HORLOGE SVG === */
         .clock-svg-container {
-            width: min(250px, 40vh);
-            height: min(250px, 40vh);
-            margin: 10px 0;
+            width: min(220px, 35vh);
+            height: min(220px, 35vh);
+            margin: 5px 0;
         }
 
         .clock-svg {
@@ -188,11 +275,6 @@
             fill: #333;
             text-anchor: middle;
             dominant-baseline: central;
-        }
-
-        .clock-tick {
-            stroke: #ccc;
-            stroke-width: 2;
         }
 
         .clock-tick-major {
@@ -218,25 +300,11 @@
             fill: #333;
         }
 
-        .clock-position-zone {
-            fill: transparent;
-            cursor: pointer;
-            transition: fill 0.2s;
-        }
-
-        .clock-position-zone:hover {
-            fill: rgba(33, 150, 243, 0.2);
-        }
-
-        .clock-position-zone.selected {
-            fill: rgba(33, 150, 243, 0.4);
-        }
-
         .question-text {
             font-size: clamp(1rem, 3.5vw, 1.3rem);
             color: #333;
             text-align: center;
-            margin: 10px 0;
+            margin: 12px 0;
             font-weight: 700;
             flex-shrink: 0;
         }
@@ -245,7 +313,7 @@
             color: #2196F3;
         }
 
-        /* === BOUTONS === */
+        /* === BOUTONS REPONSE === */
         .answers-grid {
             display: flex;
             flex-wrap: wrap;
@@ -257,15 +325,15 @@
 
         .answer-btn {
             min-width: 80px;
-            padding: 12px 20px;
+            padding: 14px 22px;
             border: none;
-            border-radius: 15px;
+            border-radius: 18px;
             font-size: 1.1rem;
             font-weight: 700;
             font-family: 'Nunito', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .answer-btn:hover {
@@ -275,6 +343,7 @@
         .answer-btn.blue { background: #BBDEFB; color: #1565C0; }
         .answer-btn.green { background: #C8E6C9; color: #2E7D32; }
         .answer-btn.orange { background: #FFE0B2; color: #E65100; }
+        .answer-btn.purple { background: #E1BEE7; color: #6A1B9A; }
 
         .answer-btn.correct {
             background: #4CAF50 !important;
@@ -289,7 +358,7 @@
 
         @keyframes pop {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
         }
 
         @keyframes shake {
@@ -298,122 +367,31 @@
             75% { transform: translateX(5px); }
         }
 
-        .validate-btn {
-            background: linear-gradient(145deg, #4CAF50, #388E3C);
-            color: white;
-            padding: 12px 35px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        .validate-btn:disabled {
-            background: #CCC;
-            box-shadow: none;
-        }
-
-        /* === JOURS === */
-        .days-screen {
-            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
-        }
-
-        .days-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .drop-zone {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin: 10px 0;
-            padding: 15px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 15px;
-            max-width: 100%;
-        }
-
-        .drop-slot {
-            width: 85px;
-            height: 40px;
-            border: 2px dashed #4CAF50;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: #4CAF50;
-        }
-
-        .drop-slot.filled {
-            background: #C8E6C9;
-            border-style: solid;
-            color: #2E7D32;
-        }
-
-        .days-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            max-width: 100%;
-        }
-
-        .day-card {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: grab;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            touch-action: none;
-        }
-
-        .day-card.dragging {
-            opacity: 0.7;
-            transform: scale(1.05);
-        }
-
-        /* === SAISONS === */
-        .months-screen {
-            background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 100%);
-        }
-
+        /* === SAISONS GRID (niveau 3 pour questions saisons) === */
         .seasons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
             max-width: 280px;
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .season-btn {
             background: white;
             border: none;
             border-radius: 15px;
-            padding: 15px;
+            padding: 14px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 5px;
+            transition: all 0.2s;
         }
 
-        .season-btn .icon { font-size: 2rem; }
-        .season-btn .name { font-size: 0.9rem; font-weight: 700; }
+        .season-btn .icon { font-size: 1.8rem; }
+        .season-btn .name { font-size: 0.85rem; font-weight: 700; }
 
         .season-btn.winter { border: 3px solid #90CAF9; }
         .season-btn.spring { border: 3px solid #F48FB1; }
@@ -430,35 +408,7 @@
             opacity: 0.5;
         }
 
-        /* === JOURNÉE === */
-        .daytime-screen {
-            background: linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
-        }
-
-        .daytime-timeline {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-            margin: 10px 0;
-            flex-wrap: wrap;
-        }
-
-        .timeline-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 5px;
-        }
-
-        .timeline-item .icon { font-size: 1.5rem; }
-        .timeline-item .label { font-size: 0.65rem; font-weight: 700; color: #666; }
-
-        .timeline-arrow {
-            font-size: 1.2rem;
-            color: #9C27B0;
-            align-self: center;
-        }
-
+        /* === MOMENTS GRID (niveau 4) === */
         .moment-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -471,15 +421,16 @@
             background: white;
             border: 3px solid #E0E0E0;
             border-radius: 15px;
-            padding: 12px;
+            padding: 14px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 5px;
+            transition: all 0.2s;
         }
 
-        .moment-btn .icon { font-size: 1.5rem; }
+        .moment-btn .icon { font-size: 1.8rem; }
         .moment-btn .name { font-size: 0.8rem; font-weight: 700; }
 
         .moment-btn.correct {
@@ -490,6 +441,78 @@
         .moment-btn.wrong {
             animation: shake 0.4s ease;
             opacity: 0.5;
+        }
+
+        /* === ECRAN CELEBRATION === */
+        .celebration-screen {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .celebration-emoji {
+            font-size: clamp(3rem, 12vw, 5rem);
+            animation: bounce 1.5s ease infinite;
+        }
+
+        .celebration-title {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 900;
+            color: #2E7D32;
+            margin: 15px 0 10px;
+        }
+
+        .celebration-score {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 700;
+            color: #FF6B35;
+            margin-bottom: 5px;
+        }
+
+        .celebration-message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 25px;
+            max-width: 320px;
+            line-height: 1.5;
+        }
+
+        .celebration-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .celebration-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .celebration-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .celebration-btn.primary {
+            background: linear-gradient(145deg, #4CAF50, #388E3C);
+            color: white;
+        }
+
+        .celebration-btn.secondary {
+            background: white;
+            color: #666;
+        }
+
+        .celebration-btn.retry {
+            background: linear-gradient(145deg, #FF9800, #F57C00);
+            color: white;
         }
 
         /* === FEEDBACK === */
@@ -557,233 +580,46 @@
             0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-        .back-to-menu {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            color: #666;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            z-index: 10;
-        }
-        .back-to-menu:hover {
-            transform: scale(1.05);
-            background: #f0f0f0;
-        }
     </style>
 </head>
 <body>
-    <!-- Menu Principal -->
+    <!-- Ecran d'accueil -->
     <div id="home-screen" class="screen home-screen active">
         <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
-        <span class="title-icon">⏰</span>
-        <h1 class="main-title">Le Temps qui Passe</h1>
+        <div class="title-emoji">&#9200;</div>
+        <h1 class="title">Le Temps qui Passe</h1>
+        <p class="subtitle">4 niveaux pour devenir champion !</p>
 
-        <div class="modules-grid">
-            <button class="module-btn clock" onclick="openModule('clock')">
-                <span class="icon">🕐</span>
-                <span class="label">L'Heure</span>
-                <span class="stars" id="clock-stars">⭐ 0</span>
-            </button>
-            <button class="module-btn days" onclick="openModule('days')">
-                <span class="icon">📅</span>
-                <span class="label">Les Jours</span>
-                <span class="stars" id="days-stars">⭐ 0</span>
-            </button>
-            <button class="module-btn months" onclick="openModule('months')">
-                <span class="icon">🌸</span>
-                <span class="label">Saisons</span>
-                <span class="stars" id="months-stars">⭐ 0</span>
-            </button>
-            <button class="module-btn daytime" onclick="openModule('daytime')">
-                <span class="icon">🌅</span>
-                <span class="label">La Journée</span>
-                <span class="stars" id="daytime-stars">⭐ 0</span>
-            </button>
-        </div>
-
-        <div class="total-score">⭐ Total : <span id="total-stars">0</span></div>
+        <div class="level-buttons" id="level-buttons"></div>
     </div>
 
-    <!-- Module Horloge -->
-    <div id="clock-screen" class="screen clock-screen">
+    <!-- Ecran de jeu -->
+    <div id="game-screen" class="screen game-screen">
         <div class="game-header">
-            <button class="home-btn" onclick="goHome()">🏠</button>
-            <div class="activity-selector">
-                <button class="activity-btn active" onclick="setClockActivity('read')" id="clock-read-btn">Lire</button>
-                <button class="activity-btn" onclick="setClockActivity('set')" id="clock-set-btn">Placer</button>
+            <button class="home-btn" onclick="goHome()">&#127968;</button>
+            <div class="level-badge" id="game-level-badge">Niveau 1</div>
+            <div class="header-stats">
+                <div class="progress-badge" id="game-progress">1/10</div>
+                <div class="score-badge" id="game-score">&#11088; 0/10</div>
             </div>
-            <div class="score-badge" id="clock-score">⭐ 0</div>
         </div>
 
-        <div class="clock-wrapper">
-            <div class="clock-svg-container">
-                <svg class="clock-svg" viewBox="0 0 200 200" id="clock-svg">
-                    <!-- Fond de l'horloge -->
-                    <circle cx="100" cy="100" r="95" class="clock-face-bg"/>
-
-                    <!-- Graduations -->
-                    <g id="clock-ticks"></g>
-
-                    <!-- Numéros -->
-                    <g id="clock-numbers"></g>
-
-                    <!-- Zones cliquables (pour mode placer) -->
-                    <g id="clock-zones"></g>
-
-                    <!-- Aiguilles -->
-                    <g id="clock-hands">
-                        <!-- Aiguille des heures : COURTE et ÉPAISSE -->
-                        <line id="hour-hand" x1="100" y1="100" x2="100" y2="55"
-                              class="hour-hand" stroke-width="8" stroke-linecap="round"/>
-                        <!-- Aiguille des minutes : LONGUE et FINE -->
-                        <line id="minute-hand" x1="100" y1="100" x2="100" y2="30"
-                              class="minute-hand" stroke-width="4" stroke-linecap="round"/>
-                    </g>
-
-                    <!-- Point central -->
-                    <circle cx="100" cy="100" r="8" class="clock-center-dot"/>
-                </svg>
-            </div>
-
-            <div class="question-text" id="clock-question">Quelle heure est-il ?</div>
-
-            <div class="answers-grid" id="clock-answers"></div>
-
-            <button class="validate-btn" id="clock-validate" style="display: none;" onclick="validateClockSetting()">
-                ✓ Valider
-            </button>
-        </div>
+        <div class="game-content" id="game-content"></div>
     </div>
 
-    <!-- Module Jours -->
-    <div id="days-screen" class="screen days-screen">
-        <div class="game-header">
-            <button class="home-btn" onclick="goHome()">🏠</button>
-            <div class="activity-selector">
-                <button class="activity-btn active" onclick="setDaysActivity('order')" id="days-order-btn">Ordre</button>
-                <button class="activity-btn" onclick="setDaysActivity('after')" id="days-after-btn">Après</button>
-            </div>
-            <div class="score-badge" id="days-score">⭐ 0</div>
-        </div>
-
-        <div class="days-wrapper">
-            <div class="question-text" id="days-question">Range les jours dans l'ordre !</div>
-
-            <div class="drop-zone" id="days-drop-zone"></div>
-
-            <div class="days-container" id="days-container"></div>
-
-            <div class="answers-grid" id="days-answers" style="display: none;"></div>
-        </div>
-    </div>
-
-    <!-- Module Mois/Saisons -->
-    <div id="months-screen" class="screen months-screen">
-        <div class="game-header">
-            <button class="home-btn" onclick="goHome()">🏠</button>
-            <div class="activity-selector">
-                <button class="activity-btn active" onclick="setMonthsActivity('seasons')" id="months-seasons-btn">Saisons</button>
-                <button class="activity-btn" onclick="setMonthsActivity('months')" id="months-months-btn">Mois</button>
-            </div>
-            <div class="score-badge" id="months-score">⭐ 0</div>
-        </div>
-
-        <div class="question-text" id="months-question">Clique sur la bonne saison !</div>
-
-        <div class="seasons-grid" id="seasons-grid">
-            <button class="season-btn winter" onclick="checkSeason('hiver')">
-                <span class="icon">❄️</span>
-                <span class="name">HIVER</span>
-            </button>
-            <button class="season-btn spring" onclick="checkSeason('printemps')">
-                <span class="icon">🌸</span>
-                <span class="name">PRINTEMPS</span>
-            </button>
-            <button class="season-btn summer" onclick="checkSeason('été')">
-                <span class="icon">☀️</span>
-                <span class="name">ÉTÉ</span>
-            </button>
-            <button class="season-btn autumn" onclick="checkSeason('automne')">
-                <span class="icon">🍂</span>
-                <span class="name">AUTOMNE</span>
-            </button>
-        </div>
-
-        <div class="answers-grid" id="months-answers" style="display: none;"></div>
-    </div>
-
-    <!-- Module Journée -->
-    <div id="daytime-screen" class="screen daytime-screen">
-        <div class="game-header">
-            <button class="home-btn" onclick="goHome()">🏠</button>
-            <div class="activity-selector">
-                <button class="activity-btn active" onclick="setDaytimeActivity('identify')" id="daytime-identify-btn">Moments</button>
-                <button class="activity-btn" onclick="setDaytimeActivity('order')" id="daytime-order-btn">Ordre</button>
-            </div>
-            <div class="score-badge" id="daytime-score">⭐ 0</div>
-        </div>
-
-        <div class="daytime-timeline">
-            <div class="timeline-item">
-                <span class="icon">🌅</span>
-                <span class="label">Matin</span>
-            </div>
-            <span class="timeline-arrow">→</span>
-            <div class="timeline-item">
-                <span class="icon">☀️</span>
-                <span class="label">Midi</span>
-            </div>
-            <span class="timeline-arrow">→</span>
-            <div class="timeline-item">
-                <span class="icon">🌆</span>
-                <span class="label">Après-midi</span>
-            </div>
-            <span class="timeline-arrow">→</span>
-            <div class="timeline-item">
-                <span class="icon">🌙</span>
-                <span class="label">Soir</span>
-            </div>
-        </div>
-
-        <div class="question-text" id="daytime-question">Quand te réveilles-tu ?</div>
-
-        <div class="moment-grid" id="moment-grid">
-            <button class="moment-btn" onclick="checkMoment('matin')">
-                <span class="icon">🌅</span>
-                <span class="name">MATIN</span>
-            </button>
-            <button class="moment-btn" onclick="checkMoment('midi')">
-                <span class="icon">☀️</span>
-                <span class="name">MIDI</span>
-            </button>
-            <button class="moment-btn" onclick="checkMoment('après-midi')">
-                <span class="icon">🌆</span>
-                <span class="name">APRÈS-MIDI</span>
-            </button>
-            <button class="moment-btn" onclick="checkMoment('soir')">
-                <span class="icon">🌙</span>
-                <span class="name">SOIR</span>
-            </button>
-        </div>
-
-        <div class="drop-zone" id="daytime-drop-zone" style="display: none;"></div>
-        <div class="days-container" id="daytime-activities" style="display: none;"></div>
+    <!-- Ecran celebration -->
+    <div id="celebration-screen" class="screen celebration-screen">
+        <div class="celebration-emoji" id="celeb-emoji">&#127942;</div>
+        <div class="celebration-title" id="celeb-title">Niveau termine !</div>
+        <div class="celebration-score" id="celeb-score">8/10</div>
+        <div class="celebration-message" id="celeb-message"></div>
+        <div class="celebration-buttons" id="celeb-buttons"></div>
     </div>
 
     <!-- Feedback -->
     <div class="feedback-overlay" id="feedback-overlay">
         <div class="feedback-box">
-            <div class="feedback-emoji" id="feedback-emoji">🎉</div>
+            <div class="feedback-emoji" id="feedback-emoji">&#127881;</div>
             <div class="feedback-text" id="feedback-text">Bravo !</div>
             <div class="feedback-subtext" id="feedback-subtext"></div>
         </div>
@@ -792,7 +628,7 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // === DONNÉES ===
+        // === DONNEES ===
         const JOURS = [
             { nom: "LUNDI", index: 0 },
             { nom: "MARDI", index: 1 },
@@ -803,61 +639,61 @@
             { nom: "DIMANCHE", index: 6 }
         ];
 
-        const SAISONS_QUESTIONS = [
-            { question: "Quelle saison a de la NEIGE ?", answer: "hiver" },
-            { question: "Quelle saison a des FLEURS ?", answer: "printemps" },
-            { question: "Quand va-t-on à la PLAGE ?", answer: "été" },
-            { question: "Quand les FEUILLES tombent ?", answer: "automne" },
-            { question: "Quand fête-t-on NOËL ?", answer: "hiver" }
-        ];
-
         const MOIS = [
             { nom: "JANVIER", saison: "hiver" },
-            { nom: "FÉVRIER", saison: "hiver" },
+            { nom: "FEVRIER", saison: "hiver" },
             { nom: "MARS", saison: "printemps" },
             { nom: "AVRIL", saison: "printemps" },
             { nom: "MAI", saison: "printemps" },
-            { nom: "JUIN", saison: "été" },
-            { nom: "JUILLET", saison: "été" },
-            { nom: "AOÛT", saison: "été" },
+            { nom: "JUIN", saison: "ete" },
+            { nom: "JUILLET", saison: "ete" },
+            { nom: "AOUT", saison: "ete" },
             { nom: "SEPTEMBRE", saison: "automne" },
             { nom: "OCTOBRE", saison: "automne" },
             { nom: "NOVEMBRE", saison: "automne" },
-            { nom: "DÉCEMBRE", saison: "hiver" }
+            { nom: "DECEMBRE", saison: "hiver" }
+        ];
+
+        const SAISONS_QUESTIONS = [
+            { question: "Quelle saison a de la NEIGE ?", answer: "hiver" },
+            { question: "Quelle saison a des FLEURS ?", answer: "printemps" },
+            { question: "Quand va-t-on a la PLAGE ?", answer: "ete" },
+            { question: "Quand les FEUILLES tombent ?", answer: "automne" },
+            { question: "Quand fete-t-on NOEL ?", answer: "hiver" },
+            { question: "Quand fait-il tres CHAUD ?", answer: "ete" },
+            { question: "Quand les arbres BOURGEONNENT ?", answer: "printemps" },
+            { question: "Quand fait-il tres FROID ?", answer: "hiver" }
         ];
 
         const MOMENTS_QUESTIONS = [
-            { question: "Quand te RÉVEILLES-tu ?", answer: "matin" },
-            { question: "Quand prends-tu ton PETIT-DÉJEUNER ?", answer: "matin" },
-            { question: "Quand DÉJEUNES-tu ?", answer: "midi" },
-            { question: "Quand prends-tu le GOÛTER ?", answer: "après-midi" },
-            { question: "Quand DÎNES-tu ?", answer: "soir" },
-            { question: "Quand vas-tu DORMIR ?", answer: "soir" }
+            { question: "Quand te REVEILLES-tu ?", answer: "matin" },
+            { question: "Quand prends-tu ton PETIT-DEJEUNER ?", answer: "matin" },
+            { question: "Quand DEJEUNER-tu ?", answer: "midi" },
+            { question: "Quand prends-tu le GOUTER ?", answer: "apres-midi" },
+            { question: "Quand DINES-tu ?", answer: "soir" },
+            { question: "Quand vas-tu DORMIR ?", answer: "soir" },
+            { question: "Quand vas-tu a l'ECOLE ?", answer: "matin" },
+            { question: "Quand fais-tu tes DEVOIRS ?", answer: "apres-midi" },
+            { question: "Quand prends-tu ton BAIN ?", answer: "soir" },
+            { question: "Quand lis-tu une HISTOIRE au lit ?", answer: "soir" }
         ];
 
-        const ACTIVITES_JOURNEE = [
-            { nom: "Se réveiller", emoji: "🌅", ordre: 0 },
-            { nom: "Petit-déj", emoji: "🥐", ordre: 1 },
-            { nom: "Déjeuner", emoji: "🍽️", ordre: 2 },
-            { nom: "Goûter", emoji: "🍪", ordre: 3 },
-            { nom: "Dîner", emoji: "🍝", ordre: 4 },
-            { nom: "Dormir", emoji: "😴", ordre: 5 }
+        const LEVELS = [
+            { id: 1, name: "L'Heure", icon: "\uD83D\uDD50", desc: "Lis l'heure sur l'horloge", color: "#2196F3" },
+            { id: 2, name: "Les Jours", icon: "\uD83D\uDCC5", desc: "Quel jour vient apres ?", color: "#4CAF50" },
+            { id: 3, name: "Les Saisons", icon: "\uD83C\uDF38", desc: "Saisons et mois de l'annee", color: "#FF9800" },
+            { id: 4, name: "La Journee", icon: "\uD83C\uDF05", desc: "Les moments de la journee", color: "#9C27B0" }
         ];
 
-        // === ÉTAT ===
+        // === ETAT ===
         let state = {
-            totalStars: 0,
-            moduleStars: { clock: 0, days: 0, months: 0, daytime: 0 },
-            currentModule: null,
-            clockActivity: 'read',
-            daysActivity: 'order',
-            monthsActivity: 'seasons',
-            daytimeActivity: 'identify',
-            currentHour: 3,
-            selectedHour: null,
-            currentQuestion: null,
-            placedDays: [],
-            placedActivities: []
+            unlockedLevel: 1,
+            completedLevels: [],
+            currentLevel: null,
+            questionIndex: 0,
+            score: 0,
+            currentAnswer: null,
+            waiting: false
         };
 
         // === AUDIO ===
@@ -880,6 +716,11 @@
                 playNote(200, now, 0.25, 0.2, 'triangle');
             } else if (type === 'click') {
                 playNote(600, now, 0.05, 0.2);
+            } else if (type === 'victory') {
+                playNote(523, now, 0.15);
+                playNote(659, now + 0.15, 0.15);
+                playNote(784, now + 0.3, 0.15);
+                playNote(1047, now + 0.45, 0.3);
             }
         }
 
@@ -898,29 +739,22 @@
 
         // === STORAGE ===
         function saveState() {
-            localStorage.setItem('tempsScore', state.totalStars.toString());
             localStorage.setItem('leTempsQuiPasse', JSON.stringify({
-                totalStars: state.totalStars,
-                moduleStars: state.moduleStars
+                unlockedLevel: state.unlockedLevel,
+                completedLevels: state.completedLevels
             }));
+            // Score pour le hub : nombre de niveaux completes
+            localStorage.setItem('tempsScore', state.completedLevels.length.toString());
         }
 
         function loadState() {
             const saved = localStorage.getItem('leTempsQuiPasse');
             if (saved) {
                 const data = JSON.parse(saved);
-                state.totalStars = data.totalStars || 0;
-                state.moduleStars = data.moduleStars || { clock: 0, days: 0, months: 0, daytime: 0 };
+                state.unlockedLevel = data.unlockedLevel || 1;
+                state.completedLevels = data.completedLevels || [];
             }
-            updateHomeUI();
-        }
-
-        function updateHomeUI() {
-            document.getElementById('total-stars').textContent = state.totalStars;
-            document.getElementById('clock-stars').textContent = '⭐ ' + state.moduleStars.clock;
-            document.getElementById('days-stars').textContent = '⭐ ' + state.moduleStars.days;
-            document.getElementById('months-stars').textContent = '⭐ ' + state.moduleStars.months;
-            document.getElementById('daytime-stars').textContent = '⭐ ' + state.moduleStars.daytime;
+            renderHome();
         }
 
         // === NAVIGATION ===
@@ -932,39 +766,216 @@
         function goHome() {
             playSound('click');
             showScreen('home-screen');
-            updateHomeUI();
+            renderHome();
         }
 
-        function openModule(module) {
+        // === ECRAN D'ACCUEIL ===
+        function renderHome() {
+            const container = document.getElementById('level-buttons');
+            container.innerHTML = '';
+
+            LEVELS.forEach(level => {
+                const isCompleted = state.completedLevels.includes(level.id);
+                const isUnlocked = level.id <= state.unlockedLevel;
+                const isLocked = !isUnlocked;
+
+                const btn = document.createElement('button');
+                btn.className = `level-btn niveau-${level.id}${isLocked ? ' locked' : ''}`;
+
+                let statusIcon = '';
+                if (isCompleted) statusIcon = '\u2705';
+                else if (isUnlocked) statusIcon = '\u25B6\uFE0F';
+                else statusIcon = '\uD83D\uDD12';
+
+                btn.innerHTML = `
+                    <span class="level-icon">${level.icon}</span>
+                    <div class="level-info">
+                        <div class="level-name">Niveau ${level.id} - ${level.name}</div>
+                        <div class="level-desc">${level.desc}</div>
+                    </div>
+                    <span class="level-status">${statusIcon}</span>
+                `;
+
+                if (!isLocked) {
+                    btn.onclick = () => startLevel(level.id);
+                }
+
+                container.appendChild(btn);
+            });
+        }
+
+        // === DEMARRER UN NIVEAU ===
+        function startLevel(levelId) {
             initAudio();
             playSound('click');
-            state.currentModule = module;
-            showScreen(module + '-screen');
 
-            if (module === 'clock') initClock();
-            else if (module === 'days') initDays();
-            else if (module === 'months') initMonths();
-            else if (module === 'daytime') initDaytime();
+            state.currentLevel = levelId;
+            state.questionIndex = 0;
+            state.score = 0;
+            state.waiting = false;
+
+            // Generer les 10 questions
+            state.questions = generateQuestions(levelId);
+
+            showScreen('game-screen');
+            updateGameHeader();
+            showQuestion();
         }
 
-        // === HORLOGE SVG ===
-        function initClock() {
-            const ticksG = document.getElementById('clock-ticks');
-            const numbersG = document.getElementById('clock-numbers');
-            const zonesG = document.getElementById('clock-zones');
+        function generateQuestions(levelId) {
+            const questions = [];
 
-            ticksG.innerHTML = '';
-            numbersG.innerHTML = '';
-            zonesG.innerHTML = '';
+            if (levelId === 1) {
+                // L'Heure : 10 questions de lecture d'horloge
+                const allHours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+                const picked = shuffleCopy(allHours).slice(0, 10);
+                picked.forEach(h => {
+                    const wrongs = allHours.filter(x => x !== h);
+                    shuffleArray(wrongs);
+                    const choices = shuffleCopy([h, wrongs[0], wrongs[1]]);
+                    questions.push({
+                        type: 'clock',
+                        hour: h,
+                        text: "Quelle heure est-il ?",
+                        choices: choices,
+                        answer: h
+                    });
+                });
+            } else if (levelId === 2) {
+                // Les Jours : "Quel jour vient APRES X?"
+                // 7 jours possibles (dimanche -> lundi cyclique), on en tire 10 avec repetitions possibles
+                const indices = [];
+                for (let i = 0; i < 7; i++) indices.push(i);
+                while (indices.length < 10) indices.push(Math.floor(Math.random() * 7));
+                shuffleArray(indices);
+                const picked = indices.slice(0, 10);
 
-            // Dessiner les graduations et numéros
+                picked.forEach(idx => {
+                    const jour = JOURS[idx];
+                    const jourApres = JOURS[(idx + 1) % 7];
+                    const wrongs = JOURS.filter(j => j.nom !== jourApres.nom).map(j => j.nom);
+                    shuffleArray(wrongs);
+                    const choices = shuffleCopy([jourApres.nom, wrongs[0], wrongs[1]]);
+                    questions.push({
+                        type: 'days',
+                        text: `Quel jour vient APRES ${jour.nom} ?`,
+                        choices: choices,
+                        answer: jourApres.nom
+                    });
+                });
+            } else if (levelId === 3) {
+                // Les Saisons : mix saisons questions + mois apres
+                const saisonQs = shuffleCopy(SAISONS_QUESTIONS);
+                const moisIndices = [];
+                for (let i = 0; i < 12; i++) moisIndices.push(i);
+                shuffleArray(moisIndices);
+
+                // 5 saisons + 5 mois
+                for (let i = 0; i < 5; i++) {
+                    const sq = saisonQs[i % saisonQs.length];
+                    questions.push({
+                        type: 'seasons',
+                        text: sq.question,
+                        answer: sq.answer
+                    });
+                }
+                for (let i = 0; i < 5; i++) {
+                    const idx = moisIndices[i];
+                    const mois = MOIS[idx];
+                    const moisApres = MOIS[(idx + 1) % 12];
+                    const wrongs = MOIS.filter(m => m.nom !== moisApres.nom).map(m => m.nom);
+                    shuffleArray(wrongs);
+                    const choices = shuffleCopy([moisApres.nom, wrongs[0], wrongs[1]]);
+                    questions.push({
+                        type: 'months',
+                        text: `Quel mois vient APRES ${mois.nom} ?`,
+                        choices: choices,
+                        answer: moisApres.nom
+                    });
+                }
+                shuffleArray(questions);
+            } else if (levelId === 4) {
+                // La Journee : questions sur les moments
+                const momQs = shuffleCopy(MOMENTS_QUESTIONS);
+                // On en prend 10 (avec repetition si besoin)
+                while (momQs.length < 10) momQs.push(MOMENTS_QUESTIONS[Math.floor(Math.random() * MOMENTS_QUESTIONS.length)]);
+                const picked = momQs.slice(0, 10);
+                picked.forEach(mq => {
+                    questions.push({
+                        type: 'moments',
+                        text: mq.question,
+                        answer: mq.answer
+                    });
+                });
+            }
+
+            return questions;
+        }
+
+        // === AFFICHAGE HEADER ===
+        function updateGameHeader() {
+            const level = LEVELS[state.currentLevel - 1];
+            document.getElementById('game-level-badge').textContent = `Niv. ${level.id} - ${level.name}`;
+            document.getElementById('game-progress').textContent = `${state.questionIndex + 1}/10`;
+            document.getElementById('game-score').textContent = `\u2B50 ${state.score}/10`;
+        }
+
+        // === AFFICHAGE QUESTION ===
+        function showQuestion() {
+            if (state.questionIndex >= 10) {
+                endLevel();
+                return;
+            }
+
+            state.waiting = false;
+            updateGameHeader();
+
+            const q = state.questions[state.questionIndex];
+            const content = document.getElementById('game-content');
+            content.innerHTML = '';
+
+            if (q.type === 'clock') {
+                renderClockQuestion(content, q);
+            } else if (q.type === 'days') {
+                renderChoiceQuestion(content, q, ['blue', 'green', 'orange']);
+            } else if (q.type === 'seasons') {
+                renderSeasonsQuestion(content, q);
+            } else if (q.type === 'months') {
+                renderChoiceQuestion(content, q, ['blue', 'green', 'orange']);
+            } else if (q.type === 'moments') {
+                renderMomentsQuestion(content, q);
+            }
+        }
+
+        // === RENDU HORLOGE ===
+        function renderClockQuestion(container, q) {
+            // SVG Horloge
+            const svgContainer = document.createElement('div');
+            svgContainer.className = 'clock-svg-container';
+            svgContainer.innerHTML = `
+                <svg class="clock-svg" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="95" class="clock-face-bg"/>
+                    <g id="q-clock-ticks"></g>
+                    <g id="q-clock-numbers"></g>
+                    <g id="q-clock-hands">
+                        <line id="q-hour-hand" x1="100" y1="100" x2="100" y2="55"
+                              class="hour-hand" stroke-width="8" stroke-linecap="round"/>
+                        <line id="q-minute-hand" x1="100" y1="100" x2="100" y2="30"
+                              class="minute-hand" stroke-width="4" stroke-linecap="round"/>
+                    </g>
+                    <circle cx="100" cy="100" r="8" class="clock-center-dot"/>
+                </svg>
+            `;
+            container.appendChild(svgContainer);
+
+            // Dessiner graduations et numeros
+            const ticksG = svgContainer.querySelector('#q-clock-ticks');
+            const numbersG = svgContainer.querySelector('#q-clock-numbers');
+
             for (let i = 1; i <= 12; i++) {
                 const angle = (i * 30 - 90) * Math.PI / 180;
-                const outerR = 85;
-                const innerR = 75;
-                const numR = 68;
+                const outerR = 85, innerR = 75, numR = 68;
 
-                // Graduation
                 const x1 = 100 + outerR * Math.cos(angle);
                 const y1 = 100 + outerR * Math.sin(angle);
                 const x2 = 100 + innerR * Math.cos(angle);
@@ -978,555 +989,267 @@
                 tick.setAttribute("class", "clock-tick-major");
                 ticksG.appendChild(tick);
 
-                // Numéro
                 const numX = 100 + numR * Math.cos(angle);
                 const numY = 100 + numR * Math.sin(angle);
-
                 const num = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 num.setAttribute("x", numX);
                 num.setAttribute("y", numY);
                 num.setAttribute("class", "clock-number");
                 num.textContent = i;
                 numbersG.appendChild(num);
-
-                // Zone cliquable
-                const zone = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                zone.setAttribute("cx", numX);
-                zone.setAttribute("cy", numY);
-                zone.setAttribute("r", 15);
-                zone.setAttribute("class", "clock-position-zone");
-                zone.setAttribute("data-hour", i);
-                zone.onclick = () => selectHourPosition(i);
-                zonesG.appendChild(zone);
             }
 
-            setClockActivity('read');
+            // Positionner les aiguilles
+            setClockHands(q.hour, 0, svgContainer);
+
+            // Question
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.textContent = q.text;
+            container.appendChild(qText);
+
+            // Choix
+            const grid = document.createElement('div');
+            grid.className = 'answers-grid';
+            const colors = ['blue', 'green', 'orange'];
+            q.choices.forEach((c, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn ' + colors[i];
+                btn.textContent = c + 'h00';
+                btn.onclick = () => handleAnswer(c === q.answer, btn);
+                grid.appendChild(btn);
+            });
+            container.appendChild(grid);
         }
 
-        function setClockHands(hour, minutes) {
-            // Calcul des angles (0° = 12h, sens horaire)
-            // Pour l'heure: chaque heure = 30°, + contribution des minutes
+        function setClockHands(hour, minutes, svgContainer) {
             const hourAngle = ((hour % 12) * 30) + (minutes * 0.5);
-            // Pour les minutes: chaque minute = 6°
             const minAngle = minutes * 6;
 
-            const hourHand = document.getElementById('hour-hand');
-            const minuteHand = document.getElementById('minute-hand');
+            const hourHand = svgContainer.querySelector('#q-hour-hand');
+            const minuteHand = svgContainer.querySelector('#q-minute-hand');
 
-            // L'aiguille part du centre (100, 100)
-            // Pour l'heure (courte) : longueur 45px
             const hourLength = 45;
             const hourRad = (hourAngle - 90) * Math.PI / 180;
-            const hourX2 = 100 + hourLength * Math.cos(hourRad);
-            const hourY2 = 100 + hourLength * Math.sin(hourRad);
-            hourHand.setAttribute('x2', hourX2);
-            hourHand.setAttribute('y2', hourY2);
+            hourHand.setAttribute('x2', 100 + hourLength * Math.cos(hourRad));
+            hourHand.setAttribute('y2', 100 + hourLength * Math.sin(hourRad));
 
-            // Pour les minutes (longue) : longueur 70px
             const minLength = 70;
             const minRad = (minAngle - 90) * Math.PI / 180;
-            const minX2 = 100 + minLength * Math.cos(minRad);
-            const minY2 = 100 + minLength * Math.sin(minRad);
-            minuteHand.setAttribute('x2', minX2);
-            minuteHand.setAttribute('y2', minY2);
+            minuteHand.setAttribute('x2', 100 + minLength * Math.cos(minRad));
+            minuteHand.setAttribute('y2', 100 + minLength * Math.sin(minRad));
         }
 
-        function setClockActivity(activity) {
-            state.clockActivity = activity;
-            document.getElementById('clock-read-btn').classList.toggle('active', activity === 'read');
-            document.getElementById('clock-set-btn').classList.toggle('active', activity === 'set');
+        // === RENDU CHOIX SIMPLE (jours, mois) ===
+        function renderChoiceQuestion(container, q, colors) {
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerHTML = q.text.replace(/(APRES \w+)/, '<strong>$1</strong>');
+            container.appendChild(qText);
 
-            const validateBtn = document.getElementById('clock-validate');
-            const answersDiv = document.getElementById('clock-answers');
-            const zonesG = document.getElementById('clock-zones');
-
-            if (activity === 'read') {
-                validateBtn.style.display = 'none';
-                answersDiv.style.display = 'flex';
-                zonesG.style.display = 'none';
-                generateClockQuestion();
-            } else {
-                validateBtn.style.display = 'block';
-                answersDiv.style.display = 'none';
-                zonesG.style.display = 'block';
-                generateClockSetQuestion();
-            }
-        }
-
-        function generateClockQuestion() {
-            const hours = [12, 3, 6, 9, 1, 2, 4, 5, 7, 8, 10, 11];
-            state.currentHour = hours[Math.floor(Math.random() * hours.length)];
-            setClockHands(state.currentHour, 0);
-
-            document.getElementById('clock-question').textContent = "Quelle heure est-il ?";
-
-            const answers = [state.currentHour];
-            while (answers.length < 3) {
-                const r = hours[Math.floor(Math.random() * hours.length)];
-                if (!answers.includes(r)) answers.push(r);
-            }
-            shuffleArray(answers);
-
-            const answersDiv = document.getElementById('clock-answers');
-            answersDiv.innerHTML = '';
-            const colors = ['blue', 'green', 'orange'];
-            answers.forEach((h, i) => {
+            const grid = document.createElement('div');
+            grid.className = 'answers-grid';
+            q.choices.forEach((c, i) => {
                 const btn = document.createElement('button');
-                btn.className = 'answer-btn ' + colors[i];
-                btn.textContent = h + 'h00';
-                btn.onclick = () => checkClockAnswer(h, btn);
-                answersDiv.appendChild(btn);
+                btn.className = 'answer-btn ' + colors[i % colors.length];
+                btn.textContent = c;
+                btn.onclick = () => handleAnswer(c === q.answer, btn);
+                grid.appendChild(btn);
             });
+            container.appendChild(grid);
         }
 
-        function checkClockAnswer(hour, btn) {
-            if (hour === state.currentHour) {
-                handleCorrect('clock', btn);
-                setTimeout(generateClockQuestion, 1500);
-            } else {
-                handleWrong(btn);
-            }
-        }
+        // === RENDU SAISONS ===
+        function renderSeasonsQuestion(container, q) {
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.textContent = q.text;
+            container.appendChild(qText);
 
-        function generateClockSetQuestion() {
-            const hours = [12, 3, 6, 9];
-            state.currentHour = hours[Math.floor(Math.random() * hours.length)];
-            state.selectedHour = null;
+            const grid = document.createElement('div');
+            grid.className = 'seasons-grid';
 
-            setClockHands(12, 0);
+            const saisons = [
+                { key: 'hiver', cls: 'winter', icon: '\u2744\uFE0F', name: 'HIVER' },
+                { key: 'printemps', cls: 'spring', icon: '\uD83C\uDF38', name: 'PRINTEMPS' },
+                { key: 'ete', cls: 'summer', icon: '\u2600\uFE0F', name: 'ETE' },
+                { key: 'automne', cls: 'autumn', icon: '\uD83C\uDF42', name: 'AUTOMNE' }
+            ];
 
-            document.getElementById('clock-question').innerHTML =
-                `Place les aiguilles sur <strong>${state.currentHour}h00</strong>`;
-
-            document.querySelectorAll('.clock-position-zone').forEach(z => z.classList.remove('selected'));
-            document.getElementById('clock-validate').disabled = true;
-        }
-
-        function selectHourPosition(hour) {
-            if (state.clockActivity !== 'set') return;
-
-            playSound('click');
-            state.selectedHour = hour;
-
-            document.querySelectorAll('.clock-position-zone').forEach(z => {
-                z.classList.toggle('selected', parseInt(z.getAttribute('data-hour')) === hour);
+            saisons.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'season-btn ' + s.cls;
+                btn.innerHTML = `<span class="icon">${s.icon}</span><span class="name">${s.name}</span>`;
+                btn.onclick = () => handleAnswer(s.key === q.answer, btn);
+                grid.appendChild(btn);
             });
 
-            setClockHands(hour, 0);
-            document.getElementById('clock-validate').disabled = false;
+            container.appendChild(grid);
         }
 
-        function validateClockSetting() {
-            if (state.selectedHour === state.currentHour) {
-                handleCorrect('clock');
-                setTimeout(generateClockSetQuestion, 1500);
-            } else {
-                playSound('wrong');
-                showToast('Essaie encore !');
-            }
-        }
+        // === RENDU MOMENTS ===
+        function renderMomentsQuestion(container, q) {
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.textContent = q.text;
+            container.appendChild(qText);
 
-        // === JOURS ===
-        function initDays() {
-            setDaysActivity('order');
-        }
+            const grid = document.createElement('div');
+            grid.className = 'moment-grid';
 
-        function setDaysActivity(activity) {
-            state.daysActivity = activity;
-            document.getElementById('days-order-btn').classList.toggle('active', activity === 'order');
-            document.getElementById('days-after-btn').classList.toggle('active', activity === 'after');
+            const moments = [
+                { key: 'matin', icon: '\uD83C\uDF05', name: 'MATIN' },
+                { key: 'midi', icon: '\u2600\uFE0F', name: 'MIDI' },
+                { key: 'apres-midi', icon: '\uD83C\uDF06', name: 'APRES-MIDI' },
+                { key: 'soir', icon: '\uD83C\uDF19', name: 'SOIR' }
+            ];
 
-            if (activity === 'order') {
-                document.getElementById('days-drop-zone').style.display = 'flex';
-                document.getElementById('days-container').style.display = 'flex';
-                document.getElementById('days-answers').style.display = 'none';
-                setupDaysOrder();
-            } else {
-                document.getElementById('days-drop-zone').style.display = 'none';
-                document.getElementById('days-container').style.display = 'none';
-                document.getElementById('days-answers').style.display = 'flex';
-                generateDaysAfterQuestion();
-            }
-        }
-
-        function setupDaysOrder() {
-            state.placedDays = [];
-            document.getElementById('days-question').textContent = "Range les jours dans l'ordre !";
-
-            const dropZone = document.getElementById('days-drop-zone');
-            dropZone.innerHTML = '';
-            for (let i = 0; i < 7; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'drop-slot';
-                slot.dataset.index = i;
-                slot.textContent = (i + 1);
-                dropZone.appendChild(slot);
-            }
-
-            const container = document.getElementById('days-container');
-            container.innerHTML = '';
-            const shuffled = [...JOURS];
-            shuffleArray(shuffled);
-
-            shuffled.forEach(jour => {
-                const card = document.createElement('div');
-                card.className = 'day-card';
-                card.textContent = jour.nom;
-                card.dataset.index = jour.index;
-                card.onclick = () => handleDayClick(card);
-                container.appendChild(card);
+            moments.forEach(m => {
+                const btn = document.createElement('button');
+                btn.className = 'moment-btn';
+                btn.innerHTML = `<span class="icon">${m.icon}</span><span class="name">${m.name}</span>`;
+                btn.onclick = () => handleAnswer(m.key === q.answer, btn);
+                grid.appendChild(btn);
             });
+
+            container.appendChild(grid);
         }
 
-        let selectedDayCard = null;
+        // === GESTION REPONSE ===
+        function handleAnswer(isCorrect, btn) {
+            if (state.waiting) return;
+            state.waiting = true;
 
-        function handleDayClick(card) {
-            if (card.classList.contains('placed')) return;
-
-            playSound('click');
-
-            if (selectedDayCard) {
-                selectedDayCard.style.border = '';
-            }
-
-            selectedDayCard = card;
-            card.style.border = '3px solid #4CAF50';
-
-            // Activer les slots
-            document.querySelectorAll('.drop-slot:not(.filled)').forEach(slot => {
-                slot.onclick = () => tryPlaceDay(slot);
-            });
-        }
-
-        function tryPlaceDay(slot) {
-            if (!selectedDayCard) return;
-
-            const dayIndex = parseInt(selectedDayCard.dataset.index);
-            const slotIndex = parseInt(slot.dataset.index);
-
-            if (dayIndex === slotIndex) {
+            if (isCorrect) {
                 playSound('correct');
-                slot.textContent = JOURS[dayIndex].nom;
-                slot.classList.add('filled');
-                selectedDayCard.classList.add('placed');
-                selectedDayCard.style.display = 'none';
-                state.placedDays.push(dayIndex);
+                btn.classList.add('correct');
+                state.score++;
+                launchConfetti();
 
-                if (state.placedDays.length === 7) {
-                    handleCorrect('days');
-                    setTimeout(setupDaysOrder, 2000);
-                }
+                const messages = ['Bravo !', 'Super !', 'Genial !'];
+                showFeedback('\uD83C\uDF89', messages[Math.floor(Math.random() * messages.length)], '');
             } else {
                 playSound('wrong');
-                showToast('Ce n\'est pas le bon ordre !');
+                btn.classList.add('wrong');
+                showToast('Pas tout a fait...');
             }
 
-            selectedDayCard.style.border = '';
-            selectedDayCard = null;
+            state.questionIndex++;
+            updateGameHeader();
+
+            setTimeout(() => {
+                showQuestion();
+            }, 1300);
         }
 
-        function generateDaysAfterQuestion() {
-            const index = Math.floor(Math.random() * 6);
-            const jour = JOURS[index];
-            const jourApres = JOURS[index + 1];
+        // === FIN DE NIVEAU ===
+        function endLevel() {
+            const passed = state.score >= 8;
+            const isLastLevel = state.currentLevel === 4;
 
-            state.currentQuestion = { answer: jourApres.nom };
-
-            document.getElementById('days-question').innerHTML =
-                `Quel jour vient <strong>APRÈS ${jour.nom}</strong> ?`;
-
-            const answers = [jourApres.nom];
-            while (answers.length < 3) {
-                const r = JOURS[Math.floor(Math.random() * 7)].nom;
-                if (!answers.includes(r)) answers.push(r);
-            }
-            shuffleArray(answers);
-
-            const answersDiv = document.getElementById('days-answers');
-            answersDiv.innerHTML = '';
-            const colors = ['blue', 'green', 'orange'];
-            answers.forEach((j, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'answer-btn ' + colors[i];
-                btn.textContent = j;
-                btn.onclick = () => checkDaysAnswer(j, btn);
-                answersDiv.appendChild(btn);
-            });
-        }
-
-        function checkDaysAnswer(answer, btn) {
-            if (answer === state.currentQuestion.answer) {
-                handleCorrect('days', btn);
-                setTimeout(generateDaysAfterQuestion, 1500);
-            } else {
-                handleWrong(btn);
-            }
-        }
-
-        // === MOIS/SAISONS ===
-        function initMonths() {
-            setMonthsActivity('seasons');
-        }
-
-        function setMonthsActivity(activity) {
-            state.monthsActivity = activity;
-            document.getElementById('months-seasons-btn').classList.toggle('active', activity === 'seasons');
-            document.getElementById('months-months-btn').classList.toggle('active', activity === 'months');
-
-            if (activity === 'seasons') {
-                document.getElementById('seasons-grid').style.display = 'grid';
-                document.getElementById('months-answers').style.display = 'none';
-                generateSeasonsQuestion();
-            } else {
-                document.getElementById('seasons-grid').style.display = 'none';
-                document.getElementById('months-answers').style.display = 'flex';
-                generateMonthsQuestion();
-            }
-        }
-
-        function generateSeasonsQuestion() {
-            const q = SAISONS_QUESTIONS[Math.floor(Math.random() * SAISONS_QUESTIONS.length)];
-            state.currentQuestion = { answer: q.answer };
-            document.getElementById('months-question').textContent = q.question;
-
-            document.querySelectorAll('.season-btn').forEach(btn => {
-                btn.classList.remove('correct', 'wrong');
-                btn.disabled = false;
-            });
-        }
-
-        function checkSeason(saison) {
-            const classMap = { 'été': 'summer', 'hiver': 'winter', 'printemps': 'spring', 'automne': 'autumn' };
-            const btn = document.querySelector(`.season-btn.${classMap[saison]}`);
-
-            if (saison === state.currentQuestion.answer) {
-                handleCorrect('months', btn);
-                setTimeout(generateSeasonsQuestion, 1500);
-            } else {
-                handleWrong(btn);
-            }
-        }
-
-        function generateMonthsQuestion() {
-            const index = Math.floor(Math.random() * 11);
-            const mois = MOIS[index];
-            const moisApres = MOIS[index + 1];
-
-            state.currentQuestion = { answer: moisApres.nom };
-
-            document.getElementById('months-question').innerHTML =
-                `Quel mois vient <strong>APRÈS ${mois.nom}</strong> ?`;
-
-            const answers = [moisApres.nom];
-            while (answers.length < 3) {
-                const r = MOIS[Math.floor(Math.random() * 12)].nom;
-                if (!answers.includes(r)) answers.push(r);
-            }
-            shuffleArray(answers);
-
-            const answersDiv = document.getElementById('months-answers');
-            answersDiv.innerHTML = '';
-            const colors = ['blue', 'green', 'orange'];
-            answers.forEach((m, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'answer-btn ' + colors[i];
-                btn.textContent = m;
-                btn.onclick = () => checkMonthsAnswer(m, btn);
-                answersDiv.appendChild(btn);
-            });
-        }
-
-        function checkMonthsAnswer(answer, btn) {
-            if (answer === state.currentQuestion.answer) {
-                handleCorrect('months', btn);
-                setTimeout(generateMonthsQuestion, 1500);
-            } else {
-                handleWrong(btn);
-            }
-        }
-
-        // === JOURNÉE ===
-        function initDaytime() {
-            setDaytimeActivity('identify');
-        }
-
-        function setDaytimeActivity(activity) {
-            state.daytimeActivity = activity;
-            document.getElementById('daytime-identify-btn').classList.toggle('active', activity === 'identify');
-            document.getElementById('daytime-order-btn').classList.toggle('active', activity === 'order');
-
-            if (activity === 'identify') {
-                document.getElementById('moment-grid').style.display = 'grid';
-                document.getElementById('daytime-drop-zone').style.display = 'none';
-                document.getElementById('daytime-activities').style.display = 'none';
-                generateMomentQuestion();
-            } else {
-                document.getElementById('moment-grid').style.display = 'none';
-                document.getElementById('daytime-drop-zone').style.display = 'flex';
-                document.getElementById('daytime-activities').style.display = 'flex';
-                setupActivitiesOrder();
-            }
-        }
-
-        function generateMomentQuestion() {
-            const q = MOMENTS_QUESTIONS[Math.floor(Math.random() * MOMENTS_QUESTIONS.length)];
-            state.currentQuestion = { answer: q.answer };
-            document.getElementById('daytime-question').textContent = q.question;
-
-            document.querySelectorAll('.moment-btn').forEach(btn => {
-                btn.classList.remove('correct', 'wrong');
-                btn.disabled = false;
-            });
-        }
-
-        function checkMoment(moment) {
-            const allBtns = document.querySelectorAll('.moment-btn');
-            let clickedBtn = null;
-
-            allBtns.forEach(b => {
-                const name = b.querySelector('.name').textContent.toLowerCase();
-                if (name === moment.toLowerCase() ||
-                    (moment === 'après-midi' && name === 'après-midi')) {
-                    clickedBtn = b;
+            if (passed) {
+                if (!state.completedLevels.includes(state.currentLevel)) {
+                    state.completedLevels.push(state.currentLevel);
                 }
-            });
-
-            if (moment === state.currentQuestion.answer) {
-                handleCorrect('daytime', clickedBtn);
-                setTimeout(generateMomentQuestion, 1500);
-            } else {
-                if (clickedBtn) handleWrong(clickedBtn);
-            }
-        }
-
-        let selectedActivityCard = null;
-
-        function setupActivitiesOrder() {
-            state.placedActivities = [];
-            document.getElementById('daytime-question').textContent = "Remets ta journée dans l'ordre !";
-
-            const dropZone = document.getElementById('daytime-drop-zone');
-            dropZone.innerHTML = '';
-            for (let i = 0; i < 6; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'drop-slot';
-                slot.dataset.index = i;
-                slot.textContent = (i + 1);
-                dropZone.appendChild(slot);
-            }
-
-            const container = document.getElementById('daytime-activities');
-            container.innerHTML = '';
-            const shuffled = [...ACTIVITES_JOURNEE];
-            shuffleArray(shuffled);
-
-            shuffled.forEach(act => {
-                const card = document.createElement('div');
-                card.className = 'day-card';
-                card.innerHTML = act.emoji + ' ' + act.nom;
-                card.dataset.index = act.ordre;
-                card.onclick = () => handleActivityClick(card);
-                container.appendChild(card);
-            });
-        }
-
-        function handleActivityClick(card) {
-            if (card.classList.contains('placed')) return;
-
-            playSound('click');
-
-            if (selectedActivityCard) {
-                selectedActivityCard.style.border = '';
-            }
-
-            selectedActivityCard = card;
-            card.style.border = '3px solid #9C27B0';
-
-            document.querySelectorAll('#daytime-drop-zone .drop-slot:not(.filled)').forEach(slot => {
-                slot.onclick = () => tryPlaceActivity(slot);
-            });
-        }
-
-        function tryPlaceActivity(slot) {
-            if (!selectedActivityCard) return;
-
-            const actIndex = parseInt(selectedActivityCard.dataset.index);
-            const slotIndex = parseInt(slot.dataset.index);
-
-            if (actIndex === slotIndex) {
-                playSound('correct');
-                slot.textContent = ACTIVITES_JOURNEE[actIndex].emoji + ' ' + ACTIVITES_JOURNEE[actIndex].nom;
-                slot.classList.add('filled');
-                selectedActivityCard.style.display = 'none';
-                state.placedActivities.push(actIndex);
-
-                if (state.placedActivities.length === 6) {
-                    handleCorrect('daytime');
-                    setTimeout(setupActivitiesOrder, 2000);
+                if (state.currentLevel >= state.unlockedLevel && state.currentLevel < 4) {
+                    state.unlockedLevel = state.currentLevel + 1;
                 }
-            } else {
-                playSound('wrong');
-                showToast('Ce n\'est pas le bon ordre !');
+                saveState();
             }
 
-            selectedActivityCard.style.border = '';
-            selectedActivityCard = null;
+            showScreen('celebration-screen');
+
+            const emojiEl = document.getElementById('celeb-emoji');
+            const titleEl = document.getElementById('celeb-title');
+            const scoreEl = document.getElementById('celeb-score');
+            const msgEl = document.getElementById('celeb-message');
+            const btnsEl = document.getElementById('celeb-buttons');
+            btnsEl.innerHTML = '';
+
+            scoreEl.textContent = `${state.score}/10`;
+
+            if (!passed) {
+                emojiEl.textContent = '\uD83D\uDCAA';
+                titleEl.textContent = 'Presque !';
+                msgEl.textContent = 'Il faut 8 bonnes reponses pour passer au niveau suivant !';
+
+                const retryBtn = document.createElement('button');
+                retryBtn.className = 'celebration-btn retry';
+                retryBtn.textContent = 'Recommencer';
+                retryBtn.onclick = () => startLevel(state.currentLevel);
+                btnsEl.appendChild(retryBtn);
+
+                const homeBtn = document.createElement('button');
+                homeBtn.className = 'celebration-btn secondary';
+                homeBtn.textContent = 'Accueil';
+                homeBtn.onclick = goHome;
+                btnsEl.appendChild(homeBtn);
+
+            } else if (passed && isLastLevel) {
+                playSound('victory');
+                launchConfetti();
+                setTimeout(launchConfetti, 500);
+                setTimeout(launchConfetti, 1000);
+
+                emojiEl.textContent = '\uD83C\uDFC6';
+                titleEl.textContent = 'Champion du Temps !';
+                msgEl.textContent = 'Bravo, tu as reussi tous les niveaux ! Tu es maintenant un vrai champion du temps !';
+
+                const homeBtn = document.createElement('button');
+                homeBtn.className = 'celebration-btn primary';
+                homeBtn.textContent = 'Accueil';
+                homeBtn.onclick = goHome;
+                btnsEl.appendChild(homeBtn);
+
+                const hubBtn = document.createElement('button');
+                hubBtn.className = 'celebration-btn secondary';
+                hubBtn.textContent = '\u2190 Mes Jeux';
+                hubBtn.onclick = () => { window.location.href = 'index.html'; };
+                btnsEl.appendChild(hubBtn);
+
+            } else {
+                playSound('victory');
+                launchConfetti();
+                setTimeout(launchConfetti, 500);
+
+                emojiEl.textContent = '\uD83C\uDF89';
+                titleEl.textContent = 'Niveau reussi !';
+                msgEl.textContent = `Tu as obtenu ${state.score}/10 ! Le niveau suivant est debloque !`;
+
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'celebration-btn primary';
+                nextBtn.textContent = 'Niveau suivant';
+                nextBtn.onclick = () => startLevel(state.currentLevel + 1);
+                btnsEl.appendChild(nextBtn);
+
+                const homeBtn = document.createElement('button');
+                homeBtn.className = 'celebration-btn secondary';
+                homeBtn.textContent = 'Accueil';
+                homeBtn.onclick = goHome;
+                btnsEl.appendChild(homeBtn);
+            }
         }
 
         // === FEEDBACK ===
-        function handleCorrect(module, btn) {
-            playSound('correct');
-            if (btn) btn.classList.add('correct');
-
-            state.totalStars++;
-            state.moduleStars[module]++;
-            saveState();
-
-            updateModuleScore(module);
-            launchConfetti();
-
-            const messages = ['Bravo !', 'Super !', 'Génial !'];
-            showFeedback('🎉', messages[Math.floor(Math.random() * messages.length)], '+1 ⭐');
-        }
-
-        function handleWrong(btn) {
-            playSound('wrong');
-            if (btn) {
-                btn.classList.add('wrong');
-                setTimeout(() => {
-                    btn.classList.remove('wrong');
-                    btn.disabled = true;
-                    btn.style.opacity = '0.4';
-                }, 400);
-            }
-            showToast('Essaie encore ! 💪');
-        }
-
-        function updateModuleScore(module) {
-            document.getElementById(module + '-score').textContent = '⭐ ' + state.moduleStars[module];
-        }
-
-        function showFeedback(emoji, text, subtext = '') {
+        function showFeedback(emoji, text, subtext) {
             document.getElementById('feedback-emoji').textContent = emoji;
             document.getElementById('feedback-text').textContent = text;
-            document.getElementById('feedback-subtext').textContent = subtext;
+            document.getElementById('feedback-subtext').textContent = subtext || '';
             document.getElementById('feedback-overlay').classList.add('show');
-
             setTimeout(() => {
                 document.getElementById('feedback-overlay').classList.remove('show');
-            }, 1200);
+            }, 900);
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            setTimeout(() => toast.classList.remove('show'), 1500);
         }
 
         function launchConfetti() {
             const colors = ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#E91E63'];
-
             for (let i = 0; i < 15; i++) {
                 setTimeout(() => {
                     const c = document.createElement('div');
@@ -1539,11 +1262,18 @@
             }
         }
 
+        // === UTILITAIRES ===
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
+        }
+
+        function shuffleCopy(arr) {
+            const copy = [...arr];
+            shuffleArray(copy);
+            return copy;
         }
 
         // === INIT ===

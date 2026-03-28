@@ -66,90 +66,78 @@
         .subtitle {
             font-size: 1.2rem;
             color: #666;
-            margin-bottom: 40px;
-        }
-
-        /* Boutons de mode */
-        .mode-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
             margin-bottom: 30px;
-            max-width: 500px;
         }
 
-        .mode-btn {
+        /* Boutons de niveau */
+        .level-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .level-btn {
             background: white;
             border: none;
             border-radius: 25px;
-            padding: 25px 30px;
-            min-width: 140px;
+            padding: 20px 25px;
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1),
                         inset 0 -4px 0 rgba(0,0,0,0.05);
             transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            width: 100%;
+            text-align: left;
         }
 
-        .mode-btn:hover, .mode-btn:active {
-            transform: translateY(-5px);
+        .level-btn:hover:not(.locked), .level-btn:active:not(.locked) {
+            transform: translateY(-3px);
             box-shadow: 0 12px 35px rgba(0,0,0,0.15);
         }
 
-        .mode-btn:active {
-            transform: translateY(0);
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
         }
 
-        .mode-btn .icon {
-            font-size: 3rem;
+        .level-btn .level-icon {
+            font-size: 2.5rem;
+            min-width: 50px;
+            text-align: center;
         }
 
-        .mode-btn .label {
-            font-size: 1.1rem;
+        .level-btn .level-info {
+            flex: 1;
+        }
+
+        .level-btn .level-name {
+            font-size: 1.2rem;
             font-weight: 700;
             color: #333;
         }
 
-        .mode-btn.addition { border-left: 5px solid #4CAF50; }
-        .mode-btn.subtraction { border-left: 5px solid #FF9800; }
-        .mode-btn.mixed { border-left: 5px solid #9C27B0; }
-
-        .mode-btn .stars {
-            font-size: 0.9rem;
-            color: #FFB800;
+        .level-btn .level-desc {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 2px;
         }
 
-        /* Stats d'accueil */
-        .home-stats {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 15px 25px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        .level-btn .level-status {
+            font-size: 1.2rem;
+            min-width: 30px;
             text-align: center;
         }
 
-        .stat-label {
-            font-size: 0.85rem;
-            color: #888;
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #FF6B35;
-        }
+        .level-btn.niveau-1 { border-left: 5px solid #4CAF50; }
+        .level-btn.niveau-2 { border-left: 5px solid #FF9800; }
+        .level-btn.niveau-3 { border-left: 5px solid #9C27B0; }
+        .level-btn.niveau-4 { border-left: 5px solid #E91E63; }
 
         /* === ECRAN DE JEU === */
         .game-screen {
@@ -194,6 +182,16 @@
             border-radius: 20px;
             font-weight: 700;
             font-size: 0.95rem;
+        }
+
+        .progress-badge {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #FF6B35;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .score-badge {
@@ -295,7 +293,7 @@
             color: #FF9800;
         }
 
-        /* Affichage numérique (mode avancé) */
+        /* Affichage numerique (mode avance) */
         .numeric-display {
             font-size: clamp(3rem, 12vw, 5rem);
             font-weight: 900;
@@ -341,7 +339,7 @@
             color: #FF6B35;
         }
 
-        /* Zone des réponses */
+        /* Zone des reponses */
         .answers-zone {
             display: flex;
             justify-content: center;
@@ -522,19 +520,20 @@
             font-size: 2rem;
         }
 
-        /* === ECRAN DE VICTOIRE === */
-        .victory-screen {
+        /* === ECRAN DE CELEBRATION === */
+        .celebration-screen {
             background: linear-gradient(180deg, #FFE082 0%, #FFB74D 100%);
         }
 
-        .victory-title {
+        .celebration-title {
             font-size: clamp(2.5rem, 8vw, 4rem);
             color: white;
             text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            text-align: center;
         }
 
-        .victory-stars {
+        .celebration-stars {
             font-size: 5rem;
             margin-bottom: 20px;
             animation: starSpin 2s ease infinite;
@@ -545,13 +544,16 @@
             50% { transform: rotate(5deg) scale(1.1); }
         }
 
-        .victory-score {
-            font-size: 2rem;
+        .celebration-message {
+            font-size: 1.4rem;
             color: white;
             margin-bottom: 30px;
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.4;
         }
 
-        .victory-btn {
+        .celebration-btn {
             background: white;
             color: #FF9800;
             font-size: 1.4rem;
@@ -562,11 +564,19 @@
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
-            margin: 10px;
+            margin: 8px;
+            font-family: 'Nunito', sans-serif;
         }
 
-        .victory-btn:hover {
+        .celebration-btn:hover {
             transform: scale(1.05);
+        }
+
+        .celebration-btn.secondary {
+            background: #FFE082;
+            color: #5D4037;
+            font-size: 1.1rem;
+            padding: 14px 35px;
         }
 
         /* Confettis */
@@ -661,48 +671,7 @@
             font-size: clamp(1.8rem, 5vw, 2.2rem);
         }
 
-        /* === GROUPES DE MULTIPLICATION === */
-        .groups-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .object-box {
-            background: rgba(255,255,255,0.9);
-            border: 3px dashed #9C27B0;
-            border-radius: 20px;
-            padding: 12px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            justify-content: center;
-            max-width: 100px;
-            min-width: 70px;
-            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.2);
-        }
-
-        .object-box .object-item {
-            font-size: clamp(1.8rem, 5vw, 2.2rem);
-            animation: none;
-        }
-
-        .multiplication-hint {
-            font-size: 1.3rem;
-            color: #666;
-            margin: 10px 0;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .multiplication-hint .operator {
-            font-size: 1.5rem;
-            margin: 0 8px;
-        }
-
-        /* === ASTUCES PÉDAGOGIQUES === */
+        /* === ASTUCES PEDAGOGIQUES === */
         .tip-box {
             background: linear-gradient(145deg, #FFF9C4, #FFF176);
             border-radius: 20px;
@@ -731,10 +700,6 @@
             font-weight: 600;
         }
 
-        /* === BOUTON MULTIPLICATION === */
-        .mode-btn.multiplication {
-            border-left: 5px solid #E91E63;
-        }
         .back-to-menu {
             position: absolute;
             top: 15px;
@@ -760,63 +725,33 @@
     </style>
 </head>
 <body>
-    <!-- Écran d'accueil -->
+    <!-- Ecran d'accueil -->
     <div id="home-screen" class="screen active">
         <a href="index.html" class="back-to-menu">&#8592; Mes Jeux</a>
         <div class="title-emoji">🧮</div>
         <h1 class="title">Calcul Aventure</h1>
-        <p class="subtitle">Apprends à compter en t'amusant !</p>
+        <p class="subtitle">Apprends a compter en t'amusant !</p>
 
-        <div class="mode-buttons">
-            <button class="mode-btn addition" onclick="startGame('addition')">
-                <span class="icon">➕</span>
-                <span class="label">Additions</span>
-                <span class="stars" id="addition-stars">⭐ 0</span>
-            </button>
-            <button class="mode-btn subtraction" onclick="startGame('subtraction')">
-                <span class="icon">➖</span>
-                <span class="label">Soustractions</span>
-                <span class="stars" id="subtraction-stars">⭐ 0</span>
-            </button>
-            <button class="mode-btn mixed" onclick="startGame('mixed')">
-                <span class="icon">🎯</span>
-                <span class="label">Mixte</span>
-                <span class="stars" id="mixed-stars">⭐ 0</span>
-            </button>
-            <button class="mode-btn multiplication" onclick="startGame('multiplication')">
-                <span class="icon">✖️</span>
-                <span class="label">Groupes</span>
-                <span class="stars" id="multiplication-stars">⭐ 0</span>
-            </button>
-        </div>
-
-        <div class="home-stats">
-            <div class="stat-box">
-                <div class="stat-label">Total Etoiles</div>
-                <div class="stat-value" id="total-stars">0 ⭐</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Meilleur Score</div>
-                <div class="stat-value" id="best-score">0</div>
-            </div>
+        <div class="level-buttons" id="level-buttons">
+            <!-- Genere par JS -->
         </div>
     </div>
 
-    <!-- Écran de jeu -->
+    <!-- Ecran de jeu -->
     <div id="game-screen" class="screen game-screen">
         <div class="game-header">
             <button class="home-btn" onclick="goHome()">🏠</button>
-            <div class="level-badge" id="level-badge">Palier 1</div>
-            <div class="score-badge" id="score-badge">⭐ 0</div>
+            <div class="level-badge" id="level-badge">Niveau 1</div>
+            <div class="progress-badge" id="progress-badge">1/10</div>
+            <div class="score-badge" id="score-badge">0/10</div>
         </div>
 
         <div class="calculation-zone">
             <!-- Mode visuel -->
             <div class="objects-display" id="objects-display">
-                <!-- Objets générés ici -->
             </div>
 
-            <!-- Mode numérique -->
+            <!-- Mode numerique -->
             <div class="numeric-display" id="numeric-display" style="display: none;">
                 <span class="num" id="num1">3</span>
                 <span class="operator plus" id="op-display">+</span>
@@ -827,14 +762,13 @@
 
             <div class="count-display" id="count-display"></div>
 
-            <!-- Astuce pédagogique -->
+            <!-- Astuce pedagogique -->
             <div class="tip-box" id="tip-box" style="display: none;">
                 <span class="tip-icon">💡</span>
                 <span class="tip-text" id="tip-text"></span>
             </div>
 
             <div class="answers-zone" id="answers-zone">
-                <!-- Réponses générées ici -->
             </div>
 
             <button class="help-btn" id="help-btn" onclick="showHelp()" style="display: none;">
@@ -842,16 +776,17 @@
             </button>
         </div>
 
-        <div class="streak-display" id="streak-display">🔥 Série : 0</div>
+        <div class="streak-display" id="streak-display">🔥 Serie : 0</div>
     </div>
 
-    <!-- Écran de victoire -->
-    <div id="victory-screen" class="screen victory-screen">
-        <div class="victory-stars">🌟⭐🌟</div>
-        <h2 class="victory-title">Fantastique !</h2>
-        <div class="victory-score" id="victory-score">Tu as gagné 10 étoiles !</div>
-        <button class="victory-btn" onclick="continuePlaying()">Continuer 🚀</button>
-        <button class="victory-btn" onclick="goHome()" style="background: #FFE082; color: #5D4037;">Accueil 🏠</button>
+    <!-- Ecran de celebration (fin de niveau) -->
+    <div id="celebration-screen" class="screen celebration-screen">
+        <div class="celebration-stars" id="celebration-stars">🌟🌟🌟</div>
+        <h2 class="celebration-title" id="celebration-title">Bravo !</h2>
+        <div class="celebration-message" id="celebration-message"></div>
+        <button class="celebration-btn" id="continue-btn" onclick="continueToNextLevel()">Niveau suivant 🚀</button>
+        <button class="celebration-btn secondary" onclick="goHome()">Accueil 🏠</button>
+        <a href="index.html" class="celebration-btn secondary" style="text-decoration: none; display: inline-block;">&#8592; Mes Jeux</a>
     </div>
 
     <!-- Overlay de feedback -->
@@ -873,66 +808,99 @@
     <script>
         // === CONFIGURATION ===
         const OBJECTS = ['🍎', '🍊', '🌟', '🎈', '🍬', '🚗', '🐟', '🌸'];
+        const QUESTIONS_PER_LEVEL = 10;
+        const PASS_SCORE = 8;
 
-        const LEVELS = {
-            1: { name: 'Palier 1', maxSum: 5, num1Max: 3, num2Max: 2, visual: true },
-            2: { name: 'Palier 2', maxSum: 10, num1Max: 6, num2Max: 4, visual: true },
-            3: { name: 'Palier 3', maxStart: 6, maxRemove: 3, visual: true, subtraction: true },
-            4: { name: 'Palier 4', maxStart: 10, maxRemove: 5, visual: true, subtraction: true },
-            5: { name: 'Palier 5', maxSum: 10, visual: false, mixed: true },
-            // Nouveaux paliers avancés
-            6: { name: 'Palier 6', maxSum: 15, num1Max: 10, num2Max: 5, visual: true, gridLayout: true },
-            7: { name: 'Palier 7', maxStart: 15, maxRemove: 7, visual: true, subtraction: true, gridLayout: true },
-            8: { name: 'Palier 8', maxSum: 20, visual: false, mixed: true },
-            // Paliers multiplication
-            9: { name: 'Palier 9', multiplication: true, visual: true, groupsMin: 2, groupsMax: 3, itemsMin: 2, itemsMax: 3, showAsAddition: true },
-            10: { name: 'Palier 10', multiplication: true, visual: true, tables: [2, 5], maxMultiplier: 5 },
-            11: { name: 'Palier 11', multiplication: true, visual: false, tables: [2, 3, 4, 5], maxMultiplier: 5 }
-        };
+        const LEVELS = [
+            {
+                id: 1,
+                name: 'Niveau 1',
+                title: 'Petites Additions',
+                desc: 'Additions jusqu\'a 5',
+                icon: '➕',
+                type: 'addition',
+                visual: true,
+                num1Max: 3,
+                num2Max: 2,
+                maxSum: 5,
+                choiceCount: 3
+            },
+            {
+                id: 2,
+                name: 'Niveau 2',
+                title: 'Soustractions',
+                desc: 'Soustractions avec des objets',
+                icon: '➖',
+                type: 'subtraction',
+                visual: true,
+                maxStart: 6,
+                maxRemove: 3,
+                choiceCount: 3
+            },
+            {
+                id: 3,
+                name: 'Niveau 3',
+                title: 'Additions et Soustractions',
+                desc: 'Les deux melanges !',
+                icon: '🎯',
+                type: 'mixed',
+                visual: true,
+                num1Max: 5,
+                num2Max: 4,
+                maxSum: 9,
+                maxStart: 8,
+                maxRemove: 4,
+                choiceCount: 4
+            },
+            {
+                id: 4,
+                name: 'Niveau 4',
+                title: 'Grands Calculs',
+                desc: 'Calculs jusqu\'a 15 !',
+                icon: '🧠',
+                type: 'mixed',
+                visual: false,
+                num1Max: 8,
+                num2Max: 7,
+                maxSum: 15,
+                maxStart: 12,
+                maxRemove: 6,
+                choiceCount: 4
+            }
+        ];
 
-        // Astuces pédagogiques
+        // Astuces pedagogiques
         const TIPS = {
             addition: [
-                "💡 Compte d'abord le plus grand groupe !",
-                "💡 Tu peux utiliser tes doigts pour compter",
-                "💡 Touche chaque objet pour ne pas en oublier"
+                "Compte d'abord le plus grand groupe !",
+                "Tu peux utiliser tes doigts pour compter",
+                "Touche chaque objet pour ne pas en oublier"
             ],
             subtraction: [
-                "💡 Combien reste-t-il après le départ ?",
-                "💡 Cache les objets qui partent avec ta main"
+                "Combien reste-t-il apres le depart ?",
+                "Cache les objets qui partent avec ta main"
             ],
-            multiplication: [
-                "💡 Compte combien dans chaque boîte",
-                "💡 C'est comme additionner plusieurs fois !",
-                "💡 3 × 2 = 2 + 2 + 2"
-            ],
-            bigNumbers: [
-                "💡 Groupe les objets par 5 pour compter plus vite",
-                "💡 10 + quelque chose = 1 puis le chiffre !"
+            mixed: [
+                "Regarde bien le signe : + ou - ?",
+                "Pour le +, on ajoute. Pour le -, on enleve !"
             ]
         };
 
-        // === ÉTAT DU JEU ===
+        // === ETAT DU JEU ===
         let gameState = {
-            mode: 'addition',
             currentLevel: 1,
-            score: 0,
+            questionIndex: 0,
+            currentScore: 0,
             streak: 0,
-            totalStars: 0,
-            bestScore: 0,
-            modeScores: { addition: 0, subtraction: 0, mixed: 0, multiplication: 0 },
+            unlockedLevel: 1,
+            completedLevels: [],
             currentObject: '🍎',
             num1: 0,
             num2: 0,
             correctAnswer: 0,
             isSubtraction: false,
-            isMultiplication: false,
-            numGroups: 0, // Pour la multiplication : nombre de groupes
-            itemsPerGroup: 0, // Pour la multiplication : objets par groupe
             wrongAttempts: 0,
-            consecutiveWrongType: 0, // Pour les astuces : erreurs consécutives sur même type
-            lastQuestionType: '', // Type de la dernière question
-            questionsInSession: 0,
+            consecutiveWrongType: 0,
             helpUsed: false,
             countedObjects: 0
         };
@@ -1023,36 +991,54 @@
         // === LOCALSTORAGE ===
         function saveGame() {
             const data = {
-                totalStars: gameState.totalStars,
-                bestScore: gameState.bestScore,
-                modeScores: gameState.modeScores
+                unlockedLevel: gameState.unlockedLevel,
+                completedLevels: gameState.completedLevels
             };
             localStorage.setItem('calculAventure', JSON.stringify(data));
-            localStorage.setItem('calculScore', gameState.totalStars.toString());
         }
 
         function loadGame() {
             const saved = localStorage.getItem('calculAventure');
             if (saved) {
                 const data = JSON.parse(saved);
-                gameState.totalStars = data.totalStars || 0;
-                gameState.bestScore = data.bestScore || 0;
-                gameState.modeScores = data.modeScores || { addition: 0, subtraction: 0, mixed: 0, multiplication: 0 };
-                // S'assurer que multiplication existe
-                if (!gameState.modeScores.multiplication) {
-                    gameState.modeScores.multiplication = 0;
-                }
+                gameState.unlockedLevel = data.unlockedLevel || 1;
+                gameState.completedLevels = data.completedLevels || [];
             }
-            updateHomeUI();
+            renderHomeLevels();
         }
 
-        function updateHomeUI() {
-            document.getElementById('total-stars').textContent = gameState.totalStars + ' ⭐';
-            document.getElementById('best-score').textContent = gameState.bestScore;
-            document.getElementById('addition-stars').textContent = '⭐ ' + gameState.modeScores.addition;
-            document.getElementById('subtraction-stars').textContent = '⭐ ' + gameState.modeScores.subtraction;
-            document.getElementById('mixed-stars').textContent = '⭐ ' + gameState.modeScores.mixed;
-            document.getElementById('multiplication-stars').textContent = '⭐ ' + gameState.modeScores.multiplication;
+        // === ECRAN D'ACCUEIL ===
+        function renderHomeLevels() {
+            const container = document.getElementById('level-buttons');
+            container.innerHTML = '';
+
+            LEVELS.forEach((level, index) => {
+                const btn = document.createElement('button');
+                const levelNum = index + 1;
+                const isUnlocked = levelNum <= gameState.unlockedLevel;
+                const isCompleted = gameState.completedLevels.includes(levelNum);
+
+                btn.className = `level-btn niveau-${levelNum}${!isUnlocked ? ' locked' : ''}`;
+
+                let statusIcon = '🔒';
+                if (isCompleted) statusIcon = '✅';
+                else if (isUnlocked) statusIcon = '▶️';
+
+                btn.innerHTML = `
+                    <span class="level-icon">${level.icon}</span>
+                    <div class="level-info">
+                        <div class="level-name">${level.title}</div>
+                        <div class="level-desc">${level.desc}</div>
+                    </div>
+                    <span class="level-status">${statusIcon}</span>
+                `;
+
+                if (isUnlocked) {
+                    btn.onclick = () => startGame(levelNum);
+                }
+
+                container.appendChild(btn);
+            });
         }
 
         // === NAVIGATION ===
@@ -1061,30 +1047,18 @@
             document.getElementById(id).classList.add('active');
         }
 
-        function startGame(mode) {
+        function startGame(levelNum) {
             initAudio();
             playSound('click');
 
-            gameState.mode = mode;
-            gameState.score = 0;
+            gameState.currentLevel = levelNum;
+            gameState.questionIndex = 0;
+            gameState.currentScore = 0;
             gameState.streak = 0;
-            gameState.questionsInSession = 0;
             gameState.consecutiveWrongType = 0;
-            gameState.lastQuestionType = '';
             gameState.currentObject = OBJECTS[Math.floor(Math.random() * OBJECTS.length)];
 
-            // Déterminer le niveau de départ selon le mode
-            if (mode === 'addition') {
-                gameState.currentLevel = 1;
-            } else if (mode === 'subtraction') {
-                gameState.currentLevel = 3;
-            } else if (mode === 'multiplication') {
-                gameState.currentLevel = 9;
-            } else {
-                gameState.currentLevel = 5;
-            }
-
-            // Cacher l'astuce au démarrage
+            // Cacher l'astuce au demarrage
             document.getElementById('tip-box').style.display = 'none';
 
             updateGameUI();
@@ -1095,53 +1069,49 @@
         function goHome() {
             playSound('click');
             showScreen('home-screen');
-            updateHomeUI();
+            renderHomeLevels();
         }
 
         // === LOGIQUE DU JEU ===
+        function getLevel() {
+            return LEVELS[gameState.currentLevel - 1];
+        }
+
         function generateQuestion() {
             gameState.wrongAttempts = 0;
             gameState.helpUsed = false;
             gameState.countedObjects = 0;
-            gameState.isMultiplication = false;
 
             // Cacher l'astuce pour la nouvelle question
             document.getElementById('tip-box').style.display = 'none';
 
-            const level = LEVELS[gameState.currentLevel];
+            const level = getLevel();
 
-            // Changer d'objet toutes les 10 questions
-            if (gameState.questionsInSession % 10 === 0) {
+            // Changer d'objet toutes les 5 questions
+            if (gameState.questionIndex % 5 === 0) {
                 gameState.currentObject = OBJECTS[Math.floor(Math.random() * OBJECTS.length)];
             }
 
-            // Déterminer le type de question
-            if (level.multiplication) {
-                generateMultiplication(level);
-            } else if (gameState.mode === 'mixed') {
+            // Determiner le type de question
+            if (level.type === 'mixed') {
                 gameState.isSubtraction = Math.random() > 0.5;
-                generateAdditionOrSubtraction(level);
-            } else if (gameState.mode === 'subtraction' || level.subtraction) {
+            } else if (level.type === 'subtraction') {
                 gameState.isSubtraction = true;
-                generateAdditionOrSubtraction(level);
             } else {
                 gameState.isSubtraction = false;
-                generateAdditionOrSubtraction(level);
             }
 
-            gameState.questionsInSession++;
+            generateAdditionOrSubtraction(level);
             updateQuestionUI();
         }
 
         function generateAdditionOrSubtraction(level) {
-            // Générer les nombres pour addition ou soustraction
             if (gameState.isSubtraction) {
-                const maxStart = level.maxStart || 10;
-                const maxRemove = level.maxRemove || 5;
+                const maxStart = level.maxStart || 8;
+                const maxRemove = level.maxRemove || 4;
                 gameState.num1 = Math.floor(Math.random() * (maxStart - 2)) + 3;
                 gameState.num2 = Math.floor(Math.random() * Math.min(maxRemove, gameState.num1)) + 1;
                 gameState.correctAnswer = gameState.num1 - gameState.num2;
-                gameState.lastQuestionType = 'subtraction';
             } else {
                 const maxSum = level.maxSum || 10;
                 const num1Max = level.num1Max || 5;
@@ -1150,43 +1120,11 @@
                 const maxNum2 = Math.min(num2Max, maxSum - gameState.num1);
                 gameState.num2 = Math.floor(Math.random() * maxNum2) + 1;
                 gameState.correctAnswer = gameState.num1 + gameState.num2;
-                gameState.lastQuestionType = level.gridLayout ? 'bigNumbers' : 'addition';
-            }
-        }
-
-        function generateMultiplication(level) {
-            gameState.isMultiplication = true;
-            gameState.isSubtraction = false;
-            gameState.lastQuestionType = 'multiplication';
-
-            if (level.showAsAddition) {
-                // Palier 9 : groupes simples, montré comme addition répétée
-                const groupsMin = level.groupsMin || 2;
-                const groupsMax = level.groupsMax || 3;
-                const itemsMin = level.itemsMin || 2;
-                const itemsMax = level.itemsMax || 3;
-
-                gameState.numGroups = Math.floor(Math.random() * (groupsMax - groupsMin + 1)) + groupsMin;
-                gameState.itemsPerGroup = Math.floor(Math.random() * (itemsMax - itemsMin + 1)) + itemsMin;
-                gameState.num1 = gameState.numGroups;
-                gameState.num2 = gameState.itemsPerGroup;
-                gameState.correctAnswer = gameState.numGroups * gameState.itemsPerGroup;
-            } else if (level.tables) {
-                // Paliers 10-11 : tables de multiplication
-                const table = level.tables[Math.floor(Math.random() * level.tables.length)];
-                const maxMult = level.maxMultiplier || 5;
-                const multiplier = Math.floor(Math.random() * maxMult) + 1;
-
-                gameState.num1 = table;
-                gameState.num2 = multiplier;
-                gameState.numGroups = multiplier;
-                gameState.itemsPerGroup = table;
-                gameState.correctAnswer = table * multiplier;
             }
         }
 
         function updateQuestionUI() {
-            const level = LEVELS[gameState.currentLevel];
+            const level = getLevel();
             const objectsDisplay = document.getElementById('objects-display');
             const numericDisplay = document.getElementById('numeric-display');
             const helpBtn = document.getElementById('help-btn');
@@ -1194,29 +1132,8 @@
 
             countDisplay.innerHTML = '';
 
-            if (gameState.isMultiplication && level.visual) {
-                // Mode multiplication visuel
-                objectsDisplay.style.display = 'block';
-                numericDisplay.style.display = 'none';
-                helpBtn.style.display = 'none';
-
-                objectsDisplay.innerHTML = '';
-                renderMultiplicationGroups(objectsDisplay, level);
-            } else if (gameState.isMultiplication && !level.visual) {
-                // Mode multiplication numérique (palier 11)
-                objectsDisplay.style.display = 'none';
-                numericDisplay.style.display = 'flex';
-                helpBtn.style.display = 'block';
-                helpBtn.classList.remove('used');
-
-                document.getElementById('num1').textContent = gameState.num1;
-                document.getElementById('num2').textContent = gameState.num2;
-                const opDisplay = document.getElementById('op-display');
-                opDisplay.textContent = '×';
-                opDisplay.className = 'operator';
-                opDisplay.style.color = '#E91E63';
-            } else if (level.visual) {
-                // Mode visuel addition/soustraction
+            if (level.visual) {
+                // Mode visuel
                 objectsDisplay.style.display = 'flex';
                 numericDisplay.style.display = 'none';
                 helpBtn.style.display = 'none';
@@ -1224,23 +1141,21 @@
                 objectsDisplay.innerHTML = '';
 
                 if (gameState.isSubtraction) {
-                    // Soustraction : un seul groupe
-                    const group = createObjectGroup(gameState.num1, true, level.gridLayout);
+                    const group = createObjectGroup(gameState.num1, true);
                     objectsDisplay.appendChild(group);
                 } else {
-                    // Addition : deux groupes
-                    const group1 = createObjectGroup(gameState.num1, false, level.gridLayout);
+                    const group1 = createObjectGroup(gameState.num1, false);
                     const operator = document.createElement('span');
                     operator.className = 'operator plus';
                     operator.textContent = '+';
-                    const group2 = createObjectGroup(gameState.num2, false, level.gridLayout);
+                    const group2 = createObjectGroup(gameState.num2, false);
 
                     objectsDisplay.appendChild(group1);
                     objectsDisplay.appendChild(operator);
                     objectsDisplay.appendChild(group2);
                 }
             } else {
-                // Mode numérique
+                // Mode numerique
                 objectsDisplay.style.display = 'none';
                 numericDisplay.style.display = 'flex';
                 helpBtn.style.display = 'block';
@@ -1253,53 +1168,16 @@
                 opDisplay.className = 'operator ' + (gameState.isSubtraction ? 'minus' : 'plus');
             }
 
-            // Générer les réponses
+            // Generer les reponses
             generateAnswers();
+
+            // Mettre a jour la progression
+            updateGameUI();
         }
 
-        function renderMultiplicationGroups(container, level) {
-            // Conteneur pour les groupes
-            const groupsContainer = document.createElement('div');
-            groupsContainer.className = 'groups-container';
-
-            // Créer chaque groupe (boîte)
-            for (let g = 0; g < gameState.numGroups; g++) {
-                const box = document.createElement('div');
-                box.className = 'object-box';
-
-                for (let i = 0; i < gameState.itemsPerGroup; i++) {
-                    const obj = document.createElement('span');
-                    obj.className = 'object-item';
-                    obj.textContent = gameState.currentObject;
-                    obj.onclick = () => handleObjectClick(obj);
-                    box.appendChild(obj);
-                }
-
-                groupsContainer.appendChild(box);
-            }
-
-            container.appendChild(groupsContainer);
-
-            // Ajouter l'indication textuelle
-            const hint = document.createElement('div');
-            hint.className = 'multiplication-hint';
-
-            if (level.showAsAddition) {
-                // Palier 9 : montrer comme addition répétée
-                const additions = [];
-                for (let i = 0; i < gameState.numGroups; i++) {
-                    additions.push(gameState.itemsPerGroup);
-                }
-                hint.innerHTML = additions.join(' <span class="operator plus">+</span> ') + ' = <span class="question-mark">?</span>';
-            } else {
-                // Palier 10 : montrer avec le symbole ×
-                hint.innerHTML = `${gameState.num1} <span class="operator" style="color: #E91E63">×</span> ${gameState.num2} = <span class="question-mark">?</span>`;
-            }
-
-            container.appendChild(hint);
-        }
-
-        function createObjectGroup(count, isSubtractionGroup, useGridLayout = false) {
+        function createObjectGroup(count, isSubtractionGroup) {
+            const level = getLevel();
+            const useGridLayout = count > 6;
             const group = document.createElement('div');
             group.className = 'object-group' + (useGridLayout ? ' grid-layout' : '');
             group.dataset.subtraction = isSubtractionGroup;
@@ -1310,7 +1188,6 @@
                 obj.textContent = gameState.currentObject;
                 obj.dataset.index = i;
 
-                // Marquer les objets à soustraire
                 if (isSubtractionGroup && i >= (count - gameState.num2)) {
                     obj.dataset.toRemove = 'true';
                 }
@@ -1319,7 +1196,6 @@
                 group.appendChild(obj);
             }
 
-            // Lancer l'animation de soustraction après un court délai
             if (isSubtractionGroup) {
                 setTimeout(() => animateSubtraction(group), 800);
             }
@@ -1340,7 +1216,7 @@
 
             gameState.countedObjects++;
             document.getElementById('count-display').innerHTML =
-                `Comptés : <span class="count-number">${gameState.countedObjects}</span>`;
+                `Comptes : <span class="count-number">${gameState.countedObjects}</span>`;
         }
 
         function animateSubtraction(group) {
@@ -1353,7 +1229,6 @@
                 }, i * 150);
             });
 
-            // Afficher un message après l'animation
             setTimeout(() => {
                 showToast(`${gameState.num2} ${gameState.currentObject} s'envolent !`);
             }, toRemove.length * 150 + 300);
@@ -1363,20 +1238,15 @@
             const answersZone = document.getElementById('answers-zone');
             answersZone.innerHTML = '';
 
+            const level = getLevel();
             const answers = [gameState.correctAnswer];
-            const numAnswers = gameState.currentLevel >= 3 ? 4 : 3;
+            const numAnswers = level.choiceCount || 3;
 
             while (answers.length < numAnswers) {
                 let wrong;
-                if (gameState.isMultiplication) {
-                    // Pour multiplication : proposer des erreurs proches
-                    const delta = Math.floor(Math.random() * 5) - 2; // -2 à +2
-                    wrong = gameState.correctAnswer + delta;
-                    if (wrong <= 0) wrong = gameState.correctAnswer + Math.abs(delta) + 1;
-                } else if (gameState.isSubtraction) {
+                if (gameState.isSubtraction) {
                     wrong = Math.floor(Math.random() * (gameState.num1 + 1));
                 } else {
-                    // Pour grands nombres, proposer des erreurs plus réalistes
                     const maxWrong = Math.max(12, gameState.correctAnswer + 5);
                     wrong = Math.floor(Math.random() * maxWrong) + 1;
                 }
@@ -1385,7 +1255,6 @@
                 }
             }
 
-            // Mélanger
             shuffleArray(answers);
 
             answers.forEach((ans, i) => {
@@ -1417,34 +1286,26 @@
             btn.classList.add('correct');
             disableAllAnswers();
 
-            gameState.score++;
+            gameState.currentScore++;
             gameState.streak++;
-            gameState.totalStars++;
-            gameState.modeScores[gameState.mode]++;
-            gameState.consecutiveWrongType = 0; // Reset compteur erreurs
-
-            if (gameState.score > gameState.bestScore) {
-                gameState.bestScore = gameState.score;
-            }
+            gameState.consecutiveWrongType = 0;
 
             updateGameUI();
-            saveGame();
             launchConfetti();
 
-            // Bonus de série
             if (gameState.streak >= 5 && gameState.streak % 5 === 0) {
                 playSound('streak');
                 showStreakBonus();
             }
 
-            // Messages d'encouragement
-            const messages = ['Super !', 'Bravo !', 'Excellent !', 'Génial !', 'Parfait !'];
+            const messages = ['Super !', 'Bravo !', 'Excellent !', 'Genial !', 'Parfait !'];
             const msg = messages[Math.floor(Math.random() * messages.length)];
 
-            showFeedback('🎉', msg, '+1 étoile !');
+            showFeedback('🎉', msg, `${gameState.currentScore}/${QUESTIONS_PER_LEVEL}`);
 
             setTimeout(() => {
                 hideFeedback();
+                gameState.questionIndex++;
                 checkProgress();
             }, 1200);
         }
@@ -1456,7 +1317,6 @@
             gameState.streak = 0;
             updateStreakDisplay();
 
-            // Tracker les erreurs consécutives pour les astuces
             gameState.consecutiveWrongType++;
 
             setTimeout(() => {
@@ -1465,11 +1325,9 @@
             }, 500);
 
             if (gameState.wrongAttempts >= 2) {
-                // Afficher une astuce si 2+ erreurs consécutives sur même type
                 if (gameState.consecutiveWrongType >= 2) {
                     showTip();
                 }
-                // Montrer la bonne réponse
                 showCorrectAnswer();
             } else {
                 showToast('Essaie encore ! 💪');
@@ -1479,24 +1337,21 @@
         function showTip() {
             const tipBox = document.getElementById('tip-box');
             const tipText = document.getElementById('tip-text');
+            const level = getLevel();
 
-            // Sélectionner le type d'astuce approprié
-            let tipCategory = gameState.lastQuestionType;
-            if (!TIPS[tipCategory]) {
-                tipCategory = 'addition'; // Fallback
-            }
+            let tipCategory = level.type;
+            if (!TIPS[tipCategory]) tipCategory = 'addition';
 
             const tips = TIPS[tipCategory];
             const randomTip = tips[Math.floor(Math.random() * tips.length)];
 
-            tipText.textContent = randomTip;
+            tipText.textContent = '💡 ' + randomTip;
             tipBox.style.display = 'flex';
         }
 
         function showCorrectAnswer() {
             disableAllAnswers();
 
-            // Trouver et mettre en évidence la bonne réponse
             const buttons = document.querySelectorAll('.answer-btn');
             buttons.forEach(btn => {
                 if (parseInt(btn.textContent) === gameState.correctAnswer) {
@@ -1504,26 +1359,19 @@
                 }
             });
 
-            // Créer l'explication visuelle
             let explanation = '';
-            if (gameState.isMultiplication) {
-                // Pour la multiplication : montrer les groupes
-                const groupsText = [];
-                for (let i = 0; i < gameState.numGroups; i++) {
-                    groupsText.push(gameState.currentObject.repeat(gameState.itemsPerGroup));
-                }
-                explanation = groupsText.join(' + ') + ` = ${gameState.currentObject.repeat(gameState.correctAnswer)}`;
-            } else if (gameState.isSubtraction) {
+            if (gameState.isSubtraction) {
                 explanation = `${gameState.currentObject.repeat(gameState.num1)} − ${gameState.currentObject.repeat(gameState.num2)} = ${gameState.currentObject.repeat(gameState.correctAnswer)}`;
             } else {
                 explanation = `${gameState.currentObject.repeat(gameState.num1)} + ${gameState.currentObject.repeat(gameState.num2)} = ${gameState.currentObject.repeat(gameState.correctAnswer)}`;
             }
 
-            showFeedback('🤔', `La réponse est ${gameState.correctAnswer}`, '', explanation);
+            showFeedback('🤔', `La reponse est ${gameState.correctAnswer}`, '', explanation);
 
             setTimeout(() => {
                 hideFeedback();
-                generateQuestion();
+                gameState.questionIndex++;
+                checkProgress();
             }, 3000);
         }
 
@@ -1534,62 +1382,76 @@
         }
 
         function checkProgress() {
-            // Victoire tous les 10 points
-            if (gameState.score > 0 && gameState.score % 10 === 0) {
-                showVictory();
+            if (gameState.questionIndex >= QUESTIONS_PER_LEVEL) {
+                showLevelComplete();
                 return;
             }
-
-            // Progression de niveau selon le mode
-            const progressionRules = {
-                addition: [
-                    { from: 1, to: 2, score: 8 },
-                    { from: 2, to: 6, score: 15 },  // Vers grands nombres
-                    { from: 6, to: null, score: null }
-                ],
-                subtraction: [
-                    { from: 3, to: 4, score: 8 },
-                    { from: 4, to: 7, score: 15 },  // Vers grandes soustractions
-                    { from: 7, to: null, score: null }
-                ],
-                mixed: [
-                    { from: 5, to: 8, score: 15 },  // Vers mode numérique avancé
-                    { from: 8, to: null, score: null }
-                ],
-                multiplication: [
-                    { from: 9, to: 10, score: 8 },   // Groupes → Tables ×2 ×5
-                    { from: 10, to: 11, score: 15 }, // Tables ×2 ×5 → Toutes tables
-                    { from: 11, to: null, score: null }
-                ]
-            };
-
-            const rules = progressionRules[gameState.mode] || [];
-            for (const rule of rules) {
-                if (gameState.currentLevel === rule.from && rule.to && gameState.score >= rule.score) {
-                    gameState.currentLevel = rule.to;
-                    playSound('levelup');
-                    showToast(`🎊 ${LEVELS[rule.to].name} débloqué !`);
-                    updateGameUI();
-                    break;
-                }
-            }
-
             generateQuestion();
         }
 
-        function showVictory() {
-            document.getElementById('victory-score').textContent =
-                `Tu as gagné ${gameState.score} étoiles !`;
-            showScreen('victory-screen');
+        function showLevelComplete() {
+            const score = gameState.currentScore;
+            const passed = score >= PASS_SCORE;
+            const isLastLevel = gameState.currentLevel >= LEVELS.length;
+            const isGameComplete = isLastLevel && passed;
+
+            // Debloquer le niveau suivant si reussi
+            if (passed && !isLastLevel) {
+                const nextLevel = gameState.currentLevel + 1;
+                if (nextLevel > gameState.unlockedLevel) {
+                    gameState.unlockedLevel = nextLevel;
+                }
+            }
+
+            // Marquer le niveau comme complete
+            if (passed && !gameState.completedLevels.includes(gameState.currentLevel)) {
+                gameState.completedLevels.push(gameState.currentLevel);
+            }
+
+            saveGame();
+
+            // Etoiles
+            const starsCount = score >= 10 ? 5 : score >= 8 ? 4 : score >= 6 ? 3 : score >= 4 ? 2 : 1;
+            const starsText = '⭐'.repeat(starsCount);
+            document.getElementById('celebration-stars').textContent = starsText;
+
+            if (isGameComplete) {
+                document.getElementById('celebration-title').textContent = 'Champion des Calculs !';
+                document.getElementById('celebration-message').textContent =
+                    `${score}/${QUESTIONS_PER_LEVEL} - Bravo, tu as reussi tous les niveaux ! Tu es maintenant un vrai champion des calculs !`;
+                document.getElementById('continue-btn').style.display = 'none';
+            } else if (passed) {
+                document.getElementById('celebration-title').textContent = 'Niveau reussi !';
+                document.getElementById('celebration-message').textContent =
+                    `${score}/${QUESTIONS_PER_LEVEL} - ${getLevel().title} termine ! Le niveau suivant est debloque !`;
+                document.getElementById('continue-btn').style.display = '';
+                document.getElementById('continue-btn').textContent = 'Niveau suivant 🚀';
+            } else {
+                document.getElementById('celebration-title').textContent = score >= 6 ? 'Presque !' : 'Bien joue !';
+                document.getElementById('celebration-message').textContent =
+                    `${score}/${QUESTIONS_PER_LEVEL} - Il faut ${PASS_SCORE} bonnes reponses pour passer au niveau suivant. Essaie encore !`;
+                document.getElementById('continue-btn').style.display = '';
+                document.getElementById('continue-btn').textContent = 'Recommencer 🔄';
+            }
+
+            showScreen('celebration-screen');
             launchConfetti();
             launchConfetti();
             playSound('levelup');
         }
 
-        function continuePlaying() {
+        function continueToNextLevel() {
             playSound('click');
-            showScreen('game-screen');
-            generateQuestion();
+            const score = gameState.currentScore;
+            const passed = score >= PASS_SCORE;
+
+            if (passed && gameState.currentLevel < LEVELS.length) {
+                // Passer au niveau suivant
+                startGame(gameState.currentLevel + 1);
+            } else {
+                // Recommencer le meme niveau
+                startGame(gameState.currentLevel);
+            }
         }
 
         function showHelp() {
@@ -1599,32 +1461,25 @@
             document.getElementById('help-btn').classList.add('used');
             playSound('click');
 
-            // Afficher les objets temporairement
             const objectsDisplay = document.getElementById('objects-display');
-            objectsDisplay.style.display = 'block';
+            objectsDisplay.style.display = 'flex';
             objectsDisplay.innerHTML = '';
 
-            const level = LEVELS[gameState.currentLevel];
-
-            if (gameState.isMultiplication) {
-                // Afficher les groupes de multiplication
-                renderMultiplicationGroups(objectsDisplay, level);
-            } else if (gameState.isSubtraction) {
-                const group = createObjectGroup(gameState.num1, true, level.gridLayout);
+            if (gameState.isSubtraction) {
+                const group = createObjectGroup(gameState.num1, true);
                 objectsDisplay.appendChild(group);
             } else {
-                const group1 = createObjectGroup(gameState.num1, false, level.gridLayout);
+                const group1 = createObjectGroup(gameState.num1, false);
                 const operator = document.createElement('span');
                 operator.className = 'operator plus';
                 operator.textContent = '+';
-                const group2 = createObjectGroup(gameState.num2, false, level.gridLayout);
+                const group2 = createObjectGroup(gameState.num2, false);
 
                 objectsDisplay.appendChild(group1);
                 objectsDisplay.appendChild(operator);
                 objectsDisplay.appendChild(group2);
             }
 
-            // Cacher après quelques secondes
             setTimeout(() => {
                 objectsDisplay.style.display = 'none';
             }, 5000);
@@ -1632,15 +1487,17 @@
 
         // === UI UPDATES ===
         function updateGameUI() {
-            document.getElementById('score-badge').textContent = '⭐ ' + gameState.score;
-            document.getElementById('level-badge').textContent = LEVELS[gameState.currentLevel].name;
+            const level = getLevel();
+            document.getElementById('score-badge').textContent = gameState.currentScore + '/' + QUESTIONS_PER_LEVEL;
+            document.getElementById('level-badge').textContent = level.name;
+            document.getElementById('progress-badge').textContent = (gameState.questionIndex + 1) + '/' + QUESTIONS_PER_LEVEL;
             updateStreakDisplay();
         }
 
         function updateStreakDisplay() {
             const streakEl = document.getElementById('streak-display');
             if (gameState.streak >= 3) {
-                streakEl.textContent = '🔥 Série : ' + gameState.streak;
+                streakEl.textContent = '🔥 Serie : ' + gameState.streak;
                 streakEl.classList.add('show');
             } else {
                 streakEl.classList.remove('show');

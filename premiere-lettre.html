@@ -746,7 +746,8 @@
         </div>
         <div class="stars-earned" id="stars-earned">⭐⭐⭐⭐⭐⭐⭐⭐</div>
         <div class="results-message" id="results-message">Super travail !</div>
-        <button class="results-btn" onclick="playAgain()">🔄 Rejouer</button>
+        <button class="results-btn" id="next-level-btn" onclick="goToNextLevel()" style="display:none;">➡️ Niveau suivant</button>
+        <button class="results-btn secondary" id="replay-btn" onclick="playAgain()">🔄 Recommencer</button>
         <button class="results-btn secondary" onclick="goHome()">🏠 Accueil</button>
     </div>
 
@@ -1264,11 +1265,37 @@
                 message = 'Tu vas y arriver, continue !';
             }
 
+            // Cas special : champion (niveau 3 reussi)
+            if (score >= 8 && level === 3) {
+                emoji = '🏆';
+                title = 'Champion des Premieres Lettres !';
+                message = 'Bravo, tu as reussi tous les niveaux ! Tu es maintenant un vrai champion des premieres lettres !';
+            }
+
             document.getElementById('results-emoji').textContent = emoji;
             document.getElementById('results-title').textContent = title;
             document.getElementById('final-score').textContent = score;
             document.getElementById('results-message').textContent = message;
             document.getElementById('stars-earned').textContent = '⭐'.repeat(score);
+
+            // Gestion des boutons
+            const nextLevelBtn = document.getElementById('next-level-btn');
+            const replayBtn = document.getElementById('replay-btn');
+
+            if (score >= 8 && level < 3) {
+                // Niveau reussi, pas le dernier : montrer "Niveau suivant" en principal
+                nextLevelBtn.style.display = '';
+                nextLevelBtn.className = 'results-btn';
+                replayBtn.className = 'results-btn secondary';
+            } else if (score >= 8 && level === 3) {
+                // Dernier niveau reussi : pas de niveau suivant
+                nextLevelBtn.style.display = 'none';
+                replayBtn.className = 'results-btn';
+            } else {
+                // Echec : pas de niveau suivant, recommencer en principal
+                nextLevelBtn.style.display = 'none';
+                replayBtn.className = 'results-btn';
+            }
 
             saveGame();
 
@@ -1303,6 +1330,15 @@
         function playAgain() {
             playSound('click');
             startGame();
+        }
+
+        function goToNextLevel() {
+            playSound('click');
+            const nextLevel = gameState.selectedLevel + 1;
+            if (nextLevel <= 3 && gameState.unlockedLevels.includes(nextLevel)) {
+                gameState.selectedLevel = nextLevel;
+                startGame();
+            }
         }
 
         // === UTILITAIRES ===

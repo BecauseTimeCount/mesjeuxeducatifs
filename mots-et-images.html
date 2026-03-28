@@ -1047,6 +1047,14 @@
             gameState.roundIndex = 0;
             gameState.usedWords = [];
             gameState.correctInRow = 0;
+            // Reset memory (level 3) state
+            gameState.matchedPairs = 0;
+            gameState.flippedCards = [];
+            gameState.memoryLocked = false;
+            gameState.memoryCards = [];
+            // Reset connect (level 4) state
+            gameState.connectedCount = 0;
+            gameState.selectedConnect = null;
             updateGameUI();
             showScreen('game-screen');
 
@@ -1430,10 +1438,37 @@
         }
 
         function showCelebration() {
-            const msg = gameState.currentLevel <= 2
-                ? `Tu as trouve ${gameState.currentScore} bonnes reponses !`
-                : `Tu as gagne ${gameState.currentScore} etoiles !`;
-            document.getElementById('celebration-message').textContent = msg;
+            const passed = gameState.currentScore >= UNLOCK_THRESHOLD;
+            const isLastLevel = gameState.currentLevel >= MAX_LEVEL;
+            const continueBtn = document.querySelector('#celebration-screen .continue-btn');
+            const titleEl = document.querySelector('#celebration-screen .celebration-title');
+
+            if (passed && isLastLevel) {
+                // All levels completed
+                titleEl.textContent = 'Champion des Mots !';
+                document.getElementById('celebration-message').textContent =
+                    'Bravo, tu as reussi tous les niveaux ! Tu es maintenant un vrai champion des mots !';
+                continueBtn.style.display = 'none';
+            } else if (passed) {
+                // Passed, can go to next level
+                titleEl.textContent = 'Super Champion !';
+                const msg = gameState.currentLevel <= 2
+                    ? `Tu as trouve ${gameState.currentScore} bonnes reponses !`
+                    : `Tu as gagne ${gameState.currentScore} etoiles !`;
+                document.getElementById('celebration-message').textContent = msg;
+                continueBtn.style.display = '';
+                continueBtn.textContent = 'Niveau suivant \u{1F680}';
+            } else {
+                // Not passed, offer to retry
+                titleEl.textContent = 'Bien joue !';
+                const msg = gameState.currentLevel <= 2
+                    ? `Tu as trouve ${gameState.currentScore} bonnes reponses !`
+                    : `Tu as gagne ${gameState.currentScore} etoiles !`;
+                document.getElementById('celebration-message').textContent = msg;
+                continueBtn.style.display = '';
+                continueBtn.textContent = 'Recommencer \u{1F504}';
+            }
+
             showScreen('celebration-screen');
             launchConfetti();
             launchConfetti();
@@ -1442,13 +1477,15 @@
 
         function continuePlaying() {
             playSound('click');
-            // Move to next level if unlocked, otherwise replay
-            if (gameState.currentScore >= UNLOCK_THRESHOLD && gameState.currentLevel < MAX_LEVEL) {
+            const passed = gameState.currentScore >= UNLOCK_THRESHOLD;
+            if (passed && gameState.currentLevel < MAX_LEVEL) {
+                // Advance to next level
                 gameState.currentLevel++;
                 saveGame();
                 showLevelUp();
             } else {
-                goHome();
+                // Replay current level
+                startLevel(gameState.currentLevel);
             }
         }
 
