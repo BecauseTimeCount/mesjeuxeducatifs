@@ -1,4 +1,16 @@
 .playwright-mcp/
 *.png
+!public/icons/*.png
+!screenshots/*.png
 .DS_Store
 Thumbs.db
+
+# Node / Vite
+node_modules/
+dist/
+dev-dist/
+*.tsbuildinfo
+.vite/
+
+# Audio temporaire (les mp3 finaux dans public/audio sont commites)
+scripts/.audio-cache/

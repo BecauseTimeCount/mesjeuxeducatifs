@@ -1,0 +1,464 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "ui.bravo",
+      "text": "Bravo !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.super",
+      "text": "Super, tu as réussi !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.champion",
+      "text": "Tu es un champion !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.essaie-encore",
+      "text": "Presque ! Essaie encore.",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.regarde-bien",
+      "text": "Regarde bien, je te montre.",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.a-toi",
+      "text": "À toi de jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.ecoute-bien",
+      "text": "Écoute bien !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.fin-session",
+      "text": "Quelle aventure ! On a bien joué. Et si on faisait une pause ? L'archipel sera toujours là demain !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.bienvenue",
+      "text": "Bienvenue dans l'archipel ! Choisis une île et un jeu.",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.niveau-termine",
+      "text": "Niveau terminé, félicitations !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ui.nouveau-niveau",
+      "text": "Tu as débloqué un nouveau niveau !",
+      "voice": "eloise"
+    },
+    {
+      "id": "nombre.0",
+      "text": "zéro"
+    },
+    {
+      "id": "nombre.1",
+      "text": "un"
+    },
+    {
+      "id": "nombre.2",
+      "text": "deux"
+    },
+    {
+      "id": "nombre.3",
+      "text": "trois"
+    },
+    {
+      "id": "nombre.4",
+      "text": "quatre"
+    },
+    {
+      "id": "nombre.5",
+      "text": "cinq"
+    },
+    {
+      "id": "nombre.6",
+      "text": "six"
+    },
+    {
+      "id": "nombre.7",
+      "text": "sept"
+    },
+    {
+      "id": "nombre.8",
+      "text": "huit"
+    },
+    {
+      "id": "nombre.9",
+      "text": "neuf"
+    },
+    {
+      "id": "nombre.10",
+      "text": "dix"
+    },
+    {
+      "id": "nombre.11",
+      "text": "onze"
+    },
+    {
+      "id": "nombre.12",
+      "text": "douze"
+    },
+    {
+      "id": "nombre.13",
+      "text": "treize"
+    },
+    {
+      "id": "nombre.14",
+      "text": "quatorze"
+    },
+    {
+      "id": "nombre.15",
+      "text": "quinze"
+    },
+    {
+      "id": "nombre.16",
+      "text": "seize"
+    },
+    {
+      "id": "nombre.17",
+      "text": "dix-sept"
+    },
+    {
+      "id": "nombre.18",
+      "text": "dix-huit"
+    },
+    {
+      "id": "nombre.19",
+      "text": "dix-neuf"
+    },
+    {
+      "id": "nombre.20",
+      "text": "vingt"
+    },
+    {
+      "id": "nombre.21",
+      "text": "vingt-et-un"
+    },
+    {
+      "id": "nombre.22",
+      "text": "vingt-deux"
+    },
+    {
+      "id": "nombre.23",
+      "text": "vingt-trois"
+    },
+    {
+      "id": "nombre.24",
+      "text": "vingt-quatre"
+    },
+    {
+      "id": "nombre.25",
+      "text": "vingt-cinq"
+    },
+    {
+      "id": "nombre.26",
+      "text": "vingt-six"
+    },
+    {
+      "id": "nombre.27",
+      "text": "vingt-sept"
+    },
+    {
+      "id": "nombre.28",
+      "text": "vingt-huit"
+    },
+    {
+      "id": "nombre.29",
+      "text": "vingt-neuf"
+    },
+    {
+      "id": "nombre.30",
+      "text": "trente"
+    },
+    {
+      "id": "nombre.31",
+      "text": "trente-et-un"
+    },
+    {
+      "id": "nombre.32",
+      "text": "trente-deux"
+    },
+    {
+      "id": "nombre.33",
+      "text": "trente-trois"
+    },
+    {
+      "id": "nombre.34",
+      "text": "trente-quatre"
+    },
+    {
+      "id": "nombre.35",
+      "text": "trente-cinq"
+    },
+    {
+      "id": "nombre.36",
+      "text": "trente-six"
+    },
+    {
+      "id": "nombre.37",
+      "text": "trente-sept"
+    },
+    {
+      "id": "nombre.38",
+      "text": "trente-huit"
+    },
+    {
+      "id": "nombre.39",
+      "text": "trente-neuf"
+    },
+    {
+      "id": "nombre.40",
+      "text": "quarante"
+    },
+    {
+      "id": "nombre.41",
+      "text": "quarante-et-un"
+    },
+    {
+      "id": "nombre.42",
+      "text": "quarante-deux"
+    },
+    {
+      "id": "nombre.43",
+      "text": "quarante-trois"
+    },
+    {
+      "id": "nombre.44",
+      "text": "quarante-quatre"
+    },
+    {
+      "id": "nombre.45",
+      "text": "quarante-cinq"
+    },
+    {
+      "id": "nombre.46",
+      "text": "quarante-six"
+    },
+    {
+      "id": "nombre.47",
+      "text": "quarante-sept"
+    },
+    {
+      "id": "nombre.48",
+      "text": "quarante-huit"
+    },
+    {
+      "id": "nombre.49",
+      "text": "quarante-neuf"
+    },
+    {
+      "id": "nombre.50",
+      "text": "cinquante"
+    },
+    {
+      "id": "nombre.51",
+      "text": "cinquante-et-un"
+    },
+    {
+      "id": "nombre.52",
+      "text": "cinquante-deux"
+    },
+    {
+      "id": "nombre.53",
+      "text": "cinquante-trois"
+    },
+    {
+      "id": "nombre.54",
+      "text": "cinquante-quatre"
+    },
+    {
+      "id": "nombre.55",
+      "text": "cinquante-cinq"
+    },
+    {
+      "id": "nombre.56",
+      "text": "cinquante-six"
+    },
+    {
+      "id": "nombre.57",
+      "text": "cinquante-sept"
+    },
+    {
+      "id": "nombre.58",
+      "text": "cinquante-huit"
+    },
+    {
+      "id": "nombre.59",
+      "text": "cinquante-neuf"
+    },
+    {
+      "id": "nombre.60",
+      "text": "soixante"
+    },
+    {
+      "id": "nombre.61",
+      "text": "soixante-et-un"
+    },
+    {
+      "id": "nombre.62",
+      "text": "soixante-deux"
+    },
+    {
+      "id": "nombre.63",
+      "text": "soixante-trois"
+    },
+    {
+      "id": "nombre.64",
+      "text": "soixante-quatre"
+    },
+    {
+      "id": "nombre.65",
+      "text": "soixante-cinq"
+    },
+    {
+      "id": "nombre.66",
+      "text": "soixante-six"
+    },
+    {
+      "id": "nombre.67",
+      "text": "soixante-sept"
+    },
+    {
+      "id": "nombre.68",
+      "text": "soixante-huit"
+    },
+    {
+      "id": "nombre.69",
+      "text": "soixante-neuf"
+    },
+    {
+      "id": "nombre.70",
+      "text": "soixante-dix"
+    },
+    {
+      "id": "nombre.71",
+      "text": "soixante-et-onze"
+    },
+    {
+      "id": "nombre.72",
+      "text": "soixante-douze"
+    },
+    {
+      "id": "nombre.73",
+      "text": "soixante-treize"
+    },
+    {
+      "id": "nombre.74",
+      "text": "soixante-quatorze"
+    },
+    {
+      "id": "nombre.75",
+      "text": "soixante-quinze"
+    },
+    {
+      "id": "nombre.76",
+      "text": "soixante-seize"
+    },
+    {
+      "id": "nombre.77",
+      "text": "soixante-dix-sept"
+    },
+    {
+      "id": "nombre.78",
+      "text": "soixante-dix-huit"
+    },
+    {
+      "id": "nombre.79",
+      "text": "soixante-dix-neuf"
+    },
+    {
+      "id": "nombre.80",
+      "text": "quatre-vingts"
+    },
+    {
+      "id": "nombre.81",
+      "text": "quatre-vingt-un"
+    },
+    {
+      "id": "nombre.82",
+      "text": "quatre-vingt-deux"
+    },
+    {
+      "id": "nombre.83",
+      "text": "quatre-vingt-trois"
+    },
+    {
+      "id": "nombre.84",
+      "text": "quatre-vingt-quatre"
+    },
+    {
+      "id": "nombre.85",
+      "text": "quatre-vingt-cinq"
+    },
+    {
+      "id": "nombre.86",
+      "text": "quatre-vingt-six"
+    },
+    {
+      "id": "nombre.87",
+      "text": "quatre-vingt-sept"
+    },
+    {
+      "id": "nombre.88",
+      "text": "quatre-vingt-huit"
+    },
+    {
+      "id": "nombre.89",
+      "text": "quatre-vingt-neuf"
+    },
+    {
+      "id": "nombre.90",
+      "text": "quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.91",
+      "text": "quatre-vingt-onze"
+    },
+    {
+      "id": "nombre.92",
+      "text": "quatre-vingt-douze"
+    },
+    {
+      "id": "nombre.93",
+      "text": "quatre-vingt-treize"
+    },
+    {
+      "id": "nombre.94",
+      "text": "quatre-vingt-quatorze"
+    },
+    {
+      "id": "nombre.95",
+      "text": "quatre-vingt-quinze"
+    },
+    {
+      "id": "nombre.96",
+      "text": "quatre-vingt-seize"
+    },
+    {
+      "id": "nombre.97",
+      "text": "quatre-vingt-dix-sept"
+    },
+    {
+      "id": "nombre.98",
+      "text": "quatre-vingt-dix-huit"
+    },
+    {
+      "id": "nombre.99",
+      "text": "quatre-vingt-dix-neuf"
+    },
+    {
+      "id": "nombre.100",
+      "text": "cent"
+    }
+  ]
+}
