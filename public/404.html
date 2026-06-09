@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mes Jeux Éducatifs</title>
+    <script>
+      // Anciennes URLs V1 (ex: /mesjeuxeducatifs/calcul-aventure.html) -> jeu archivé sous /v1/
+      ;(function () {
+        var base = '/mesjeuxeducatifs/'
+        var path = location.pathname
+        var m = path.match(/^\/mesjeuxeducatifs\/([a-z-]+\.html)$/)
+        if (m) {
+          location.replace(base + 'v1/' + m[1])
+        } else {
+          location.replace(base)
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <p><a href="/mesjeuxeducatifs/">Retour aux jeux</a></p>
+  </body>
+</html>
