@@ -1,0 +1,111 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "fdn.intro",
+      "text": "Bienvenue à la fabrique de nombres ! Regarde le ticket de commande, puis fabrique le nombre avec des barres de dix et des petits cubes. La machine peut casser une barre en dix cubes, ou souder dix cubes en une barre !",
+      "voice": "eloise"
+    },
+    {
+      "id": "fdn.choisis",
+      "text": "Choisis ton atelier, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "fdn.palier.verrouille",
+      "text": "Cet atelier est encore fermé. Gagne deux étoiles à l'atelier d'avant pour l'ouvrir !",
+      "voice": "eloise"
+    },
+    {
+      "id": "fdn.consigne.fabrique",
+      "text": "Fabrique"
+    },
+    {
+      "id": "fdn.contrainte.avec-seulement",
+      "text": "Attention, défi : avec seulement"
+    },
+    {
+      "id": "fdn.contrainte.barre",
+      "text": "barre de dix !"
+    },
+    {
+      "id": "fdn.contrainte.barres",
+      "text": "barres de dix !"
+    },
+    {
+      "id": "fdn.contrainte.sans-barre",
+      "text": "Attention, défi : sans aucune barre ! Que des petits cubes !"
+    },
+    {
+      "id": "fdn.contrainte.au-moins",
+      "text": "Attention, défi : avec au moins"
+    },
+    {
+      "id": "fdn.contrainte.cubes",
+      "text": "petits cubes !"
+    },
+    {
+      "id": "fdn.machine.casse",
+      "text": "Et crac ! Une barre devient dix petits cubes !",
+      "voice": "eloise"
+    },
+    {
+      "id": "fdn.machine.soude",
+      "text": "Et zou ! Dix petits cubes deviennent une barre !",
+      "voice": "eloise"
+    },
+    {
+      "id": "fdn.livraison.compte",
+      "text": "On compte ensemble !"
+    },
+    {
+      "id": "fdn.livraison.bravo",
+      "text": "Et hop, c'est emballé ! Commande livrée !",
+      "voice": "eloise"
+    },
+    {
+      "id": "fdn.livraison.manque",
+      "text": "Oh ! Il en manque"
+    },
+    {
+      "id": "fdn.livraison.trop",
+      "text": "Oh ! Il y en a"
+    },
+    {
+      "id": "fdn.livraison.trop-fin",
+      "text": "en trop !"
+    },
+    {
+      "id": "fdn.livraison.contrainte",
+      "text": "Regarde le ticket : il faut au moins"
+    },
+    {
+      "id": "fdn.indice.il-faut",
+      "text": "Petit secret : il faut"
+    },
+    {
+      "id": "fdn.indice.barre-et",
+      "text": "barre de dix, et"
+    },
+    {
+      "id": "fdn.indice.barres-et",
+      "text": "barres de dix, et"
+    },
+    {
+      "id": "fdn.indice.barre-seule",
+      "text": "barre de dix, et c'est tout !"
+    },
+    {
+      "id": "fdn.indice.barres-seules",
+      "text": "barres de dix, et c'est tout !"
+    },
+    {
+      "id": "fdn.indice.cube-fin",
+      "text": "petit cube !"
+    },
+    {
+      "id": "fdn.indice.cubes-fin",
+      "text": "petits cubes !"
+    }
+  ]
+}

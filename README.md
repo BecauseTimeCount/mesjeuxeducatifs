@@ -1,142 +1,112 @@
-# Mes Jeux Educatifs
+# Mes Jeux Éducatifs — L'Archipel (V2)
 
-**29 mini-jeux gratuits, sans pub et sans tracking, couvrant l'integralite du programme CP francais.**
+**Des jeux éducatifs gratuits, sans pub, sans compte et sans tracking, pour les enfants français de 4 à 7 ans (GS, CP).**
 
-> 100% navigateur. Zero installation. Zero compte. PWA installable sur tablette et telephone.
+> 100 % navigateur. Zéro installation. Zéro donnée qui quitte la tablette.
+> PWA installable, fonctionne hors ligne. Alignés sur les programmes officiels 2025.
+
+🎮 **Jouer : [becausetimecount.github.io/mesjeuxeducatifs](https://becausetimecount.github.io/mesjeuxeducatifs/)**
 
 ---
 
 ## Pourquoi ce projet ?
 
-Les apps educatives pour enfants sont souvent bourrées de pubs, de trackers et d'achats in-app. Ce projet prend le contre-pied : des jeux **simples, legers et respectueux** — juste du HTML, du CSS et du JavaScript.
+Les apps éducatives pour enfants sont souvent bourrées de pubs, de trackers et d'achats
+intégrés — et depuis 2025, plus aucun outil **gratuit** n'ajuste la difficulté à l'enfant.
+Ce projet prend le contre-pied : un site fait par un parent développeur, pour ses enfants
+et tous les autres, où chaque jeu applique cinq lois simples :
 
-Pas de serveur, pas de base de données, pas de cookies. Les scores sont sauvegardés localement dans le navigateur. **Aucune donnée ne quitte jamais l'appareil.**
+1. **Zéro QCM** — l'enfant *produit* la réponse : il construit, assemble, règle, tape.
+   Le hasard ne rapporte jamais de points.
+2. **L'erreur enseigne** — pas de « faux », pas de game over : le jeu *montre* pourquoi
+   (le train déraille en relisant ce que tu as construit, le glouton recompte les baies).
+3. **Audio d'abord** — toutes les consignes sont dites par une vraie voix française :
+   un enfant qui ne sait pas lire est autonome de bout en bout.
+4. **Score honnête** — seuls les premiers essais comptent. Pas de streaks, pas de
+   classement, pas de « reviens demain ».
+5. **Et c'est un jeu, un vrai** — du rythme, des animations, des personnages, et un
+   contenu généré à l'infini (jamais deux fois le même puzzle).
 
-## Les 29 jeux par matiere
+## Les jeux
 
-### Francais (7 jeux)
+### Nouveaux jeux V2 (l'Archipel)
 
-| Jeu | Description | Competences |
-|-----|-------------|-------------|
-| **Trouve la Lettre** | Retrouve la bonne lettre parmi les propositions | Reconnaissance des lettres, alphabet |
-| **Premiere Lettre** | Trouve par quelle lettre commence le mot | Conscience phonologique |
-| **Les Syllabes** | Decompose et recompose des mots en syllabes | Conscience syllabique, pre-lecture |
-| **Mots et Images** | Associe les mots a leurs images | Lecture, vocabulaire |
-| **Le Train des Mots** | Assemble les syllabes en wagons pour former des mots | Decodage, fluence |
-| **La Dictee des Sons** | Ecoute un son et trouve le bon grapheme | Encodage, correspondances phonemes-graphemes |
-| **Qui Parle ?** | Comprends les textes et identifie les personnages | Comprehension, inferences, chaine anaphorique |
-| **La Machine a Phrases** | Construis des phrases et trie les mots | Grammaire, classes de mots, accords |
+- **🤖 Robo-Pilote** — programme un robot jusqu'au trésor : flèches, obstacles, et blocs
+  « répéter ×3 » obligatoires au dernier palier (pré-code, repérage spatial). Avec un
+  atelier où l'enfant construit ses propres labyrinthes pour faire jouer les parents.
+- **🚂 Le Train des Syllabes** — phonologie 100 % auditive : écoute le mot, scande-le au
+  tambour, assemble les wagons-syllabes… et tire le sifflet : le train lit *vraiment* ce
+  que tu as construit (et déraille comiquement si c'est faux). Pseudo-mots et manipulation
+  de syllabes du programme GS 2025.
+- **🪄 Les Gloutons du Dix** — des créatures voraces n'avalent que le compte exact :
+  décompositions des nombres, compléments à 10 et doubles deviennent un puzzle physique.
+- **🏗️ La Fabrique de Nombres** — fabrique les commandes avec barres de dix et cubes, et
+  surtout la *Machine* qui casse une barre en 10 cubes (et soude 10 cubes en barre) :
+  l'équivalence d'échange enfin manipulée. Défis « fabrique 43 avec seulement 3 barres ».
+- **⌨️ La Machine à Écrire Magique** — écoute un son, une syllabe, un mot… et écris-le
+  sur un clavier de graphèmes (une touche = un son : « ch », « ou », « an »). La machine
+  relit ce que tu as écrit. Suit le tempo graphémique officiel du CP.
+- **🏪 Le P'tit Marchand** — des clients-animaux commandent à voix haute : paie le compte
+  exact, rends la monnaie, additionne deux articles de tête. Chaque réussite agrandit la
+  boutique.
 
-### Mathematiques (7 jeux)
+### Les 28 jeux classiques (V1)
 
-| Jeu | Description | Competences |
-|-----|-------------|-------------|
-| **Calcul Aventure** | Additions, soustractions et multiplications | Calcul mental, numeration |
-| **La Fabrique de Nombres** | Construis et decompose les dizaines et unites | Valeur positionnelle, decomposition |
-| **Le P'tit Marchand** | Reconnais les pieces, paye et rends la monnaie | Monnaie, euros |
-| **Le Bar a Schemas** | Resous des problemes avec des diagrammes en barres | Modelisation, problemes parties-tout |
-| **Robot Quadrillage** | Programme un robot pour atteindre le tresor | Codage de deplacement, reperage spatial |
-| **Le Miroir Pixel** | Complete le symetrique et reproduis des motifs | Symetrie axiale, reproduction sur quadrillage |
-| **Pixel Art Geometrique** | Reproduis des figures geometriques en pixels | Reproduction, geometrie, observation |
+Toujours là, servis tels quels : Calcul Aventure, Trouve la Lettre, Les Syllabes,
+La Dictée des Sons, Qui Parle ?, Sudoku des Petits, Le Plan de l'École, L'Eau Magique,
+Hello English!… Ils seront refondus ou fusionnés vague après vague (voir
+[v2-proposition.md](v2-proposition.md)).
 
-### Explorer le Monde (7 jeux)
+## Pour les parents
 
-| Jeu | Description | Competences |
-|-----|-------------|-------------|
-| **Le Temps qui Passe** | Decouvre les heures et les moments de la journee | Lecture de l'heure, reperage temporel |
-| **Ma Semaine en Ordre** | Apprends les jours, mois et saisons | Reperage temporel, chronologie |
-| **La Journee de Leo** | Associe heures et activites quotidiennes | Frise chronologique, heures |
-| **Le Plan de l'Ecole** | Repere-toi dans l'ecole avec gauche et droite | Reperage spatial, lecture de plan |
-| **Le Restaurant des Animaux** | Sers le bon repas a chaque animal | Regimes alimentaires, classification |
-| **L'Eau Magique** | Decouvre les 3 etats de l'eau | Matiere, transformations, cycle de l'eau |
-| **Le Jardin des Emotions** | Reconnais les emotions et leurs reactions | EMC, emotions, vivre ensemble |
-
-### Logique (2 jeux)
-
-| Jeu | Description | Competences |
-|-----|-------------|-------------|
-| **Suite Logique** | Complete des sequences de formes et couleurs | Logique, observation, patterns |
-| **Sudoku des Petits** | Grilles de sudoku adaptees aux enfants | Raisonnement, logique spatiale |
-
-### Anglais & Arts (5 jeux)
-
-| Jeu | Description | Competences |
-|-----|-------------|-------------|
-| **Hello English!** | Couleurs, nombres, animaux en anglais | Anglais pre-A1, vocabulaire oral |
-| **Colour Catcher** | Attrape les ballons de la bonne couleur en anglais | Anglais, couleurs, nombres, action |
-| **Simon Says** | Jacques a dit en anglais avec les parties du corps | Anglais, body parts, ecoute |
-| **Le Chef d'Orchestre** | Rythme, instruments et volumes avec des animaux musiciens | Education musicale, rythme, timbres |
-| **L'Atelier des Couleurs** | Melange les couleurs primaires et peins | Arts plastiques, theorie des couleurs |
-
-## Comment utiliser ?
-
-### Option 1 — En ligne (recommande)
-Rendez-vous sur **[mesjeuxeducatifs](https://becausetimecount.github.io/mesjeuxeducatifs/)** et c'est parti.
-
-Sur tablette ou telephone, ajoutez la page a l'ecran d'accueil pour une experience d'application native (PWA installable).
-
-### Option 2 — Hors-ligne
-1. Telechargez le projet (bouton vert **Code** > **Download ZIP**)
-2. Decompressez le dossier
-3. Ouvrez `index.html` dans un navigateur
-
-Ca marche aussi sans internet.
-
-## Fonctionnalites
-
-- **29 jeux** couvrant 7 matieres du programme CP
-- **PWA installable** — fonctionne comme une application sur tablette et telephone
-- **Multi-profils** — plusieurs enfants peuvent jouer chacun avec leur profil
-- **Progression sauvegardee** — scores et niveaux debloques conserves automatiquement
-- **Hub par categories** — filtrez les jeux par matiere (Francais, Maths, Explorer le Monde, Logique, Anglais & Arts)
-- **4 niveaux par jeu** — difficulte progressive avec deblocage
-- **100% offline** — fonctionne sans connexion apres le premier chargement
-- **Responsive** — teste sur iPhone SE, Galaxy Fold, iPad, desktop
-- **Feedback positif** — jamais de "faux", encouragements et animations bienveillantes
-- **Consignes audio** — TTS pour les jeux de lecture et de langues
+- **Carte de compétences** : l'espace parents (derrière une petite multiplication) montre
+  où en est l'enfant, compétence par compétence, avec les libellés officiels des
+  programmes 2025 (BO du 31/10/2024).
+- **Multi-profils** : chaque enfant de la fratrie a son profil et sa progression.
+- **Vos données restent chez vous** : tout est stocké dans la tablette (IndexedDB).
+  Export/import JSON pour changer d'appareil. Aucun compte, aucun serveur, aucun cookie.
+- **Sessions courtes** : au bout d'un quart d'heure, la mascotte propose gentiment de
+  conclure — conforme aux repères écrans officiels.
 
 ## Architecture technique
 
-- **Zero dependance** — pas de framework, pas de build, pas de node_modules
-- **1 fichier = 1 jeu** — chaque jeu est un fichier HTML autonome (~40-60 Ko)
-- **CSS inline** — tout est embarque, aucun fichier externe sauf Google Fonts
-- **Web Audio API** — sons synthetises, aucun fichier audio
-- **localStorage** — persistence locale, aucune donnee en ligne
-- **PWA** — manifest.json + service worker avec cache-first
+- **Vite + React 19 + TypeScript strict + Tailwind 4** — moteur commun (audio, profils,
+  maîtrise par compétence, répétition espacée, difficulté adaptative) écrit une fois,
+  testé (vitest), partagé par tous les jeux.
+- **Voix pré-générées** : ~550 clips TTS neuronal (edge-tts, voix Denise et Eloise)
+  servis en statique et précachés — fallback Web Speech si un clip manque.
+  Régénération : `pnpm audio`. Revue à l'oreille : page `audio-check.html`.
+- **Génération procédurale testée** : chaque jeu embarque ses générateurs et leurs
+  validateurs (solvabilité prouvée par les tests — plus jamais d'item impossible).
+- **PWA offline-first** : Workbox précache l'application entière, jeux V1 et audio
+  compris. Installable sur tablette et téléphone.
+- **Zéro backend, zéro coût** : GitHub Pages + Actions. Le site peut tourner dix ans
+  sans facture.
+
+## Développer
+
+```bash
+pnpm install
+pnpm dev        # serveur de dev
+pnpm test       # tests (moteur + logique des jeux)
+pnpm build      # typecheck + build production
+pnpm audio      # régénère les clips TTS depuis les corpus (Python + edge-tts)
+```
+
+Ajouter un jeu : un dossier `src/games/<id>/` (composant + `logic.ts` testé +
+`corpus.json`) et une entrée dans `src/games.manifest.ts`. Les contrats d'API et les
+lois de game design sont dans [ENGINE.md](ENGINE.md).
+
+**Contribuer sans coder** : les corpus (listes de mots, problèmes, voix) sont des
+fichiers JSON — une PR de contenu suffit.
 
 ## Philosophie
 
-- **Zero tracking** — aucun analytics, aucun cookie, aucune donnee envoyee nulle part
-- **Zero pub** — jamais de publicite, jamais d'achat in-app
-- **Zero compte** — pas d'inscription, pas de mail, rien a configurer
-- **Open source** — le code est lisible, modifiable et reutilisable
-
-## Couverture du programme CP
-
-Ce projet couvre les 7 matieres du programme officiel du CP francais (BO 2024 pour le francais et les maths, BO 2020 pour les autres matieres) :
-
-- **Francais** : lecture, phonologie, ecriture, grammaire, comprehension
-- **Mathematiques** : calcul, numeration, geometrie, grandeurs et mesures, resolution de problemes
-- **Questionner le monde** : temps, espace, vivant, matiere
-- **EMC** : emotions, vivre ensemble
-- **Education musicale** : rythme, timbres, intensite
-- **Arts plastiques** : couleurs, creation
-- **Langues vivantes** : anglais pre-A1
-
-## Contribuer
-
-Les contributions sont les bienvenues ! Que ce soit pour :
-- Proposer de nouveaux jeux ou niveaux
-- Ameliorer l'accessibilite
-- Corriger des bugs
-- Ajouter du contenu pedagogique
-
-Ouvrez une issue ou une pull request.
-
-## Licence
-
-MIT — Utilisez, modifiez et partagez librement.
+- **Zéro tracking** — aucun analytics, aucun cookie, aucune donnée envoyée nulle part
+- **Zéro pub** — jamais de publicité, jamais d'achat intégré
+- **Zéro compte** — rien à créer, rien à configurer
+- **Open source** — MIT : utilisez, modifiez, partagez
 
 ---
 
-*Fait avec amour par un parent developpeur pour son enfant et tous les autres.*
+*Fait avec amour par un parent développeur pour ses enfants — et tous les autres.*

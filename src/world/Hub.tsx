@@ -74,7 +74,7 @@ export default function Hub() {
             Bienvenue dans l’archipel&nbsp;! Choisis une île et un jeu.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
           <SpeakerButton entry={BIENVENUE} size="lg" />
           <ProfileSwitcher />
         </div>

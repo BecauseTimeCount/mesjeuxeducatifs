@@ -1,0 +1,85 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "rp.intro",
+      "text": "Bienvenue, capitaine ! Empile les flèches pour programmer le robot, et guide-le jusqu’au trésor !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rp.consigne",
+      "text": "Programme le robot pour atteindre le trésor !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.boucle",
+      "text": "Utilise le bloc répéter, il est magique ! Il fait avancer le robot plusieurs fois d’un coup.",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.indice",
+      "text": "Regarde, le chemin s’illumine !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.oups-rocher",
+      "text": "Oups, un rocher ! Corrige ton programme.",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.oups-palmier",
+      "text": "Oups, un palmier ! Corrige ton programme.",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.oups-bord",
+      "text": "Oups, le robot a glissé au bord de l’île ! Corrige ton programme.",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.trop-court",
+      "text": "Le robot s’est arrêté avant le trésor. Ajoute des flèches !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.plein",
+      "text": "Ton programme est plein ! Tape un bloc pour l’enlever.",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.plein-boucle",
+      "text": "Ton programme est plein ! Le bloc répéter prend moins de place.",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.dir.haut",
+      "text": "En haut !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.dir.bas",
+      "text": "En bas !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.dir.gauche",
+      "text": "À gauche !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.dir.droite",
+      "text": "À droite !",
+      "voice": "denise"
+    },
+    {
+      "id": "rp.atelier",
+      "text": "Construis ton labyrinthe ! Place le robot, le trésor et les rochers, puis fais jouer quelqu’un !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rp.atelier-pret",
+      "text": "Ton labyrinthe est prêt ! À l’aventure !",
+      "voice": "eloise"
+    }
+  ]
+}

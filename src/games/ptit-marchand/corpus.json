@@ -1,0 +1,157 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "ptm.intro.accueil",
+      "text": "Bienvenue dans ta boutique ! Les clients font la queue. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ptm.intro.t0",
+      "text": "Regarde bien le prix sur l'étiquette. Pose les pièces sur le plateau, puis appuie sur Encaisser !",
+      "voice": "denise"
+    },
+    {
+      "id": "ptm.intro.t1",
+      "text": "Maintenant, le total du plateau est caché ! Compte les pièces dans ta tête, puis encaisse.",
+      "voice": "denise"
+    },
+    {
+      "id": "ptm.intro.t2",
+      "text": "Le client te donne un billet. À toi de lui rendre la monnaie avec les pièces de la caisse !",
+      "voice": "denise"
+    },
+    {
+      "id": "ptm.intro.t3",
+      "text": "Le client veut deux articles ! Additionne les deux prix dans ta tête, puis fais payer le total.",
+      "voice": "denise"
+    },
+    { "id": "ptm.ca-fait", "text": "Ça fait...", "voice": "denise" },
+    { "id": "ptm.coute", "text": "L'article coûte...", "voice": "denise" },
+    { "id": "ptm.rends", "text": "Rends-lui la monnaie !", "voice": "denise" },
+    { "id": "ptm.donne.5", "text": "Je te donne cinq euros !", "voice": "henri" },
+    { "id": "ptm.donne.10", "text": "Je te donne dix euros !", "voice": "henri" },
+    {
+      "id": "ptm.veut-deux",
+      "text": "Bonjour ! Je voudrais deux choses aujourd'hui...",
+      "voice": "henri"
+    },
+    { "id": "ptm.et", "text": "et", "voice": "denise" },
+    { "id": "ptm.euro", "text": "euro", "voice": "denise" },
+    { "id": "ptm.euros", "text": "euros", "voice": "denise" },
+    { "id": "ptm.cents.10", "text": "dix centimes", "voice": "denise" },
+    { "id": "ptm.cents.20", "text": "vingt centimes", "voice": "denise" },
+    { "id": "ptm.cents.30", "text": "trente centimes", "voice": "denise" },
+    { "id": "ptm.cents.40", "text": "quarante centimes", "voice": "denise" },
+    { "id": "ptm.cents.50", "text": "cinquante centimes", "voice": "denise" },
+    { "id": "ptm.cents.60", "text": "soixante centimes", "voice": "denise" },
+    { "id": "ptm.cents.70", "text": "soixante-dix centimes", "voice": "denise" },
+    { "id": "ptm.cents.80", "text": "quatre-vingts centimes", "voice": "denise" },
+    { "id": "ptm.cents.90", "text": "quatre-vingt-dix centimes", "voice": "denise" },
+    { "id": "ptm.compte", "text": "On compte ensemble !", "voice": "eloise" },
+    { "id": "ptm.il-fallait", "text": "Il fallait...", "voice": "denise" },
+    {
+      "id": "ptm.plateau-vide",
+      "text": "Pose d'abord des pièces sur le plateau !",
+      "voice": "eloise"
+    },
+    { "id": "ptm.merci.1", "text": "Merci beaucoup ! À bientôt !", "voice": "denise" },
+    { "id": "ptm.merci.2", "text": "Oh merci ! Bonne journée !", "voice": "henri" },
+    { "id": "ptm.merci.3", "text": "Super, merci !", "voice": "eloise" },
+    { "id": "ptm.merci.4", "text": "Merci, c'est parfait !", "voice": "henri" },
+    { "id": "ptm.merci.5", "text": "Youpi ! Merci petit marchand !", "voice": "eloise" },
+    {
+      "id": "ptm.rayon",
+      "text": "Bravo ! Ta boutique s'agrandit : tu as un nouveau rayon !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ptm.cmd.pomme",
+      "text": "Bonjour ! Je voudrais une pomme, s'il te plaît !",
+      "voice": "denise"
+    },
+    { "id": "ptm.cmd.banane", "text": "Coucou ! Une banane, s'il te plaît !", "voice": "henri" },
+    { "id": "ptm.cmd.poire", "text": "Bonjour ! Je vais prendre une poire.", "voice": "eloise" },
+    { "id": "ptm.cmd.fraises", "text": "Miam ! Des fraises, s'il te plaît !", "voice": "denise" },
+    {
+      "id": "ptm.cmd.baguette",
+      "text": "Bonjour ! Une belle baguette, s'il te plaît !",
+      "voice": "henri"
+    },
+    {
+      "id": "ptm.cmd.croissant",
+      "text": "Hmm, un croissant tout chaud, s'il te plaît !",
+      "voice": "eloise"
+    },
+    { "id": "ptm.cmd.cookie", "text": "Bonjour ! Je voudrais un gros cookie !", "voice": "denise" },
+    { "id": "ptm.cmd.gateau", "text": "Un petit gâteau, s'il te plaît !", "voice": "henri" },
+    { "id": "ptm.cmd.glace", "text": "Une glace, s'il te plaît !", "voice": "eloise" },
+    {
+      "id": "ptm.cmd.sorbet",
+      "text": "Bonjour ! Un sorbet bien frais, s'il te plaît !",
+      "voice": "denise"
+    },
+    {
+      "id": "ptm.cmd.coupe",
+      "text": "Je voudrais une coupe glacée, s'il te plaît !",
+      "voice": "henri"
+    },
+    { "id": "ptm.cmd.gaufre", "text": "Miam ! Une gaufre, s'il te plaît !", "voice": "eloise" },
+    {
+      "id": "ptm.cmd.nounours",
+      "text": "Bonjour ! Je voudrais un nounours tout doux !",
+      "voice": "denise"
+    },
+    { "id": "ptm.cmd.yoyo", "text": "Coucou ! Un yoyo, s'il te plaît !", "voice": "henri" },
+    { "id": "ptm.cmd.ballon", "text": "Bonjour ! Un ballon, s'il te plaît !", "voice": "eloise" },
+    {
+      "id": "ptm.cmd.voiture",
+      "text": "Je voudrais une petite voiture, s'il te plaît !",
+      "voice": "denise"
+    },
+    {
+      "id": "ptm.cmd.tournesol",
+      "text": "Bonjour ! Un tournesol pour ma maman, s'il te plaît !",
+      "voice": "henri"
+    },
+    { "id": "ptm.cmd.rose", "text": "Une jolie rose, s'il te plaît !", "voice": "eloise" },
+    { "id": "ptm.cmd.tulipe", "text": "Bonjour ! Je voudrais une tulipe.", "voice": "denise" },
+    { "id": "ptm.cmd.bouquet", "text": "Un beau bouquet, s'il te plaît !", "voice": "henri" },
+    {
+      "id": "ptm.cmd.livre",
+      "text": "Bonjour ! Je voudrais un livre d'histoires !",
+      "voice": "eloise"
+    },
+    { "id": "ptm.cmd.crayon", "text": "Un crayon, s'il te plaît !", "voice": "denise" },
+    { "id": "ptm.cmd.cahier", "text": "Bonjour ! Je vais prendre un cahier.", "voice": "henri" },
+    {
+      "id": "ptm.cmd.feutres",
+      "text": "Je voudrais des feutres de toutes les couleurs !",
+      "voice": "eloise"
+    },
+    { "id": "ptm.art.pomme", "text": "une pomme", "voice": "denise" },
+    { "id": "ptm.art.banane", "text": "une banane", "voice": "henri" },
+    { "id": "ptm.art.poire", "text": "une poire", "voice": "eloise" },
+    { "id": "ptm.art.fraises", "text": "des fraises", "voice": "denise" },
+    { "id": "ptm.art.baguette", "text": "une baguette", "voice": "henri" },
+    { "id": "ptm.art.croissant", "text": "un croissant", "voice": "eloise" },
+    { "id": "ptm.art.cookie", "text": "un cookie", "voice": "denise" },
+    { "id": "ptm.art.gateau", "text": "un petit gâteau", "voice": "henri" },
+    { "id": "ptm.art.glace", "text": "une glace", "voice": "eloise" },
+    { "id": "ptm.art.sorbet", "text": "un sorbet", "voice": "denise" },
+    { "id": "ptm.art.coupe", "text": "une coupe glacée", "voice": "henri" },
+    { "id": "ptm.art.gaufre", "text": "une gaufre", "voice": "eloise" },
+    { "id": "ptm.art.nounours", "text": "un nounours", "voice": "denise" },
+    { "id": "ptm.art.yoyo", "text": "un yoyo", "voice": "henri" },
+    { "id": "ptm.art.ballon", "text": "un ballon", "voice": "eloise" },
+    { "id": "ptm.art.voiture", "text": "une petite voiture", "voice": "denise" },
+    { "id": "ptm.art.tournesol", "text": "un tournesol", "voice": "henri" },
+    { "id": "ptm.art.rose", "text": "une rose", "voice": "eloise" },
+    { "id": "ptm.art.tulipe", "text": "une tulipe", "voice": "denise" },
+    { "id": "ptm.art.bouquet", "text": "un bouquet", "voice": "henri" },
+    { "id": "ptm.art.livre", "text": "un livre", "voice": "eloise" },
+    { "id": "ptm.art.crayon", "text": "un crayon", "voice": "denise" },
+    { "id": "ptm.art.cahier", "text": "un cahier", "voice": "henri" },
+    { "id": "ptm.art.feutres", "text": "des feutres", "voice": "eloise" }
+  ]
+}
