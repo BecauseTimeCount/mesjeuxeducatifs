@@ -1,0 +1,123 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   Design tokens — L'Archipel
+   Palette : papier crème, encre marine, accents lagon/corail/soleil.
+   Identité héritée V1 : Nunito, cartes blanches arrondies, emojis.
+   ============================================================ */
+
+@theme {
+  --font-sans: 'Nunito', ui-rounded, system-ui, -apple-system, sans-serif;
+
+  --color-paper: #fdf6ec;
+  --color-sand: #f7e8d0;
+  --color-ink: #1e3a4c;
+  --color-ink-soft: #4a6b80;
+
+  --color-lagoon-50: #ecfdfb;
+  --color-lagoon-100: #cdf5f1;
+  --color-lagoon-300: #5fd3c8;
+  --color-lagoon-500: #14a098;
+  --color-lagoon-700: #0e7490;
+  --color-lagoon-900: #134e5e;
+
+  --color-coral: #ff7866;
+  --color-coral-deep: #e85d4a;
+  --color-sun: #ffc94d;
+  --color-sun-deep: #f0a818;
+  --color-leaf: #58c472;
+  --color-leaf-deep: #3a9e54;
+  --color-grape: #9b7ede;
+  --color-sky: #5ab8f5;
+
+  --radius-card: 1.5rem;
+  --radius-bubble: 1.25rem;
+
+  --shadow-card: 0 6px 24px rgba(30, 58, 76, 0.1);
+  --shadow-pressed: 0 2px 8px rgba(30, 58, 76, 0.15);
+}
+
+/* ---------- Base ---------- */
+html {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  @apply bg-paper text-ink font-sans;
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%, rgba(95, 211, 200, 0.25), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(255, 201, 77, 0.2), transparent 55%);
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+/* Les éléments de jeu ne doivent pas être sélectionnables au doigt */
+.game-surface {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- Composants utilitaires ---------- */
+@utility tap-target {
+  /* Cible tactile enfant : minimum 2x2 cm (NN/g) */
+  min-width: 64px;
+  min-height: 64px;
+}
+
+@utility card {
+  background: white;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------- Juice : animations communes ---------- */
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes bounce-in {
+  0% { transform: translateY(-24px) scale(0.9); opacity: 0; }
+  60% { transform: translateY(4px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes shake-soft {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.6; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(20, 160, 152, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(20, 160, 152, 0); }
+}
+
+@utility animate-pop { animation: pop 0.35s ease-out both; }
+@utility animate-wiggle { animation: wiggle 0.5s ease-in-out; }
+@utility animate-floaty { animation: floaty 2.6s ease-in-out infinite; }
+@utility animate-bounce-in { animation: bounce-in 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) both; }
+@utility animate-shake-soft { animation: shake-soft 0.4s ease-in-out; }
+@utility animate-pulse-glow { animation: pulse-glow 1.8s ease-in-out infinite; }
+
+/* Réduction des animations si demandé (accessibilité) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
