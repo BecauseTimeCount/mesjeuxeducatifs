@@ -1,0 +1,535 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "mae.touche.a",
+      "text": "a",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.e",
+      "text": "e",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.i",
+      "text": "i",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.o",
+      "text": "o",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.u",
+      "text": "u",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.ee",
+      "text": "é",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.l",
+      "text": "lll",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.r",
+      "text": "rrr",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.s",
+      "text": "sss",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.m",
+      "text": "mmm",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.f",
+      "text": "fff",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.v",
+      "text": "vvv",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.t",
+      "text": "te",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.p",
+      "text": "pe",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.n",
+      "text": "ne",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.ou",
+      "text": "ou",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.on",
+      "text": "on",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.an",
+      "text": "an",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.in",
+      "text": "in",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.touche.ch",
+      "text": "che",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.a",
+      "text": "a",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.e",
+      "text": "e",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.i",
+      "text": "i",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.o",
+      "text": "o",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.u",
+      "text": "u",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ee",
+      "text": "é",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ma",
+      "text": "ma",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.mi",
+      "text": "mi",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.mo",
+      "text": "mo",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.la",
+      "text": "la",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.li",
+      "text": "li",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.lo",
+      "text": "lo",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.lu",
+      "text": "lu",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ra",
+      "text": "ra",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ri",
+      "text": "ri",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ro",
+      "text": "ro",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.sa",
+      "text": "sa",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.si",
+      "text": "si",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.so",
+      "text": "so",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ta",
+      "text": "ta",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ti",
+      "text": "ti",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.to",
+      "text": "to",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pa",
+      "text": "pa",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pi",
+      "text": "pi",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.po",
+      "text": "po",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.na",
+      "text": "na",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ni",
+      "text": "ni",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fa",
+      "text": "fa",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fi",
+      "text": "fi",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.va",
+      "text": "va",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.vo",
+      "text": "vo",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ree",
+      "text": "ré",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.chou",
+      "text": "chou",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.cha",
+      "text": "cha",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.chi",
+      "text": "chi",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.mou",
+      "text": "mou",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fou",
+      "text": "fou",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.sou",
+      "text": "sou",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ton",
+      "text": "ton",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.mon",
+      "text": "mon",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.son",
+      "text": "son",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pan",
+      "text": "pan",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fan",
+      "text": "fan",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.lin",
+      "text": "lin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pin",
+      "text": "pin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fin",
+      "text": "fin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.vin",
+      "text": "vin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.moto",
+      "text": "moto",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.lune",
+      "text": "lune",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.veelo",
+      "text": "vélo",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ami",
+      "text": "ami",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pile",
+      "text": "pile",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.mouton",
+      "text": "mouton",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.chaton",
+      "text": "chaton",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.lapin",
+      "text": "lapin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.sapin",
+      "text": "sapin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.savon",
+      "text": "savon",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.vache",
+      "text": "vache",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.mouche",
+      "text": "mouche",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fourmi",
+      "text": "fourmi",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.moufle",
+      "text": "moufle",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.patin",
+      "text": "patin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.matin",
+      "text": "matin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.ourson",
+      "text": "ourson",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.melon",
+      "text": "melon",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.salon",
+      "text": "salon",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.avion",
+      "text": "avion",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.chemin",
+      "text": "chemin",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pantalon",
+      "text": "pantalon",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.chanson",
+      "text": "chanson",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.fanfare",
+      "text": "fanfare",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.cible.pinson",
+      "text": "pinson",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.consigne.intro",
+      "text": "Bienvenue dans la machine à écrire magique ! Écoute bien le son, puis tape-le sur les touches pour l’imprimer.",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.consigne.t0",
+      "text": "Écoute bien la voyelle, tape sa touche, puis appuie sur Imprimer !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.consigne.t1",
+      "text": "Écoute bien la syllabe, puis écris-la avec les touches !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.consigne.t2",
+      "text": "Écoute bien ! Attention : certaines touches écrivent deux lettres d’un coup.",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.consigne.t3",
+      "text": "Regarde l’image et écoute le mot. À toi de l’écrire en entier !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.consigne.verrouille",
+      "text": "Ce palier est encore fermé. Termine d’abord le palier d’avant !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.palier.t0",
+      "text": "Les voyelles !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.palier.t1",
+      "text": "Les syllabes !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.palier.t2",
+      "text": "Les sons magiques !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.palier.t3",
+      "text": "Les mots entiers !",
+      "voice": "denise"
+    },
+    {
+      "id": "mae.reaction.tu-as-ecrit",
+      "text": "Tu as écrit…",
+      "voice": "eloise"
+    },
+    {
+      "id": "mae.reaction.moi-jai-dit",
+      "text": "Moi, j’ai dit…",
+      "voice": "eloise"
+    },
+    {
+      "id": "mae.reaction.revision",
+      "text": "D’abord, on révise un son de la dernière fois !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mae.reaction.indice",
+      "text": "Regarde ! La bonne touche brille.",
+      "voice": "eloise"
+    }
+  ]
+}

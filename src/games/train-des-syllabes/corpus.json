@@ -1,0 +1,805 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "tds.consigne.intro",
+      "text": "Bienvenue dans le Train des Syllabes ! Écoute bien les mots, et construis-les avec les wagons.",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.consigne.t0",
+      "text": "Écoute le mot, puis tape sur le tambour : un coup pour chaque syllabe ! Quand tu as fini, appuie sur : c’est tout !"
+    },
+    {
+      "id": "tds.consigne.t1",
+      "text": "Écoute le mot, puis accroche les bons wagons derrière la locomotive, dans l’ordre !"
+    },
+    {
+      "id": "tds.consigne.t2",
+      "text": "Maintenant, les mots ont trois syllabes ! Écoute bien, et méfie-toi des wagons pièges."
+    },
+    {
+      "id": "tds.consigne.t3",
+      "text": "Ici, Plume invente des mots rigolos, et parfois on enlève une syllabe ! Écoute bien."
+    },
+    {
+      "id": "tds.jeu.ecoute",
+      "text": "Écoute bien le mot !"
+    },
+    {
+      "id": "tds.jeu.en-route",
+      "text": "En route !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.t3.pseudo-intro",
+      "text": "J’invente un mot rigolo ! Écoute :",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.t3.pseudo-construis",
+      "text": "Construis ce mot rigolo avec les wagons !"
+    },
+    {
+      "id": "tds.t3.suppr-enleve",
+      "text": "Maintenant, enlève la syllabe :"
+    },
+    {
+      "id": "tds.t3.suppr-reste",
+      "text": "Que reste-t-il ? Construis ce qui reste avec les wagons !"
+    },
+    {
+      "id": "tds.fb.deraille",
+      "text": "Oh là là, le train déraille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.fb.mais-dit",
+      "text": "Mais moi, j’ai dit :",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.fb.reecoute",
+      "text": "Réécoute bien le mot :"
+    },
+    {
+      "id": "tds.fb.indice",
+      "text": "Regarde, un wagon clignote pour t’aider !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.fb.indice-tambour",
+      "text": "Écoute ! Je tape les syllabes avec toi.",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.fb.parti",
+      "text": "Et le train s’en va ! Tchou, tchou !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tds.mot.chapeau",
+      "text": "chapeau"
+    },
+    {
+      "id": "tds.mot.bateau",
+      "text": "bateau"
+    },
+    {
+      "id": "tds.mot.gateau",
+      "text": "gâteau"
+    },
+    {
+      "id": "tds.mot.lapin",
+      "text": "lapin"
+    },
+    {
+      "id": "tds.mot.mouton",
+      "text": "mouton"
+    },
+    {
+      "id": "tds.mot.cheval",
+      "text": "cheval"
+    },
+    {
+      "id": "tds.mot.maison",
+      "text": "maison"
+    },
+    {
+      "id": "tds.mot.souris",
+      "text": "souris"
+    },
+    {
+      "id": "tds.mot.tortue",
+      "text": "tortue"
+    },
+    {
+      "id": "tds.mot.fusee",
+      "text": "fusée"
+    },
+    {
+      "id": "tds.mot.robot",
+      "text": "robot"
+    },
+    {
+      "id": "tds.mot.velo",
+      "text": "vélo"
+    },
+    {
+      "id": "tds.mot.ballon",
+      "text": "ballon"
+    },
+    {
+      "id": "tds.mot.cadeau",
+      "text": "cadeau"
+    },
+    {
+      "id": "tds.mot.chateau",
+      "text": "château"
+    },
+    {
+      "id": "tds.mot.cochon",
+      "text": "cochon"
+    },
+    {
+      "id": "tds.mot.canard",
+      "text": "canard"
+    },
+    {
+      "id": "tds.mot.dauphin",
+      "text": "dauphin"
+    },
+    {
+      "id": "tds.mot.panda",
+      "text": "panda"
+    },
+    {
+      "id": "tds.mot.girafe",
+      "text": "girafe"
+    },
+    {
+      "id": "tds.mot.banane",
+      "text": "banane"
+    },
+    {
+      "id": "tds.mot.tomate",
+      "text": "tomate"
+    },
+    {
+      "id": "tds.mot.carotte",
+      "text": "carotte"
+    },
+    {
+      "id": "tds.mot.citron",
+      "text": "citron"
+    },
+    {
+      "id": "tds.mot.melon",
+      "text": "melon"
+    },
+    {
+      "id": "tds.mot.bonbon",
+      "text": "bonbon"
+    },
+    {
+      "id": "tds.mot.cafe",
+      "text": "café"
+    },
+    {
+      "id": "tds.mot.bebe",
+      "text": "bébé"
+    },
+    {
+      "id": "tds.mot.jardin",
+      "text": "jardin"
+    },
+    {
+      "id": "tds.mot.pirate",
+      "text": "pirate"
+    },
+    {
+      "id": "tds.mot.tresor",
+      "text": "trésor"
+    },
+    {
+      "id": "tds.mot.dragon",
+      "text": "dragon"
+    },
+    {
+      "id": "tds.mot.moto",
+      "text": "moto"
+    },
+    {
+      "id": "tds.mot.bouton",
+      "text": "bouton"
+    },
+    {
+      "id": "tds.mot.requin",
+      "text": "requin"
+    },
+    {
+      "id": "tds.mot.fourmi",
+      "text": "fourmi"
+    },
+    {
+      "id": "tds.mot.hibou",
+      "text": "hibou"
+    },
+    {
+      "id": "tds.mot.lutin",
+      "text": "lutin"
+    },
+    {
+      "id": "tds.mot.sapin",
+      "text": "sapin"
+    },
+    {
+      "id": "tds.mot.savon",
+      "text": "savon"
+    },
+    {
+      "id": "tds.mot.micro",
+      "text": "micro"
+    },
+    {
+      "id": "tds.mot.judo",
+      "text": "judo"
+    },
+    {
+      "id": "tds.mot.moustique",
+      "text": "moustique"
+    },
+    {
+      "id": "tds.mot.poulet",
+      "text": "poulet"
+    },
+    {
+      "id": "tds.mot.cabane",
+      "text": "cabane"
+    },
+    {
+      "id": "tds.mot.fourchette",
+      "text": "fourchette"
+    },
+    {
+      "id": "tds.mot.princesse",
+      "text": "princesse"
+    },
+    {
+      "id": "tds.mot.licorne",
+      "text": "licorne"
+    },
+    {
+      "id": "tds.mot.tipi",
+      "text": "tipi"
+    },
+    {
+      "id": "tds.mot.salade",
+      "text": "salade"
+    },
+    {
+      "id": "tds.mot.chocolat",
+      "text": "chocolat"
+    },
+    {
+      "id": "tds.mot.elephant",
+      "text": "éléphant"
+    },
+    {
+      "id": "tds.mot.papillon",
+      "text": "papillon"
+    },
+    {
+      "id": "tds.mot.pyjama",
+      "text": "pyjama"
+    },
+    {
+      "id": "tds.mot.kangourou",
+      "text": "kangourou"
+    },
+    {
+      "id": "tds.mot.domino",
+      "text": "domino"
+    },
+    {
+      "id": "tds.mot.ananas",
+      "text": "ananas"
+    },
+    {
+      "id": "tds.mot.crocodile",
+      "text": "crocodile"
+    },
+    {
+      "id": "tds.mot.pantalon",
+      "text": "pantalon"
+    },
+    {
+      "id": "tds.mot.confiture",
+      "text": "confiture"
+    },
+    {
+      "id": "tds.mot.parapluie",
+      "text": "parapluie"
+    },
+    {
+      "id": "tds.mot.helico",
+      "text": "hélico"
+    },
+    {
+      "id": "tds.mot.lavabo",
+      "text": "lavabo"
+    },
+    {
+      "id": "tds.mot.escargot",
+      "text": "escargot"
+    },
+    {
+      "id": "tds.mot.champignon",
+      "text": "champignon"
+    },
+    {
+      "id": "tds.mot.caramel",
+      "text": "caramel"
+    },
+    {
+      "id": "tds.mot.koala",
+      "text": "koala"
+    },
+    {
+      "id": "tds.mot.magicien",
+      "text": "magicien"
+    },
+    {
+      "id": "tds.syl.a",
+      "text": "a"
+    },
+    {
+      "id": "tds.syl.ba",
+      "text": "ba"
+    },
+    {
+      "id": "tds.syl.bal",
+      "text": "bal"
+    },
+    {
+      "id": "tds.syl.bane",
+      "text": "bane"
+    },
+    {
+      "id": "tds.syl.be",
+      "text": "bé"
+    },
+    {
+      "id": "tds.syl.beau",
+      "text": "beau"
+    },
+    {
+      "id": "tds.syl.bo",
+      "text": "bo"
+    },
+    {
+      "id": "tds.syl.bon",
+      "text": "bon"
+    },
+    {
+      "id": "tds.syl.bou",
+      "text": "bou"
+    },
+    {
+      "id": "tds.syl.ca",
+      "text": "ca"
+    },
+    {
+      "id": "tds.syl.car",
+      "text": "car"
+    },
+    {
+      "id": "tds.syl.cesse",
+      "text": "cesse"
+    },
+    {
+      "id": "tds.syl.cha",
+      "text": "cha"
+    },
+    {
+      "id": "tds.syl.chan",
+      "text": "chan"
+    },
+    {
+      "id": "tds.syl.che",
+      "text": "che"
+    },
+    {
+      "id": "tds.syl.chette",
+      "text": "chette"
+    },
+    {
+      "id": "tds.syl.cho",
+      "text": "cho"
+    },
+    {
+      "id": "tds.syl.chon",
+      "text": "chon"
+    },
+    {
+      "id": "tds.syl.ci",
+      "text": "ci"
+    },
+    {
+      "id": "tds.syl.co",
+      "text": "co"
+    },
+    {
+      "id": "tds.syl.con",
+      "text": "con"
+    },
+    {
+      "id": "tds.syl.corne",
+      "text": "corne"
+    },
+    {
+      "id": "tds.syl.cro",
+      "text": "cro"
+    },
+    {
+      "id": "tds.syl.da",
+      "text": "da"
+    },
+    {
+      "id": "tds.syl.daim",
+      "text": "daim"
+    },
+    {
+      "id": "tds.syl.dau",
+      "text": "dau"
+    },
+    {
+      "id": "tds.syl.deau",
+      "text": "deau"
+    },
+    {
+      "id": "tds.syl.dile",
+      "text": "dile"
+    },
+    {
+      "id": "tds.syl.do",
+      "text": "do"
+    },
+    {
+      "id": "tds.syl.dra",
+      "text": "dra"
+    },
+    {
+      "id": "tds.syl.e",
+      "text": "é"
+    },
+    {
+      "id": "tds.syl.es",
+      "text": "es"
+    },
+    {
+      "id": "tds.syl.fan",
+      "text": "fan"
+    },
+    {
+      "id": "tds.syl.fe",
+      "text": "fé"
+    },
+    {
+      "id": "tds.syl.fi",
+      "text": "fi"
+    },
+    {
+      "id": "tds.syl.fin",
+      "text": "fin"
+    },
+    {
+      "id": "tds.syl.four",
+      "text": "four"
+    },
+    {
+      "id": "tds.syl.fu",
+      "text": "fu"
+    },
+    {
+      "id": "tds.syl.ga",
+      "text": "ga"
+    },
+    {
+      "id": "tds.syl.gi",
+      "text": "gi"
+    },
+    {
+      "id": "tds.syl.gnon",
+      "text": "gnon"
+    },
+    {
+      "id": "tds.syl.go",
+      "text": "go"
+    },
+    {
+      "id": "tds.syl.gon",
+      "text": "gon"
+    },
+    {
+      "id": "tds.syl.gou",
+      "text": "gou"
+    },
+    {
+      "id": "tds.syl.he",
+      "text": "hé"
+    },
+    {
+      "id": "tds.syl.hi",
+      "text": "hi"
+    },
+    {
+      "id": "tds.syl.ja",
+      "text": "ja"
+    },
+    {
+      "id": "tds.syl.jar",
+      "text": "jar"
+    },
+    {
+      "id": "tds.syl.ju",
+      "text": "ju"
+    },
+    {
+      "id": "tds.syl.kan",
+      "text": "kan"
+    },
+    {
+      "id": "tds.syl.ko",
+      "text": "ko"
+    },
+    {
+      "id": "tds.syl.la",
+      "text": "la"
+    },
+    {
+      "id": "tds.syl.lade",
+      "text": "lade"
+    },
+    {
+      "id": "tds.syl.lait",
+      "text": "lait"
+    },
+    {
+      "id": "tds.syl.le",
+      "text": "lé"
+    },
+    {
+      "id": "tds.syl.li",
+      "text": "li"
+    },
+    {
+      "id": "tds.syl.lo",
+      "text": "lo"
+    },
+    {
+      "id": "tds.syl.lon",
+      "text": "lon"
+    },
+    {
+      "id": "tds.syl.lu",
+      "text": "lu"
+    },
+    {
+      "id": "tds.syl.ma",
+      "text": "ma"
+    },
+    {
+      "id": "tds.syl.mai",
+      "text": "mai"
+    },
+    {
+      "id": "tds.syl.mate",
+      "text": "mate"
+    },
+    {
+      "id": "tds.syl.me",
+      "text": "me"
+    },
+    {
+      "id": "tds.syl.mel",
+      "text": "mel"
+    },
+    {
+      "id": "tds.syl.mi",
+      "text": "mi"
+    },
+    {
+      "id": "tds.syl.mo",
+      "text": "mo"
+    },
+    {
+      "id": "tds.syl.mou",
+      "text": "mou"
+    },
+    {
+      "id": "tds.syl.mous",
+      "text": "mous"
+    },
+    {
+      "id": "tds.syl.na",
+      "text": "na"
+    },
+    {
+      "id": "tds.syl.nane",
+      "text": "nane"
+    },
+    {
+      "id": "tds.syl.nar",
+      "text": "nar"
+    },
+    {
+      "id": "tds.syl.nas",
+      "text": "nas"
+    },
+    {
+      "id": "tds.syl.no",
+      "text": "no"
+    },
+    {
+      "id": "tds.syl.pa",
+      "text": "pa"
+    },
+    {
+      "id": "tds.syl.pan",
+      "text": "pan"
+    },
+    {
+      "id": "tds.syl.peau",
+      "text": "peau"
+    },
+    {
+      "id": "tds.syl.pi",
+      "text": "pi"
+    },
+    {
+      "id": "tds.syl.pin",
+      "text": "pin"
+    },
+    {
+      "id": "tds.syl.pluie",
+      "text": "pluie"
+    },
+    {
+      "id": "tds.syl.pou",
+      "text": "pou"
+    },
+    {
+      "id": "tds.syl.prin",
+      "text": "prin"
+    },
+    {
+      "id": "tds.syl.quin",
+      "text": "quin"
+    },
+    {
+      "id": "tds.syl.ra",
+      "text": "ra"
+    },
+    {
+      "id": "tds.syl.rafe",
+      "text": "rafe"
+    },
+    {
+      "id": "tds.syl.rate",
+      "text": "rate"
+    },
+    {
+      "id": "tds.syl.re",
+      "text": "re"
+    },
+    {
+      "id": "tds.syl.ri",
+      "text": "ri"
+    },
+    {
+      "id": "tds.syl.ro",
+      "text": "ro"
+    },
+    {
+      "id": "tds.syl.rotte",
+      "text": "rotte"
+    },
+    {
+      "id": "tds.syl.rou",
+      "text": "rou"
+    },
+    {
+      "id": "tds.syl.sa",
+      "text": "sa"
+    },
+    {
+      "id": "tds.syl.sien",
+      "text": "sien"
+    },
+    {
+      "id": "tds.syl.sou",
+      "text": "sou"
+    },
+    {
+      "id": "tds.syl.ta",
+      "text": "ta"
+    },
+    {
+      "id": "tds.syl.teau",
+      "text": "teau"
+    },
+    {
+      "id": "tds.syl.teint",
+      "text": "teint"
+    },
+    {
+      "id": "tds.syl.ti",
+      "text": "ti"
+    },
+    {
+      "id": "tds.syl.tique",
+      "text": "tique"
+    },
+    {
+      "id": "tds.syl.to",
+      "text": "to"
+    },
+    {
+      "id": "tds.syl.ton",
+      "text": "ton"
+    },
+    {
+      "id": "tds.syl.tor",
+      "text": "tor"
+    },
+    {
+      "id": "tds.syl.tre",
+      "text": "tré"
+    },
+    {
+      "id": "tds.syl.tron",
+      "text": "tron"
+    },
+    {
+      "id": "tds.syl.tue",
+      "text": "tue"
+    },
+    {
+      "id": "tds.syl.ture",
+      "text": "ture"
+    },
+    {
+      "id": "tds.syl.va",
+      "text": "va"
+    },
+    {
+      "id": "tds.syl.val",
+      "text": "val"
+    },
+    {
+      "id": "tds.syl.ve",
+      "text": "vé"
+    },
+    {
+      "id": "tds.syl.von",
+      "text": "von"
+    },
+    {
+      "id": "tds.syl.yon",
+      "text": "yon"
+    },
+    {
+      "id": "tds.syl.ze",
+      "text": "zé"
+    },
+    {
+      "id": "tds.syl.zon",
+      "text": "zon"
+    },
+    {
+      "id": "tds.syl.zor",
+      "text": "zor"
+    }
+  ]
+}
