@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fd4e8"/>
+      <stop offset="1" stop-color="#bdeef0"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14a098"/>
+      <stop offset="1" stop-color="#0e7490"/>
+    </linearGradient>
+  </defs>
+  <!-- fond -->
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <!-- soleil -->
+  <circle cx="392" cy="118" r="54" fill="#ffc94d"/>
+  <circle cx="392" cy="118" r="40" fill="#ffd97a"/>
+  <!-- mer -->
+  <path d="M0 322 Q 64 300 128 322 T 256 322 T 384 322 T 512 322 V 512 H 0 Z" fill="url(#sea)"/>
+  <!-- vagues -->
+  <path d="M0 348 Q 64 330 128 348 T 256 348 T 384 348 T 512 348" fill="none" stroke="#cdf5f1" stroke-width="10" stroke-linecap="round" opacity="0.7"/>
+  <!-- île -->
+  <ellipse cx="216" cy="330" rx="120" ry="40" fill="#f7e8d0"/>
+  <!-- tronc du palmier -->
+  <path d="M210 320 Q 200 250 226 208" fill="none" stroke="#9a6a3f" stroke-width="20" stroke-linecap="round"/>
+  <!-- palmes -->
+  <path d="M226 208 Q 286 188 318 218 Q 268 214 232 226 Z" fill="#3a9e54"/>
+  <path d="M226 208 Q 166 184 132 212 Q 184 210 222 226 Z" fill="#58c472"/>
+  <path d="M226 208 Q 244 152 296 142 Q 254 178 234 216 Z" fill="#58c472"/>
+  <path d="M226 208 Q 200 152 148 146 Q 196 180 220 216 Z" fill="#3a9e54"/>
+  <!-- noix de coco -->
+  <circle cx="222" cy="216" r="11" fill="#7a4f2c"/>
+  <circle cx="240" cy="222" r="11" fill="#8a5c35"/>
+  <!-- pièce de jeu : dé / bloc lettre -->
+  <g transform="translate(296 268) rotate(8)">
+    <rect width="84" height="84" rx="18" fill="#ffffff"/>
+    <rect width="84" height="84" rx="18" fill="none" stroke="#ff7866" stroke-width="10"/>
+    <text x="42" y="62" text-anchor="middle" font-family="Nunito, Arial, sans-serif" font-size="54" font-weight="800" fill="#e85d4a">A</text>
+  </g>
+</svg>

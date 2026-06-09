@@ -1,0 +1,80 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "gdx.intro",
+      "text": "Bienvenue chez les gloutons ! Ils ne mangent que le compte exact. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gdx.consigne.donne",
+      "text": "Donne-lui exactement...",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.consigne.deja",
+      "text": "Il a déjà...",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.consigne.complete",
+      "text": "Complète jusqu'à dix !",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.consigne.jumeaux",
+      "text": "Les jumeaux mangent toujours pareil ! À eux deux, ils veulent...",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.gloup",
+      "text": "Gloup ! Délicieux !",
+      "voice": "henri"
+    },
+    {
+      "id": "gdx.beurk",
+      "text": "Beurk ! Ce n'est pas le bon compte !",
+      "voice": "henri"
+    },
+    {
+      "id": "gdx.ca-fait",
+      "text": "Ça fait...",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.il-voulait",
+      "text": "Il en voulait...",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.ils-voulaient",
+      "text": "Ils en voulaient...",
+      "voice": "denise"
+    },
+    {
+      "id": "gdx.indice",
+      "text": "Regarde ! Les baies qui brillent font le bon compte.",
+      "voice": "eloise"
+    },
+    {
+      "id": "gdx.niveau.0",
+      "text": "Le petit glouton : des nombres jusqu'à cinq !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gdx.niveau.1",
+      "text": "Le grand gourmand : des nombres jusqu'à dix !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gdx.niveau.2",
+      "text": "Le glouton du dix : complète jusqu'à dix !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gdx.niveau.3",
+      "text": "Les jumeaux : chacun mange la même chose !",
+      "voice": "eloise"
+    }
+  ]
+}

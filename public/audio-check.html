@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Revue des voix — Mes Jeux Éducatifs</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', system-ui, sans-serif; background: #fdf6ec; color: #1e3a4c; padding: 16px; }
+    h1 { font-size: 1.3rem; margin-bottom: 4px; }
+    p.hint { color: #4a6b80; font-size: .85rem; margin-bottom: 12px; }
+    .group { margin: 18px 0 6px; font-weight: 800; font-size: 1rem; color: #0e7490; }
+    .clip { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px;
+            padding: 6px 10px; margin: 4px 0; box-shadow: 0 2px 8px rgba(30,58,76,.07); }
+    .clip button { font-size: 1.2rem; width: 44px; height: 44px; border-radius: 50%; border: none;
+                   background: #14a098; color: #fff; cursor: pointer; flex: none; }
+    .clip button.bad { background: #e85d4a; width: 36px; height: 36px; font-size: .9rem; }
+    .clip.flagged { outline: 2px solid #e85d4a; }
+    .clip .id { font-size: .7rem; color: #4a6b80; word-break: break-all; }
+    .clip .grow { flex: 1; min-width: 0; }
+    #report { position: fixed; bottom: 12px; right: 12px; background: #1e3a4c; color: #fff;
+              border: none; border-radius: 12px; padding: 12px 16px; font-weight: 700; cursor: pointer; }
+    input[type=search] { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid #cdf5f1;
+                         font-size: 1rem; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🎧 Revue des voix générées</h1>
+  <p class="hint">Écoutez chaque clip (▶). Marquez d'un ✗ ceux qui sonnent mal (syllabes et graphèmes surtout).
+     Le bouton « Copier la liste » en bas exporte les ids marqués — collez-les dans une issue ou donnez-les à Claude
+     pour régénération avec un texte ajusté.</p>
+  <input type="search" id="filter" placeholder="Filtrer (ex : tds.syl, mae.touche, nombre…)" />
+  <div id="list">Chargement du manifest…</div>
+  <button id="report">📋 Copier la liste des clips marqués (0)</button>
+  <script>
+    const flagged = new Set()
+    let current = null
+    fetch('audio/manifest.json').then(r => r.json()).then(({ ids }) => {
+      const list = document.getElementById('list')
+      list.textContent = ''
+      let lastPrefix = ''
+      for (const id of ids) {
+        const prefix = id.split('.')[0]
+        if (prefix !== lastPrefix) {
+          lastPrefix = prefix
+          const h = document.createElement('div')
+          h.className = 'group'
+          h.textContent = prefix
+          list.appendChild(h)
+        }
+        const row = document.createElement('div')
+        row.className = 'clip'
+        row.dataset.id = id
+        const play = document.createElement('button')
+        play.textContent = '▶'
+        play.onclick = () => {
+          if (current) current.pause()
+          current = new Audio('audio/' + id + '.mp3')
+          current.play()
+        }
+        const info = document.createElement('div')
+        info.className = 'grow'
+        info.innerHTML = '<div class="id">' + id + '</div>'
+        const bad = document.createElement('button')
+        bad.className = 'bad'
+        bad.textContent = '✗'
+        bad.onclick = () => {
+          flagged.has(id) ? flagged.delete(id) : flagged.add(id)
+          row.classList.toggle('flagged', flagged.has(id))
+          document.getElementById('report').textContent =
+            '📋 Copier la liste des clips marqués (' + flagged.size + ')'
+        }
+        row.append(play, info, bad)
+        list.appendChild(row)
+      }
+    }).catch(() => {
+      document.getElementById('list').textContent = 'manifest.json introuvable — lancez « pnpm audio » d’abord.'
+    })
+    document.getElementById('filter').oninput = (e) => {
+      const q = e.target.value.toLowerCase()
+      document.querySelectorAll('.clip').forEach(c =>
+        c.style.display = c.dataset.id.includes(q) ? '' : 'none')
+    }
+    document.getElementById('report').onclick = () => {
+      navigator.clipboard.writeText([...flagged].join('\n'))
+    }
+  </script>
+</body>
+</html>
