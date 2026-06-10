@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getSummary } from '@/engine/mastery'
+import { currentPeriod, PERIOD_LABELS } from '@/engine/periods'
 import { useProfiles } from '@/engine/profiles'
 import { sessionMinutes } from '@/engine/session'
 import { exportAll, importAll } from '@/engine/storage'
@@ -21,6 +22,7 @@ const STATE_META: Record<MasteryState, { color: string; label: string }> = {
 }
 
 function SkillMapSection({ summary }: { summary: Record<string, SkillProgress> }) {
+  const period = currentPeriod()
   return (
     <section className="card p-5">
       <h2 className="text-lg font-extrabold">Carte de compétences</h2>
@@ -58,6 +60,16 @@ function SkillMapSection({ summary }: { summary: Record<string, SkillProgress> }
                       <span className="font-normal text-ink-soft">
                         · {LEVEL_LABELS[skill.level]} · {meta.label}
                       </span>
+                      {skill.period !== undefined &&
+                        (skill.period === period ? (
+                          <span className="ml-1.5 inline-block whitespace-nowrap rounded-md border border-lagoon-500 bg-lagoon-50 px-1.5 align-middle text-[11px] font-bold text-lagoon-700">
+                            P{skill.period} ◀ en ce moment
+                          </span>
+                        ) : (
+                          <span className="ml-1.5 inline-block rounded-md bg-paper px-1.5 align-middle text-[11px] font-semibold text-ink-soft">
+                            P{skill.period}
+                          </span>
+                        ))}
                     </p>
                     <p className="text-xs leading-snug text-ink-soft">{skill.official}</p>
                   </div>
@@ -130,6 +142,10 @@ function ParentDashboard() {
           ← Retour aux jeux
         </Link>
       </header>
+
+      <p className="mb-4 rounded-xl bg-sand px-4 py-2.5 text-sm font-semibold text-ink">
+        En ce moment à l’école&nbsp;: {PERIOD_LABELS[currentPeriod()]}
+      </p>
 
       <div className="flex flex-col gap-4">
         <SkillMapSection summary={summary} />

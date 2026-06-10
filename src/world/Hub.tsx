@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { unlockAudio } from '@/engine/audio'
 import { GAMES, ISLANDS } from '@/games.manifest'
 import { Mascot, SpeakerButton } from '@/ui'
+import DailyPath from '@/world/DailyPath'
 import GameCard from '@/world/GameCard'
 import ProfileSwitcher from '@/world/ProfileSwitcher'
 import type { CorpusEntry, GameMeta, IslandDef, IslandId } from '@/engine/types'
@@ -81,6 +82,7 @@ export default function Hub() {
       </header>
 
       <main className="mt-6 space-y-8">
+        <DailyPath />
         {ISLANDS.map((island) => (
           <IslandSection key={island.id} island={island} />
         ))}

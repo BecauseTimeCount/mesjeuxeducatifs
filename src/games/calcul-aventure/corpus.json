@@ -1,0 +1,165 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "cav.intro",
+      "text": "Bienvenue dans Calcul Aventure ! Aide le petit renard à traverser l’île jusqu’au trésor. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.niveau.0",
+      "text": "Les paniers : mets tout dans le panier, puis tape combien ça fait !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.niveau.1",
+      "text": "Le singe chapardeur : donne-lui ce qu’il chipe, puis tape combien il en reste !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.niveau.2",
+      "text": "La boîte de dix : dix objets dans le panier font une boîte magique !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.niveau.3",
+      "text": "Le calcul de tête : regarde le calcul et tape le résultat !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.consigne.et-encore",
+      "text": "Et encore...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.consigne.panier",
+      "text": "Mets tout dans le panier, puis tape combien ça fait !",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.consigne.tu-as",
+      "text": "Tu as...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.consigne.singe",
+      "text": "Le singe chipe...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.consigne.donne",
+      "text": "Donne-les-lui, puis tape combien il en reste !",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.consigne.boite",
+      "text": "Mets tout dans le panier, puis tape combien ça fait en tout !",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.consigne.tete",
+      "text": "Combien ça fait ? Tape le résultat !",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.op.plus",
+      "text": "plus...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.op.moins",
+      "text": "moins...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.tape.total",
+      "text": "Le panier est plein ! Maintenant, tape combien ça fait.",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.tape.reste",
+      "text": "Maintenant, tape combien il en reste dans le panier.",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.boite.magique",
+      "text": "Et hop ! Dix dans la boîte !",
+      "voice": "henri"
+    },
+    {
+      "id": "cav.singe.merci",
+      "text": "Hi hi hi ! Merci !",
+      "voice": "henri"
+    },
+    {
+      "id": "cav.oups",
+      "text": "Oups ! Ce n’est pas le bon compte !",
+      "voice": "henri"
+    },
+    {
+      "id": "cav.feedback.comptons",
+      "text": "Comptons ensemble !",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.feedback.boite",
+      "text": "La boîte en a déjà dix...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.feedback.ca-fait",
+      "text": "Ça fait...",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.feedback.atoi",
+      "text": "À toi ! Tape ce nombre.",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.indice",
+      "text": "Écoute bien l’indice : la bonne réponse est...",
+      "voice": "eloise"
+    },
+    {
+      "id": "cav.obj.coquillages",
+      "text": "coquillages",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.ananas",
+      "text": "ananas",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.papillons",
+      "text": "papillons",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.champignons",
+      "text": "champignons",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.poissons",
+      "text": "poissons",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.cailloux",
+      "text": "cailloux",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.diamants",
+      "text": "diamants",
+      "voice": "denise"
+    },
+    {
+      "id": "cav.obj.bijoux",
+      "text": "bijoux",
+      "voice": "denise"
+    }
+  ]
+}

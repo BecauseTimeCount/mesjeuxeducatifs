@@ -145,14 +145,56 @@ export const SKILL_MAP: SkillDef[] = [
     period: 3,
     prereqs: ['fr.gs.lettres.graphies'],
   },
+  // ---------------- FRANÇAIS — phrase / syntaxe (CP) ----------------
+  {
+    id: 'fr.cp.phrase.sens',
+    label: 'Construire une phrase qui a du sens',
+    official: 'Produire une phrase orale syntaxiquement correcte et sémantiquement cohérente',
+    domain: 'francais',
+    level: 'cp',
+    period: 2,
+  },
+  {
+    id: 'fr.cp.phrase.accord-gn',
+    label: 'Accorder l’article et le nom (le, la, les)',
+    official: 'Réaliser l’accord en nombre dans le groupe nominal (déterminant-nom)',
+    domain: 'francais',
+    level: 'cp',
+    period: 3,
+    prereqs: ['fr.cp.phrase.sens'],
+  },
+  {
+    id: 'fr.cp.phrase.accord-sv',
+    label: 'Accorder le verbe avec le sujet',
+    official: 'Réaliser l’accord sujet-verbe en nombre dans des cas simples',
+    domain: 'francais',
+    level: 'cp',
+    period: 4,
+    prereqs: ['fr.cp.phrase.accord-gn'],
+  },
 
   // ---------------- MATHS — nombres (GS) ----------------
+  {
+    id: 'ma.gs.subitizing',
+    label: 'Reconnaître une petite quantité d’un coup d’œil',
+    official: 'Reconnaître immédiatement de petites quantités et des configurations connues (dés, doigts)',
+    domain: 'maths',
+    level: 'gs',
+  },
   {
     id: 'ma.gs.denombrer10',
     label: 'Compter une collection jusqu’à 10',
     official: 'Dénombrer des quantités jusqu’à 10 (dès 5 ans)',
     domain: 'maths',
     level: 'gs',
+  },
+  {
+    id: 'ma.gs.droite10',
+    label: 'Placer les nombres jusqu’à 10 sur une piste',
+    official: 'Associer un nombre à une position sur une piste graduée jusqu’à 10',
+    domain: 'maths',
+    level: 'gs',
+    prereqs: ['ma.gs.denombrer10'],
   },
   {
     id: 'ma.gs.decompo5',
@@ -233,6 +275,15 @@ export const SKILL_MAP: SkillDef[] = [
     period: 3,
     prereqs: ['ma.cp.num.echange'],
   },
+  {
+    id: 'ma.cp.num.droite',
+    label: 'Estimer la position d’un nombre jusqu’à 100',
+    official: 'Situer des nombres sur une droite graduée : placement et estimation (période 3)',
+    domain: 'maths',
+    level: 'cp',
+    period: 3,
+    prereqs: ['ma.cp.num.lire59', 'ma.gs.droite10'],
+  },
   // ---------------- MATHS — calcul (CP) ----------------
   {
     id: 'ma.cp.add10',
@@ -260,6 +311,24 @@ export const SKILL_MAP: SkillDef[] = [
     level: 'cp',
     period: 2,
     prereqs: ['ma.cp.add10'],
+  },
+  {
+    id: 'ma.cp.sous20',
+    label: 'Soustraire jusqu’à 20',
+    official: 'Calculer des différences jusqu’à 20, passage de la dizaine',
+    domain: 'maths',
+    level: 'cp',
+    period: 4,
+    prereqs: ['ma.cp.sous10', 'ma.cp.add20'],
+  },
+  {
+    id: 'ma.cp.egalite',
+    label: 'Comprendre le signe égal',
+    official: 'Comprendre l’égalité comme équivalence entre deux quantités ou deux expressions',
+    domain: 'maths',
+    level: 'cp',
+    period: 2,
+    prereqs: ['ma.gs.comparer'],
   },
   // ---------------- MATHS — monnaie (CP) ----------------
   {
@@ -297,6 +366,33 @@ export const SKILL_MAP: SkillDef[] = [
     level: 'cp',
     period: 2,
     prereqs: ['ma.cp.add10'],
+  },
+  {
+    id: 'ma.cp.pb.transfo',
+    label: 'Problèmes : gagner ou perdre',
+    official: 'Résoudre des problèmes de transformation (augmentation ou diminution d’une quantité)',
+    domain: 'maths',
+    level: 'cp',
+    period: 2,
+    prereqs: ['ma.cp.pb.partiestout'],
+  },
+  {
+    id: 'ma.cp.pb.partie',
+    label: 'Trouver une partie manquante',
+    official: 'Résoudre des problèmes de recherche d’une partie (schéma parties-tout)',
+    domain: 'maths',
+    level: 'cp',
+    period: 3,
+    prereqs: ['ma.cp.pb.partiestout', 'ma.cp.sous10'],
+  },
+  {
+    id: 'ma.cp.pb.compare',
+    label: 'Problèmes : combien de plus ?',
+    official: 'Résoudre des problèmes de comparaison (recherche de la différence)',
+    domain: 'maths',
+    level: 'cp',
+    period: 4,
+    prereqs: ['ma.cp.pb.partie'],
   },
 
   // ---------------- LOGIQUE / pré-code ----------------

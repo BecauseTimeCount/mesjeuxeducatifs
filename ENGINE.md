@@ -120,8 +120,52 @@ Règles : fenêtre glissante 10 premiers-essais. `decouverte` < 3 tentatives ;
 `maitrise` si ≥ 5 tentatives et ≥ 80 % de réussite sur la fenêtre ;
 `consolide` si maîtrise et box ≥ 2 ; sinon `en-cours`.
 Boîtes Leitner : box+1 quand on atteint maîtrise (révisions J+2, J+7, J+21
-dans `nextReview`), box 0 si 2 échecs consécutifs. **Tests vitest exigés**
+dans `nextReview`), box 0 si 2 échecs consécutifs. Révision réussie à
+échéance (`now >= nextReview`) → box+1 (plafond 3, box 3 → J+21 à nouveau) ;
+depuis la box 0, uniquement si la fenêtre est maîtrisée (anti-livelock après
+une rétrogradation qui laisse la fenêtre ≥ 80 %). Une seule promotion par
+tentative. **Tests vitest exigés**
 sur `applyAttempt`/`computeState` (fichier `mastery.test.ts`, logique pure).
+
+### periods.ts
+
+```ts
+export type Period = 1 | 2 | 3 | 4 | 5
+export function currentPeriod(d?: Date): Period   // sans argument : date du jour
+export const PERIOD_LABELS: Record<Period, string> // « Période 1 · septembre-octobre »…
+```
+
+Mapping par mois : sept-oct → P1, nov-déc → P2, janv-févr → P3,
+mars-avril → P4, mai-août → P5. Tests vitest exigés (`periods.test.ts`).
+
+### scheduler.ts — le parcours du jour (Leitner cross-jeux)
+
+```ts
+export type PickKind = 'revision' | 'fragile' | 'nouvelle'
+export interface DailyPick { kind: PickKind; skillId: SkillId; gameId: string }
+export interface SchedulerState { lastServed: Record<SkillId, { gameId: string; ts: number }> }
+export interface DailyPathInput {
+  summary: Record<SkillId, SkillProgress>
+  skills: readonly SkillDef[]
+  games: readonly GameMeta[]            // jeux v2 uniquement
+  now: number
+  period: Period
+  state?: SchedulerState
+  choose?: <T>(arr: readonly T[]) => T  // défaut : pick de rng (injecté en test)
+}
+export function buildDailyPath(input: DailyPathInput): DailyPick[]  // PURE
+export async function getDailyPath(): Promise<DailyPick[]>          // IO
+export async function markServed(pick: DailyPick): Promise<void>    // IO ('scheduler')
+```
+
+Retour `[fragile?, nouvelle?, revision?]` (max 3) : 1 notion fragile
+(`en-cours` au pire ratio, fenêtre ≥ 3), 1 nouvelle (jamais tentée, prérequis
+tous maîtrisés, préférence période courante puis gs→cp), 1 révision due
+(`nextReview <= now`, la plus en retard). **Exposition variée** : la révision
+est servie par un jeu DIFFÉRENT du dernier (`lastServed`). Jamais deux fois le
+même skill ni le même jeu quand une alternative existe. Le hub l'affiche via
+`src/world/DailyPath.tsx` — une suggestion, jamais une contrainte.
+Tests vitest exigés sur `buildDailyPath` (`scheduler.test.ts`).
 
 ### adaptive.ts
 
@@ -213,7 +257,10 @@ Chaque jeu déclare `src/games/<id>/corpus.json` :
 ```
 
 - ids : `^[a-z0-9][a-z0-9.-]*$`, préfixés par le jeu (`tds.`, `rp.`, `gdx.`,
-  `fdn.`, `mae.`, `ptm.`) ; clips communs : préfixe `ui.` (corpus-common.json).
+  `fdn.`, `mae.`, `ptm.`, et phase 2 : `chl.`, `mfo.`, `bsc.`, `cav.`, `bma.`,
+  `rlu.`, `ban.`) ; clips communs : préfixe `ui.` (corpus-common.json),
+  nombres : `nombre.0` à `nombre.100` (via `numberEntry()` de
+  `src/content/numbers.ts`).
 - `python scripts/generate-audio.py` génère `public/audio/<id>.mp3` + manifest.
 - Dans le code, importer le JSON et passer l'entrée à `say()` :
 
@@ -229,7 +276,7 @@ await say(C['tds.consigne.intro'])
    (génération procédurale + validation, PURE), `logic.test.ts` (vitest),
    `corpus.json`.
 2. Entrée dans `GAMES` + `V2_COMPONENTS` de `src/games.manifest.ts` (déjà fait
-   pour les 6 jeux du MVP).
+   pour les 6 jeux du MVP et les 7 jeux de la phase 2).
 3. Compétences exercées : ids du `SKILL_MAP` (`src/content/skill-map.ts`).
 
 ## Design

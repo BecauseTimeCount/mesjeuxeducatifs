@@ -57,6 +57,11 @@
       "voice": "eloise"
     },
     {
+      "id": "ui.parcours",
+      "text": "Voici tes défis du jour ! Tu peux aussi jouer à tout ce que tu veux.",
+      "voice": "eloise"
+    },
+    {
       "id": "nombre.0",
       "text": "zéro"
     },
