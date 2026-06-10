@@ -1,0 +1,105 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "flx.intro",
+      "text": "Bienvenue à bord du Fluence Express ! Lis dans ta tête, tape la bonne image, et le train accélère ! Choisis ton voyage, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.consigne.mots",
+      "text": "Lis le mot écrit sur la locomotive, dans ta tête, sans bruit. Puis tape le wagon qui montre la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.consigne.phrases",
+      "text": "Lis toute la phrase dans ta tête, du début à la fin. Puis tape l'image qui raconte exactement la même chose !",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.depart",
+      "text": "En voiture ! Le Fluence Express démarre !",
+      "voice": "henri"
+    },
+    {
+      "id": "flx.accelere",
+      "text": "Le train accélère ! Quelle vitesse !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.bien-lu",
+      "text": "Bien lu ! Le wagon est accroché au train !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.presque",
+      "text": "Presque ! Écoute bien le mot, syllabe par syllabe.",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.reessaie",
+      "text": "À toi ! Trouve la bonne image pour ce mot.",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.indice",
+      "text": "Regarde, la première syllabe s'allume pour t'aider !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.phrase.regarde",
+      "text": "Relis bien la phrase : sur chaque image, un seul détail change.",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.phrase.reessaie",
+      "text": "À toi ! Retrouve l'image qui raconte la phrase.",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.terminus",
+      "text": "Terminus, tout le monde descend ! Quel beau voyage !",
+      "voice": "henri"
+    },
+    {
+      "id": "flx.niveau.0",
+      "text": "Le train des mots : des mots faciles à déchiffrer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.niveau.1",
+      "text": "Le grand express : des mots plus longs et plus malins !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.niveau.2",
+      "text": "Phrases express : lis toute la phrase pour trouver la bonne image !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.duo.passe",
+      "text": "Pour la lecture en duo, passe la tablette à un adulte !",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.duo.parent",
+      "text": "Mode adulte : appuyez sur Départ, laissez l'enfant lire le texte à voix haute, puis appuyez sur Fini et indiquez le nombre d'erreurs.",
+      "voice": "denise"
+    },
+    {
+      "id": "flx.duo.lis",
+      "text": "À toi de lire l'histoire à voix haute, comme un vrai conteur !",
+      "voice": "eloise"
+    },
+    {
+      "id": "flx.duo.bravo",
+      "text": "Quelle belle lecture ! Le train est arrivé en gare, bravo le champion !",
+      "voice": "henri"
+    },
+    {
+      "id": "flx.gare",
+      "text": "Le train entre en gare... tchou tchou !",
+      "voice": "henri"
+    }
+  ]
+}

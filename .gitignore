@@ -14,3 +14,10 @@ dev-dist/
 
 # Audio temporaire (les mp3 finaux dans public/audio sont commites)
 scripts/.audio-cache/
+
+# Pages SEO generees au build par scripts/generate-seo.mjs
+public/jeux/
+public/competences/
+public/methode.html
+public/orthophonistes.html
+public/sitemap.xml

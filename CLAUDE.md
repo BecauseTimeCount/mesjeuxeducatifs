@@ -22,6 +22,7 @@ Vision produit et catalogue : voir `v2-proposition.md`. Contrats d'API : `ENGINE
 - `pnpm build` — tsc -b + vite build (à vérifier avant tout commit)
 - `pnpm test` — vitest (moteur + logique des jeux)
 - `pnpm audio` — régénère les clips TTS depuis les corpus (`scripts/generate-audio.py`)
+- `pnpm seo` — régénère les pages SEO statiques (aussi lancé par `pnpm build` ; Node ≥ 24)
 - `pnpm icons` — régénère les icônes PWA depuis `public/icons/icon.svg`
 
 ## Structure

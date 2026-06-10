@@ -1,0 +1,200 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "pzf.intro",
+      "text": "Bienvenue à la pizzeria ! Les clients ont très faim. Écoute la commande, coupe en parts égales et sers la bonne part. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.consigne.coupe-pizza",
+      "text": "Coupe la pizza en...",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.consigne.coupe-gateau",
+      "text": "Coupe le gâteau en...",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.parts.2",
+      "text": "deux parts égales, bien pareilles !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.parts.3",
+      "text": "trois parts égales, bien pareilles !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.parts.4",
+      "text": "quatre parts égales, bien pareilles !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.consigne.coupe-aide",
+      "text": "Tape les encoches pour poser tes coupes. Quand tu as fini, appuie sur : c'est coupé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.consigne.sers",
+      "text": "Tape les parts pour les poser dans l'assiette. Quand c'est prêt, appuie sur : c'est servi !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.consigne.etiquette",
+      "text": "Regarde les parts dans l'assiette, puis tape le bon ticket !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.cmd.donne",
+      "text": "Donne-moi...",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.frac.moitie",
+      "text": "la moitié, s'il te plaît !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.frac.un-tiers",
+      "text": "un tiers, s'il te plaît !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.frac.deux-tiers",
+      "text": "deux tiers, s'il te plaît !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.frac.un-quart",
+      "text": "un quart, s'il te plaît !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.frac.trois-quarts",
+      "text": "trois quarts, s'il te plaît !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.frac.tout",
+      "text": "toute la pizza ! J'ai très très faim !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.lu.un-demi",
+      "text": "un demi !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.lu.un-tiers",
+      "text": "un tiers !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.lu.deux-tiers",
+      "text": "deux tiers !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.lu.un-quart",
+      "text": "un quart !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.lu.trois-quarts",
+      "text": "trois quarts !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.oups",
+      "text": "Ouh là ! Attends, pizzaïolo !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.teach.trop",
+      "text": "Ouh là, c'est trop ! Je n'ai pas demandé tout ça !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.teach.pas-assez",
+      "text": "Il en manque ! J'ai encore faim, moi !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.teach.inegal",
+      "text": "Regarde la balance : cette part est plus grosse que celle-là ! Les parts doivent être bien pareilles. À toi de réessayer !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.teach.nombre",
+      "text": "Les parts sont bien pareilles, mais compte-les... Il en faut",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.teach.compte",
+      "text": "Compte les parts dans l'assiette, et regarde le découpage : il en faut juste ce qu'il faut !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.teach.equiv",
+      "text": "Regarde : la pizza est coupée en quatre. La moitié de quatre parts, ça fait deux parts !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.teach.etiquette",
+      "text": "Le nombre du haut, c'est les parts dans l'assiette. Le nombre du bas, c'est toutes les parts du découpage !",
+      "voice": "denise"
+    },
+    {
+      "id": "pzf.indice.coupe",
+      "text": "Regarde, les bonnes encoches brillent ! Tape dessus, puis appuie sur : c'est coupé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.indice.sers",
+      "text": "Les parts à servir brillent ! Tape dessus !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.indice.etiquette",
+      "text": "Le bon ticket brille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.bravo-coupe",
+      "text": "Toutes les parts sont bien pareilles ! Quel pizzaïolo !",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.miam",
+      "text": "Miam miam ! Délicieux ! Merci pizzaïolo !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.merci",
+      "text": "Mamma mia, c'est exactement ça ! Merci !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.gag.appetit",
+      "text": "Ha ha ! Toute la pizza pour moi ! Quel appétit !",
+      "voice": "henri"
+    },
+    {
+      "id": "pzf.niveau.0",
+      "text": "Coupe ! Coupe la pizza et le gâteau en parts égales.",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.niveau.1",
+      "text": "Sers ! Donne aux clients la part qu'ils demandent.",
+      "voice": "eloise"
+    },
+    {
+      "id": "pzf.niveau.2",
+      "text": "L'étiquette ! Lis les fractions sur les tickets.",
+      "voice": "eloise"
+    }
+  ]
+}

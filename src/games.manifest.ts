@@ -74,6 +74,10 @@ export const V2_COMPONENTS: Record<string, LazyExoticComponent<ComponentType>> =
   'english-island': lazy(() => import('@/games/english-island')),
   'laboratoire-eau': lazy(() => import('@/games/laboratoire-eau')),
   'orchestre-des-animaux': lazy(() => import('@/games/orchestre-des-animaux')),
+  // ---- Phase 4 : ouverture et CE1 ----
+  'fluence-express': lazy(() => import('@/games/fluence-express')),
+  'lettre-magique': lazy(() => import('@/games/lettre-magique')),
+  'pizzeria-des-fractions': lazy(() => import('@/games/pizzeria-des-fractions')),
 }
 
 export const GAMES: GameMeta[] = [
@@ -311,6 +315,38 @@ export const GAMES: GameMeta[] = [
     island: 'ailleurs',
     accent: '#4a148c',
     skills: ['ar.gs.rythme.reproduire', 'ar.gs.rythme.composer'],
+    status: 'v2',
+  },
+
+  // ============= JEUX V2 — PHASE 4 (ouverture et CE1) =============
+  {
+    id: 'fluence-express',
+    title: 'Fluence Express',
+    tagline: 'Lis vite et bien, le train accélère !',
+    icon: '🚄',
+    island: 'sons',
+    accent: '#c62828',
+    skills: ['fr.cp.fluence', 'fr.ce1.fluence'],
+    status: 'v2',
+  },
+  {
+    id: 'lettre-magique',
+    title: 'La Lettre Magique',
+    tagline: 'Trace les lettres avec ton doigt !',
+    icon: '✍️',
+    island: 'sons',
+    accent: '#6d4c41',
+    skills: ['fr.gs.graphisme.formes', 'fr.cp.ecriture.cursive'],
+    status: 'v2',
+  },
+  {
+    id: 'pizzeria-des-fractions',
+    title: 'La Pizzeria des Fractions',
+    tagline: 'Coupe, partage, sers les parts égales !',
+    icon: '🍕',
+    island: 'nombres',
+    accent: '#d84315',
+    skills: ['ma.ce1.fractions.parts', 'ma.ce1.fractions.lire'],
     status: 'v2',
   },
 
