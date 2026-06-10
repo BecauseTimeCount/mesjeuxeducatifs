@@ -1,0 +1,260 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "lma.intro",
+      "text": "Bienvenue dans l'atelier de la lettre magique ! Regarde la fée tracer, puis trace avec ton doigt, sans le lever. Choisis ton atelier, et c'est parti !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.atelier.formes",
+      "text": "Les formes magiques : des boucles, des ponts, des vagues et des ronds !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.atelier.lettres",
+      "text": "Les lettres cursives : en attaché, comme les grands !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.palier.regarde",
+      "text": "Regarde bien ! La fée trace pour toi...",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.palier.pointilles",
+      "text": "À toi ! Pose ton doigt sur l'étoile, et suis les pointillés sans lever le doigt.",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.palier.seule",
+      "text": "Toute seule, maintenant ! Pars de l'étoile et trace de mémoire.",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.encore",
+      "text": "On recommence ensemble !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.depart",
+      "text": "Commence sur l'étoile qui brille !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.acquise",
+      "text": "Magnifique ! Elle rejoint ta guirlande !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.famille.debloquee",
+      "text": "Bravo ! Tu as débloqué une nouvelle famille de lettres !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.verrou",
+      "text": "Gagne deux étoiles sur la famille d'avant pour ouvrir celle-ci !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.grande-boucle",
+      "text": "Je pars de la ligne, je monte très haut, je boucle vers la gauche, et je redescends tout droit !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.petite-boucle",
+      "text": "Je pars de la ligne, je monte un petit peu, je fais une petite boucle, et je redescends !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.pont",
+      "text": "Je monte tout droit, je passe par-dessus le pont, et je redescends de l'autre côté !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.trois-ponts",
+      "text": "Un pont, deux ponts, trois ponts ! Je rebondis sans lever le doigt !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.vague",
+      "text": "Je monte sur la vague... et je glisse dans le creux !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.trois-vagues",
+      "text": "Je monte, je descends, je monte, je descends... comme les vagues de la mer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.rond",
+      "text": "Je pars d'en haut à droite, et je tourne, je tourne vers la gauche, dans le sens de l'écriture !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.canne",
+      "text": "Je trace un grand trait qui monte... et hop, un petit crochet en haut !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.e",
+      "text": "Je pars de la ligne, je monte, je fais une petite boucle, et je redescends !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.l",
+      "text": "Je monte très haut, je fais une grande boucle, et je redescends tout droit sur la ligne !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.i",
+      "text": "Je monte en pente douce, et je redescends tout droit. Le point, on le posera plus tard !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.u",
+      "text": "Je monte, je redescends, je creuse un petit bol, je remonte... et je redescends !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.t",
+      "text": "Je monte bien haut, sans faire de boucle, et je redescends tout droit !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.c",
+      "text": "Je pars en haut à droite, et je tourne vers la gauche, sans fermer le rond !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.o",
+      "text": "Je pars en haut à droite, je tourne, je tourne vers la gauche... et je ferme le rond !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.a",
+      "text": "D'abord le rond qui tourne à gauche... puis la petite canne qui descend juste à côté !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.d",
+      "text": "D'abord le rond... puis la grande tige qui monte très haut et qui redescend !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.m",
+      "text": "Un pont, deux ponts, trois ponts, sans lever le doigt !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.n",
+      "text": "Un pont, deux ponts... et la petite sortie !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.geste.s",
+      "text": "Je monte en pente, je redescends en arrondi... et je m'enroule comme un petit serpent !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lma.nom.grande-boucle",
+      "text": "La grande boucle !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.petite-boucle",
+      "text": "La petite boucle !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.pont",
+      "text": "Le pont !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.trois-ponts",
+      "text": "Les trois ponts !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.vague",
+      "text": "La vague !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.trois-vagues",
+      "text": "Les trois vagues !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.rond",
+      "text": "Le rond !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.canne",
+      "text": "La canne !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.e",
+      "text": "La lettre e, comme dans école !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.l",
+      "text": "La lettre l, comme dans lapin !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.i",
+      "text": "La lettre i, comme dans igloo !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.u",
+      "text": "La lettre u, comme dans la lune !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.t",
+      "text": "La lettre t, comme dans tortue !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.c",
+      "text": "La lettre c, comme dans canard !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.o",
+      "text": "La lettre o, comme dans orange !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.a",
+      "text": "La lettre a, comme dans avion !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.d",
+      "text": "La lettre d, comme dans dragon !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.m",
+      "text": "La lettre m, comme dans maison !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.n",
+      "text": "La lettre n, comme dans nuage !",
+      "voice": "denise"
+    },
+    {
+      "id": "lma.nom.s",
+      "text": "La lettre s, comme dans soleil !",
+      "voice": "denise"
+    }
+  ]
+}

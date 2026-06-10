@@ -5,7 +5,7 @@ import { getSummary } from '@/engine/mastery'
 import { currentPeriod, PERIOD_LABELS } from '@/engine/periods'
 import { useProfiles } from '@/engine/profiles'
 import { sessionMinutes } from '@/engine/session'
-import { exportAll, importAll } from '@/engine/storage'
+import { exportAll, importAll, pget } from '@/engine/storage'
 import { DOMAIN_LABELS, LEVEL_LABELS, SKILL_MAP, SKILLS_BY_ID } from '@/content/skill-map'
 import { V2_GAMES } from '@/games.manifest'
 import { ParentGate } from '@/ui'
@@ -143,6 +143,69 @@ function FragilitiesSection({ summary }: { summary: Record<string, SkillProgress
   )
 }
 
+interface FluenceEntry {
+  ts: number
+  wpm: number
+  mode: 'solo' | 'duo'
+}
+
+/** Repères officiels de fluence (programmes 2025). */
+const FLUENCE_MARKS = [
+  { wpm: 30, label: 'fin CP' },
+  { wpm: 50, label: 'CP consolidé' },
+  { wpm: 70, label: 'fin CE1' },
+]
+const FLUENCE_SCALE_MAX = 100
+
+function FluenceSection({ log }: { log: FluenceEntry[] }) {
+  if (log.length === 0) return null
+  const last = log[log.length - 1]
+  const recent = log.slice(-8).reverse()
+  return (
+    <section className="card p-5">
+      <h2 className="text-lg font-extrabold">Fluence de lecture</h2>
+      <p className="mt-1 text-sm text-ink-soft">
+        Mesurée par Fluence Express. Repères officiels&nbsp;: 30 mots/min en fin de CP,
+        50 en CP consolidé, environ 70 en fin de CE1.
+      </p>
+      <div className="relative mt-6 h-3 rounded-full bg-sand" aria-hidden>
+        {FLUENCE_MARKS.map((m) => (
+          <div
+            key={m.wpm}
+            className="absolute -top-4 bottom-0 w-0.5 bg-ink-soft/40"
+            style={{ left: `${(m.wpm / FLUENCE_SCALE_MAX) * 100}%` }}
+          >
+            <span className="absolute -top-1 left-1 whitespace-nowrap text-[10px] font-semibold text-ink-soft">
+              {m.wpm} · {m.label}
+            </span>
+          </div>
+        ))}
+        <div
+          className="absolute inset-y-0 left-0 rounded-full"
+          style={{
+            width: `${Math.min((last.wpm / FLUENCE_SCALE_MAX) * 100, 100)}%`,
+            backgroundColor: STATE_META.maitrise.color,
+          }}
+        />
+      </div>
+      <p className="mt-2 text-sm">
+        Dernière mesure&nbsp;: <strong>{last.wpm}&nbsp;mots/min</strong>{' '}
+        <span className="text-ink-soft">
+          ({last.mode === 'duo' ? 'lecture à voix haute en duo' : 'jeu en autonomie'})
+        </span>
+      </p>
+      <ul className="mt-2 flex flex-col gap-1 text-xs text-ink-soft">
+        {recent.map((e) => (
+          <li key={e.ts}>
+            {new Date(e.ts).toLocaleDateString('fr-FR')} — {e.wpm}&nbsp;mots/min ·{' '}
+            {e.mode === 'duo' ? 'duo' : 'autonomie'}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function SkillMapSection({ summary }: { summary: Record<string, SkillProgress> }) {
   const period = currentPeriod()
   return (
@@ -209,6 +272,7 @@ function ParentDashboard() {
   const profiles = useProfiles((s) => s.profiles)
   const removeProfile = useProfiles((s) => s.remove)
   const [summary, setSummary] = useState<Record<string, SkillProgress>>({})
+  const [fluenceLog, setFluenceLog] = useState<FluenceEntry[]>([])
   const [confirmId, setConfirmId] = useState<string | null>(null)
   const [importError, setImportError] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -218,6 +282,9 @@ function ParentDashboard() {
     let cancelled = false
     void getSummary().then((s) => {
       if (!cancelled) setSummary(s)
+    })
+    void pget<{ fluenceLog?: FluenceEntry[] }>('game:fluence-express').then((p) => {
+      if (!cancelled && p?.fluenceLog) setFluenceLog(p.fluenceLog)
     })
     return () => {
       cancelled = true
@@ -272,6 +339,7 @@ function ParentDashboard() {
       <div className="flex flex-col gap-4">
         <OverviewSection summary={summary} />
         <FragilitiesSection summary={summary} />
+        <FluenceSection log={fluenceLog} />
         <SkillMapSection summary={summary} />
 
         <section className="card p-5">
