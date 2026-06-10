@@ -122,9 +122,9 @@ shadow beyond a soft oval, generous margins.
   on met à jour CE document et on régénère les planches d'essai.
 - Un prompt validé est figé ici avec son modèle. Régénérer un asset = même prompt,
   même modèle.
-- Générateur par défaut : `nano-banana-pro` (`google/gemini-3-pro-image-preview` via
-  OpenRouter) — provisoire jusqu'au vote famille sur les planches d'essai
-  (`public/art/_palette/essais/`).
+- Générateur retenu (vote famille, 2026-06-10) : `nano-banana-2`
+  (`google/gemini-3.1-flash-image-preview` via OpenRouter). Les planches d'essai
+  restent archivées dans `public/art/_palette/essais/`.
 
 ## 5. Les personnages (SVG riggé, jamais IA)
 
@@ -173,7 +173,6 @@ le marchand et ses clients, les animaux de l'orchestre.
 
 ## 9. Décisions ouvertes
 
-- ⏳ Choix définitif du générateur : vote famille sur les planches de
-  `public/art/_palette/essais/` (même prompt `nombres`, modèles différents).
+- ✅ Générateur : `nano-banana-2` (vote famille, 2026-06-10).
 - ⏳ Grain de papier : appliqué à la génération (dans le prompt) ou en overlay CSS
   commun ? À trancher au moment du hub illustré (phase 6).

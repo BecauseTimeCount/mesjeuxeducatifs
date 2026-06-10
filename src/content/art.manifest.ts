@@ -18,7 +18,11 @@ export interface ArtAsset {
 }
 
 export const ART_ASSETS: ArtAsset[] = [
+  { path: 'art/sons/sons.hub.decor.webp', kind: 'decor', island: 'sons', game: 'hub' },
   { path: 'art/nombres/nombres.hub.decor.webp', kind: 'decor', island: 'nombres', game: 'hub' },
+  { path: 'art/robots/robots.hub.decor.webp', kind: 'decor', island: 'robots', game: 'hub' },
+  { path: 'art/monde/monde.hub.decor.webp', kind: 'decor', island: 'monde', game: 'hub' },
+  { path: 'art/ailleurs/ailleurs.hub.decor.webp', kind: 'decor', island: 'ailleurs', game: 'hub' },
 ]
 
 export function artUrl(asset: ArtAsset): string {

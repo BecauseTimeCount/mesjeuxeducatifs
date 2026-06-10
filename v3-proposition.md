@@ -75,9 +75,9 @@ dans `public/art/_palette/essais/` pour le vote famille.
 
 Migration **progressive comme la V2** (jamais de big-bang, chaque île est une release) :
 
-1. **Le hub-archipel** : carte du monde illustrée (mer animée, îles peintes qui
-   s'éveillent avec la progression — remplace les cartes blanches), transitions de
-   navigation (vol de Plume entre les îles).
+1. **Le hub-archipel** *(fait le 2026-06-10, sous flag `artV3` : mer animée CSS, 5 îles
+   peintes nano-banana-2, éveil à la première partie jouée sur l'île ; reste : transitions
+   vol de Plume entre les îles)*.
 2. **Île aux Nombres** (la plus jouée) : décors + personnages des 8 jeux (gloutons
    redessinés, marchand et clients, balance du magicien, lucioles…).
 3. **Île aux Sons** : 8 jeux (train, machine à écrire, village des mystères…).
@@ -123,9 +123,7 @@ vit à la maison) ; l'ancien rendu reste accessible par flag pendant la vague.
 
 - ✅ Stratégie graphique : hybride IA + SVG (2026-06-10).
 - ✅ Landing : `/decouvrir.html`, racine inchangée pour les enfants (2026-06-10).
-- ⏳ Choix du générateur d'images : planches générées (`public/art/_palette/essais/`,
-  nano-banana-2 / nano-banana-pro / flux-fast, même prompt) — vote famille à faire.
-  Défaut provisoire : nano-banana-pro.
+- ✅ Choix du générateur d'images : **nano-banana-2** (vote famille, 2026-06-10).
 - ⏳ Domaine dédié et hébergement Cloudflare : phase 7 (avec redirections GitHub Pages).
 - ⏳ Musiques par île : générer (IA), assembler (CC0) ou composer (Orchestre des
   Animaux propose déjà la matière sonore maison ?) — à explorer en phase 7.
