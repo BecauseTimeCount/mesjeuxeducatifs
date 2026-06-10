@@ -1,6 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { artUrl, decorFor } from '@/content/art.manifest'
 import { unlockAudio } from '@/engine/audio'
+import { gget } from '@/engine/storage'
 import { GAMES, ISLANDS } from '@/games.manifest'
 import { Mascot, SpeakerButton } from '@/ui'
 import DailyPath from '@/world/DailyPath'
@@ -25,15 +27,28 @@ const GAMES_BY_ISLAND: ReadonlyMap<IslandId, GameMeta[]> = new Map(
   }),
 )
 
-function IslandSection({ island }: { island: IslandDef }) {
+function IslandSection({ island, artV3 }: { island: IslandDef; artV3: boolean }) {
   const games = GAMES_BY_ISLAND.get(island.id) ?? []
   if (games.length === 0) return null
+
+  // Décor illustré (chantier V3) derrière le flag visuel — voile crème pour la lisibilité.
+  const decor = artV3 ? decorFor(island.id) : undefined
 
   return (
     <section aria-label={island.name}>
       <div
         className="flex items-center gap-4 rounded-3xl px-4 py-3 sm:px-5"
-        style={{ backgroundImage: `linear-gradient(120deg, ${island.accent}2e, ${island.accent}10)` }}
+        style={
+          decor
+            ? {
+                backgroundImage: `linear-gradient(120deg, rgba(253, 246, 236, 0.88), rgba(253, 246, 236, 0.45)), url(${artUrl(decor)})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center 65%',
+              }
+            : {
+                backgroundImage: `linear-gradient(120deg, ${island.accent}2e, ${island.accent}10)`,
+              }
+        }
       >
         <span aria-hidden className="text-5xl sm:text-6xl">
           {island.emoji}
@@ -53,8 +68,11 @@ function IslandSection({ island }: { island: IslandDef }) {
 }
 
 export default function Hub() {
+  const [artV3, setArtV3] = useState(false)
+
   useEffect(() => {
     window.addEventListener('pointerdown', unlockAudio, { once: true })
+    void gget<boolean>('artV3').then((v) => setArtV3(v ?? false))
     return () => window.removeEventListener('pointerdown', unlockAudio)
   }, [])
 
@@ -84,7 +102,7 @@ export default function Hub() {
       <main className="mt-6 space-y-8">
         <DailyPath />
         {ISLANDS.map((island) => (
-          <IslandSection key={island.id} island={island} />
+          <IslandSection key={island.id} island={island} artV3={artV3} />
         ))}
       </main>
 

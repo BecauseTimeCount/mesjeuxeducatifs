@@ -6,6 +6,7 @@ Plateforme de jeux éducatifs pour enfants français de 4 à 7 ans (GS/CP).
 100 % gratuit, zéro pub, zéro compte, zéro tracking, offline-first.
 Vision produit et catalogue : voir `v2-proposition.md` (phases 0-4, livrées) et
 `v3-proposition.md` (phases 5-7 : direction artistique, refonte visuelle). Contrats d'API : `ENGINE.md`.
+Bible graphique (style, prompts IA, gabarits webp) : `art-direction.md` — à lire avant tout asset visuel.
 
 ## Stack
 
