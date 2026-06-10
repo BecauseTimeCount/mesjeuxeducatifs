@@ -21,11 +21,11 @@ node ~/.claude/skills/openrouter-imagegen/scripts/generate-image.mjs \
   --prompt "<bloc maître §4> <prompt de l'asset>" \
   --negative "text, letters, numbers, watermark, signature, photo, 3D, glossy, neon, harsh shadows, black outlines, cluttered, scary, dark" \
   --aspect 16:9 \
-  --model nano-banana-pro \
+  --model nano-banana-2 \
   --output /tmp/art/<nom>.png
 ```
 
-- Modèle par défaut : `nano-banana-pro` (provisoire — vote famille en cours sur
+- Modèle retenu : `nano-banana-2` (vote famille 2026-06-10 — planches archivées dans
   `public/art/_palette/essais/`).
 - Décor : `--aspect 16:9`. Objet : `--aspect 1:1`.
 - Générer 2 à 4 candidats (relancer ; les seeds varient seules).
