@@ -83,6 +83,16 @@ et tous les autres, où chaque jeu applique cinq lois simples :
 - **🎵 L'Orchestre des Animaux** — écoute et rejoue les séquences de l'orchestre, puis
   prends la baguette : un séquenceur 8 temps pour composer sa musique.
 
+### Vague 4 — ouverture et CE1
+
+- **🚄 Fluence Express** — décodage chronométré tout en douceur : lis le mot, tape l'image,
+  le train accélère. Mode duo où le parent chronomètre la lecture à voix haute (repères
+  officiels 30/50/70 mots par minute, jamais montrés à l'enfant).
+- **✍️ La Lettre Magique** — tracé cursif au doigt avec guidage progressif (la fée trace,
+  puis pointillés, puis tout seul) : boucles et ponts en GS, minuscules cursives au CP.
+- **🍕 La Pizzeria des Fractions** — coupe les pizzas en parts égales, sers « la moitié »,
+  lis les étiquettes 1/2 et 3/4 : les fractions précoces du CE1 (programme 2025).
+
 ### Les 5 jeux classiques (V1)
 
 Sudoku des Petits, Le Plan de l'École, Le Restaurant des Animaux, Le Jardin des

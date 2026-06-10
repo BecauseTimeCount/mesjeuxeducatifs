@@ -330,6 +330,23 @@ export const SKILL_MAP: SkillDef[] = [
     period: 2,
     prereqs: ['ma.gs.comparer'],
   },
+  // ---------------- MATHS — fractions précoces (CE1, programme 2025) ----------------
+  {
+    id: 'ma.ce1.fractions.parts',
+    label: 'Partager en parts égales',
+    official: 'Partager une grandeur en parts égales : moitié, tiers, quart',
+    domain: 'maths',
+    level: 'ce1',
+    prereqs: ['ma.cp.egalite'],
+  },
+  {
+    id: 'ma.ce1.fractions.lire',
+    label: 'Lire un demi, un tiers, un quart',
+    official: 'Associer les écritures 1/2, 1/3, 1/4 à un partage de l’unité',
+    domain: 'maths',
+    level: 'ce1',
+    prereqs: ['ma.ce1.fractions.parts'],
+  },
   // ---------------- MATHS — monnaie (CP) ----------------
   {
     id: 'ma.cp.monnaie.pieces',
@@ -395,6 +412,41 @@ export const SKILL_MAP: SkillDef[] = [
     prereqs: ['ma.cp.pb.partie'],
   },
 
+  // ---------------- FRANÇAIS — fluence (CP/CE1) ----------------
+  {
+    id: 'fr.cp.fluence',
+    label: 'Lire de plus en plus vite',
+    official: 'Lire un texte déchiffrable avec une fluence de 30 à 50 mots par minute (fin CP)',
+    domain: 'francais',
+    level: 'cp',
+    period: 5,
+    prereqs: ['fr.cp.decodage.mots'],
+  },
+  {
+    id: 'fr.ce1.fluence',
+    label: 'Lire avec aisance',
+    official: 'Lire à voix haute avec une fluence d’environ 70 mots par minute (fin CE1)',
+    domain: 'francais',
+    level: 'ce1',
+    prereqs: ['fr.cp.fluence'],
+  },
+  // ---------------- FRANÇAIS — geste d'écriture ----------------
+  {
+    id: 'fr.gs.graphisme.formes',
+    label: 'Tracer boucles, ponts et vagues',
+    official: 'Réaliser les tracés de base de l’écriture : boucles, ponts, vagues, ronds',
+    domain: 'francais',
+    level: 'gs',
+  },
+  {
+    id: 'fr.cp.ecriture.cursive',
+    label: 'Tracer les lettres en attaché',
+    official: 'Tracer les lettres cursives minuscules avec un geste fluide et normé',
+    domain: 'francais',
+    level: 'cp',
+    period: 1,
+    prereqs: ['fr.gs.graphisme.formes'],
+  },
   // ---------------- FRANÇAIS — vocabulaire (GS) ----------------
   {
     id: 'fr.gs.vocab.mots',

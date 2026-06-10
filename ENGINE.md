@@ -259,7 +259,8 @@ Chaque jeu déclare `src/games/<id>/corpus.json` :
 - ids : `^[a-z0-9][a-z0-9.-]*$`, préfixés par le jeu (`tds.`, `rp.`, `gdx.`,
   `fdn.`, `mae.`, `ptm.`, phase 2 : `chl.`, `mfo.`, `bsc.`, `cav.`, `bma.`,
   `rlu.`, `ban.`, phase 3 : `gho.`, `cdp.`, `apx.`, `mav.`, `mds.`, `eng.`,
-  `lde.`, `oda.`) ; clips communs : préfixe `ui.` (corpus-common.json),
+  `lde.`, `oda.`, phase 4 : `flx.`, `lma.`, `pzf.`) ; clips communs :
+  préfixe `ui.` (corpus-common.json),
   nombres : `nombre.0` à `nombre.100` (via `numberEntry()` de
   `src/content/numbers.ts`).
 - Voix : `denise` (consignes, défaut), `eloise` (mascotte/enfant), `henri`
@@ -280,8 +281,10 @@ await say(C['tds.consigne.intro'])
    (génération procédurale + validation, PURE), `logic.test.ts` (vitest),
    `corpus.json`.
 2. Entrée dans `GAMES` + `V2_COMPONENTS` de `src/games.manifest.ts` (déjà fait
-   pour les 6 jeux du MVP, les 7 jeux de la phase 2 et les 8 jeux de la
-   phase 3).
+   pour les 6 jeux du MVP, les 7 jeux de la phase 2, les 8 jeux de la
+   phase 3 et les 3 jeux de la phase 4).
+3. Les pages SEO statiques (`public/jeux/`, `public/competences/`) sont
+   régénérées automatiquement au build (`scripts/generate-seo.mjs`, Node 24).
 3. Compétences exercées : ids du `SKILL_MAP` (`src/content/skill-map.ts`).
 
 ## Design
