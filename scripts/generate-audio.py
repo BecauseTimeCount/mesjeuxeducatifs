@@ -39,6 +39,7 @@ VOICES = {
     "denise": "fr-FR-DeniseNeural",
     "eloise": "fr-FR-EloiseNeural",
     "henri": "fr-FR-HenriNeural",
+    "sonia": "en-GB-SoniaNeural",
 }
 DEFAULT_VOICE = "denise"
 # Légèrement ralenti pour des enfants de 4-7 ans

@@ -1,0 +1,175 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "apx.intro",
+      "text": "Bienvenue à l'atelier pixel ! Choisis ton atelier : copie le modèle, complète le miroir, retiens de mémoire, écoute la dictée, ou peins tout ce que tu veux. Puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.consigne.copie",
+      "text": "Regarde bien le modèle. Choisis une couleur, puis peins les mêmes pixels sur ta grille !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.consigne.miroir",
+      "text": "Regarde la moitié déjà peinte. Complète l'autre côté de la ligne qui brille, comme un reflet dans un miroir !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.consigne.memoire",
+      "text": "Regarde très bien le modèle... dans quelques secondes, il va se cacher ! Ensuite, repeins-le de mémoire.",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.consigne.dictee",
+      "text": "Écoute bien la case et sa couleur. Choisis la couleur, puis tape la bonne case de la grille !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.consigne.libre",
+      "text": "Ici, c'est ton atelier ! Peins tout ce que tu veux, garde tes œuvres dans la galerie, et montre-les à ta famille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.mode.copie",
+      "text": "La copie : reproduis le modèle !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.mode.miroir",
+      "text": "Le miroir : complète le reflet !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.mode.memoire",
+      "text": "La mémoire : le modèle se cache !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.mode.dictee",
+      "text": "La dictée : écoute et peins la bonne case !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.mode.libre",
+      "text": "L'atelier libre : peins tout ce que tu veux !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.cache",
+      "text": "Le modèle se cache ! À toi de le repeindre de mémoire.",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.revoir",
+      "text": "Le modèle revient un petit instant... regarde vite !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.presque",
+      "text": "Regarde, ces pixels veulent changer de couleur ! Et les cases qui clignotent attendent encore la leur.",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.indice",
+      "text": "Regarde, un pixel se corrige tout seul pour te montrer le chemin !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.bravo-grille",
+      "text": "Pixel parfait ! Bravo l'artiste !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.fresque",
+      "text": "Magnifique ! La fresque entière apparaît... quelle surprise !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.ecoute",
+      "text": "Écoute encore, et cherche bien la case...",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.indice.dictee",
+      "text": "Regarde la case qui brille... c'est elle !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.galerie",
+      "text": "Ton œuvre est dans la galerie ! Bravo l'artiste !",
+      "voice": "eloise"
+    },
+    {
+      "id": "apx.lettre.a",
+      "text": "A",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.lettre.b",
+      "text": "B",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.lettre.c",
+      "text": "C",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.lettre.d",
+      "text": "D",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.lettre.e",
+      "text": "E",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.lettre.f",
+      "text": "F",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.rouge",
+      "text": "en rouge !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.bleu",
+      "text": "en bleu !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.vert",
+      "text": "en vert !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.jaune",
+      "text": "en jaune !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.orange",
+      "text": "en orange !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.violet",
+      "text": "en violet !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.rose",
+      "text": "en rose !",
+      "voice": "denise"
+    },
+    {
+      "id": "apx.couleur.noir",
+      "text": "en noir !",
+      "voice": "denise"
+    }
+  ]
+}

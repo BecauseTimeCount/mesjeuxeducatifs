@@ -395,6 +395,41 @@ export const SKILL_MAP: SkillDef[] = [
     prereqs: ['ma.cp.pb.partie'],
   },
 
+  // ---------------- FRANÇAIS — vocabulaire (GS) ----------------
+  {
+    id: 'fr.gs.vocab.mots',
+    label: 'Comprendre les mots des imagiers',
+    official: 'Acquérir et comprendre le vocabulaire des corpus thématiques (objectif 2 500 mots)',
+    domain: 'francais',
+    level: 'gs',
+  },
+  {
+    id: 'fr.gs.vocab.categories',
+    label: 'Ranger les mots par famille',
+    official: 'Catégoriser le lexique : regrouper des mots selon leur thème',
+    domain: 'francais',
+    level: 'gs',
+    prereqs: ['fr.gs.vocab.mots'],
+  },
+  // ---------------- FRANÇAIS — compréhension (CP) ----------------
+  {
+    id: 'fr.cp.comp.anaphores',
+    label: 'Comprendre il, elle, ils, elles',
+    official: 'Comprendre les reprises anaphoriques (pronoms) dans un texte entendu',
+    domain: 'francais',
+    level: 'cp',
+    period: 3,
+  },
+  {
+    id: 'fr.cp.comp.inferences',
+    label: 'Deviner ce que le texte ne dit pas',
+    official: 'Produire des inférences simples à partir d’un texte entendu',
+    domain: 'francais',
+    level: 'cp',
+    period: 4,
+    prereqs: ['fr.cp.comp.anaphores'],
+  },
+
   // ---------------- LOGIQUE / pré-code ----------------
   {
     id: 'lo.gs.directions',
@@ -421,6 +456,149 @@ export const SKILL_MAP: SkillDef[] = [
     period: 4,
     prereqs: ['lo.cp.code.sequence'],
   },
+  // ---------------- LOGIQUE — motifs organisés (GS, programme 2025) ----------------
+  {
+    id: 'lo.gs.motifs.suite',
+    label: 'Continuer un motif (AB, AAB…)',
+    official: 'Motifs organisés : identifier la régularité et poursuivre un algorithme simple',
+    domain: 'logique',
+    level: 'gs',
+  },
+  {
+    id: 'lo.gs.motifs.creer',
+    label: 'Créer et coder un motif',
+    official: 'Motifs organisés : produire un motif régulier et le transcrire en symboles',
+    domain: 'logique',
+    level: 'gs',
+    prereqs: ['lo.gs.motifs.suite'],
+  },
+  // ---------------- LOGIQUE — espace / quadrillage ----------------
+  {
+    id: 'lo.gs.quadrillage',
+    label: 'Se repérer sur un quadrillage',
+    official: 'Se repérer dans un quadrillage : cases, lignes et colonnes',
+    domain: 'logique',
+    level: 'gs',
+    prereqs: ['lo.gs.directions'],
+  },
+  {
+    id: 'lo.cp.coordonnees',
+    label: 'Utiliser des coordonnées (B3)',
+    official: 'Coder la position d’une case par un couple lettre-nombre',
+    domain: 'logique',
+    level: 'cp',
+    period: 3,
+    prereqs: ['lo.gs.quadrillage'],
+  },
+  {
+    id: 'lo.cp.symetrie',
+    label: 'Compléter une figure symétrique',
+    official: 'Compléter une figure par symétrie axiale sur quadrillage',
+    domain: 'logique',
+    level: 'cp',
+    period: 4,
+    prereqs: ['lo.gs.quadrillage'],
+  },
+
+  // ---------------- DÉCOUVRIR LE MONDE — le temps ----------------
+  {
+    id: 'mo.gs.temps.journee',
+    label: 'Se repérer dans la journée',
+    official: 'Situer les événements de la journée les uns par rapport aux autres (matin, midi, soir)',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.gs.temps.semaine',
+    label: 'Connaître les jours de la semaine',
+    official: 'Nommer et ordonner les jours de la semaine',
+    domain: 'monde',
+    level: 'gs',
+    prereqs: ['mo.gs.temps.journee'],
+  },
+  {
+    id: 'mo.cp.temps.heures',
+    label: 'Lire les heures sur l’horloge',
+    official: 'Lire l’heure sur une horloge à aiguilles : heures piles puis demi-heures',
+    domain: 'monde',
+    level: 'cp',
+    period: 3,
+    prereqs: ['mo.gs.temps.semaine'],
+  },
+  {
+    id: 'mo.cp.temps.calendrier',
+    label: 'Se repérer dans l’année',
+    official: 'Utiliser le calendrier : jours, mois et saisons',
+    domain: 'monde',
+    level: 'cp',
+    period: 4,
+    prereqs: ['mo.gs.temps.semaine'],
+  },
+  // ---------------- DÉCOUVRIR LE MONDE — la matière ----------------
+  {
+    id: 'mo.gs.eau.etats',
+    label: 'Connaître les états de l’eau',
+    official: 'Identifier les trois états de l’eau : liquide, glace, vapeur',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.cp.eau.cycle',
+    label: 'Comprendre le cycle de l’eau',
+    official: 'Décrire le trajet de l’eau dans la nature (évaporation, nuage, pluie)',
+    domain: 'monde',
+    level: 'cp',
+    period: 5,
+    prereqs: ['mo.gs.eau.etats'],
+  },
+
+  // ---------------- ANGLAIS — premiers mots (CP) ----------------
+  {
+    id: 'en.cp.colours',
+    label: 'Les couleurs en anglais',
+    official: 'Comprendre à l’oral les couleurs usuelles (red, blue, green…)',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.numbers',
+    label: 'Compter en anglais',
+    official: 'Comprendre à l’oral les nombres de 1 à 10',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.animals',
+    label: 'Les animaux en anglais',
+    official: 'Comprendre à l’oral le nom des animaux familiers',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.consignes',
+    label: 'Comprendre des consignes (Simon says)',
+    official: 'Comprendre des consignes simples données à l’oral en anglais',
+    domain: 'anglais',
+    level: 'cp',
+    prereqs: ['en.cp.colours'],
+  },
+
+  // ---------------- MUSIQUE — univers sonores ----------------
+  {
+    id: 'ar.gs.rythme.reproduire',
+    label: 'Reproduire un rythme entendu',
+    official: 'Mémoriser et reproduire une courte séquence sonore',
+    domain: 'arts',
+    level: 'gs',
+  },
+  {
+    id: 'ar.gs.rythme.composer',
+    label: 'Composer une petite musique',
+    official: 'Produire et organiser une séquence sonore intentionnelle',
+    domain: 'arts',
+    level: 'gs',
+    prereqs: ['ar.gs.rythme.reproduire'],
+  },
 ]
 
 export const SKILLS_BY_ID: ReadonlyMap<string, SkillDef> = new Map(
@@ -431,6 +609,9 @@ export const DOMAIN_LABELS: Record<SkillDef['domain'], string> = {
   francais: 'Français — lire et écrire',
   maths: 'Maths — nombres et calcul',
   logique: 'Logique — se repérer et coder',
+  monde: 'Découvrir le monde — temps et nature',
+  anglais: 'Anglais — premiers mots',
+  arts: 'Musique — écouter et créer',
 }
 
 export const LEVEL_LABELS: Record<SkillDef['level'], string> = {

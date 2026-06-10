@@ -38,7 +38,7 @@ export interface GameMeta {
 
 // ---------- Compétences (skill-map) ----------
 export type SkillId = string
-export type Domain = 'francais' | 'maths' | 'logique'
+export type Domain = 'francais' | 'maths' | 'logique' | 'monde' | 'anglais' | 'arts'
 export type LevelBand = 'gs' | 'cp' | 'ce1'
 
 export interface SkillDef {
@@ -83,8 +83,9 @@ export interface Profile {
 export interface CorpusEntry {
   id: string
   text: string
-  /** voix edge-tts : denise (consignes, défaut), eloise (mascotte/enfant), henri */
-  voice?: 'denise' | 'eloise' | 'henri'
+  /** voix edge-tts : denise (consignes, défaut), eloise (mascotte/enfant), henri,
+   *  sonia (anglais, en-GB) */
+  voice?: 'denise' | 'eloise' | 'henri' | 'sonia'
 }
 
 export type SfxName =

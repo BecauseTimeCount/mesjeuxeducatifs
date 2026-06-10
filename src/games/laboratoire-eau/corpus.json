@@ -1,0 +1,220 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "lde.intro",
+      "text": "Bienvenue au laboratoire de l'eau ! Je suis Goutte ! Prends le soleil pour chauffer, ou le flocon pour refroidir, puis tape le lac, le ciel ou la montagne. Fais-moi voyager !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.mode.bac",
+      "text": "Le bac à eau ! Ici, pas de mission : joue comme tu veux, je te suis partout !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.souvenir",
+      "text": "Clic ! Photo souvenir rangée dans l'album !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.mission.reussie",
+      "text": "Mission réussie ! Quel beau voyage !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.consigne.zone",
+      "text": "Maintenant, tape le lac, le ciel ou la montagne !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.outil.chauffer",
+      "text": "Tu as pris le soleil, pour chauffer l'eau.",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.outil.refroidir",
+      "text": "Tu as pris le flocon, pour refroidir l'eau.",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.niveau.0",
+      "text": "La mare aux découvertes : des missions en une seule action !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.niveau.1",
+      "text": "L'atelier des nuages : des missions en deux actions !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.niveau.2",
+      "text": "La pluie et le beau temps : des missions en trois actions !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.niveau.3",
+      "text": "Le grand voyage de l'eau : le cycle complet !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.mission.lac-glace",
+      "text": "Transforme le lac en patinoire ! Tout gelé !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.mission.lac-liquide",
+      "text": "Fais fondre la glace du lac !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.mission.vapeur",
+      "text": "Fais monter la vapeur au-dessus du lac !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.mission.nuage",
+      "text": "Fabrique un nuage dans le ciel !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.mission.pluie",
+      "text": "Fais tomber la pluie !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.mission.neige-sommet",
+      "text": "Fais neiger, et couvre la montagne de neige !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.mission.ruisseau",
+      "text": "Fais fondre la neige de la montagne, pour que l'eau retourne au lac !",
+      "voice": "denise"
+    },
+    {
+      "id": "lde.etat.fonte-lac",
+      "text": "Ouf, la glace fond ! Je redeviens toute liquide !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.evaporation",
+      "text": "Youpi, je m'envole en vapeur !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.nuage-forme",
+      "text": "Encore de la vapeur ! On se serre, on se serre... et voilà un nuage !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.condensation",
+      "text": "Brrr, la vapeur se rassemble ! Nous voilà en nuage !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.dissipation",
+      "text": "Le soleil chauffe le nuage... je redeviens de la vapeur !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.pluie",
+      "text": "Plouf, plouf ! Je retombe en pluie !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.neige",
+      "text": "Il fait si froid que je deviens un flocon ! Je me pose sur la montagne !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.eclaircie",
+      "text": "Le soleil revient, la pluie s'arrête ! Toute l'eau est retournée au lac !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.flocons-fondent",
+      "text": "Les flocons fondent en tombant... voilà de la pluie !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.fonte-neige",
+      "text": "La neige fond au soleil ! Je glisse dans le ruisseau, jusqu'au lac ! Le voyage recommence !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.ruisseau-fini",
+      "text": "Le ruisseau a fini de couler : toute l'eau est rentrée au lac !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.etat.gel",
+      "text": "Brrr ! Je gèle ! Le lac devient une patinoire !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.gag.ciel-vide",
+      "text": "Chauffer le ciel tout vide ? Il n'y a rien du tout là-haut !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.ciel-plein",
+      "text": "Le ciel est déjà bien rempli ! Regarde plutôt là-haut !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.vapeur-chaude",
+      "text": "La vapeur est déjà toute chaude ! Elle monte, elle monte !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.sommet-sec",
+      "text": "Chauffer des cailloux ? Ça ne fait rien du tout !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.deja-glace",
+      "text": "Le lac est déjà tout gelé ! Brrr !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.ciel-vide-froid",
+      "text": "Refroidir le ciel vide ? Même pas un petit nuage à geler !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.deja-neige",
+      "text": "Il neige déjà ! Encore plus froid, impossible !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.sommet-froid",
+      "text": "Refroidir des cailloux ? Ils s'en moquent complètement !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.sommet-deja-neige",
+      "text": "La neige du sommet est déjà bien froide !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.gag.ruisseau-froid",
+      "text": "Le ruisseau frissonne... mais il continue de couler !",
+      "voice": "henri"
+    },
+    {
+      "id": "lde.contre.rappel",
+      "text": "C'est joli ! Mais ce n'est pas la mission... Réécoute-la bien !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.indice.chauffer",
+      "text": "Qu'est-ce qui chauffe l'eau ? Essaie l'outil soleil sur la zone qui brille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "lde.indice.refroidir",
+      "text": "Qu'est-ce qui refroidit l'eau ? Essaie l'outil flocon sur la zone qui brille !",
+      "voice": "eloise"
+    }
+  ]
+}
