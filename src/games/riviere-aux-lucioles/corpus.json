@@ -1,0 +1,70 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "rlu.intro",
+      "text": "Bienvenue à la rivière aux lucioles ! Écoute le nombre, puis tape sur la rivière pour poser la luciole au bon endroit. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.consigne.pose",
+      "text": "Pose la luciole vers...",
+      "voice": "denise"
+    },
+    {
+      "id": "rlu.confirme",
+      "text": "Tu peux encore la déplacer. Quand tu es sûr, appuie sur : c'est là !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.bien-vise",
+      "text": "C'était exactement là. Bien visé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.trop-loin",
+      "text": "Oh là là ! La luciole s'est posée trop loin !",
+      "voice": "henri"
+    },
+    {
+      "id": "rlu.regarde",
+      "text": "Regarde, les nombres de la rivière s'allument.",
+      "voice": "denise"
+    },
+    {
+      "id": "rlu.milieu",
+      "text": "Cinquante est juste au milieu de la rivière.",
+      "voice": "denise"
+    },
+    {
+      "id": "rlu.est-ici",
+      "text": "est juste ici ! À toi de réessayer !",
+      "voice": "denise"
+    },
+    {
+      "id": "rlu.indice",
+      "text": "Regarde la zone qui brille sur l'eau... pose la luciole dedans !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.niveau.0",
+      "text": "Le ruisseau : les nombres jusqu'à dix !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.niveau.1",
+      "text": "La rivière : les nombres jusqu'à vingt !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.niveau.2",
+      "text": "Le grand fleuve : les nombres jusqu'à cent !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rlu.niveau.3",
+      "text": "La grande estimation : presque sans repères !",
+      "voice": "eloise"
+    }
+  ]
+}

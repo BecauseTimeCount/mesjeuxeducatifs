@@ -57,6 +57,12 @@ export function computeState(p: SkillProgress): MasteryState {
  * - Fenêtre glissante des 10 derniers premiers essais, totalAttempts++.
  * - 2 échecs consécutifs en fin de fenêtre → box 0, révision immédiate.
  * - Passage à la maîtrise → box+1 (max 3), révision à J+2 / J+7 / J+21.
+ * - Révision réussie à échéance (now ≥ nextReview) → box+1. Depuis la
+ *   box 0, uniquement si la fenêtre est maîtrisée : couvre la rétrogradation
+ *   qui laisse la fenêtre ≥ 80 % (sinon box 0 + révision due gèleraient à
+ *   vie, la compétence monopolisant le slot révision du parcours du jour).
+ *   Box 3 reste 3 ; prochaine révision selon la nouvelle box.
+ *   Une seule promotion par tentative, même si elle valide les deux.
  */
 export function applyAttempt(
   p: SkillProgress | undefined,
@@ -79,7 +85,16 @@ export function applyAttempt(
   } else {
     const wasMastered = prev.state === 'maitrise' || prev.state === 'consolide'
     const reached = computeState(next)
-    if (!wasMastered && (reached === 'maitrise' || reached === 'consolide')) {
+    const masteryReached = !wasMastered && (reached === 'maitrise' || reached === 'consolide')
+    const reviewSucceeded =
+      ok &&
+      prev.nextReview !== undefined &&
+      now >= prev.nextReview &&
+      // Depuis la box 0 (rétrogradation), seule une fenêtre redevenue (ou
+      // restée) maîtrisée permet de remonter — sinon la maîtrise regagnée
+      // via masteryReached reste l'unique porte de sortie.
+      (prev.box >= 1 || reached === 'maitrise' || reached === 'consolide')
+    if (masteryReached || reviewSucceeded) {
       const box = promoteBox(prev.box)
       next.box = box
       next.nextReview = now + REVIEW_DAYS[box - 1] * DAY_MS

@@ -11,6 +11,9 @@ importers:
       '@fontsource/nunito':
         specifier: ^5.2.5
         version: 5.2.7
+      '@fontsource/sacramento':
+        specifier: ^5.2.8
+        version: 5.2.8
       howler:
         specifier: ^2.2.4
         version: 2.2.4
@@ -752,6 +755,9 @@ packages:
 
   '@fontsource/nunito@5.2.7':
     resolution: {integrity: sha512-pmtBq0H9ex9nk+RtJYEJOD9pag393iHETnl/PVKleF4i06cd0ttngK5ZCTgYb5eOqR3Xdlrjtev8m7bmgYprew==}
+
+  '@fontsource/sacramento@5.2.8':
+    resolution: {integrity: sha512-f2G+HIFZ7PGUxJPlm+TT6eH0HnlAQigMOCDIHXO/112LaxYA7NsTX3rczkrJLxJnycl91XyQ/0GfGLwpBkAuiw==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -3272,6 +3278,8 @@ snapshots:
     optional: true
 
   '@fontsource/nunito@5.2.7': {}
+
+  '@fontsource/sacramento@5.2.8': {}
 
   '@img/colour@1.1.0': {}
 

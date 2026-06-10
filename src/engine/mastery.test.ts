@@ -155,3 +155,85 @@ describe('applyAttempt — boîtes de Leitner', () => {
     expect(regained.box).toBe(1)
   })
 })
+
+describe('applyAttempt — promotion sur révision réussie', () => {
+  it('révision J+2 réussie à échéance → box 2, prochaine révision à J+7', () => {
+    const mastered = run([true, true, true, true, true]) // box 1, révision à J+2
+    const due = mastered.nextReview
+    if (due === undefined) throw new Error('nextReview attendu')
+    const now = due + 1000
+    const p = applyAttempt(mastered, true, now)
+    expect(p.box).toBe(2)
+    expect(p.nextReview).toBe(now + 7 * DAY)
+  })
+
+  it('révision en avance (now < nextReview) → pas de promotion', () => {
+    const mastered = run([true, true, true, true, true]) // box 1, révision à J+2
+    const p = applyAttempt(mastered, true, (mastered.nextReview ?? 0) - 1000)
+    expect(p.box).toBe(1)
+    expect(p.nextReview).toBe(mastered.nextReview)
+  })
+
+  it('box 3 réussie à échéance → reste box 3, la révision repart à J+21', () => {
+    const before: SkillProgress = {
+      window: win(...Array.from({ length: 10 }, () => true)),
+      state: 'consolide',
+      box: 3,
+      nextReview: T0 + 10 * DAY,
+      totalAttempts: 40,
+    }
+    const now = T0 + 11 * DAY
+    const p = applyAttempt(before, true, now)
+    expect(p.box).toBe(3)
+    expect(p.state).toBe('consolide')
+    expect(p.nextReview).toBe(now + 21 * DAY)
+  })
+
+  it('révision ratée puis re-ratée → box 0 et révision immédiate', () => {
+    const mastered = run([true, true, true, true, true]) // box 1, révision à J+2
+    const due = mastered.nextReview
+    if (due === undefined) throw new Error('nextReview attendu')
+    const failedOnce = applyAttempt(mastered, false, due)
+    expect(failedOnce.box).toBe(1) // un échec isolé ne rétrograde pas
+    expect(failedOnce.nextReview).toBe(due) // l'échéance ne bouge pas
+    const failedTwice = applyAttempt(failedOnce, false, due + 1000)
+    expect(failedTwice.box).toBe(0)
+    expect(failedTwice.nextReview).toBe(due + 1000)
+  })
+
+  it('une seule promotion quand la même tentative valide révision ET maîtrise', () => {
+    // box 1, révision due, fenêtre 7/9 en-cours : la réussite fait 8/10 → maîtrise.
+    const before: SkillProgress = {
+      window: win(true, true, true, true, false, true, false, true, true),
+      state: 'en-cours',
+      box: 1,
+      nextReview: T0,
+      totalAttempts: 9,
+    }
+    const now = T0 + 3 * DAY
+    const p = applyAttempt(before, true, now)
+    expect(p.box).toBe(2) // promotion unique : pas box 3
+    expect(p.nextReview).toBe(now + 7 * DAY)
+  })
+
+  it('pas de livelock : 8 réussites, 2 échecs (fenêtre 8/10 reste maîtrisée), puis révision réussie → box 1', () => {
+    // La rétrogradation laisse box 0 + révision immédiate alors que l'état
+    // reste « maitrise » (8/10 = 0.8) : la réussite suivante à échéance doit
+    // pouvoir remonter depuis la box 0, sinon box et échéance gèlent à vie.
+    const demoted = run([true, true, true, true, true, true, true, true, false, false])
+    expect(demoted.box).toBe(0)
+    expect(demoted.state).toBe('maitrise')
+    const due = demoted.nextReview
+    if (due === undefined) throw new Error('nextReview attendu')
+    const now = due + 1000
+    const p = applyAttempt(demoted, true, now)
+    expect(p.box).toBe(1)
+    expect(p.nextReview).toBe(now + 2 * DAY)
+  })
+
+  it('box 0 sans révision programmée (compétence neuve) → aucune promotion par révision', () => {
+    const p = applyAttempt(undefined, true, T0)
+    expect(p.box).toBe(0)
+    expect(p.nextReview).toBeUndefined()
+  })
+})

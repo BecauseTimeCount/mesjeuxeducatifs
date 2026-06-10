@@ -1,0 +1,160 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "ban.intro",
+      "text": "Bienvenue à l'atelier des boîtes ! L'écureuil passe des commandes : remplis la boîte, ferme-la, et le camion l'emporte ! Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ban.consigne.mets",
+      "text": "Mets...",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.noisette.une",
+      "text": "une noisette dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.noisette.des",
+      "text": "noisettes dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.fraise.une",
+      "text": "une fraise dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.fraise.des",
+      "text": "fraises dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.fleur.une",
+      "text": "une fleur dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.fleur.des",
+      "text": "fleurs dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.pomme.une",
+      "text": "une pomme dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.pomme.des",
+      "text": "pommes dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.champignon.une",
+      "text": "un champignon dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.champignon.des",
+      "text": "champignons dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.feuille.une",
+      "text": "une feuille dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.obj.feuille.des",
+      "text": "feuilles dans la boîte !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.consigne.deja",
+      "text": "Il y en a déjà...",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.consigne.il-en-faut",
+      "text": "Il en faut...",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.consigne.en-tout",
+      "text": "en tout !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.consigne.flash",
+      "text": "Regarde bien ! La boîte s'ouvre juste un petit instant...",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.consigne.combien",
+      "text": "Combien y en avait-il ? Tape le nombre !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.gag.rebond",
+      "text": "Oh là là ! Le couvercle rebondit ! Ce n'est pas le bon compte. On recompte ensemble !",
+      "voice": "henri"
+    },
+    {
+      "id": "ban.flash.oups",
+      "text": "Hum, ce n'est pas ça ! On ouvre la boîte en grand, et on compte ensemble !",
+      "voice": "henri"
+    },
+    {
+      "id": "ban.flash.retape",
+      "text": "À toi ! Tape le nombre que tu as compté !",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.recompte.ca-fait",
+      "text": "Ça fait...",
+      "voice": "denise"
+    },
+    {
+      "id": "ban.indice.manque",
+      "text": "Regarde les cases qui brillent : il en manque encore !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ban.indice.trop",
+      "text": "Regarde ce qui brille : il y en a trop ! Tape dessus pour le sortir de la boîte.",
+      "voice": "eloise"
+    },
+    {
+      "id": "ban.succes.expedie",
+      "text": "Parfait ! Je tamponne la boîte... et le camion l'emporte !",
+      "voice": "henri"
+    },
+    {
+      "id": "ban.succes.merci",
+      "text": "Merci ! C'est exactement ma commande !",
+      "voice": "henri"
+    },
+    {
+      "id": "ban.niveau.0",
+      "text": "Petites commandes : des nombres jusqu'à cinq !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ban.niveau.1",
+      "text": "Grandes commandes : des nombres jusqu'à dix !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ban.niveau.2",
+      "text": "Complète la commande : il y en a déjà dans la boîte, ajoute juste ce qui manque !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ban.niveau.3",
+      "text": "Coup d'œil : la boîte s'ouvre un instant, à toi de voir combien !",
+      "voice": "eloise"
+    }
+  ]
+}
