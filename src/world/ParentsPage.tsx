@@ -6,11 +6,12 @@ import { currentPeriod, PERIOD_LABELS } from '@/engine/periods'
 import { useProfiles } from '@/engine/profiles'
 import { sessionMinutes } from '@/engine/session'
 import { exportAll, importAll } from '@/engine/storage'
-import { DOMAIN_LABELS, LEVEL_LABELS, SKILL_MAP } from '@/content/skill-map'
+import { DOMAIN_LABELS, LEVEL_LABELS, SKILL_MAP, SKILLS_BY_ID } from '@/content/skill-map'
+import { V2_GAMES } from '@/games.manifest'
 import { ParentGate } from '@/ui'
-import type { Domain, MasteryState, SkillProgress } from '@/engine/types'
+import type { Domain, MasteryState, SkillDef, SkillProgress } from '@/engine/types'
 
-const DOMAIN_ORDER: Domain[] = ['francais', 'maths', 'logique']
+const DOMAIN_ORDER: Domain[] = ['francais', 'maths', 'logique', 'monde', 'anglais', 'arts']
 
 const STATE_ORDER: MasteryState[] = ['decouverte', 'en-cours', 'maitrise', 'consolide']
 
@@ -19,6 +20,127 @@ const STATE_META: Record<MasteryState, { color: string; label: string }> = {
   'en-cours': { color: '#ffc94d', label: 'En cours' },
   maitrise: { color: '#58c472', label: 'Maîtrisé' },
   consolide: { color: '#3a9e54', label: 'Consolidé' },
+}
+
+/** Taux de réussite sur la fenêtre des premiers essais (0..1), ou null si vide. */
+function windowRatio(p: SkillProgress | undefined): number | null {
+  if (!p || p.window.length === 0) return null
+  return p.window.filter((w) => w.ok).length / p.window.length
+}
+
+interface Fragility {
+  skill: SkillDef
+  ratio: number
+  games: { id: string; title: string; icon: string }[]
+}
+
+/** Compétences fragiles : « en cours » avec ≥ 3 premiers essais et < 80 % de
+ *  réussite, triées de la plus fragile à la moins fragile. */
+function detectFragilities(summary: Record<string, SkillProgress>): Fragility[] {
+  const out: Fragility[] = []
+  for (const [skillId, p] of Object.entries(summary)) {
+    const skill = SKILLS_BY_ID.get(skillId)
+    if (!skill) continue
+    const ratio = windowRatio(p)
+    if (p.state !== 'en-cours' || p.window.length < 3 || ratio === null || ratio >= 0.8) continue
+    const games = V2_GAMES.filter((g) => g.skills.includes(skillId)).map((g) => ({
+      id: g.id,
+      title: g.title,
+      icon: g.icon,
+    }))
+    out.push({ skill, ratio, games })
+  }
+  return out.sort((a, b) => a.ratio - b.ratio).slice(0, 5)
+}
+
+function OverviewSection({ summary }: { summary: Record<string, SkillProgress> }) {
+  return (
+    <section className="card p-5">
+      <h2 className="text-lg font-extrabold">Vue d’ensemble</h2>
+      <ul className="mt-3 flex flex-col gap-2.5">
+        {DOMAIN_ORDER.map((domain) => {
+          const skills = SKILL_MAP.filter((s) => s.domain === domain)
+          const started = skills.filter((s) => (summary[s.id]?.totalAttempts ?? 0) > 0).length
+          const mastered = skills.filter((s) => {
+            const st = summary[s.id]?.state
+            return st === 'maitrise' || st === 'consolide'
+          }).length
+          const pct = skills.length === 0 ? 0 : Math.round((mastered / skills.length) * 100)
+          return (
+            <li key={domain}>
+              <div className="flex items-baseline justify-between gap-2 text-sm">
+                <span className="font-semibold">{DOMAIN_LABELS[domain]}</span>
+                <span className="whitespace-nowrap text-xs text-ink-soft">
+                  {mastered} maîtrisée{mastered > 1 ? 's' : ''} / {skills.length}
+                  {started > mastered && ` · ${started - mastered} en route`}
+                </span>
+              </div>
+              <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-sand" aria-hidden>
+                <div
+                  className="h-full rounded-full"
+                  style={{ width: `${pct}%`, backgroundColor: STATE_META.maitrise.color }}
+                />
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
+
+function FragilitiesSection({ summary }: { summary: Record<string, SkillProgress> }) {
+  const fragilities = detectFragilities(summary)
+  return (
+    <section className="card p-5">
+      <h2 className="text-lg font-extrabold">Fragilités détectées</h2>
+      {fragilities.length === 0 ? (
+        <p className="mt-1 text-sm text-ink-soft">
+          Rien à signaler : aucune notion travaillée ne montre de difficulté persistante en ce
+          moment.
+        </p>
+      ) : (
+        <>
+          <p className="mt-1 text-sm text-ink-soft">
+            Ces notions ont été tentées plusieurs fois avec moins de 80&nbsp;% de réussite au
+            premier essai. Une partie ensemble vaut mieux que dix parties seul&nbsp;!
+          </p>
+          <ul className="mt-3 flex flex-col gap-3">
+            {fragilities.map(({ skill, ratio, games }) => (
+              <li key={skill.id} className="rounded-xl bg-paper px-3 py-2.5">
+                <p className="text-sm font-semibold leading-snug">
+                  {skill.label}{' '}
+                  <span className="font-normal text-ink-soft">
+                    · {LEVEL_LABELS[skill.level]} · {Math.round(ratio * 100)}&nbsp;% de réussite
+                  </span>
+                </p>
+                <p className="text-xs leading-snug text-ink-soft">{skill.official}</p>
+                {games.length > 0 && (
+                  <p className="mt-1.5 flex flex-wrap gap-2 text-xs">
+                    <span className="font-semibold text-ink-soft">À retravailler dans&nbsp;:</span>
+                    {games.map((g) => (
+                      <Link
+                        key={g.id}
+                        to={`/jeu/${g.id}`}
+                        className="font-bold text-lagoon-700 underline underline-offset-2"
+                      >
+                        {g.icon} {g.title}
+                      </Link>
+                    ))}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <p className="mt-3 rounded-xl bg-sand px-3 py-2 text-xs leading-snug text-ink">
+        <strong>Conseil co-jeu&nbsp;:</strong> asseyez-vous à côté, laissez-le manipuler, et
+        demandez-lui d’expliquer <em>pourquoi</em> — verbaliser la stratégie consolide bien plus
+        que répéter l’exercice.
+      </p>
+    </section>
+  )
 }
 
 function SkillMapSection({ summary }: { summary: Record<string, SkillProgress> }) {
@@ -148,6 +270,8 @@ function ParentDashboard() {
       </p>
 
       <div className="flex flex-col gap-4">
+        <OverviewSection summary={summary} />
+        <FragilitiesSection summary={summary} />
         <SkillMapSection summary={summary} />
 
         <section className="card p-5">
