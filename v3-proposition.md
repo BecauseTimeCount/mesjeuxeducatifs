@@ -43,7 +43,8 @@ d'assets par IA (style maîtrisé, coût en euros à un chiffre) et l'animation 
 
 ## Phase 5 — Vitrine et fondations graphiques
 
-*Livrable session courante : landing + README. Le reste : prochaine session.*
+*Phase livrée le 2026-06-10 (landing + README, puis bible graphique, pipeline, Plume 2.0,
+premier décor IA).*
 
 1. **Landing page `/decouvrir.html`** *(fait en session courante)* : page statique
    premium pour parents/enseignants/orthophonistes — manifeste (gratuit, zéro pub, zéro
@@ -53,19 +54,22 @@ d'assets par IA (style maîtrisé, coût en euros à un chiffre) et l'animation 
    scientifiques (BO n°41 2025, approche graphémique, Dehaene/Graphogame, fluence
    30/50/70, problèmes en barres, motifs organisés), captures, architecture, liens
    landing/méthode/orthophonistes/CONTRIBUTING.
-3. **La bible graphique** (`art-direction.md` + `public/art/_palette/`) : style guide
+3. **La bible graphique** *(fait : `art-direction.md` + `public/art/_palette/palette.svg`)* : style guide
    complet — palette maîtresse + déclinaison par île, règles de forme (rondeur, épaisseur
    de trait, ombres), prompts de référence validés pour la génération IA, gabarits
    d'export (tailles, webp, naming `<île>.<jeu>.<asset>.webp`).
-4. **Le pipeline assets** (`scripts/generate-art.md` — recettes, pas d'API au build) :
+4. **Le pipeline assets** *(fait : `scripts/generate-art.md`, `scripts/art-to-webp.mjs`,
+   `scripts/check-weight.mjs`)* :
    génération IA → détourage/recadrage → squoosh/cwebp → contrôle visuel → commit.
    Un manifest `src/content/art.manifest.ts` type les assets disponibles par jeu.
-5. **Plume 2.0, preuve de concept** : la mascotte redessinée en SVG riggé avec 5 états
+5. **Plume 2.0, preuve de concept** *(fait : `src/ui/Mascot.tsx`, rig SVG 5 états)* : la mascotte redessinée en SVG riggé avec 5 états
    animés, intégrée au composant `Mascot` existant (même API). C'est le gabarit du
    composant `<Character>` et le test de la chaîne complète avant d'industrialiser.
 
-**Critère de sortie** : la bible graphique est écrite, Plume 2.0 vit dans le hub, un
-premier décor IA (l'Île aux Nombres) est en production derrière un feature-flag visuel.
+**Critère de sortie** : ✅ atteint — la bible graphique est écrite, Plume 2.0 vit dans le
+hub, le décor IA de l'Île aux Nombres est en production derrière le flag « Apparence »
+de l'espace parents (`artV3`). Les 3 planches d'essai (même prompt, 3 générateurs) sont
+dans `public/art/_palette/essais/` pour le vote famille.
 
 ## Phase 6 — La refonte visuelle, île par île
 
@@ -119,8 +123,9 @@ vit à la maison) ; l'ancien rendu reste accessible par flag pendant la vague.
 
 - ✅ Stratégie graphique : hybride IA + SVG (2026-06-10).
 - ✅ Landing : `/decouvrir.html`, racine inchangée pour les enfants (2026-06-10).
-- ⏳ Choix du générateur d'images et du style précis : à trancher en phase 5 sur 3-4
-  planches d'essai (même prompt, générateurs différents, vote famille).
+- ⏳ Choix du générateur d'images : planches générées (`public/art/_palette/essais/`,
+  nano-banana-2 / nano-banana-pro / flux-fast, même prompt) — vote famille à faire.
+  Défaut provisoire : nano-banana-pro.
 - ⏳ Domaine dédié et hébergement Cloudflare : phase 7 (avec redirections GitHub Pages).
 - ⏳ Musiques par île : générer (IA), assembler (CC0) ou composer (Orchestre des
   Animaux propose déjà la matière sonore maison ?) — à explorer en phase 7.

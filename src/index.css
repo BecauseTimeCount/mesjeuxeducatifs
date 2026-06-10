@@ -113,6 +113,37 @@ body {
 @utility animate-shake-soft { animation: shake-soft 0.4s ease-in-out; }
 @utility animate-pulse-glow { animation: pulse-glow 1.8s ease-in-out infinite; }
 
+/* ---------- Plume 2.0 : rig SVG de la mascotte (groupes nommés) ---------- */
+.plume-part {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.3s ease-out;
+}
+.plume-lid,
+.plume-wing {
+  transform-origin: center top;
+}
+@keyframes plume-blink {
+  0%, 90%, 100% { transform: scaleY(0); }
+  93%, 97% { transform: scaleY(1); }
+}
+@keyframes plume-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02, 0.98); }
+}
+@keyframes plume-flap-l {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(-42deg); }
+}
+@keyframes plume-flap-r {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(42deg); }
+}
+@utility animate-plume-blink { animation: plume-blink 4.6s ease-in-out infinite; }
+@utility animate-plume-breathe { animation: plume-breathe 3.2s ease-in-out infinite; }
+@utility animate-plume-flap-l { animation: plume-flap-l 0.5s ease-in-out infinite; }
+@utility animate-plume-flap-r { animation: plume-flap-r 0.5s ease-in-out infinite; }
+
 /* Réduction des animations si demandé (accessibilité) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
