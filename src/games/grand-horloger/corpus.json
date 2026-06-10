@@ -1,0 +1,550 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "gho.intro",
+      "text": "Bienvenue dans l'atelier du Grand Horloger ! Ici, c'est toi qui fais tourner le temps : le soleil, les jours, les aiguilles ! Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.niveau.0",
+      "text": "La journée : matin, midi, après-midi et soir !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.niveau.1",
+      "text": "La roue des jours : lundi, mardi... toute la semaine !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.niveau.2",
+      "text": "Les heures piles : à toi de régler la petite aiguille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.niveau.3",
+      "text": "Heures et demies : les aiguilles, les mois et les saisons !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.bien-joue",
+      "text": "Bravo, petit horloger ! C'est exactement ça !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.oups",
+      "text": "Oh là là ! Mon horloge dit que ce n'est pas tout à fait ça !",
+      "voice": "henri"
+    },
+    {
+      "id": "gho.reessaie",
+      "text": "À toi de réessayer !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.indice",
+      "text": "Petit coup de pouce : regarde ce qui brille, et tape dessus !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.valide-heure",
+      "text": "Quand ton horloge est prête, appuie sur : c'est l'heure !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.aiguille.grande",
+      "text": "Pour la demie, choisis la grande aiguille et tape sur le six !",
+      "voice": "eloise"
+    },
+    {
+      "id": "gho.regarde.journee",
+      "text": "Regarde le ciel ! Le bon moment clignote. C'était...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.regarde.jour",
+      "text": "Regarde la roue ! Le bon jour clignote. C'était...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.regarde.heure",
+      "text": "Regarde l'horloge ! Les aiguilles glissent vers la bonne heure. C'était...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.regarde.mois",
+      "text": "Regarde la grande roue ! Le bon mois clignote. C'était...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.regarde.saison",
+      "text": "Regarde ! La bonne saison clignote. C'était...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.moment.matin",
+      "text": "le matin !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.moment.midi",
+      "text": "midi !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.moment.apres-midi",
+      "text": "l'après-midi !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.moment.soir",
+      "text": "le soir !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.matin.1",
+      "text": "Léo prend son petit-déjeuner. C'est le matin ! Place le soleil au matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.matin.2",
+      "text": "Léo se réveille et s'étire dans son lit. C'est le matin ! Place le soleil au matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.matin.3",
+      "text": "Le coq chante cocorico ! C'est le matin ! Place le soleil au matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.matin.4",
+      "text": "Léo s'habille pour aller à l'école. C'est le matin ! Place le soleil au matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.matin.5",
+      "text": "Léo se brosse les dents après le petit-déjeuner. C'est le matin ! Place le soleil au matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.matin.6",
+      "text": "Le soleil se lève, la rosée brille sur l'herbe. C'est le matin ! Place le soleil au matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.midi.1",
+      "text": "Léo mange à la cantine avec ses copains. C'est midi ! Place le soleil à midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.midi.2",
+      "text": "La cloche sonne, c'est l'heure du déjeuner. C'est midi ! Place le soleil à midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.midi.3",
+      "text": "Le soleil est tout en haut du ciel. C'est midi ! Place le soleil à midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.midi.4",
+      "text": "Papa sert une grande assiette de purée. C'est midi ! Place le soleil à midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.midi.5",
+      "text": "Léo se lave les mains avant le repas du midi. C'est midi ! Place le soleil à midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.midi.6",
+      "text": "Toute la famille passe à table pour déjeuner. C'est midi ! Place le soleil à midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.apres-midi.1",
+      "text": "Léo fait la sieste après le déjeuner. C'est l'après-midi ! Place le soleil à l'après-midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.apres-midi.2",
+      "text": "Léo joue au ballon dans la cour de récréation. C'est l'après-midi ! Place le soleil à l'après-midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.apres-midi.3",
+      "text": "Léo prend son goûter avec un jus de pomme. C'est l'après-midi ! Place le soleil à l'après-midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.apres-midi.4",
+      "text": "Les parents viennent chercher les enfants à l'école. C'est l'après-midi ! Place le soleil à l'après-midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.apres-midi.5",
+      "text": "Léo fait du vélo au parc avec Papi. C'est l'après-midi ! Place le soleil à l'après-midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.apres-midi.6",
+      "text": "Léo dessine tranquillement à la maison après l'école. C'est l'après-midi ! Place le soleil à l'après-midi.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.soir.1",
+      "text": "Léo prend son bain avant le dîner. C'est le soir ! Place la lune au soir.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.soir.2",
+      "text": "Toute la famille dîne ensemble. C'est le soir ! Place la lune au soir.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.soir.3",
+      "text": "Léo met son pyjama tout doux. C'est le soir ! Place la lune au soir.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.soir.4",
+      "text": "Maman lit une histoire avant de dormir. C'est le soir ! Place la lune au soir.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.soir.5",
+      "text": "Les étoiles s'allument dans le ciel. C'est le soir ! Place la lune au soir.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.act.soir.6",
+      "text": "Léo fait un gros câlin et va se coucher. C'est le soir ! Place la lune au soir.",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.lundi",
+      "text": "lundi",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.mardi",
+      "text": "mardi",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.mercredi",
+      "text": "mercredi",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.jeudi",
+      "text": "jeudi",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.vendredi",
+      "text": "vendredi",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.samedi",
+      "text": "samedi",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.jour.dimanche",
+      "text": "dimanche",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.jour.apres",
+      "text": "Quel jour vient juste après...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.jour.avant",
+      "text": "Quel jour vient juste avant...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.jour.tape",
+      "text": "Tape sur ce jour, sur la roue !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.jour.aujourdhui",
+      "text": "Aujourd'hui, c'est...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.jour.demain",
+      "text": "Quel jour serons-nous demain ? Tape dessus !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.jour.hier",
+      "text": "Quel jour étions-nous hier ? Tape dessus !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.heure",
+      "text": "Règle l'horloge sur...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.1",
+      "text": "une heure",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.2",
+      "text": "deux heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.3",
+      "text": "trois heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.4",
+      "text": "quatre heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.5",
+      "text": "cinq heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.6",
+      "text": "six heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.7",
+      "text": "sept heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.8",
+      "text": "huit heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.9",
+      "text": "neuf heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.10",
+      "text": "dix heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.11",
+      "text": "onze heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.12",
+      "text": "douze heures",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.1.demie",
+      "text": "une heure et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.2.demie",
+      "text": "deux heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.3.demie",
+      "text": "trois heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.4.demie",
+      "text": "quatre heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.5.demie",
+      "text": "cinq heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.6.demie",
+      "text": "six heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.7.demie",
+      "text": "sept heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.8.demie",
+      "text": "huit heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.9.demie",
+      "text": "neuf heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.10.demie",
+      "text": "dix heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.11.demie",
+      "text": "onze heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.heure.12.demie",
+      "text": "douze heures et demie",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.janvier",
+      "text": "janvier",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.fevrier",
+      "text": "février",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.mars",
+      "text": "mars",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.avril",
+      "text": "avril",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.mai",
+      "text": "mai",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.juin",
+      "text": "juin",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.juillet",
+      "text": "juillet",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.aout",
+      "text": "août",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.septembre",
+      "text": "septembre",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.octobre",
+      "text": "octobre",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.novembre",
+      "text": "novembre",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.mois.decembre",
+      "text": "décembre",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.mois.apres",
+      "text": "Quel mois vient juste après...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.mois.avant",
+      "text": "Quel mois vient juste avant...",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.consigne.mois.tape",
+      "text": "Tape sur ce mois, sur la grande roue !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.saison.printemps",
+      "text": "le printemps !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.saison.ete",
+      "text": "l'été !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.saison.automne",
+      "text": "l'automne !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.saison.hiver",
+      "text": "l'hiver !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.neige",
+      "text": "En quelle saison tombe la neige ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.bonhomme",
+      "text": "En quelle saison fait-on un bonhomme de neige ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.feuilles",
+      "text": "En quelle saison les feuilles tombent-elles des arbres ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.champignons",
+      "text": "En quelle saison ramasse-t-on les champignons dans la forêt ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.fleurs",
+      "text": "En quelle saison les fleurs s'ouvrent-elles partout ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.nids",
+      "text": "En quelle saison les oiseaux font-ils leur nid ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.plage",
+      "text": "En quelle saison va-t-on se baigner à la plage ? Tape sur la bonne image !",
+      "voice": "denise"
+    },
+    {
+      "id": "gho.q.saison.cigales",
+      "text": "En quelle saison chantent les cigales sous le grand soleil ? Tape sur la bonne image !",
+      "voice": "denise"
+    }
+  ]
+}

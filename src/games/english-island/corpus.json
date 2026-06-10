@@ -1,0 +1,132 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    { "id": "eng.mot.red", "text": "Red!", "voice": "sonia" },
+    { "id": "eng.mot.blue", "text": "Blue!", "voice": "sonia" },
+    { "id": "eng.mot.green", "text": "Green!", "voice": "sonia" },
+    { "id": "eng.mot.yellow", "text": "Yellow!", "voice": "sonia" },
+    { "id": "eng.mot.orange", "text": "Orange!", "voice": "sonia" },
+    { "id": "eng.mot.purple", "text": "Purple!", "voice": "sonia" },
+    { "id": "eng.mot.pink", "text": "Pink!", "voice": "sonia" },
+    { "id": "eng.mot.black", "text": "Black!", "voice": "sonia" },
+    { "id": "eng.num.1", "text": "One!", "voice": "sonia" },
+    { "id": "eng.num.2", "text": "Two!", "voice": "sonia" },
+    { "id": "eng.num.3", "text": "Three!", "voice": "sonia" },
+    { "id": "eng.num.4", "text": "Four!", "voice": "sonia" },
+    { "id": "eng.num.5", "text": "Five!", "voice": "sonia" },
+    { "id": "eng.num.6", "text": "Six!", "voice": "sonia" },
+    { "id": "eng.num.7", "text": "Seven!", "voice": "sonia" },
+    { "id": "eng.num.8", "text": "Eight!", "voice": "sonia" },
+    { "id": "eng.num.9", "text": "Nine!", "voice": "sonia" },
+    { "id": "eng.num.10", "text": "Ten!", "voice": "sonia" },
+    { "id": "eng.mot.cat", "text": "Cat!", "voice": "sonia" },
+    { "id": "eng.mot.dog", "text": "Dog!", "voice": "sonia" },
+    { "id": "eng.mot.monkey", "text": "Monkey!", "voice": "sonia" },
+    { "id": "eng.mot.bird", "text": "Bird!", "voice": "sonia" },
+    { "id": "eng.mot.fish", "text": "Fish!", "voice": "sonia" },
+    { "id": "eng.mot.rabbit", "text": "Rabbit!", "voice": "sonia" },
+    { "id": "eng.mot.horse", "text": "Horse!", "voice": "sonia" },
+    { "id": "eng.mot.cow", "text": "Cow!", "voice": "sonia" },
+    { "id": "eng.mot.pig", "text": "Pig!", "voice": "sonia" },
+    { "id": "eng.mot.duck", "text": "Duck!", "voice": "sonia" },
+    { "id": "eng.mot.jump", "text": "Jump!", "voice": "sonia" },
+    { "id": "eng.mot.clap", "text": "Clap!", "voice": "sonia" },
+    { "id": "eng.mot.sleep", "text": "Sleep!", "voice": "sonia" },
+    { "id": "eng.mot.dance", "text": "Dance!", "voice": "sonia" },
+    { "id": "eng.mot.eat", "text": "Eat!", "voice": "sonia" },
+    { "id": "eng.mot.wave", "text": "Wave!", "voice": "sonia" },
+    { "id": "eng.dontmove", "text": "Don't move!", "voice": "sonia" },
+    { "id": "eng.pop", "text": "Pop the balloon!", "voice": "sonia" },
+    { "id": "eng.popnum", "text": "Pop the balloon, number...", "voice": "sonia" },
+    { "id": "eng.where", "text": "Where is the...", "voice": "sonia" },
+    { "id": "eng.simon", "text": "Simon says:", "voice": "sonia" },
+    { "id": "eng.thatone", "text": "That one is...", "voice": "sonia" },
+    { "id": "eng.bravo", "text": "Well done!", "voice": "sonia" },
+    { "id": "eng.listen", "text": "Listen!", "voice": "sonia" },
+    {
+      "id": "eng.intro",
+      "text": "Bienvenue sur English Island, l'île où l'on parle anglais ! Commence par l'imagier parlant pour écouter les mots, puis joue avec les ballons, les animaux et Simon. Choisis un jeu, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.mode.0",
+      "text": "L'imagier parlant : tape sur les images pour les écouter en anglais !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.mode.1",
+      "text": "Balloon Beach : écoute la couleur en anglais, et fais éclater le bon ballon !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.mode.2",
+      "text": "Balloon Beach, les nombres : écoute le nombre en anglais, et fais éclater le bon ballon !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.mode.3",
+      "text": "Animal Splash : les animaux se cachent dans la jungle. Écoute leur nom en anglais et trouve-les !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.mode.4",
+      "text": "Simon Says : écoute bien les actions en anglais, puis tape les cartes dans l'ordre. Mais attention : si on ne dit pas Simon says, tape la carte Don't move !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.imagier.consigne",
+      "text": "Tape sur une image pour entendre son nom en anglais. Quand tu as tout écouté, un nouveau jeu se débloque !",
+      "voice": "denise"
+    },
+    {
+      "id": "eng.imagier.fini",
+      "text": "Bravo, tu as tout écouté ! Un nouveau jeu t'attend sur la plage !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.imagier.theme.colours",
+      "text": "Les couleurs en anglais !",
+      "voice": "denise"
+    },
+    {
+      "id": "eng.imagier.theme.numbers",
+      "text": "Les nombres en anglais, de un à dix !",
+      "voice": "denise"
+    },
+    {
+      "id": "eng.imagier.theme.animals",
+      "text": "Les animaux en anglais !",
+      "voice": "denise"
+    },
+    {
+      "id": "eng.reecoute",
+      "text": "Écoute encore la consigne, et regarde les cartes s'allumer dans l'ordre !",
+      "voice": "denise"
+    },
+    {
+      "id": "eng.simon.piege",
+      "text": "On n'a pas dit Simon says ! Quand on ne dit pas Simon says, il ne faut pas bouger : tape la carte Don't move !",
+      "voice": "denise"
+    },
+    {
+      "id": "eng.indice",
+      "text": "Regarde, la bonne réponse brille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.essaie",
+      "text": "Presque ! Écoute encore et réessaie !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.verrou.imagier",
+      "text": "Explore d'abord l'imagier parlant pour débloquer ce jeu !",
+      "voice": "eloise"
+    },
+    {
+      "id": "eng.verrou.etoiles",
+      "text": "Gagne deux étoiles au jeu d'avant pour débloquer celui-ci !",
+      "voice": "eloise"
+    }
+  ]
+}

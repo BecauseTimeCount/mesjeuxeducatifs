@@ -32,7 +32,7 @@ Vision produit et catalogue : voir `v2-proposition.md`. Contrats d'API : `ENGINE
 - `src/games/<id>/` — un dossier par jeu v2 : `index.tsx`, `logic.ts` (pur, testé), `corpus.json`
 - `src/games.manifest.ts` — LA source unique (jeux, îles) ; ajouter un jeu = une entrée ici
 - `src/content/` — skill-map (compétences BO 2025), corpus commun, helpers nombres
-- `public/v1/` — les 28 jeux V1 servis tels quels (NE PAS modifier, retrait progressif)
+- `public/v1/` — les 5 jeux V1 restants sans refonte V2 (NE PAS modifier ; les 24 copies remplacées ont été retirées en phase 3)
 - `public/audio/` — clips mp3 générés + manifest.json (commités)
 
 ## Règles spécifiques au projet

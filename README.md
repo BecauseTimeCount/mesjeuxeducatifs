@@ -50,12 +50,45 @@ et tous les autres, où chaque jeu applique cinq lois simples :
   exact, rends la monnaie, additionne deux articles de tête. Chaque réussite agrandit la
   boutique.
 
-### Les 28 jeux classiques (V1)
+### Vague 2 — français et maths
 
-Toujours là, servis tels quels : Calcul Aventure, Trouve la Lettre, Les Syllabes,
-La Dictée des Sons, Qui Parle ?, Sudoku des Petits, Le Plan de l'École, L'Eau Magique,
-Hello English!… Ils seront refondus ou fusionnés vague après vague (voir
-[v2-proposition.md](v2-proposition.md)).
+- **🔎 La Chasse aux Lettres** — la lettre est nommée à la voix, traquée dans des scènes
+  fouillis en trois graphies (dont la cursive) ; les paires b/d, p/q reviennent.
+- **🎰 La Machine Folle** — phrases cassées lues à voix haute en gag : tourne les rouleaux
+  pour réparer le sens et les accords.
+- **📊 Le Bar à Schémas** — problèmes en barres procéduraux (la prescription officielle
+  des 10 problèmes/semaine), démarche en 4 phases.
+- **🗺️ Calcul Aventure** — glisse les objets dans le panier puis tape le résultat au pavé.
+- **⚖️ La Balance Magique** — équilibre les plateaux : l'égalité et les équivalences.
+- **✨ La Rivière aux Lucioles** — estimation sur la droite numérique, de 0-10 à 0-100.
+- **📦 Les Boîtes à Nombres** — subitizing, dénombrement et comparaison.
+
+### Vague 3 — les mondes
+
+- **🕰️ Le Grand Horloger** — place le soleil dans la journée, tourne la roue des jours,
+  règle les aiguilles : heures piles, demies, mois et saisons.
+- **📿 Le Collier de Perles** — pose les perles, continue le motif, transcris-le en
+  symboles : les « motifs organisés » du programme 2025 (pré-algèbre).
+- **🎨 L'Atelier Pixel** — copie, miroir, mémoire, dictée de coordonnées à la voix
+  (« B3 en rouge ! ») et mode libre avec galerie et export PNG.
+- **🕵️ Mystères au Village** — déplace l'étiquette IL/ELLE sur le bon personnage, élimine
+  les suspects indice après indice : anaphores et inférences, la compétence la plus
+  prédictive du CP.
+- **📖 Les Mots de la Semaine** — explore l'imagier parlant, puis attrape les mots et
+  range-les par famille : corpus thématiques officiels GS.
+- **🏝️ English Island** — imagier parlant en vraie voix anglaise, ballons à éclater,
+  animaux cachés et Simon Says à chaînes.
+- **💧 Le Laboratoire de l'Eau** — chauffe, gèle, fais voyager la goutte : les états de
+  l'eau et son cycle, déclenchés par l'enfant.
+- **🎵 L'Orchestre des Animaux** — écoute et rejoue les séquences de l'orchestre, puis
+  prends la baguette : un séquenceur 8 temps pour composer sa musique.
+
+### Les 5 jeux classiques (V1)
+
+Sudoku des Petits, Le Plan de l'École, Le Restaurant des Animaux, Le Jardin des
+Émotions et L'Atelier des Couleurs n'ont pas encore de refonte V2 et restent servis
+tels quels. Les 24 autres jeux V1 ont été retirés, remplacés par leur refonte
+(voir [v2-proposition.md](v2-proposition.md)).
 
 ## Pour les parents
 

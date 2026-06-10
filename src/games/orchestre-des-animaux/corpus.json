@@ -1,0 +1,130 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "oda.intro",
+      "text": "Bienvenue à l'orchestre des animaux ! Écoute la musique et rejoue-la, ou prends la baguette magique pour inventer ta propre chanson !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.mode.ecoute",
+      "text": "Écoute et rejoue : l'orchestre joue une petite musique, puis tape sur les musiciens dans le même ordre !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.mode.compose",
+      "text": "La baguette magique : pose les animaux sur la grille, puis appuie sur le triangle pour écouter ta musique !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.ecoute-bien",
+      "text": "Écoute bien l'orchestre...",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.a-toi",
+      "text": "À toi ! Tape les musiciens dans l'ordre.",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.presque",
+      "text": "Oh ! La musique s'est emmêlée. Écoute encore une fois...",
+      "voice": "henri"
+    },
+    {
+      "id": "oda.regarde-lent",
+      "text": "Regarde bien : l'orchestre rejoue tout doucement.",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.indice",
+      "text": "Regarde les numéros sur les musiciens : ils te montrent l'ordre !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.bien-joue",
+      "text": "Bravo, quel musicien !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.animal.grenouille",
+      "text": "La grenouille !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.animal.oiseau",
+      "text": "L'oiseau !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.animal.elephant",
+      "text": "L'éléphant !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.animal.chat",
+      "text": "Le chat !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.animal.singe",
+      "text": "Le singe au tambour !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.animal.canard",
+      "text": "Le canard !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.niveau.0",
+      "text": "Le petit trio : trois musiciens sur scène !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.niveau.1",
+      "text": "Le quatuor : quatre musiciens sur scène !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.niveau.2",
+      "text": "Le grand orchestre : les six musiciens jouent ensemble !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.niveau.3",
+      "text": "Le tempo rapide : l'orchestre joue à toute vitesse !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.compose.consigne",
+      "text": "Tape les cases pour poser tes animaux, puis appuie sur le triangle pour écouter ta musique en boucle !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.compose.bravo",
+      "text": "Quelle belle musique ! Tu es un vrai chef d'orchestre !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.compose.sauvee",
+      "text": "Ta musique est rangée dans la galerie !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.compose.encore",
+      "text": "Continue ! Ajoute d'autres musiciens à ta chanson !",
+      "voice": "eloise"
+    },
+    {
+      "id": "oda.compose.efface",
+      "text": "La scène est toute propre, à toi de jouer !",
+      "voice": "denise"
+    },
+    {
+      "id": "oda.galerie",
+      "text": "Choisis une musique à réécouter !",
+      "voice": "denise"
+    }
+  ]
+}

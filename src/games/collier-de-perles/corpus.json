@@ -1,0 +1,75 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "cdp.intro",
+      "text": "Bienvenue à l'atelier des colliers ! Regarde les perles déjà enfilées, trouve le motif, et pose les perles qui manquent. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.consigne.continue",
+      "text": "Regarde le collier... quelle perle vient ensuite ? Continue le motif !",
+      "voice": "denise"
+    },
+    {
+      "id": "cdp.consigne.code",
+      "text": "Voici un collier très spécial ! Sous chaque perle, pose le symbole qui correspond. C'est ton code secret !",
+      "voice": "denise"
+    },
+    {
+      "id": "cdp.consigne.decode",
+      "text": "Lis le code secret... et enfile les perles qui correspondent à chaque symbole !",
+      "voice": "denise"
+    },
+    {
+      "id": "cdp.fini",
+      "text": "Quand toutes les perles sont posées, appuie sur : mon collier est fini !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.bravo",
+      "text": "Quel magnifique collier ! Toutes les perles chantent ensemble !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.presque",
+      "text": "Oh là là ! Une perle a roulé de travers !",
+      "voice": "henri"
+    },
+    {
+      "id": "cdp.ecoute",
+      "text": "Écoute le collier chanter... regarde bien quelles perles reviennent toujours !",
+      "voice": "denise"
+    },
+    {
+      "id": "cdp.reessaie",
+      "text": "À toi ! Pose les bonnes perles pour finir le motif.",
+      "voice": "denise"
+    },
+    {
+      "id": "cdp.indice",
+      "text": "Regarde ! Le motif se répète par petits groupes... les voilà qui s'allument !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.niveau.0",
+      "text": "Les premières perles : deux couleurs qui dansent !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.niveau.1",
+      "text": "L'atelier des motifs : des colliers plus malins !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.niveau.2",
+      "text": "Perles et trésors : des formes et des couleurs !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdp.niveau.3",
+      "text": "Le code secret : transforme les perles en symboles !",
+      "voice": "eloise"
+    }
+  ]
+}
