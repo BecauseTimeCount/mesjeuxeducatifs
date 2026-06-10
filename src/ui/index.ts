@@ -12,7 +12,7 @@ export type { BigButtonProps } from '@/ui/BigButton'
 export { NumPad } from '@/ui/NumPad'
 export type { NumPadProps } from '@/ui/NumPad'
 
-export { Mascot } from '@/ui/Mascot'
+export { Mascot, PlumeSvg } from '@/ui/Mascot'
 export type { MascotProps, MascotMood } from '@/ui/Mascot'
 
 export { SpeakerButton } from '@/ui/SpeakerButton'

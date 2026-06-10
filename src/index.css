@@ -151,6 +151,12 @@ body {
   0%, 100% { transform: rotate(-8deg); }
   50% { transform: rotate(42deg); }
 }
+@keyframes plume-flight {
+  0% { transform: translate(-20vw, 32vh) rotate(-8deg); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate(108vw, -12vh) rotate(6deg); opacity: 1; }
+}
+@utility animate-plume-flight { animation: plume-flight 1.05s ease-in both; }
 @utility animate-plume-blink { animation: plume-blink 4.6s ease-in-out infinite; }
 @utility animate-plume-breathe { animation: plume-breathe 3.2s ease-in-out infinite; }
 @utility animate-plume-flap-l { animation: plume-flap-l 0.5s ease-in-out infinite; }
