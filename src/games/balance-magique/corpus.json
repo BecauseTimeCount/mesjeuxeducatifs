@@ -1,0 +1,130 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "bma.intro",
+      "text": "Bienvenue chez le magicien ! Sa balance est magique : mets le bon poids pour équilibrer les deux plateaux. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "bma.niveau.0",
+      "text": "Pareil ! Mets le même nombre de fruits que le magicien.",
+      "voice": "eloise"
+    },
+    {
+      "id": "bma.niveau.1",
+      "text": "Complète ! Ajoute des fruits pour égaler le gros poids.",
+      "voice": "eloise"
+    },
+    {
+      "id": "bma.niveau.2",
+      "text": "Les échanges ! Écoute bien la règle du magicien.",
+      "voice": "eloise"
+    },
+    {
+      "id": "bma.niveau.3",
+      "text": "Barres et cubes ! Une barre pèse comme dix cubes.",
+      "voice": "eloise"
+    },
+    {
+      "id": "bma.consigne.pareil",
+      "text": "Regarde le plateau du magicien ! Mets le même nombre de fruits de l'autre côté, puis appuie sur Pèse !",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.consigne.poids",
+      "text": "Le gros poids du magicien pèse...",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.consigne.deja",
+      "text": "Sur ton plateau, il y a déjà...",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.consigne.complete",
+      "text": "Ajoute des fruits pour faire pareil, puis appuie sur Pèse !",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.consigne.equilibre",
+      "text": "À toi ! Équilibre les deux plateaux, puis appuie sur Pèse !",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.rappel-barre",
+      "text": "Souviens-toi : une barre pèse comme dix cubes !",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.magicien.sans-barres",
+      "text": "Abracadabra... il ne reste plus de barres ! Fais le même poids avec des cubes.",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.magicien.avec-barres",
+      "text": "Oh là là, que de cubes ! Utilise des barres pour faire le même poids.",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.regle.melon-pomme.2",
+      "text": "Un melon pèse comme deux pommes !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.regle.melon-pomme.3",
+      "text": "Un melon pèse comme trois pommes !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.regle.citrouille-poire.2",
+      "text": "Une citrouille pèse comme deux poires !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.regle.citrouille-poire.3",
+      "text": "Une citrouille pèse comme trois poires !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.regle.ananas-fraise.2",
+      "text": "Un ananas pèse comme deux fraises !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.regle.ananas-fraise.3",
+      "text": "Un ananas pèse comme trois fraises !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.equilibre",
+      "text": "Abracadabra ! Parfait équilibre, quelle magie !",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.trop-lourd",
+      "text": "Oh non, trop lourd de ton côté ! Enlève quelque chose.",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.trop-leger",
+      "text": "Trop léger de ton côté ! Il en faut encore.",
+      "voice": "henri"
+    },
+    {
+      "id": "bma.plateau-magicien",
+      "text": "Le plateau du magicien pèse...",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.plateau-toi",
+      "text": "Et ton plateau pèse...",
+      "voice": "denise"
+    },
+    {
+      "id": "bma.indice",
+      "text": "Regarde ce qui brille : ça t'aide à équilibrer !",
+      "voice": "eloise"
+    }
+  ]
+}
