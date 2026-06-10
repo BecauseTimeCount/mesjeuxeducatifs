@@ -66,7 +66,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
 <nav><a href="${up}">🏝️ Mes Jeux Éducatifs — L’Archipel</a></nav>
 <main>${body}</main>
 <footer>100 % gratuit · zéro pub · zéro compte · zéro tracking · les données restent sur votre tablette.<br>
-<a href="${up}methode.html">Notre méthode</a> · <a href="${up}orthophonistes.html">Pour les orthophonistes</a> · <a href="${up}jeux/">Tous les jeux</a> · <a href="${up}competences/">Les compétences</a></footer>
+<a href="${up}decouvrir.html">Découvrir</a> · <a href="${up}methode.html">Notre méthode</a> · <a href="${up}orthophonistes.html">Pour les orthophonistes</a> · <a href="${up}jeux/">Tous les jeux</a> · <a href="${up}competences/">Les compétences</a></footer>
 </body>
 </html>`
   const out = resolve(PUB, path)
@@ -355,7 +355,7 @@ adaptativement les paires b/d, p/q, m/n dans les trois graphies, cursive compris
 
 // ---------- Sitemap ----------
 {
-  const all = [SITE, ...urls]
+  const all = [SITE, SITE + 'decouvrir.html', ...urls]
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${all.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}
