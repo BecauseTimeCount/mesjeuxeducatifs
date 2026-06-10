@@ -5,7 +5,7 @@ import { getSummary } from '@/engine/mastery'
 import { currentPeriod, PERIOD_LABELS } from '@/engine/periods'
 import { useProfiles } from '@/engine/profiles'
 import { sessionMinutes } from '@/engine/session'
-import { exportAll, importAll, pget } from '@/engine/storage'
+import { exportAll, gget, gset, importAll, pget } from '@/engine/storage'
 import { DOMAIN_LABELS, LEVEL_LABELS, SKILL_MAP, SKILLS_BY_ID } from '@/content/skill-map'
 import { V2_GAMES } from '@/games.manifest'
 import { ParentGate } from '@/ui'
@@ -275,6 +275,7 @@ function ParentDashboard() {
   const [fluenceLog, setFluenceLog] = useState<FluenceEntry[]>([])
   const [confirmId, setConfirmId] = useState<string | null>(null)
   const [importError, setImportError] = useState(false)
+  const [artV3, setArtV3] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const minutes = sessionMinutes()
 
@@ -285,6 +286,9 @@ function ParentDashboard() {
     })
     void pget<{ fluenceLog?: FluenceEntry[] }>('game:fluence-express').then((p) => {
       if (!cancelled && p?.fluenceLog) setFluenceLog(p.fluenceLog)
+    })
+    void gget<boolean>('artV3').then((v) => {
+      if (!cancelled && v) setArtV3(true)
     })
     return () => {
       cancelled = true
@@ -428,6 +432,26 @@ function ParentDashboard() {
               Fichier invalide — import impossible.
             </p>
           )}
+        </section>
+
+        <section className="card p-5">
+          <h2 className="text-lg font-extrabold">Apparence (essai)</h2>
+          <label className="mt-2 flex items-center gap-3 text-sm font-semibold">
+            <input
+              type="checkbox"
+              checked={artV3}
+              onChange={(e) => {
+                setArtV3(e.target.checked)
+                void gset('artV3', e.target.checked)
+              }}
+              className="h-5 w-5 accent-lagoon-700"
+            />
+            Afficher les nouveaux décors illustrés (chantier en cours)
+          </label>
+          <p className="mt-2 text-xs text-ink-soft">
+            Les îles déjà illustrées s’affichent avec leur décor peint. Décochez pour revenir
+            à l’affichage classique à tout moment.
+          </p>
         </section>
 
         <section className="card p-5">
