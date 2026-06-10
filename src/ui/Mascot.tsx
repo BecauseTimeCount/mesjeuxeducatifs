@@ -45,8 +45,9 @@ const POSES: Record<
   oops: { head: 7, wingL: 14, wingR: -14, pupilsY: 1.6, lids: 0.45 },
 }
 
-/** Plume 2.0 — le perroquet de l'archipel en SVG riggé (groupes nommés, animés en CSS). */
-function PlumeSvg({ mood }: { mood: MascotMood }) {
+/** Plume 2.0 — le perroquet de l'archipel en SVG riggé (groupes nommés, animés en CSS).
+ *  Exporté nu (sans bulle) pour les usages hors Mascot : vol entre les îles, splash… */
+export function PlumeSvg({ mood }: { mood: MascotMood }) {
   const pose = POSES[mood]
   const blinking = mood !== 'oops'
   const flapping = mood === 'cheer'

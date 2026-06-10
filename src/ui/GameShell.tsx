@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+import { artUrl, decorFor } from '@/content/art.manifest'
 import { say, sfx, unlockAudio } from '@/engine/audio'
+import { gget } from '@/engine/storage'
 import { markBreakSuggested, shouldSuggestBreak, touchSession } from '@/engine/session'
 import type { GameMeta } from '@/engine/types'
 import { BreakRitual } from '@/ui/BreakRitual'
@@ -24,6 +26,7 @@ const BREAK_CHECK_MS = 60_000
  */
 export function GameShell({ meta, hud, onReplayInstruction, children }: GameShellProps) {
   const [breakOpen, setBreakOpen] = useState(false)
+  const [decorUrl, setDecorUrl] = useState<string | null>(null)
 
   useEffect(() => {
     touchSession()
@@ -31,6 +34,19 @@ export function GameShell({ meta, hud, onReplayInstruction, children }: GameShel
     document.addEventListener('pointerdown', unlock, { once: true })
     return () => document.removeEventListener('pointerdown', unlock)
   }, [])
+
+  // Décor illustré du jeu (chantier V3) derrière le flag visuel artV3.
+  useEffect(() => {
+    let cancelled = false
+    void gget<boolean>('artV3').then((v) => {
+      if (cancelled || !v) return
+      const decor = decorFor(meta.island, meta.id)
+      if (decor) setDecorUrl(artUrl(decor))
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [meta.island, meta.id])
 
   useEffect(() => {
     const check = (): void => {
@@ -47,6 +63,18 @@ export function GameShell({ meta, hud, onReplayInstruction, children }: GameShel
 
   return (
     <div className="game-surface flex min-h-dvh flex-col">
+      {decorUrl && (
+        /* Voile crème appuyé : le décor reste une ambiance, jamais une gêne de lecture. */
+        <div
+          aria-hidden
+          className="fixed inset-0 -z-10"
+          style={{
+            backgroundImage: `linear-gradient(rgba(253, 246, 236, 0.9), rgba(253, 246, 236, 0.78)), url(${decorUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
       <header className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3">
         <a
           href="#/"

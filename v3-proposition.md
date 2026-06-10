@@ -76,10 +76,12 @@ dans `public/art/_palette/essais/` pour le vote famille.
 Migration **progressive comme la V2** (jamais de big-bang, chaque île est une release) :
 
 1. **Le hub-archipel** *(fait le 2026-06-10, sous flag `artV3` : mer animée CSS, 5 îles
-   peintes nano-banana-2, éveil à la première partie jouée sur l'île ; reste : transitions
-   vol de Plume entre les îles)*.
-2. **Île aux Nombres** (la plus jouée) : décors + personnages des 8 jeux (gloutons
+   peintes nano-banana-2, éveil à la première partie jouée sur l'île, vol de Plume à
+   l'entrée d'un jeu)*.
+2. **Île aux Nombres** (la plus jouée) : décors + personnages des jeux (gloutons
    redessinés, marchand et clients, balance du magicien, lucioles…).
+   *(2026-06-10 : les 9 décors de fond sont livrés via GameShell sous flag `artV3` ;
+   restent les personnages SVG riggés à la Plume 2.0.)*
 3. **Île aux Sons** : 8 jeux (train, machine à écrire, village des mystères…).
 4. **Îles Robots, Monde, Ailleurs** : 8 jeux restants.
 5. **Le juice 2.0** transversal, au fil des îles : courbes d'easing communes (springs),
