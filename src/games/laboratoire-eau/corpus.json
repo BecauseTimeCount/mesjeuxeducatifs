@@ -3,7 +3,7 @@
   "entries": [
     {
       "id": "lde.intro",
-      "text": "Bienvenue au laboratoire de l'eau ! Je suis Goutte ! Prends le soleil pour chauffer, ou le flocon pour refroidir, puis tape le lac, le ciel ou la montagne. Fais-moi voyager !",
+      "text": "Bienvenue au laboratoire de l'eau ! Je suis Goutte ! Prends le soleil pour me chauffer, ou le flocon pour me refroidir, puis touche-moi : je me transforme ! Fais-moi voyager !",
       "voice": "eloise"
     },
     {
@@ -22,8 +22,8 @@
       "voice": "eloise"
     },
     {
-      "id": "lde.consigne.zone",
-      "text": "Maintenant, tape le lac, le ciel ou la montagne !",
+      "id": "lde.consigne.goutte",
+      "text": "Maintenant, touche Goutte !",
       "voice": "denise"
     },
     {
@@ -208,12 +208,12 @@
     },
     {
       "id": "lde.indice.chauffer",
-      "text": "Qu'est-ce qui chauffe l'eau ? Essaie l'outil soleil sur la zone qui brille !",
+      "text": "Il faut me réchauffer ! Prends le soleil, puis touche-moi !",
       "voice": "eloise"
     },
     {
       "id": "lde.indice.refroidir",
-      "text": "Qu'est-ce qui refroidit l'eau ? Essaie l'outil flocon sur la zone qui brille !",
+      "text": "Il faut me refroidir ! Prends le flocon, puis touche-moi !",
       "voice": "eloise"
     }
   ]

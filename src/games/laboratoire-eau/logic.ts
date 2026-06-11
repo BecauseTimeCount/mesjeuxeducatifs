@@ -3,6 +3,13 @@
 // Machine à états de l'eau (lac / ciel / sommet), générateur de
 // missions atteignables (solveur BFS), classification des actions
 // (utile / contre-productive / gag), position de Goutte.
+//
+// V2.1 (retour de co-test enfant) : l'enfant n'agit plus sur des
+// zones abstraites — il chauffe ou refroidit GOUTTE, là où elle
+// est. La machine à états est inchangée ; solveur, missions et
+// indices sont restreints aux 2 actions disponibles sur Goutte
+// (`goutteActions`), si bien que la causalité est toujours directe.
+//
 // Aucun import React/DOM. Prouvé par logic.test.ts : depuis tout
 // état atteignable, chaque mission générée est TOUJOURS résoluble.
 // ============================================================
@@ -145,7 +152,9 @@ export function applyTool(state: WaterState, tool: Tool, zone: Zone): ApplyResul
 }
 
 // ------------------------------------------------------------
-// Exploration de l'espace d'états (30 états max — BFS triviaux)
+// Exploration de l'espace d'états (BFS triviaux). Depuis la V2.1,
+// seules les actions SUR GOUTTE existent : l'espace est le cycle
+// de l'eau lui-même (~9 états), sans composites illisibles.
 // ------------------------------------------------------------
 
 export function stateKey(s: WaterState): string {
@@ -158,7 +167,7 @@ export function reachableStates(from: WaterState = INITIAL_STATE): WaterState[] 
   const queue: WaterState[] = [from]
   while (queue.length > 0) {
     const s = queue.shift() as WaterState
-    for (const a of ACTIONS) {
+    for (const a of goutteActions(s)) {
       const r = applyTool(s, a.tool, a.zone)
       if (r.kind !== 'transition') continue
       const k = stateKey(r.state)
@@ -206,9 +215,9 @@ export const GOALS: Readonly<Record<GoalId, (s: WaterState) => boolean>> = {
 }
 
 /**
- * Plus court chemin d'actions (gags exclus) menant à l'objectif.
- * `[]` si déjà atteint, `null` si inatteignable (n'arrive jamais
- * depuis un état atteignable — prouvé par les tests).
+ * Plus court chemin d'actions SUR GOUTTE (gags exclus) menant à
+ * l'objectif. `[]` si déjà atteint, `null` si inatteignable
+ * (n'arrive jamais depuis un état atteignable — prouvé par les tests).
  */
 export function solve(start: WaterState, goalId: GoalId, maxDepth = 12): Action[] | null {
   const check = GOALS[goalId]
@@ -218,7 +227,7 @@ export function solve(start: WaterState, goalId: GoalId, maxDepth = 12): Action[
   for (let depth = 0; depth < maxDepth && frontier.length > 0; depth++) {
     const next: typeof frontier = []
     for (const { s, path } of frontier) {
-      for (const a of ACTIONS) {
+      for (const a of goutteActions(s)) {
         const r = applyTool(s, a.tool, a.zone)
         if (r.kind !== 'transition') continue
         const k = stateKey(r.state)
@@ -337,6 +346,20 @@ export function gouttePos(s: WaterState): GoutteSpot {
   return 'lac'
 }
 
+/** Zone où se trouve Goutte — depuis la V2.1, l'enfant n'agit QUE sur elle. */
+export function goutteZone(s: WaterState): Zone {
+  const spot = gouttePos(s)
+  if (spot === 'lac' || spot === 'glace') return 'lac'
+  if (spot === 'sommet' || spot === 'ruisseau') return 'sommet'
+  return 'ciel'
+}
+
+/** Les 2 seules actions offertes à l'enfant : chauffer ou refroidir Goutte. */
+export function goutteActions(s: WaterState): Action[] {
+  const zone = goutteZone(s)
+  return TOOLS.map((tool): Action => ({ tool, zone }))
+}
+
 // ------------------------------------------------------------
 // Paliers, Tuner et score
 // ------------------------------------------------------------
@@ -357,13 +380,15 @@ export const TIER_SKILLS = [
 ] as const
 
 const TIER_BASE_STEPS: Readonly<Record<TierId, number>> = { 0: 1, 1: 2, 2: 3, 3: 4 }
-/** Au-delà : aucun objectif n'existe (le cycle complet fait 5 étapes). */
-export const MAX_MISSION_STEPS = 5
+/** Difficulté maximale DEMANDÉE par le Tuner (le générateur prend la plus proche). */
+export const MAX_DESIRED_STEPS = 5
+/** Aucun objectif n'est plus loin (le ruisseau, au pire, est à 7 actions de Goutte). */
+export const MAX_MISSION_STEPS = 7
 
 /** Difficulté visée (en étapes) pour un palier et un niveau de Tuner. */
 export function stepsForTier(tier: TierId, level: number): number {
   const l = Math.max(0, Math.min(MAX_TUNER_LEVEL, Math.floor(level)))
-  return Math.min(MAX_MISSION_STEPS, TIER_BASE_STEPS[tier] + (l >= MAX_TUNER_LEVEL ? 1 : 0))
+  return Math.min(MAX_DESIRED_STEPS, TIER_BASE_STEPS[tier] + (l >= MAX_TUNER_LEVEL ? 1 : 0))
 }
 
 /** Étoiles d'une partie : seuls les PREMIERS essais comptent. */

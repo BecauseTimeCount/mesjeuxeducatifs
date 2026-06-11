@@ -80,8 +80,10 @@ Migration **progressive comme la V2** (jamais de big-bang, chaque île est une r
    l'entrée d'un jeu)*.
 2. **Île aux Nombres** (la plus jouée) : décors + personnages des jeux (gloutons
    redessinés, marchand et clients, balance du magicien, lucioles…).
-   *(2026-06-10 : les 9 décors de fond sont livrés via GameShell sous flag `artV3` ;
-   restent les personnages SVG riggés à la Plume 2.0.)*
+   *(2026-06-10 : les 9 décors de fond sont livrés via GameShell sous flag `artV3`.
+   2026-06-11 : les gloutons sont conservés tels quels — déjà riggés en CSS et validés
+   au co-test ; Goutte 2.0 livrée en SVG riggé avec la refonte du Laboratoire de l'Eau.
+   Restent : marchand et clients, fée de la balance, lucioles.)*
 3. **Île aux Sons** : 8 jeux (train, machine à écrire, village des mystères…).
 4. **Îles Robots, Monde, Ailleurs** : 8 jeux restants.
 5. **Le juice 2.0** transversal, au fil des îles : courbes d'easing communes (springs),
