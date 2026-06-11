@@ -12,8 +12,11 @@ import {
   generateMission,
   GOAL_IDS,
   GOALS,
+  goutteActions,
   gouttePos,
+  goutteZone,
   INITIAL_STATE,
+  MAX_DESIRED_STEPS,
   MAX_MISSION_STEPS,
   MAX_SOUVENIRS,
   MAX_TUNER_LEVEL,
@@ -186,7 +189,9 @@ describe('solve / minSteps — solveur BFS', () => {
     expect(minSteps(INITIAL_STATE, 'nuage')).toBe(2)
     expect(minSteps(INITIAL_STATE, 'pluie')).toBe(3)
     expect(minSteps(INITIAL_STATE, 'neige-sommet')).toBe(4)
-    expect(minSteps(INITIAL_STATE, 'ruisseau')).toBe(5)
+    // V2.1 : Goutte tombée en flocon doit refondre en pluie, laisser passer
+    // l'éclaircie, puis faire fondre la neige du sommet — 7 actions sur elle.
+    expect(minSteps(INITIAL_STATE, 'ruisseau')).toBe(7)
   })
 
   it('objectif déjà atteint → chemin vide', () => {
@@ -307,19 +312,20 @@ describe('classifyAction — utile / contre-productive / gag', () => {
     expect(classifyAction(INITIAL_STATE, 'lac-glace', 'refroidir', 'lac')).toBe('utile')
   })
 
-  it('une transformation qui n’avance pas (distance égale) est contre-productive', () => {
-    // Mission lac-glace : dissiper le nuage ne change pas la distance (1).
+  it('une transformation qui éloigne est contre-productive', () => {
+    // Mission lac-glace depuis le nuage : Goutte doit redescendre (pluie,
+    // éclaircie, gel = 3 actions). Dissiper le nuage en vapeur l'éloigne.
     const s = S('liquide', 'nuage', 'sec')
-    expect(minSteps(s, 'lac-glace')).toBe(1)
+    expect(minSteps(s, 'lac-glace')).toBe(3)
     expect(classifyAction(s, 'lac-glace', 'chauffer', 'ciel')).toBe('contre')
   })
 
-  it('cohérence exhaustive : utile ⇔ la distance diminue strictement', () => {
+  it('cohérence exhaustive (sur les actions de Goutte) : utile ⇔ la distance diminue', () => {
     for (const s of REACHABLE) {
       for (const g of GOAL_IDS) {
         if (GOALS[g](s)) continue
         const before = minSteps(s, g)
-        for (const a of ACTIONS) {
+        for (const a of goutteActions(s)) {
           const r = applyTool(s, a.tool, a.zone)
           const cls = classifyAction(s, g, a.tool, a.zone)
           if (r.kind === 'gag') {
@@ -358,14 +364,57 @@ describe('gouttePos — Goutte suit l’eau', () => {
   })
 })
 
+describe('goutteZone / goutteActions — V2.1 : on agit sur Goutte, pas sur des zones', () => {
+  it('la zone est toujours celle où vit Goutte', () => {
+    expect(goutteZone(INITIAL_STATE)).toBe('lac')
+    expect(goutteZone(S('glace', 'vide', 'sec'))).toBe('lac')
+    expect(goutteZone(S('liquide', 'vapeur', 'sec'))).toBe('ciel')
+    expect(goutteZone(S('liquide', 'nuage', 'sec'))).toBe('ciel')
+    expect(goutteZone(S('liquide', 'neige', 'neige'))).toBe('ciel')
+    expect(goutteZone(S('liquide', 'vide', 'neige'))).toBe('sommet')
+    expect(goutteZone(S('liquide', 'vide', 'ruisseau'))).toBe('sommet')
+  })
+
+  it('exactement 2 actions offertes, chaud et froid, sur la zone de Goutte', () => {
+    for (const s of REACHABLE) {
+      const actions = goutteActions(s)
+      expect(actions).toHaveLength(2)
+      expect(actions.map((a) => a.tool).sort()).toEqual(['chauffer', 'refroidir'])
+      for (const a of actions) expect(a.zone).toBe(goutteZone(s))
+    }
+  })
+
+  it('depuis tout état atteignable, au moins UNE action de Goutte transforme', () => {
+    for (const s of REACHABLE) {
+      const transitions = goutteActions(s).filter(
+        (a) => applyTool(s, a.tool, a.zone).kind === 'transition',
+      )
+      expect(transitions.length, `Goutte coincée en ${stateKey(s)}`).toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  it('le cycle complet se parcourt uniquement en agissant sur Goutte', () => {
+    // lac → vapeur → nuage → pluie → neige (sommet blanchi) → pluie →
+    // éclaircie (Goutte au sommet) → ruisseau → retour au lac.
+    const tools = ['chauffer', 'refroidir', 'refroidir', 'refroidir', 'chauffer', 'chauffer', 'chauffer', 'chauffer'] as const
+    let s = INITIAL_STATE
+    for (const tool of tools) {
+      const r = applyTool(s, tool, goutteZone(s))
+      expect(r.kind).toBe('transition')
+      if (r.kind === 'transition') s = r.state
+    }
+    expect(s).toEqual(INITIAL_STATE)
+  })
+})
+
 describe('stepsForTier — Tuner sur la complexité', () => {
   it('paliers de base : 1, 2, 3, 4 étapes', () => {
     for (const t of ALL_TIERS) expect(stepsForTier(t, 0)).toBe(t + 1)
   })
 
-  it('au cran max du Tuner, une étape de plus (plafonnée au cycle complet)', () => {
+  it('au cran max du Tuner, une étape de plus (plafonnée à la demande max)', () => {
     expect(stepsForTier(0, MAX_TUNER_LEVEL)).toBe(2)
-    expect(stepsForTier(3, MAX_TUNER_LEVEL)).toBe(MAX_MISSION_STEPS)
+    expect(stepsForTier(3, MAX_TUNER_LEVEL)).toBe(MAX_DESIRED_STEPS)
   })
 
   it('niveaux hors bornes ou fractionnaires : clampés et tronqués', () => {
@@ -479,7 +528,7 @@ describe('corpus audio — couverture complète, préfixe lde.', () => {
       'lde.mode.bac',
       'lde.souvenir',
       'lde.mission.reussie',
-      'lde.consigne.zone',
+      'lde.consigne.goutte',
       'lde.outil.chauffer',
       'lde.outil.refroidir',
       'lde.contre.rappel',
