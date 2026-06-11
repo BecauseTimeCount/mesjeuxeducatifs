@@ -18,6 +18,8 @@ import {
   SpeakerButton,
 } from '@/ui'
 import corpus from './corpus.json'
+import { GoutteSvg } from './Goutte'
+import type { GoutteTint } from './Goutte'
 import {
   addSouvenir,
   applyRun,
@@ -27,6 +29,7 @@ import {
   generateMission,
   GOALS,
   gouttePos,
+  goutteZone,
   INITIAL_STATE,
   MAX_SOUVENIRS,
   MAX_TUNER_LEVEL,
@@ -47,14 +50,16 @@ import type {
   TierId,
   Tool,
   WaterState,
-  Zone,
 } from './logic'
 
 // ============================================================
-// Le Laboratoire de l'Eau — sandbox à missions sur le cycle de
-// l'eau. Tap-outil-puis-tap-zone : chauffer ☀️ ou refroidir ❄️
-// le lac, le ciel ou la montagne. La physique est honnête, les
-// erreurs transforment quand même, Goutte 💧 commente le voyage.
+// Le Laboratoire de l'Eau — V2.1 (retour de co-test enfant).
+// L'enfant n'agit plus sur des zones abstraites : il prend le
+// soleil ☀️ ou le flocon ❄️, puis TOUCHE GOUTTE, où qu'elle
+// soit. La causalité est directe : Goutte se transforme là où
+// elle est, et le cycle de l'eau se découvre en la suivant.
+// La physique reste honnête, les erreurs transforment quand
+// même, Goutte 💧 raconte son voyage.
 // ============================================================
 
 const STORE_KEY = 'game:laboratoire-eau'
@@ -180,28 +185,45 @@ const SPOT_LABEL: Readonly<Record<GoutteSpot, string>> = {
   ruisseau: 'Goutte glisse dans le ruisseau',
 }
 
-function Goutte({ spot }: { spot: GoutteSpot }) {
+interface GoutteProps {
+  spot: GoutteSpot
+  /** Un outil est en main : Goutte attend qu'on la touche (halo + pulsation). */
+  armed: boolean
+  disabled: boolean
+  onTap: () => void
+}
+
+/** Teinte de Goutte 2.0 selon sa forme du moment. */
+const SPOT_TINT: Readonly<Record<GoutteSpot, GoutteTint>> = {
+  lac: 'eau',
+  glace: 'glace',
+  vapeur: 'vapeur',
+  nuage: 'vapeur',
+  pluie: 'eau',
+  neige: 'glace',
+  sommet: 'glace',
+  ruisseau: 'eau',
+}
+
+/** Goutte est LA cible tactile du jeu : on la touche, elle se transforme. */
+function Goutte({ spot, armed, disabled, onTap }: GoutteProps) {
   const xy = GOUTTE_XY[spot]
   return (
-    <div
-      className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-1/2"
+    <button
+      type="button"
+      aria-label={`${SPOT_LABEL[spot]}. Touche Goutte pour la transformer !`}
+      disabled={disabled}
+      onClick={onTap}
+      className={`tap-target absolute z-20 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full ${armed ? 'animate-pulse-glow' : ''}`}
       style={{ left: xy.left, top: xy.top, transition: 'left 0.9s ease-in-out, top 0.9s ease-in-out' }}
-      role="img"
-      aria-label={SPOT_LABEL[spot]}
     >
-      <div className="animate-floaty relative text-5xl leading-none drop-shadow-md">
-        <span aria-hidden="true">💧</span>
-        {/* Les yeux de Goutte */}
-        <span aria-hidden="true" className="absolute top-[52%] left-[24%] flex w-[52%] justify-between">
-          <span className="flex h-2.5 w-2 items-center justify-center rounded-full bg-white">
-            <span className="h-1 w-1 rounded-full bg-ink" />
-          </span>
-          <span className="flex h-2.5 w-2 items-center justify-center rounded-full bg-white">
-            <span className="h-1 w-1 rounded-full bg-ink" />
-          </span>
-        </span>
-      </div>
-    </div>
+      <span
+        aria-hidden="true"
+        className={`relative block h-14 w-14 drop-shadow-md ${armed ? 'lde-pulse-tool' : 'animate-floaty'}`}
+      >
+        <GoutteSvg tint={SPOT_TINT[spot]} excited={armed} />
+      </span>
+    </button>
   )
 }
 
@@ -214,34 +236,21 @@ const RAIN_DROPS: ReadonlyArray<{ left: string; delay: number }> = [
   { left: '82%', delay: 0.65 },
 ]
 
-const ZONE_LABEL: Readonly<Record<Zone, string>> = {
-  ciel: 'Le ciel',
-  sommet: 'La montagne',
-  lac: 'Le lac',
-}
-
 interface SceneProps {
   water: WaterState
-  /** Indice actif : la zone cible brille */
-  hintZone: Zone | null
+  /** Un outil est en main : Goutte pulse et attend d'être touchée. */
+  armed: boolean
   disabled: boolean
-  onZone: (zone: Zone) => void
+  onGoutte: () => void
 }
 
 /** La scène vivante : ciel (0-44 %), montagne (44-72 %), lac (72-100 %).
- *  Trois grandes bandes tappables ≥ 64 px, visuels en pur CSS/emoji. */
-function Scene({ water, hintZone, disabled, onZone }: SceneProps) {
-  const zoneButton = (zone: Zone, style: CSSProperties, children: ReactNode): ReactNode => (
-    <button
-      type="button"
-      aria-label={ZONE_LABEL[zone]}
-      disabled={disabled}
-      onClick={() => onZone(zone)}
-      className={`absolute inset-x-0 z-10 overflow-hidden text-left transition-opacity active:opacity-80 ${hintZone === zone ? 'lde-glow' : ''}`}
-      style={style}
-    >
+ *  Depuis la V2.1, la scène est un DÉCOR — la seule cible, c'est Goutte. */
+function Scene({ water, armed, disabled, onGoutte }: SceneProps) {
+  const zoneStrip = (style: CSSProperties, children: ReactNode): ReactNode => (
+    <div aria-hidden="true" className="absolute inset-x-0 z-10 overflow-hidden" style={style}>
       {children}
-    </button>
+    </div>
   )
 
   return (
@@ -250,8 +259,7 @@ function Scene({ water, hintZone, disabled, onZone }: SceneProps) {
       style={{ background: 'linear-gradient(180deg, #aee3f7 0%, #cdeefb 42%, #bfe6d8 44%, #a5d9c8 72%, transparent 72%)' }}
     >
       {/* ---------- Le ciel ---------- */}
-      {zoneButton(
-        'ciel',
+      {zoneStrip(
         { top: 0, height: '44%' },
         <>
           <span aria-hidden="true" className="absolute top-2 right-3 text-4xl sm:text-5xl">
@@ -312,8 +320,7 @@ function Scene({ water, hintZone, disabled, onZone }: SceneProps) {
       )}
 
       {/* ---------- La montagne ---------- */}
-      {zoneButton(
-        'sommet',
+      {zoneStrip(
         { top: '44%', height: '28%' },
         <>
           <span aria-hidden="true" className="absolute bottom-0 left-[4%] text-7xl leading-none sm:text-8xl">
@@ -350,8 +357,7 @@ function Scene({ water, hintZone, disabled, onZone }: SceneProps) {
       )}
 
       {/* ---------- Le lac ---------- */}
-      {zoneButton(
-        'lac',
+      {zoneStrip(
         {
           top: '72%',
           height: '28%',
@@ -387,7 +393,7 @@ function Scene({ water, hintZone, disabled, onZone }: SceneProps) {
         ),
       )}
 
-      <Goutte spot={gouttePos(water)} />
+      <Goutte spot={gouttePos(water)} armed={armed} disabled={disabled} onTap={onGoutte} />
     </div>
   )
 }
@@ -458,6 +464,17 @@ const MISSION_LABEL: Readonly<Record<GoalId, string>> = {
   pluie: 'Fais tomber la pluie !',
   'neige-sommet': 'Couvre la montagne de neige !',
   ruisseau: 'Renvoie l’eau de la montagne au lac !',
+}
+
+/** L'objectif en IMAGE : l'enfant voit où il doit emmener Goutte. */
+const GOAL_EMOJI: Readonly<Record<GoalId, string>> = {
+  'lac-glace': '🧊',
+  'lac-liquide': '🌊',
+  vapeur: '💨',
+  nuage: '☁️',
+  pluie: '🌧️',
+  'neige-sommet': '🏔️',
+  ruisseau: '🏞️',
 }
 
 export default function LaboratoireEau() {
@@ -573,11 +590,11 @@ export default function LaboratoireEau() {
     if (busy) return
     setTool(t)
     void say(E(`lde.outil.${t}`)).then(() => {
-      void say(E('lde.consigne.zone'), { interrupt: false })
+      void say(E('lde.consigne.goutte'), { interrupt: false })
     })
   }
 
-  const onZone = (zone: Zone): void => {
+  const onGoutte = (): void => {
     if (busy) return
     if (!tool) {
       // Pas d'outil en main : petit nudge sonore, les outils sont en bas.
@@ -586,7 +603,8 @@ export default function LaboratoireEau() {
     }
     const seq = ++seqRef.current
     const before = water
-    const r = applyTool(before, tool, zone)
+    // V2.1 : on agit toujours sur Goutte, là où elle est.
+    const r = applyTool(before, tool, goutteZone(before))
 
     if (r.kind === 'gag') {
       // Action impossible : gag d'Henri, zéro pénalité, on continue.
@@ -607,7 +625,7 @@ export default function LaboratoireEau() {
       return
     }
 
-    const cls = classifyAction(before, mission.goalId, tool, zone)
+    const cls = classifyAction(before, mission.goalId, tool, goutteZone(before))
     const reached = GOALS[mission.goalId](r.state)
 
     void say(E(`lde.etat.${r.effect}`)).then(async () => {
@@ -726,7 +744,7 @@ export default function LaboratoireEau() {
           <span>🌊</span>
         </div>
         <p className="text-center text-lg font-extrabold text-ink">
-          Chauffe ou refroidis l’eau, et fais voyager Goutte !
+          Prends le soleil ou le flocon, touche Goutte… et fais-la voyager !
         </p>
         <div className="grid w-full grid-cols-2 gap-3">
           {TIER_INFO.map((info, i) => {
@@ -787,15 +805,23 @@ export default function LaboratoireEau() {
         <p className="max-w-64 text-center text-lg font-extrabold text-ink sm:max-w-none sm:text-xl">
           {MISSION_LABEL[m.goalId]}
         </p>
+        {/* L'objectif en image, pas seulement en mots */}
+        <span
+          aria-hidden="true"
+          className="card flex h-14 w-14 shrink-0 items-center justify-center text-3xl"
+          style={{ outline: `3px solid ${ACCENT}` }}
+        >
+          {GOAL_EMOJI[m.goalId]}
+        </span>
       </div>
-      <Scene water={water} hintZone={hint?.zone ?? null} disabled={busy} onZone={onZone} />
+      <Scene water={water} armed={tool !== null} disabled={busy} onGoutte={onGoutte} />
       <ToolBar selected={tool} hintTool={hint?.tool ?? null} disabled={busy} onSelect={onSelectTool} />
     </div>
   )
 
   const renderBac = (): ReactNode => (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-3 px-3 pb-5">
-      <Scene water={water} hintZone={null} disabled={busy} onZone={onZone} />
+      <Scene water={water} armed={tool !== null} disabled={busy} onGoutte={onGoutte} />
       <ToolBar selected={tool} hintTool={null} disabled={busy} onSelect={onSelectTool} />
       <div className="flex w-full flex-wrap items-center justify-center gap-3">
         <BigButton variant="soft" className="text-lg" onClick={takeSouvenir}>
