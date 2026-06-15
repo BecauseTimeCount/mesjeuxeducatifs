@@ -1,0 +1,43 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    { "id": "pgr.intro", "text": "Bienvenue dans le jardin de Plume ! On va aider une petite graine à devenir une belle plante. Tape « Jouer » !", "voice": "eloise" },
+
+    { "id": "pgr.niveau.0", "text": "La graine a soif et faim. Donne-lui ce dont elle a besoin pour grandir.", "voice": "denise" },
+    { "id": "pgr.niveau.1", "text": "La plante grandit ! Donne-lui tout ce dont elle a besoin et laisse les pièges de côté.", "voice": "denise" },
+    { "id": "pgr.niveau.2", "text": "Range les étapes dans l'ordre, de la graine jusqu'à la fleur.", "voice": "denise" },
+    { "id": "pgr.niveau.3", "text": "Range tout le cycle dans l'ordre, de la graine jusqu'au fruit.", "voice": "denise" },
+
+    { "id": "pgr.consigne.feed", "text": "Donne à la plante ce dont elle a vraiment besoin pour pousser.", "voice": "denise" },
+    { "id": "pgr.consigne.order", "text": "Tape les images dans l'ordre, depuis le tout début.", "voice": "denise" },
+
+    { "id": "pgr.miam", "text": "Oui ! La plante adore ça, elle pousse !", "voice": "eloise" },
+    { "id": "pgr.pousse", "text": "Bravo ! Ta plante a tout ce qu'il lui faut, elle grandit !", "voice": "eloise" },
+    { "id": "pgr.ordre-bon", "text": "Super ! Tu as remis tout le cycle dans le bon ordre !", "voice": "eloise" },
+    { "id": "pgr.etape-bonne", "text": "Oui, c'est la bonne étape !", "voice": "eloise" },
+
+    { "id": "pgr.refus", "text": "Hmm, la plante n'en a pas besoin pour pousser. Essaie autre chose.", "voice": "henri" },
+    { "id": "pgr.ordre-faux", "text": "Presque ! On recommence du début, dans l'ordre.", "voice": "henri" },
+
+    { "id": "pgr.besoins", "text": "Pour vivre et grandir, une plante a besoin d'eau, de lumière du soleil, d'air et de bonne terre.", "voice": "denise" },
+    { "id": "pgr.cycle", "text": "Une plante grandit étape par étape : d'abord la graine, puis le germe, la pousse, la fleur, et enfin le fruit.", "voice": "denise" },
+
+    { "id": "pgr.indice.feed", "text": "Regarde : ce dont la plante a besoin se met à briller.", "voice": "denise" },
+    { "id": "pgr.indice.order", "text": "Regarde : la prochaine étape se met à briller.", "voice": "denise" },
+
+    { "id": "pgr.carte.eau", "text": "De l'eau", "voice": "denise" },
+    { "id": "pgr.carte.soleil", "text": "La lumière du soleil", "voice": "denise" },
+    { "id": "pgr.carte.air", "text": "De l'air", "voice": "denise" },
+    { "id": "pgr.carte.terre", "text": "De la bonne terre", "voice": "denise" },
+    { "id": "pgr.carte.bonbon", "text": "Un bonbon", "voice": "denise" },
+    { "id": "pgr.carte.jouet", "text": "Un jouet", "voice": "denise" },
+    { "id": "pgr.carte.tele", "text": "La télé", "voice": "denise" },
+    { "id": "pgr.carte.chaussure", "text": "Une chaussure", "voice": "denise" },
+
+    { "id": "pgr.etape.graine", "text": "La graine", "voice": "denise" },
+    { "id": "pgr.etape.germe", "text": "Le germe", "voice": "denise" },
+    { "id": "pgr.etape.pousse", "text": "La pousse", "voice": "denise" },
+    { "id": "pgr.etape.fleur", "text": "La fleur", "voice": "denise" },
+    { "id": "pgr.etape.fruit", "text": "Le fruit", "voice": "denise" }
+  ]
+}

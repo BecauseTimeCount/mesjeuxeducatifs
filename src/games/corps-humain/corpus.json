@@ -1,0 +1,176 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "cor.intro",
+      "text": "Bienvenue dans le corps humain ! Écoute bien, puis touche la bonne carte. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.consigne.part",
+      "text": "Écoute, puis montre la bonne partie du corps !",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.consigne.sense",
+      "text": "Écoute la question, puis touche le bon organe !",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.consigne.habit",
+      "text": "Écoute bien, puis touche le bon geste pour rester en bonne santé !",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.montre",
+      "text": "Montre",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.bravo",
+      "text": "Bravo ! C'est bien ça !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.thatone",
+      "text": "Ça, c'est",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.essaie",
+      "text": "Presque ! Écoute encore et essaie une autre carte.",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.indice.part",
+      "text": "Regarde ! La bonne partie du corps brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.indice.sense",
+      "text": "Regarde ! Le bon organe brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.indice.habit",
+      "text": "Regarde ! Le bon geste brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.niveau.0",
+      "text": "Les parties du corps : 4 cartes à reconnaître !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.niveau.1",
+      "text": "Encore les parties du corps, avec 6 cartes !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.niveau.2",
+      "text": "Les cinq sens : avec quoi voit-on, entend-on, sent-on ?",
+      "voice": "eloise"
+    },
+    {
+      "id": "cor.niveau.3",
+      "text": "Rester en bonne santé : trouve le bon geste !",
+      "voice": "eloise"
+    },
+
+    { "id": "cor.partie.tete", "text": "la tête", "voice": "denise" },
+    { "id": "cor.partie.bras", "text": "le bras", "voice": "denise" },
+    { "id": "cor.partie.jambe", "text": "la jambe", "voice": "denise" },
+    { "id": "cor.partie.main", "text": "la main", "voice": "denise" },
+    { "id": "cor.partie.pied", "text": "le pied", "voice": "denise" },
+    { "id": "cor.partie.oeil", "text": "l'œil", "voice": "denise" },
+    { "id": "cor.partie.oreille", "text": "l'oreille", "voice": "denise" },
+    { "id": "cor.partie.nez", "text": "le nez", "voice": "denise" },
+    { "id": "cor.partie.bouche", "text": "la bouche", "voice": "denise" },
+    { "id": "cor.partie.dent", "text": "la dent", "voice": "denise" },
+
+    {
+      "id": "cor.sens.vue",
+      "text": "Avec quoi est-ce qu'on voit ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.sens.ouie",
+      "text": "Avec quoi est-ce qu'on entend ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.sens.odorat",
+      "text": "Avec quoi est-ce qu'on sent les odeurs ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.sens.gout",
+      "text": "Avec quoi est-ce qu'on goûte ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.sens.toucher",
+      "text": "Avec quoi est-ce qu'on touche ?",
+      "voice": "denise"
+    },
+
+    { "id": "cor.organe.oeil", "text": "l'œil, pour voir", "voice": "denise" },
+    { "id": "cor.organe.oreille", "text": "l'oreille, pour entendre", "voice": "denise" },
+    { "id": "cor.organe.nez", "text": "le nez, pour sentir", "voice": "denise" },
+    { "id": "cor.organe.langue", "text": "la langue, pour goûter", "voice": "denise" },
+    { "id": "cor.organe.main", "text": "la main, pour toucher", "voice": "denise" },
+
+    {
+      "id": "cor.situation.avant-manger",
+      "text": "Avant de manger, qu'est-ce qu'il faut faire ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.situation.belles-dents",
+      "text": "Le soir, pour avoir de belles dents toutes propres ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.situation.en-forme",
+      "text": "Pour être bien en forme demain matin ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.situation.bien-grandir",
+      "text": "Pour bien grandir et être en bonne santé ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.situation.propre",
+      "text": "Pour être tout propre après avoir joué dehors ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cor.situation.energie",
+      "text": "Pour avoir plein d'énergie et un corps musclé ?",
+      "voice": "denise"
+    },
+
+    { "id": "cor.geste.mains", "text": "se laver les mains", "voice": "denise" },
+    { "id": "cor.geste.dents", "text": "se brosser les dents", "voice": "denise" },
+    { "id": "cor.geste.dormir", "text": "bien dormir", "voice": "denise" },
+    { "id": "cor.geste.legumes", "text": "manger des légumes", "voice": "denise" },
+    { "id": "cor.geste.laver", "text": "se laver", "voice": "denise" },
+    { "id": "cor.geste.bouger", "text": "bouger et faire du sport", "voice": "denise" },
+    {
+      "id": "cor.geste.bonbons",
+      "text": "trop de bonbons : attention, ce n'est pas très bon pour la santé !",
+      "voice": "henri"
+    },
+    {
+      "id": "cor.geste.ecran",
+      "text": "rester devant l'écran : mieux vaut bouger un peu !",
+      "voice": "henri"
+    },
+    {
+      "id": "cor.geste.tard",
+      "text": "se coucher très tard : on serait trop fatigué demain !",
+      "voice": "henri"
+    }
+  ]
+}
