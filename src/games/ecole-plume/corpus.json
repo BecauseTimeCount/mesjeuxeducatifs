@@ -1,0 +1,155 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "epl.intro",
+      "text": "Bienvenue à l'école de Plume ! Aide le perroquet à se repérer et à trouver son chemin dans toute l'école. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.consigne.find",
+      "text": "Trouve la bonne salle sur le plan, puis appuie dessus.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.consigne.adjacent",
+      "text": "Plume est posée sur une case. Regarde bien la flèche et appuie sur la case voisine.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.consigne.guide",
+      "text": "Guide Plume jusqu'à la salle. Appuie sur les flèches pour la faire avancer, une case à la fois.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.entree",
+      "text": "Va à l'entrée, là où on arrive le matin.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.classe",
+      "text": "Va à la classe, là où on apprend à lire.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.biblio",
+      "text": "Va à la bibliothèque, là où on lit des livres.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.cantine",
+      "text": "Va à la cantine, là où on mange.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.sport",
+      "text": "Va à la salle de sport, là où on saute et on court.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.cour",
+      "text": "Va à la cour, là où on joue dehors.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.musique",
+      "text": "Va à la salle de musique, là où on chante.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.va.arts",
+      "text": "Va à la salle des arts, là où on dessine et on peint.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.dir.up",
+      "text": "Qu'y a-t-il au-dessus de Plume ?",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.dir.down",
+      "text": "Qu'y a-t-il en-dessous de Plume ?",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.dir.left",
+      "text": "Qu'y a-t-il à gauche de Plume ?",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.dir.right",
+      "text": "Qu'y a-t-il à droite de Plume ?",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.guide.cible",
+      "text": "Guide Plume jusqu'à cette salle.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.bravo",
+      "text": "Bravo ! Plume est arrivée à bon port !",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.trouve",
+      "text": "Super, c'est la bonne salle !",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.voisin-ok",
+      "text": "Bien vu ! C'était la bonne case voisine.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.presque",
+      "text": "Presque ! Écoute encore et essaie une autre case.",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.mur",
+      "text": "Par là, c'est un mur ! Plume ne peut pas passer.",
+      "voice": "henri"
+    },
+    {
+      "id": "epl.rate",
+      "text": "Plume n'est pas encore arrivée. On recommence le chemin !",
+      "voice": "denise"
+    },
+    {
+      "id": "epl.aide.find",
+      "text": "Regarde ! La bonne salle brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.aide.adjacent",
+      "text": "Regarde ! La bonne case voisine brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.aide.guide",
+      "text": "Regarde ! La prochaine case du chemin brille. Avance par là.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.niveau.0",
+      "text": "Trouve la salle : appuie sur la bonne salle du plan.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.niveau.1",
+      "text": "Qui est à côté ? Trouve la case voisine de Plume.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.niveau.2",
+      "text": "Guide Plume : trace un petit chemin jusqu'à la salle.",
+      "voice": "eloise"
+    },
+    {
+      "id": "epl.niveau.3",
+      "text": "Guide Plume : un chemin plus long t'attend !",
+      "voice": "eloise"
+    }
+  ]
+}

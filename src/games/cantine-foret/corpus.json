@@ -1,0 +1,106 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "cdf.intro",
+      "text": "Bienvenue à la cantine de la forêt ! Sers à chaque animal ce qu'il aime manger. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.consigne.feed",
+      "text": "a faim ! Donne-lui seulement ce qu'il aime à manger.",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.consigne.sort2",
+      "text": "Dans quelle famille ? Herbivore, ou carnivore ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.consigne.sort3",
+      "text": "Dans quelle famille ? Herbivore, carnivore, ou omnivore ?",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.regime.herbivore",
+      "text": "C'est un herbivore : il ne mange que des plantes.",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.regime.carnivore",
+      "text": "C'est un carnivore : il mange de la viande et du poisson.",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.regime.omnivore",
+      "text": "C'est un omnivore : il mange de tout, des plantes et de la viande !",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.miam",
+      "text": "Miam, merci ! Un vrai régal !",
+      "voice": "henri"
+    },
+    {
+      "id": "cdf.refus",
+      "text": "Beurk ! Ça, je n'en mange pas !",
+      "voice": "henri"
+    },
+    {
+      "id": "cdf.bien-range",
+      "text": "Bravo, bien rangé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.pas-famille",
+      "text": "Oups, ce n'est pas sa famille. Écoute bien !",
+      "voice": "denise"
+    },
+    {
+      "id": "cdf.indice.feed",
+      "text": "Regarde ! Ce qui brille, c'est ce qu'il aime.",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.indice.sort",
+      "text": "Regarde ! Sa famille brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.niveau.0",
+      "text": "Les herbivores : ils ne mangent que des plantes !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.niveau.1",
+      "text": "Herbivores et carnivores : à chacun son repas !",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.niveau.2",
+      "text": "Le grand tri : herbivore ou carnivore ?",
+      "voice": "eloise"
+    },
+    {
+      "id": "cdf.niveau.3",
+      "text": "Tous au menu : range aussi les omnivores !",
+      "voice": "eloise"
+    },
+    { "id": "cdf.a.vache", "text": "La vache", "voice": "denise" },
+    { "id": "cdf.a.mouton", "text": "Le mouton", "voice": "denise" },
+    { "id": "cdf.a.lapin", "text": "Le lapin", "voice": "denise" },
+    { "id": "cdf.a.cheval", "text": "Le cheval", "voice": "denise" },
+    { "id": "cdf.a.elephant", "text": "L'éléphant", "voice": "denise" },
+    { "id": "cdf.a.tortue", "text": "La tortue", "voice": "denise" },
+    { "id": "cdf.a.loup", "text": "Le loup", "voice": "denise" },
+    { "id": "cdf.a.lion", "text": "Le lion", "voice": "denise" },
+    { "id": "cdf.a.chat", "text": "Le chat", "voice": "denise" },
+    { "id": "cdf.a.renard", "text": "Le renard", "voice": "denise" },
+    { "id": "cdf.a.aigle", "text": "L'aigle", "voice": "denise" },
+    { "id": "cdf.a.ours", "text": "L'ours", "voice": "denise" },
+    { "id": "cdf.a.cochon", "text": "Le cochon", "voice": "denise" },
+    { "id": "cdf.a.poule", "text": "La poule", "voice": "denise" },
+    { "id": "cdf.a.singe", "text": "Le singe", "voice": "denise" },
+    { "id": "cdf.a.souris", "text": "La souris", "voice": "denise" }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "col.intro",
+      "text": "Bienvenue à l'atelier des couleurs ! Le peintre te dit la couleur qu'il veut, et toi tu verses les bonnes peintures dans le grand pot. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.consigne.verse",
+      "text": "Verse la bonne peinture dans le pot !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.consigne.melange",
+      "text": "Verse les bonnes peintures dans le pot pour faire ce mélange !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.veut",
+      "text": "Le peintre veut du",
+      "voice": "denise"
+    },
+    {
+      "id": "col.bravo",
+      "text": "Bravo ! Le peintre signe sa toile, c'est exactement la bonne couleur !",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.encore",
+      "text": "On vide le pot et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.indice.verse",
+      "text": "Regarde ! Le pot qui brille, c'est celui qu'il faut verser.",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.indice.melange",
+      "text": "Regarde ! Un des pots qui brille fait partie du mélange.",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.niveau.0",
+      "text": "Les couleurs primaires : rouge, bleu, jaune. Verse la bonne peinture !",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.niveau.1",
+      "text": "Les mélanges : deux peintures pour faire une nouvelle couleur !",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.niveau.2",
+      "text": "Obtenir une couleur : trouve les peintures qui la fabriquent !",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.niveau.3",
+      "text": "Les couleurs malines : le rose, le gris et le marron !",
+      "voice": "eloise"
+    },
+    {
+      "id": "col.mix.violet",
+      "text": "Avec du bleu et du rouge, on obtient du violet.",
+      "voice": "denise"
+    },
+    {
+      "id": "col.mix.orange",
+      "text": "Avec du jaune et du rouge, on obtient du orange.",
+      "voice": "denise"
+    },
+    {
+      "id": "col.mix.vert",
+      "text": "Avec du bleu et du jaune, on obtient du vert.",
+      "voice": "denise"
+    },
+    {
+      "id": "col.mix.rose",
+      "text": "Avec du blanc et du rouge, on obtient du rose.",
+      "voice": "denise"
+    },
+    {
+      "id": "col.mix.gris",
+      "text": "Avec du blanc et du noir, on obtient du gris.",
+      "voice": "denise"
+    },
+    {
+      "id": "col.mix.marron",
+      "text": "Avec du bleu, du jaune et du rouge, on obtient du marron.",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.violet",
+      "text": "Attention ! Cette peinture nous éloigne du violet. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.orange",
+      "text": "Attention ! Cette peinture nous éloigne du orange. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.vert",
+      "text": "Attention ! Cette peinture nous éloigne du vert. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.rose",
+      "text": "Attention ! Cette peinture nous éloigne du rose. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.gris",
+      "text": "Attention ! Cette peinture nous éloigne du gris. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.marron",
+      "text": "Attention ! Cette peinture nous éloigne du marron. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.rouge",
+      "text": "Attention ! Ce n'est pas la bonne peinture pour faire du rouge. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.bleu",
+      "text": "Attention ! Ce n'est pas la bonne peinture pour faire du bleu. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "col.wrong.jaune",
+      "text": "Attention ! Ce n'est pas la bonne peinture pour faire du jaune. On vide et on réessaie !",
+      "voice": "denise"
+    },
+    { "id": "col.c.rouge", "text": "rouge", "voice": "denise" },
+    { "id": "col.c.bleu", "text": "bleu", "voice": "denise" },
+    { "id": "col.c.jaune", "text": "jaune", "voice": "denise" },
+    { "id": "col.c.violet", "text": "violet", "voice": "denise" },
+    { "id": "col.c.orange", "text": "orange", "voice": "denise" },
+    { "id": "col.c.vert", "text": "vert", "voice": "denise" },
+    { "id": "col.c.rose", "text": "rose", "voice": "denise" },
+    { "id": "col.c.gris", "text": "gris", "voice": "denise" },
+    { "id": "col.c.marron", "text": "marron", "voice": "denise" },
+    { "id": "col.c.blanc", "text": "blanc", "voice": "denise" },
+    { "id": "col.c.noir", "text": "noir", "voice": "denise" }
+  ]
+}

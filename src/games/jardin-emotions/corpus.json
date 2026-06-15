@@ -1,0 +1,229 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "jde.intro",
+      "text": "Bienvenue au jardin des émotions ! Reconnais ce que ressentent les personnages et fais pousser de jolies fleurs. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.consigne.face",
+      "text": "Regarde bien son visage. Comment se sent-il ? Attrape la bonne graine et plante-la !",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.consigne.story",
+      "text": "Écoute l'histoire. Quelle émotion ressent le personnage ? Touche la bonne graine.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.consigne.calm",
+      "text": "L'émotion est très forte. Construis une réaction toute douce : pose les bonnes actions sur le chemin, et évite les pièges.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.niveau.0",
+      "text": "Reconnais l'émotion : trois visages à découvrir, avec les mots pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.niveau.1",
+      "text": "Reconnais l'émotion : encore plus de graines à trier !",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.niveau.2",
+      "text": "La météo du cœur : écoute les histoires et devine l'émotion.",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.niveau.3",
+      "text": "Le chemin du calme : trouve les gestes qui apaisent.",
+      "voice": "eloise"
+    },
+
+    { "id": "jde.emo.joie", "text": "la joie", "voice": "denise" },
+    { "id": "jde.emo.tristesse", "text": "la tristesse", "voice": "denise" },
+    { "id": "jde.emo.colere", "text": "la colère", "voice": "denise" },
+    { "id": "jde.emo.peur", "text": "la peur", "voice": "denise" },
+    { "id": "jde.emo.surprise", "text": "la surprise", "voice": "denise" },
+
+    {
+      "id": "jde.dit.joie",
+      "text": "Il est tout content : c'est la joie !",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.dit.tristesse",
+      "text": "Il a du chagrin : c'est la tristesse.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.dit.colere",
+      "text": "Il est très fâché : c'est la colère.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.dit.peur",
+      "text": "Il a très peur : c'est la peur.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.dit.surprise",
+      "text": "Il ne s'y attendait pas du tout : c'est la surprise !",
+      "voice": "denise"
+    },
+
+    {
+      "id": "jde.bravo-fleur",
+      "text": "Bravo ! Une jolie fleur a poussé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.bravo-calme",
+      "text": "Bravo ! Tu as retrouvé ton calme, le jardin refleurit !",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.encore",
+      "text": "Presque ! Regarde encore son visage et écoute bien.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.encore-story",
+      "text": "Presque ! Réécoute l'histoire et essaie encore.",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.piege",
+      "text": "Oh là là, ce geste fait du mal et fait faner la fleur. On cherche un geste tout doux !",
+      "voice": "henri"
+    },
+    {
+      "id": "jde.indice.face",
+      "text": "Regarde : la bonne graine brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "jde.indice.calm",
+      "text": "Regarde : les gestes qui apaisent brillent pour t'aider.",
+      "voice": "eloise"
+    },
+
+    {
+      "id": "jde.story.cadeau",
+      "text": "Tom reçoit un beau cadeau pour son anniversaire. Comment se sent-il ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.gateau",
+      "text": "Mina mange sa part de gâteau préféré. Comment se sent-elle ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.copain",
+      "text": "Hugo retrouve son meilleur copain à l'école après les vacances. Comment se sent-il ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.doudou",
+      "text": "Léa a perdu son doudou et ne le retrouve nulle part. Comment se sent-elle ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.ballon",
+      "text": "Le joli ballon de Sami s'est envolé très haut dans le ciel. Comment se sent-il ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.depart",
+      "text": "La meilleure amie de Jade déménage très loin. Comment se sent-elle ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.jouet",
+      "text": "On a pris le jouet de Noé sans lui demander. Comment se sent-il ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.tour",
+      "text": "Quelqu'un a renversé la grande tour que Lina avait construite. Comment se sent-elle ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.dessin",
+      "text": "Un camarade a gribouillé sur le dessin d'Arthur. Comment se sent-il ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.chien",
+      "text": "Un gros chien aboie très fort tout près d'Emma. Comment se sent-elle ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.orage",
+      "text": "Le tonnerre gronde très fort pendant l'orage, la nuit. Comment se sent Paul ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.noir",
+      "text": "La lumière s'éteint et la chambre devient toute noire. Comment se sent Zoé ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.anniv",
+      "text": "En entrant, tous les amis crient « Surprise ! » pour l'anniversaire de Lou. Comment se sent-il ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.cachette",
+      "text": "Maman sort un petit chaton de derrière son dos pour Inès. Elle ne s'y attendait pas du tout ! Comment se sent-elle ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.story.arcenciel",
+      "text": "Après la pluie, un immense arc-en-ciel apparaît d'un coup dans le ciel. Comment se sent Théo ?",
+      "voice": "denise"
+    },
+
+    {
+      "id": "jde.scene.jouet",
+      "text": "Un camarade prend ton jouet sans demander. Tu sens la colère monter très fort. Que peux-tu faire pour rester calme ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.scene.file",
+      "text": "Tu attends pour faire de la balançoire, mais c'est très long et tu t'énerves. Que peux-tu faire pour rester calme ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.scene.tour-cassee",
+      "text": "Quelqu'un a fait tomber ta belle construction. Tu es très en colère. Que peux-tu faire pour rester calme ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.scene.dispute",
+      "text": "Tu te disputes avec un ami : vous voulez tous les deux le même livre. Que peux-tu faire pour rester calme ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.scene.crayon",
+      "text": "Tu as besoin du crayon rouge, mais ton voisin l'utilise déjà. Que peux-tu faire pour rester calme ?",
+      "voice": "denise"
+    },
+    {
+      "id": "jde.scene.bousculade",
+      "text": "Dans le rang, quelqu'un te bouscule et tu es fâché. Que peux-tu faire pour rester calme ?",
+      "voice": "denise"
+    },
+
+    { "id": "jde.act.respire", "text": "Je respire tout doucement", "voice": "eloise" },
+    { "id": "jde.act.dire-ressenti", "text": "Je dis ce que je ressens", "voice": "eloise" },
+    { "id": "jde.act.demander", "text": "Je demande gentiment", "voice": "eloise" },
+    { "id": "jde.act.attendre", "text": "J'attends mon tour", "voice": "eloise" },
+    { "id": "jde.act.aide", "text": "Je demande de l'aide à un grand", "voice": "eloise" },
+    { "id": "jde.act.crier", "text": "Je crie très fort", "voice": "henri" },
+    { "id": "jde.act.frapper", "text": "Je frappe", "voice": "henri" },
+    { "id": "jde.act.casser", "text": "Je casse tout", "voice": "henri" }
+  ]
+}

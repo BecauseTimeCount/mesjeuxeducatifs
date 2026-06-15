@@ -1,0 +1,79 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "crm.intro",
+      "text": "Bienvenue dans l'atelier des robots ! Range chaque pièce une seule fois sur chaque ligne, chaque colonne et chaque petit carré. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "crm.consigne",
+      "text": "Chaque robot une seule fois sur chaque ligne, chaque colonne et chaque petit carré. Complète la grille !",
+      "voice": "denise"
+    },
+    {
+      "id": "crm.choisis-piece",
+      "text": "Appuie d'abord sur une pièce, puis sur une case vide pour la poser.",
+      "voice": "denise"
+    },
+    {
+      "id": "crm.pose",
+      "text": "Appuie maintenant sur une case vide pour poser la pièce.",
+      "voice": "denise"
+    },
+    {
+      "id": "crm.deja-ligne",
+      "text": "Ce robot est déjà sur cette ligne. Regarde, il clignote !",
+      "voice": "denise"
+    },
+    {
+      "id": "crm.deja-colonne",
+      "text": "Ce robot est déjà dans cette colonne. Regarde, il clignote !",
+      "voice": "denise"
+    },
+    {
+      "id": "crm.deja-carre",
+      "text": "Ce robot est déjà dans ce petit carré. Regarde, il clignote !",
+      "voice": "denise"
+    },
+    {
+      "id": "crm.bien-pose",
+      "text": "Clic ! Bien placé !",
+      "voice": "henri"
+    },
+    {
+      "id": "crm.indice",
+      "text": "Regarde les pièces qui brillent : ce sont les seules possibles pour cette case.",
+      "voice": "eloise"
+    },
+    {
+      "id": "crm.gagne",
+      "text": "Bravo, la grille est complète ! Tous les robots sont à leur place !",
+      "voice": "eloise"
+    },
+    {
+      "id": "crm.niveau.0",
+      "text": "Premiers pas : seulement deux cases à compléter.",
+      "voice": "eloise"
+    },
+    {
+      "id": "crm.niveau.1",
+      "text": "Un peu plus de cases vides à remplir !",
+      "voice": "eloise"
+    },
+    {
+      "id": "crm.niveau.2",
+      "text": "Le défi : la moitié de la grille à reconstruire.",
+      "voice": "eloise"
+    },
+    {
+      "id": "crm.niveau.3",
+      "text": "Maître du carré magique : presque tout est à deviner !",
+      "voice": "eloise"
+    },
+    { "id": "crm.piece.robot", "text": "le robot", "voice": "denise" },
+    { "id": "crm.piece.rouage", "text": "le rouage", "voice": "denise" },
+    { "id": "crm.piece.pile", "text": "la pile", "voice": "denise" },
+    { "id": "crm.piece.ampoule", "text": "l'ampoule", "voice": "denise" }
+  ]
+}
