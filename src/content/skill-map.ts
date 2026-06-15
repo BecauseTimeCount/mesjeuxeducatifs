@@ -754,6 +754,209 @@ export const SKILL_MAP: SkillDef[] = [
     level: 'cp',
     prereqs: ['emc.cp.emotions.reconnaitre'],
   },
+
+  // ============================================================
+  // SPRINT CONFORMITÉ 2026-2027 — nouveaux programmes au CP.
+  // Sciences et technologie (BO n°24 du 11/06/2026) et histoire-
+  // géographie (BO n°22 du 28/05/2026) remplacent « Questionner le
+  // monde » ; anglais Pré-A1 (BO n°12 du 19/03/2026) ; géométrie et
+  // mesures (BO oct. 2024, déjà en vigueur) ; EMC, le droit et l’engagement.
+  // ============================================================
+
+  // ---------------- SCIENCES & TECHNOLOGIE — le corps humain (monde) ----------------
+  {
+    id: 'mo.gs.corps.parties',
+    label: 'Nommer les parties du corps',
+    official:
+      'Explorer le monde du vivant : situer et nommer les principales parties du corps humain',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.cp.corps.sens',
+    label: 'Associer chaque sens à son organe',
+    official:
+      'Sciences et technologie : associer chacun des cinq sens à l’organe qui lui correspond',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.gs.corps.parties'],
+  },
+  {
+    id: 'mo.cp.corps.hygiene',
+    label: 'Les gestes pour rester en bonne santé',
+    official:
+      'Sciences et technologie : appliquer des règles élémentaires d’hygiène de vie (sommeil, alimentation, propreté)',
+    domain: 'monde',
+    level: 'cp',
+  },
+  // ---------------- SCIENCES & TECHNOLOGIE — le vivant végétal (monde) ----------------
+  {
+    id: 'mo.gs.vivant.besoins',
+    label: 'Les besoins des êtres vivants',
+    official:
+      'Explorer le monde du vivant : identifier les besoins d’un végétal pour vivre et grandir (eau, lumière)',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.cp.vivant.cycle',
+    label: 'Le cycle de vie d’une plante',
+    official:
+      'Sciences et technologie : décrire les étapes du développement d’un végétal (graine, germe, plante, fleur, fruit)',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.gs.vivant.besoins'],
+  },
+  // ---------------- TECHNOLOGIE — les objets techniques (monde) ----------------
+  {
+    id: 'mo.cp.objets.besoin',
+    label: 'Un objet pour un besoin',
+    official: 'Technologie : identifier un objet technique comme une réponse à un besoin',
+    domain: 'monde',
+    level: 'cp',
+  },
+  {
+    id: 'mo.cp.objets.matiere',
+    label: 'De la matière à l’objet',
+    official: 'Technologie : relier un objet fabriqué à la matière première dont il est issu',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.cp.objets.besoin'],
+  },
+  // ---------------- HISTOIRE — se situer dans le temps (monde) ----------------
+  {
+    id: 'mo.cp.histoire.avant',
+    label: 'Hier et aujourd’hui',
+    official:
+      'Se situer dans le temps : distinguer ce qui appartient au passé (autrefois) et au présent (aujourd’hui)',
+    domain: 'monde',
+    level: 'cp',
+  },
+  {
+    id: 'mo.cp.histoire.generations',
+    label: 'Ranger les générations',
+    official:
+      'Se situer dans le temps : ordonner les générations d’une famille (bébé, enfant, parent, grand-parent)',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.cp.histoire.avant'],
+  },
+  // ---------------- GÉOGRAPHIE — se situer dans l’espace (monde) ----------------
+  {
+    id: 'mo.gs.geo.paysages',
+    label: 'Reconnaître des paysages',
+    official:
+      'Se situer dans l’espace : reconnaître et nommer différents paysages (mer, montagne, ville, campagne, forêt, désert)',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.cp.geo.monde',
+    label: 'La Terre vue de loin',
+    official:
+      'Se situer dans l’espace : distinguer les terres et les océans sur un globe ou un planisphère',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.gs.geo.paysages'],
+  },
+  // ---------------- ANGLAIS — Pré-A1 oral (anglais) ----------------
+  {
+    id: 'en.cp.greetings',
+    label: 'Saluer et remercier',
+    official:
+      'Comprendre à l’oral des formules de salutation et de politesse (hello, goodbye, thank you, please)',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.self',
+    label: 'Se présenter',
+    official: 'Comprendre à l’oral une présentation simple (name, age, favourite colour)',
+    domain: 'anglais',
+    level: 'cp',
+    prereqs: ['en.cp.greetings'],
+  },
+  {
+    id: 'en.cp.feelings',
+    label: 'Dire comment je me sens',
+    official:
+      'Comprendre à l’oral l’expression d’émotions et d’états (happy, sad, tired, I’m OK)',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.body',
+    label: 'Les parties du corps en anglais',
+    official: 'Comprendre à l’oral le nom des parties du corps (head, shoulders, knees, toes…)',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.food',
+    label: 'La nourriture en anglais',
+    official: 'Comprendre à l’oral le nom d’aliments courants (apple, bread, milk…)',
+    domain: 'anglais',
+    level: 'cp',
+  },
+  {
+    id: 'en.cp.tastes',
+    label: 'Aimer / ne pas aimer',
+    official: 'Comprendre à l’oral l’expression des goûts (I like / I don’t like)',
+    domain: 'anglais',
+    level: 'cp',
+    prereqs: ['en.cp.food'],
+  },
+  // ---------------- MATHS — espace et géométrie (maths) ----------------
+  {
+    id: 'ma.gs.geo.formes',
+    label: 'Reconnaître les formes',
+    official:
+      'Espace et géométrie : reconnaître et nommer les figures planes usuelles (carré, rectangle, triangle, cercle)',
+    domain: 'maths',
+    level: 'gs',
+  },
+  {
+    id: 'ma.cp.geo.solides',
+    label: 'Reconnaître les solides',
+    official:
+      'Espace et géométrie : reconnaître et nommer des solides usuels (cube, boule, pavé, pyramide)',
+    domain: 'maths',
+    level: 'cp',
+    prereqs: ['ma.gs.geo.formes'],
+  },
+  // ---------------- MATHS — grandeurs et mesures (maths) ----------------
+  {
+    id: 'ma.gs.mesure.comparer',
+    label: 'Comparer des longueurs',
+    official:
+      'Grandeurs et mesures : comparer et ranger des objets selon leur longueur (plus long, plus court)',
+    domain: 'maths',
+    level: 'gs',
+  },
+  {
+    id: 'ma.cp.mesure.longueurs',
+    label: 'Mesurer une longueur',
+    official: 'Grandeurs et mesures : mesurer une longueur par report d’une unité',
+    domain: 'maths',
+    level: 'cp',
+    prereqs: ['ma.gs.mesure.comparer'],
+  },
+  // ---------------- EMC — le droit, la règle et l’engagement (emc) ----------------
+  {
+    id: 'emc.cp.regles',
+    label: 'Les règles de la vie en commun',
+    official: 'EMC, le droit et la règle : comprendre et respecter les règles de la vie collective',
+    domain: 'emc',
+    level: 'cp',
+  },
+  {
+    id: 'emc.cp.entraide',
+    label: 'Aider et coopérer',
+    official: 'EMC, l’engagement : coopérer, aider et s’entraider au sein du groupe',
+    domain: 'emc',
+    level: 'cp',
+    prereqs: ['emc.cp.regles'],
+  },
 ]
 
 export const SKILLS_BY_ID: ReadonlyMap<string, SkillDef> = new Map(
@@ -764,7 +967,7 @@ export const DOMAIN_LABELS: Record<SkillDef['domain'], string> = {
   francais: 'Français — lire et écrire',
   maths: 'Maths — nombres et calcul',
   logique: 'Logique — se repérer et coder',
-  monde: 'Découvrir le monde — temps et nature',
+  monde: 'Explorer le monde — sciences, temps et espace',
   anglais: 'Anglais — premiers mots',
   arts: 'Arts — musique et couleurs',
   emc: 'Émotions et vivre-ensemble',
