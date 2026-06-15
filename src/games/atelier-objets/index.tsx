@@ -1,0 +1,444 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Tuner } from '@/engine/adaptive'
+import { preloadClips, say, sfx } from '@/engine/audio'
+import { recordAttempt } from '@/engine/mastery'
+import { pget, pset } from '@/engine/storage'
+import type { CorpusEntry, GameMeta, LevelResult } from '@/engine/types'
+import { GAMES_BY_ID } from '@/games.manifest'
+import {
+  BigButton,
+  ConfettiBurst,
+  FeedbackOverlay,
+  GameShell,
+  LevelEnd,
+  Mascot,
+  ProgressDots,
+  SpeakerButton,
+} from '@/ui'
+import corpus from './corpus.json'
+import {
+  applyRun,
+  FRESH_PROGRESS,
+  generateItem,
+  isCorrect,
+  ITEMS_BY_ID,
+  ITEMS_PER_RUN,
+  MAX_TUNER_LEVEL,
+  PROMPTS_BY_ID,
+  starsFor,
+  TIER_SKILLS,
+} from './logic'
+import type { AobProgress, AssocItem, Prompt, TierId } from './logic'
+
+// ============================================================
+// L'Atelier des Objets — l'enfant écoute un besoin (« Tu as froid »)
+// ou une matière (« Avec le bois… »), puis TROUVE l'objet qui y
+// répond parmi des objets. Technologie : un objet répond à un
+// besoin (T0/T1), un objet vient d'une matière (T2/T3). Zéro QCM :
+// l'erreur coûte, nomme le bon objet, redonne un essai, indice
+// après 2 échecs. Jamais le mot « faux ».
+// ============================================================
+
+const STORE_KEY = 'game:atelier-objets'
+
+const META: GameMeta = GAMES_BY_ID.get('atelier-objets') ?? {
+  id: 'atelier-objets',
+  title: 'L’Atelier des Objets',
+  tagline: 'Un objet pour chaque besoin, une matière pour chaque objet !',
+  icon: '🔧',
+  island: 'monde',
+  accent: '#a1887f',
+  skills: [...new Set(TIER_SKILLS)],
+  status: 'v2',
+}
+const ACCENT = META.accent
+
+const TIER_INFO: ReadonlyArray<{ emoji: string; name: string; sub: string }> = [
+  { emoji: '🧥', name: 'Un objet, un besoin', sub: '3 objets' },
+  { emoji: '🔍', name: 'Encore les besoins', sub: "Plus d'objets" },
+  { emoji: '🪵', name: 'La bonne matière', sub: '3 objets' },
+  { emoji: '🏭', name: 'Le grand atelier', sub: "Plus d'objets" },
+]
+
+// ---------- Corpus local typé ----------
+
+function toVoice(v: string): CorpusEntry['voice'] {
+  return v === 'denise' || v === 'eloise' || v === 'henri' || v === 'sonia' ? v : undefined
+}
+
+const ENTRIES: ReadonlyMap<string, CorpusEntry> = new Map(
+  corpus.entries.map((e): [string, CorpusEntry] => [
+    e.id,
+    { id: e.id, text: e.text, voice: toVoice(e.voice) },
+  ]),
+)
+
+function E(id: string): CorpusEntry {
+  return ENTRIES.get(id) ?? { id, text: '' }
+}
+
+// ---------- Helpers d'affichage ----------
+
+/** Clip audio énonçant la source d'une consigne (besoin ou matière). */
+function promptClip(p: Prompt): string {
+  return `obj.${p.kind === 'besoin' ? 'b' : 'm'}.${p.id}`
+}
+
+/** Texte écrit de la consigne, sous l'illustration de la source. */
+function instructionText(p: Prompt): string {
+  if (p.kind === 'besoin') return `${p.source} : que prends-tu ?`
+  return `Avec ${p.source}, on fabrique… ?`
+}
+
+type Screen = 'menu' | 'play' | 'end'
+type Phase = 'idle' | 'success' | 'error'
+
+export default function AtelierObjets() {
+  const navigate = useNavigate()
+
+  const [progress, setProgress] = useState<AobProgress | null>(null)
+  const [screen, setScreen] = useState<Screen>('menu')
+  const [tier, setTier] = useState<TierId>(0)
+  const [item, setItem] = useState<AssocItem | null>(null)
+  const [resolved, setResolved] = useState(0)
+  const [firstTryCorrect, setFirstTryCorrect] = useState(0)
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [overlay, setOverlay] = useState<'success' | 'retry' | null>(null)
+  const [mood, setMood] = useState<'idle' | 'happy' | 'thinking'>('idle')
+  const [foundId, setFoundId] = useState<string | null>(null)
+  const [wrongId, setWrongId] = useState<string | null>(null)
+  const [hint, setHint] = useState(false)
+  const [burst, setBurst] = useState(0)
+  const [newUnlock, setNewUnlock] = useState(false)
+  const [result, setResult] = useState<LevelResult | null>(null)
+
+  const tunerRef = useRef(new Tuner({ min: 0, max: MAX_TUNER_LEVEL }))
+  const firstTryRef = useRef(true)
+  const failsRef = useRef(0)
+  /** jeton de séquence audio : tout changement annule la séquence en cours */
+  const seqRef = useRef(0)
+  const wrongTimerRef = useRef(0)
+
+  // Chargement de la progression + préchargement des clips
+  useEffect(() => {
+    let alive = true
+    void pget<AobProgress>(STORE_KEY).then((stored) => {
+      if (!alive) return
+      const prog = stored ?? { ...FRESH_PROGRESS }
+      setProgress(prog)
+      setTier(Math.min(prog.unlockedTier, 3) as TierId)
+    })
+    preloadClips(corpus.entries.map((e) => e.id))
+    return () => {
+      alive = false
+      seqRef.current += 1
+      window.clearTimeout(wrongTimerRef.current)
+    }
+  }, [])
+
+  // ---------- Audio ----------
+
+  const speakConsigne = useCallback(async (it: AssocItem): Promise<void> => {
+    const prompt = PROMPTS_BY_ID.get(it.promptId)
+    if (!prompt) return
+    const seq = ++seqRef.current
+    await say(E(promptClip(prompt)))
+    if (seqRef.current !== seq) return
+    await say(E(prompt.kind === 'besoin' ? 'obj.consigne.besoin' : 'obj.consigne.matiere'), {
+      interrupt: false,
+    })
+  }, [])
+
+  const replayInstruction = useCallback((): void => {
+    if (screen === 'play' && item) void speakConsigne(item)
+    else void say(E('obj.intro'))
+  }, [screen, item, speakConsigne])
+
+  // ---------- Déroulé d'une partie ----------
+
+  const startRun = (t: TierId): void => {
+    tunerRef.current = new Tuner({ min: 0, max: MAX_TUNER_LEVEL })
+    firstTryRef.current = true
+    failsRef.current = 0
+    const first = generateItem(t, 0)
+    setTier(t)
+    setItem(first)
+    setResolved(0)
+    setFirstTryCorrect(0)
+    setPhase('idle')
+    setOverlay(null)
+    setMood('thinking')
+    setFoundId(null)
+    setWrongId(null)
+    setHint(false)
+    setResult(null)
+    setNewUnlock(false)
+    setScreen('play')
+    void speakConsigne(first)
+  }
+
+  /** Résolution réussie d'un item : maîtrise + Tuner, UNE seule fois. */
+  const resolveSuccess = (it: AssocItem): void => {
+    seqRef.current += 1
+    const wasFirst = firstTryRef.current
+    void recordAttempt(TIER_SKILLS[it.tier], wasFirst)
+    tunerRef.current.onResult(wasFirst)
+    if (wasFirst) setFirstTryCorrect((c) => c + 1)
+    setPhase('success')
+    setMood('happy')
+    setFoundId(it.targetId)
+    setBurst((b) => b + 1)
+    sfx('magic')
+    void say(E('obj.bravo')).then(() => setOverlay('success'))
+  }
+
+  /** Un essai raté : firstTry tombe, le compteur d'erreurs monte. */
+  const onTapItem = (itemId: string): void => {
+    if (!item || phase !== 'idle') return
+
+    if (isCorrect(item, itemId)) {
+      resolveSuccess(item)
+      return
+    }
+
+    // L'erreur enseigne : l'objet couine, on le NOMME, puis on rappelle
+    // la consigne plus tard. L'item est compté raté au 1er essai.
+    firstTryRef.current = false
+    failsRef.current += 1
+    sfx('wrong')
+    setPhase('error')
+    setMood('thinking')
+    setWrongId(itemId)
+    window.clearTimeout(wrongTimerRef.current)
+    wrongTimerRef.current = window.setTimeout(() => setWrongId(null), 700)
+    setOverlay('retry')
+    const wrongItem = ITEMS_BY_ID.get(itemId)
+    const seq = ++seqRef.current
+    void say(E('obj.essaie')).then(() => {
+      if (seqRef.current !== seq || !wrongItem) return
+      void say(E(`obj.o.${itemId}`), { interrupt: false })
+    })
+  }
+
+  // ---------- Feedback élaboratif + suite ----------
+
+  /** Après une erreur : on rappelle la consigne, on explique, puis indice. */
+  const runTeaching = async (): Promise<void> => {
+    if (!item) return
+    const prompt = PROMPTS_BY_ID.get(item.promptId)
+    if (!prompt) return
+    const seq = ++seqRef.current
+    setPhase('idle')
+    setMood('thinking')
+    await say(E(prompt.kind === 'besoin' ? 'obj.expliq.besoin' : 'obj.expliq.matiere'))
+    if (seqRef.current !== seq) return
+    if (failsRef.current >= 2 && !hint) {
+      setHint(true)
+      await say(E(prompt.kind === 'besoin' ? 'obj.indice.besoin' : 'obj.indice.matiere'), {
+        interrupt: false,
+      })
+    }
+  }
+
+  const advance = (): void => {
+    if (!item) return
+    const done = resolved + 1
+    setResolved(done)
+    if (done >= ITEMS_PER_RUN) {
+      finishRun(item.tier)
+      return
+    }
+    const next = generateItem(item.tier, tunerRef.current.level, item.promptId)
+    firstTryRef.current = true
+    failsRef.current = 0
+    setHint(false)
+    setMood('thinking')
+    setPhase('idle')
+    setFoundId(null)
+    setWrongId(null)
+    setItem(next)
+    void speakConsigne(next)
+  }
+
+  const finishRun = (t: TierId): void => {
+    const stars = starsFor(firstTryCorrect, ITEMS_PER_RUN)
+    setResult({ gameId: META.id, stars, firstTryCorrect, total: ITEMS_PER_RUN })
+    const base = progress ?? { ...FRESH_PROGRESS }
+    const updated = applyRun(base, t, stars)
+    const unlockedNow = updated.unlockedTier > base.unlockedTier
+    if (unlockedNow) sfx('levelup')
+    setNewUnlock(unlockedNow)
+    setProgress(updated)
+    void pset(STORE_KEY, updated)
+    setScreen('end')
+  }
+
+  const onOverlayDone = (): void => {
+    const kind = overlay
+    setOverlay(null)
+    if (kind === 'success') advance()
+    else if (kind === 'retry') void runTeaching()
+  }
+
+  // ---------- Rendus ----------
+
+  const renderMenu = (): ReactNode => {
+    if (!progress) {
+      return (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="animate-floaty text-5xl" role="status" aria-label="Chargement">
+            🔧
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-5 p-4">
+        <div className="flex items-center gap-4">
+          <Mascot mood="happy" size={72} />
+          <SpeakerButton entry={E('obj.intro')} autoPlay />
+        </div>
+        <div className="text-6xl" aria-hidden="true">
+          🧥🔧🪑
+        </div>
+        <p className="text-center text-lg font-extrabold text-ink">
+          Écoute, puis touche le bon objet !
+        </p>
+        <div className="grid w-full grid-cols-2 gap-3">
+          {TIER_INFO.map((info, i) => {
+            const t = i as TierId
+            const locked = t > progress.unlockedTier
+            const stars = progress.bestStars[t] ?? 0
+            const active = tier === t && !locked
+            return (
+              <button
+                key={info.name}
+                type="button"
+                aria-pressed={active}
+                aria-label={locked ? `${info.name} (verrouillé)` : info.name}
+                onClick={() => {
+                  if (locked) {
+                    sfx('slide')
+                    return
+                  }
+                  sfx('tap')
+                  setTier(t)
+                  void say(E(`obj.niveau.${t}`))
+                }}
+                className={`tap-target card flex flex-col items-center gap-0.5 p-3 transition-transform active:scale-95 ${locked ? 'opacity-50' : ''}`}
+                style={active ? { outline: `4px solid ${ACCENT}` } : undefined}
+              >
+                <span aria-hidden="true" className="text-3xl">
+                  {locked ? '🔒' : info.emoji}
+                </span>
+                <span className="text-base leading-tight font-extrabold text-ink">{info.name}</span>
+                <span className="text-xs font-semibold text-ink-soft">{info.sub}</span>
+                <span
+                  className="text-sm"
+                  aria-label={`${stars} étoile${stars > 1 ? 's' : ''} sur 3`}
+                >
+                  {'⭐'.repeat(stars)}
+                  <span className="opacity-30">{'☆'.repeat(3 - stars)}</span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
+        <BigButton
+          variant="accent"
+          accent={ACCENT}
+          className="w-full max-w-xs text-2xl"
+          onClick={() => startRun(tier)}
+        >
+          Jouer !
+        </BigButton>
+      </div>
+    )
+  }
+
+  const renderPrompt = (it: AssocItem): ReactNode => {
+    const prompt = PROMPTS_BY_ID.get(it.promptId)
+    if (!prompt) return null
+    const anim = mood === 'happy' ? 'animate-wiggle' : 'animate-floaty'
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <span
+          key={prompt.id}
+          className={`text-7xl leading-none sm:text-8xl ${anim}`}
+          role="img"
+          aria-label={prompt.source}
+        >
+          {prompt.sourceEmoji}
+        </span>
+        <p className="text-center text-lg font-extrabold text-ink sm:text-xl">
+          {instructionText(prompt)}
+        </p>
+      </div>
+    )
+  }
+
+  const renderGrid = (it: AssocItem): ReactNode => {
+    const cols = it.optionIds.length <= 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-3'
+    return (
+      <div className={`grid w-full max-w-md gap-3 ${cols}`}>
+        {it.optionIds.map((id) => {
+          const obj = ITEMS_BY_ID.get(id)
+          const found = foundId === id
+          const isWrong = wrongId === id
+          const glow = hint && phase === 'idle' && id === it.targetId
+          return (
+            <button
+              key={id}
+              type="button"
+              disabled={phase !== 'idle'}
+              onClick={() => onTapItem(id)}
+              aria-label={obj?.name}
+              className={`tap-target card flex flex-col items-center justify-center gap-0.5 py-3 transition-transform active:scale-90 ${isWrong ? 'animate-shake-soft' : ''} ${found ? 'animate-bounce-in' : ''} ${glow ? 'animate-pulse-glow' : ''}`}
+              style={glow ? { outline: `4px solid ${ACCENT}` } : undefined}
+            >
+              <span className={`leading-none ${found ? 'text-5xl' : 'text-4xl'}`} aria-hidden="true">
+                {obj?.emoji}
+              </span>
+              <span className="text-xs font-semibold text-ink-soft">{obj?.name}</span>
+            </button>
+          )
+        })}
+      </div>
+    )
+  }
+
+  const renderPlay = (it: AssocItem): ReactNode => (
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-5 px-3 pb-6">
+      {renderPrompt(it)}
+      {renderGrid(it)}
+    </div>
+  )
+
+  return (
+    <GameShell
+      meta={META}
+      hud={screen === 'play' ? <ProgressDots total={ITEMS_PER_RUN} done={resolved} /> : undefined}
+      onReplayInstruction={replayInstruction}
+    >
+      {screen === 'menu' && renderMenu()}
+      {screen === 'play' && item && renderPlay(item)}
+      {screen === 'end' && result && (
+        <div className="flex flex-1 flex-col">
+          {newUnlock && (
+            <div
+              className="animate-bounce-in card mx-auto mt-3 flex items-center gap-2 px-5 py-2 text-lg font-extrabold"
+              style={{ color: ACCENT }}
+            >
+              🔓 Un nouvel atelier est débloqué !
+            </div>
+          )}
+          <LevelEnd result={result} onReplay={() => startRun(tier)} onHome={() => navigate('/')} />
+        </div>
+      )}
+      <ConfettiBurst burst={burst} />
+      <FeedbackOverlay kind={overlay} onDone={onOverlayDone} />
+    </GameShell>
+  )
+}

@@ -1,0 +1,91 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "met.intro",
+      "text": "Bienvenue au Mètre Magique ! On va comparer et mesurer plein de choses. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.consigne.long",
+      "text": "Touche l'objet le PLUS LONG.",
+      "voice": "denise"
+    },
+    {
+      "id": "met.consigne.court",
+      "text": "Touche l'objet le PLUS COURT.",
+      "voice": "denise"
+    },
+    {
+      "id": "met.consigne.mesure",
+      "text": "Compte les cubes le long de l'objet, puis touche le bon nombre.",
+      "voice": "denise"
+    },
+    {
+      "id": "met.bravo.long",
+      "text": "Bravo ! C'était bien le plus long !",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.bravo.court",
+      "text": "Bravo ! C'était bien le plus court !",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.bravo.mesure",
+      "text": "Super ! Tu as bien compté les cubes !",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.reaction.long",
+      "text": "Presque ! Regarde bien : celui-là dépasse les autres, il est plus long.",
+      "voice": "denise"
+    },
+    {
+      "id": "met.reaction.court",
+      "text": "Presque ! Regarde bien : celui-là est tout petit, il est le plus court.",
+      "voice": "denise"
+    },
+    {
+      "id": "met.reaction.mesure",
+      "text": "Presque ! Recompte les cubes un par un, tout doucement.",
+      "voice": "denise"
+    },
+    {
+      "id": "met.indice.compare",
+      "text": "Regarde ! La bonne réponse brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.indice.mesure",
+      "text": "Compte avec moi en touchant chaque cube : un, deux, trois...",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.niveau.0",
+      "text": "Deux objets : trouve le plus long ou le plus court !",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.niveau.1",
+      "text": "Trois objets maintenant : qui est le plus long, qui est le plus court ?",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.niveau.2",
+      "text": "On mesure ! Compte les petits cubes, de deux à cinq.",
+      "voice": "eloise"
+    },
+    {
+      "id": "met.niveau.3",
+      "text": "On mesure les grands objets : compte jusqu'à neuf cubes !",
+      "voice": "eloise"
+    },
+    { "id": "met.o.serpent", "text": "le serpent", "voice": "denise" },
+    { "id": "met.o.train", "text": "le train", "voice": "denise" },
+    { "id": "met.o.baguette", "text": "la baguette", "voice": "denise" },
+    { "id": "met.o.crayon", "text": "le crayon", "voice": "denise" },
+    { "id": "met.o.ver", "text": "le ver", "voice": "denise" },
+    { "id": "met.o.ruban", "text": "le ruban", "voice": "denise" }
+  ]
+}

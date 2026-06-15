@@ -1,0 +1,173 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "rdv.intro",
+      "text": "Bienvenue au village ! Écoute bien chaque petite histoire, puis choisis le geste qui aide et respecte les autres. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rdv.consigne.regle",
+      "text": "Écoute la situation… Quel est le bon geste pour bien vivre ensemble ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.consigne.entraide",
+      "text": "Écoute bien… Comment peux-tu aider ton camarade ?",
+      "voice": "denise"
+    },
+
+    {
+      "id": "rdv.sit.parler",
+      "text": "En classe, tout le monde veut parler en même temps. Que fais-tu pour parler à ton tour ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.ranger",
+      "text": "C'est l'heure de ranger. Les jeux sont partout dans la classe. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.queue",
+      "text": "Il y a la queue pour boire au robinet. Beaucoup d'enfants attendent. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.matin",
+      "text": "Tu arrives le matin à l'école et tu vois la maîtresse et tes copains. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.repas",
+      "text": "Tu as fini de manger à la cantine et ton plateau est encore sur la table. Que fais-tu ?",
+      "voice": "denise"
+    },
+
+    {
+      "id": "rdv.sit.tombe",
+      "text": "Dans la cour, un copain est tombé et il a du mal à se relever. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.pleure",
+      "text": "Une amie est toute triste et elle pleure dans son coin. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.gouter",
+      "text": "À la récré, un enfant n'a pas de goûter et te regarde manger le tien. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.comprend",
+      "text": "Un camarade n'arrive pas à comprendre l'exercice et il est tout perdu. Que fais-tu ?",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.sit.rangement",
+      "text": "Il y a beaucoup de choses à ranger dans la classe, c'est un grand travail. Que fais-tu ?",
+      "voice": "denise"
+    },
+
+    {
+      "id": "rdv.bravo.regle",
+      "text": "Bravo ! C'est le bon geste pour bien vivre ensemble !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rdv.bravo.entraide",
+      "text": "Bravo ! Comme c'est gentil d'aider les autres !",
+      "voice": "eloise"
+    },
+    {
+      "id": "rdv.encore",
+      "text": "Presque ! Écoute encore, et essaie un autre geste.",
+      "voice": "denise"
+    },
+
+    {
+      "id": "rdv.dit.lever-la-main",
+      "text": "Pour parler chacun son tour, on lève la main et on attend gentiment.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.ranger",
+      "text": "Quand c'est l'heure de ranger, on range bien les jeux à leur place.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.attendre",
+      "text": "Quand il y a la queue, on attend son tour, chacun aura sa place.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.dire-bonjour",
+      "text": "Le matin, on dit bonjour : ça fait plaisir à tout le monde.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.debarrasser",
+      "text": "Après le repas, on débarrasse son plateau pour aider les autres.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.relever",
+      "text": "Quand un copain est tombé, on l'aide gentiment à se relever.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.consoler",
+      "text": "Quand un ami pleure, on le console pour qu'il se sente mieux.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.partager",
+      "text": "Quand quelqu'un n'a rien, on partage : c'est ça être un bon ami.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.expliquer",
+      "text": "Quand un camarade ne comprend pas, on l'aide en lui expliquant tout doucement.",
+      "voice": "denise"
+    },
+    {
+      "id": "rdv.dit.ensemble",
+      "text": "Quand il y a beaucoup à faire, on s'y met ensemble : c'est plus facile et plus rigolo.",
+      "voice": "denise"
+    },
+
+    {
+      "id": "rdv.indice.regle",
+      "text": "Regarde ! Le bon geste brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "rdv.indice.entraide",
+      "text": "Regarde ! Le geste qui aide brille pour t'aider.",
+      "voice": "eloise"
+    },
+
+    { "id": "rdv.g.lever-la-main", "text": "Lever la main", "voice": "denise" },
+    { "id": "rdv.g.ranger", "text": "Ranger les jeux", "voice": "denise" },
+    { "id": "rdv.g.attendre", "text": "Attendre son tour", "voice": "denise" },
+    { "id": "rdv.g.dire-bonjour", "text": "Dire bonjour", "voice": "denise" },
+    { "id": "rdv.g.debarrasser", "text": "Débarrasser", "voice": "denise" },
+    { "id": "rdv.g.crier", "text": "Crier", "voice": "denise" },
+    { "id": "rdv.g.pousser", "text": "Pousser", "voice": "denise" },
+    { "id": "rdv.g.jeter", "text": "Jeter par terre", "voice": "denise" },
+    { "id": "rdv.g.passer-devant", "text": "Passer devant", "voice": "denise" },
+    { "id": "rdv.g.relever", "text": "Aider à se relever", "voice": "denise" },
+    { "id": "rdv.g.consoler", "text": "Consoler", "voice": "denise" },
+    { "id": "rdv.g.partager", "text": "Partager", "voice": "denise" },
+    { "id": "rdv.g.expliquer", "text": "Aider à comprendre", "voice": "denise" },
+    { "id": "rdv.g.ensemble", "text": "Faire ensemble", "voice": "denise" },
+    { "id": "rdv.g.se-moquer", "text": "Se moquer", "voice": "denise" },
+    { "id": "rdv.g.ignorer", "text": "Ignorer", "voice": "denise" },
+    { "id": "rdv.g.rire", "text": "Rire de lui", "voice": "denise" },
+
+    { "id": "rdv.niveau.0", "text": "Les règles de la classe : parler, ranger, attendre…", "voice": "eloise" },
+    { "id": "rdv.niveau.1", "text": "Encore les règles : avec plus de choix !", "voice": "eloise" },
+    { "id": "rdv.niveau.2", "text": "L'entraide : aide tes camarades quand ils en ont besoin.", "voice": "eloise" },
+    { "id": "rdv.niveau.3", "text": "Le grand cœur : aide les autres, avec plus de choix !", "voice": "eloise" }
+  ]
+}

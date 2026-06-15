@@ -1,0 +1,88 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "obj.intro",
+      "text": "Bienvenue à l'atelier des objets ! Écoute bien, puis touche le bon objet. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "obj.consigne.besoin",
+      "text": "Que prends-tu ? Touche le bon objet.",
+      "voice": "denise"
+    },
+    {
+      "id": "obj.consigne.matiere",
+      "text": "On fabrique quoi ? Touche le bon objet.",
+      "voice": "denise"
+    },
+    {
+      "id": "obj.bravo",
+      "text": "Bravo, c'est le bon objet !",
+      "voice": "eloise"
+    },
+    {
+      "id": "obj.essaie",
+      "text": "Presque ! Écoute encore, puis essaie un autre objet.",
+      "voice": "denise"
+    },
+    {
+      "id": "obj.indice.besoin",
+      "text": "Regarde ! L'objet qui brille, c'est celui dont tu as besoin.",
+      "voice": "eloise"
+    },
+    {
+      "id": "obj.indice.matiere",
+      "text": "Regarde ! L'objet qui brille, c'est celui qu'on fabrique.",
+      "voice": "eloise"
+    },
+    {
+      "id": "obj.expliq.besoin",
+      "text": "Voilà le bon objet : il répond à ton besoin.",
+      "voice": "denise"
+    },
+    {
+      "id": "obj.expliq.matiere",
+      "text": "Voilà le bon objet : on le fabrique avec cette matière.",
+      "voice": "denise"
+    },
+
+    { "id": "obj.b.froid", "text": "Tu as froid. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.faim", "text": "Tu as faim. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.soif", "text": "Tu as soif. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.nuit", "text": "Tu veux voir dans la nuit. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.ecrire", "text": "Tu veux écrire. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.deplacer", "text": "Tu veux te déplacer vite. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.heure", "text": "Tu veux savoir l'heure. Que prends-tu ?", "voice": "denise" },
+    { "id": "obj.b.pluie", "text": "Il pleut très fort. Que prends-tu ?", "voice": "denise" },
+
+    { "id": "obj.m.bois", "text": "Avec le bois, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.laine", "text": "Avec la laine du mouton, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.ble", "text": "Avec le blé, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.lait", "text": "Avec le lait, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.sable", "text": "Avec le sable, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.cuir", "text": "Avec le cuir, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.coton", "text": "Avec le coton, on fabrique quoi ?", "voice": "denise" },
+    { "id": "obj.m.argile", "text": "Avec l'argile, on fabrique quoi ?", "voice": "denise" },
+
+    { "id": "obj.o.pull", "text": "Le pull", "voice": "denise" },
+    { "id": "obj.o.pain", "text": "Le pain", "voice": "denise" },
+    { "id": "obj.o.verre", "text": "Le verre d'eau", "voice": "denise" },
+    { "id": "obj.o.lampe", "text": "La lampe", "voice": "denise" },
+    { "id": "obj.o.stylo", "text": "Le stylo", "voice": "denise" },
+    { "id": "obj.o.velo", "text": "Le vélo", "voice": "denise" },
+    { "id": "obj.o.montre", "text": "La montre", "voice": "denise" },
+    { "id": "obj.o.parapluie", "text": "Le parapluie", "voice": "denise" },
+    { "id": "obj.o.chaise", "text": "La chaise", "voice": "denise" },
+    { "id": "obj.o.fromage", "text": "Le fromage", "voice": "denise" },
+    { "id": "obj.o.fenetre", "text": "La fenêtre", "voice": "denise" },
+    { "id": "obj.o.chaussures", "text": "Les chaussures", "voice": "denise" },
+    { "id": "obj.o.teeshirt", "text": "Le tee-shirt", "voice": "denise" },
+    { "id": "obj.o.pot", "text": "Le pot", "voice": "denise" },
+
+    { "id": "obj.niveau.0", "text": "Un objet pour un besoin : on commence en douceur !", "voice": "eloise" },
+    { "id": "obj.niveau.1", "text": "Un objet pour un besoin : plus d'objets à l'écran !", "voice": "eloise" },
+    { "id": "obj.niveau.2", "text": "De la matière à l'objet : qu'est-ce qu'on fabrique ?", "voice": "eloise" },
+    { "id": "obj.niveau.3", "text": "De la matière à l'objet : encore plus d'objets !", "voice": "eloise" }
+  ]
+}
