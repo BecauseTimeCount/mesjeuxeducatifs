@@ -1,0 +1,113 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "mbf.intro",
+      "text": "Bienvenue sur l'île d'ailleurs ! Ici, on joue en anglais. Écoute bien le mot, puis tape la bonne image. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.consigne.body",
+      "text": "Écoute le mot en anglais, puis tape la bonne partie du corps !",
+      "voice": "denise"
+    },
+    {
+      "id": "mbf.consigne.food",
+      "text": "Écoute le mot en anglais, puis tape le bon aliment !",
+      "voice": "denise"
+    },
+    {
+      "id": "mbf.consigne.tastes",
+      "text": "Écoute : aime-t-il cet aliment, ou pas ? Range-le dans le bon panier !",
+      "voice": "denise"
+    },
+    {
+      "id": "mbf.niveau.0",
+      "text": "Le corps en anglais : Head, Shoulders, Knees and Toes !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.niveau.1",
+      "text": "Encore plus de parties du corps en anglais !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.niveau.2",
+      "text": "Les aliments en anglais : à table !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.niveau.3",
+      "text": "Les goûts : j'aime, ou je n'aime pas !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.bravo",
+      "text": "Bravo ! Yes, c'est ça !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.bien-range",
+      "text": "Bravo, bien rangé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.thatone",
+      "text": "Presque ! Ça, c'était :",
+      "voice": "denise"
+    },
+    {
+      "id": "mbf.pas-panier",
+      "text": "Oups, ce n'est pas le bon panier. Écoute encore la phrase !",
+      "voice": "denise"
+    },
+    {
+      "id": "mbf.indice.tap",
+      "text": "Regarde ! La bonne image brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "mbf.indice.sort",
+      "text": "Regarde ! Le bon panier brille pour t'aider.",
+      "voice": "eloise"
+    },
+    { "id": "mbf.body.head", "text": "Head", "voice": "sonia" },
+    { "id": "mbf.body.shoulders", "text": "Shoulders", "voice": "sonia" },
+    { "id": "mbf.body.knees", "text": "Knees", "voice": "sonia" },
+    { "id": "mbf.body.toes", "text": "Toes", "voice": "sonia" },
+    { "id": "mbf.body.eyes", "text": "Eyes", "voice": "sonia" },
+    { "id": "mbf.body.ears", "text": "Ears", "voice": "sonia" },
+    { "id": "mbf.body.mouth", "text": "Mouth", "voice": "sonia" },
+    { "id": "mbf.body.nose", "text": "Nose", "voice": "sonia" },
+    { "id": "mbf.food.apple", "text": "Apple", "voice": "sonia" },
+    { "id": "mbf.food.banana", "text": "Banana", "voice": "sonia" },
+    { "id": "mbf.food.bread", "text": "Bread", "voice": "sonia" },
+    { "id": "mbf.food.milk", "text": "Milk", "voice": "sonia" },
+    { "id": "mbf.food.egg", "text": "Egg", "voice": "sonia" },
+    { "id": "mbf.food.fish", "text": "Fish", "voice": "sonia" },
+    { "id": "mbf.food.cake", "text": "Cake", "voice": "sonia" },
+    { "id": "mbf.food.water", "text": "Water", "voice": "sonia" },
+    { "id": "mbf.food.carrot", "text": "Carrot", "voice": "sonia" },
+    { "id": "mbf.food.cheese", "text": "Cheese", "voice": "sonia" },
+    { "id": "mbf.taste.like.apple", "text": "I like apples!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.apple", "text": "I don't like apples.", "voice": "sonia" },
+    { "id": "mbf.taste.like.banana", "text": "I like bananas!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.banana", "text": "I don't like bananas.", "voice": "sonia" },
+    { "id": "mbf.taste.like.bread", "text": "I like bread!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.bread", "text": "I don't like bread.", "voice": "sonia" },
+    { "id": "mbf.taste.like.milk", "text": "I like milk!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.milk", "text": "I don't like milk.", "voice": "sonia" },
+    { "id": "mbf.taste.like.egg", "text": "I like eggs!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.egg", "text": "I don't like eggs.", "voice": "sonia" },
+    { "id": "mbf.taste.like.fish", "text": "I like fish!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.fish", "text": "I don't like fish.", "voice": "sonia" },
+    { "id": "mbf.taste.like.cake", "text": "I like cake!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.cake", "text": "I don't like cake.", "voice": "sonia" },
+    { "id": "mbf.taste.like.water", "text": "I like water!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.water", "text": "I don't like water.", "voice": "sonia" },
+    { "id": "mbf.taste.like.carrot", "text": "I like carrots!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.carrot", "text": "I don't like carrots.", "voice": "sonia" },
+    { "id": "mbf.taste.like.cheese", "text": "I like cheese!", "voice": "sonia" },
+    { "id": "mbf.taste.dislike.cheese", "text": "I don't like cheese.", "voice": "sonia" }
+  ]
+}

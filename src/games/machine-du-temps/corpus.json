@@ -1,0 +1,111 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "mdt.intro",
+      "text": "Bienvenue dans la machine à remonter le temps ! Range chaque objet à sa place : autrefois, ou aujourd'hui. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.consigne.sort",
+      "text": "Cet objet, c'était autrefois, ou c'est aujourd'hui ? Range-le dans le bon coffre.",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.consigne.order",
+      "text": "Range les personnes du plus jeune au plus âgé. Touche-les dans l'ordre, en commençant par le plus petit.",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.bac.autrefois",
+      "text": "Autrefois : il y a très longtemps, au temps de nos grands-parents.",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.bac.aujourdhui",
+      "text": "Aujourd'hui : c'est ce que l'on utilise maintenant.",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.bravo.sort",
+      "text": "Bravo, bien rangé dans le temps !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.bravo.order",
+      "text": "Super ! Du plus jeune au plus âgé, c'est parfait !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.bien-suivant",
+      "text": "Oui ! Et maintenant, le suivant ?",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.refus.sort",
+      "text": "Oups, ce n'est pas la bonne époque. Écoute bien !",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.refus.order",
+      "text": "Presque ! Ce n'est pas le plus jeune. On recommence ensemble.",
+      "voice": "henri"
+    },
+    {
+      "id": "mdt.explique.autrefois",
+      "text": "Cet objet, c'était autrefois ! On s'en servait il y a très longtemps.",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.explique.aujourdhui",
+      "text": "Cet objet, c'est aujourd'hui ! On s'en sert maintenant.",
+      "voice": "denise"
+    },
+    {
+      "id": "mdt.indice.sort",
+      "text": "Regarde ! Le bon coffre brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.indice.order",
+      "text": "Regarde ! Le plus jeune brille : commence par lui.",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.niveau.0",
+      "text": "Autrefois ou aujourd'hui : les objets les plus faciles à reconnaître !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.niveau.1",
+      "text": "Autrefois ou aujourd'hui : tous les objets, à toi de jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.niveau.2",
+      "text": "Les générations : range trois personnes du plus jeune au plus âgé.",
+      "voice": "eloise"
+    },
+    {
+      "id": "mdt.niveau.3",
+      "text": "Les générations : range les quatre, du bébé au grand-parent !",
+      "voice": "eloise"
+    },
+    { "id": "mdt.o.bougie", "text": "La bougie", "voice": "denise" },
+    { "id": "mdt.o.ampoule", "text": "L'ampoule", "voice": "denise" },
+    { "id": "mdt.o.cheval", "text": "Le cheval", "voice": "denise" },
+    { "id": "mdt.o.voiture", "text": "La voiture", "voice": "denise" },
+    { "id": "mdt.o.lettre", "text": "La lettre", "voice": "denise" },
+    { "id": "mdt.o.telephone", "text": "Le téléphone", "voice": "denise" },
+    { "id": "mdt.o.plume", "text": "La plume d'oie", "voice": "denise" },
+    { "id": "mdt.o.stylo", "text": "Le stylo", "voice": "denise" },
+    { "id": "mdt.o.lavoir", "text": "Le lavoir", "voice": "denise" },
+    { "id": "mdt.o.machine", "text": "La machine à laver", "voice": "denise" },
+    { "id": "mdt.o.train", "text": "Le train à vapeur", "voice": "denise" },
+    { "id": "mdt.o.avion", "text": "L'avion", "voice": "denise" },
+    { "id": "mdt.g.bebe", "text": "Le bébé", "voice": "denise" },
+    { "id": "mdt.g.enfant", "text": "L'enfant", "voice": "denise" },
+    { "id": "mdt.g.parent", "text": "Le parent", "voice": "denise" },
+    { "id": "mdt.g.grand-parent", "text": "Le grand-parent", "voice": "denise" }
+  ]
+}

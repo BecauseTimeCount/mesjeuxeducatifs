@@ -1,0 +1,95 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    { "id": "hef.en.hello", "text": "Hello!", "voice": "sonia" },
+    { "id": "hef.en.goodbye", "text": "Goodbye!", "voice": "sonia" },
+    { "id": "hef.en.thankyou", "text": "Thank you!", "voice": "sonia" },
+    { "id": "hef.en.please", "text": "Please!", "voice": "sonia" },
+    { "id": "hef.en.happy", "text": "I am happy!", "voice": "sonia" },
+    { "id": "hef.en.sad", "text": "I am sad.", "voice": "sonia" },
+    { "id": "hef.en.tired", "text": "I am tired.", "voice": "sonia" },
+    { "id": "hef.en.ok", "text": "I am OK!", "voice": "sonia" },
+    { "id": "hef.en.angry", "text": "I am angry!", "voice": "sonia" },
+    { "id": "hef.en.scared", "text": "I am scared!", "voice": "sonia" },
+    { "id": "hef.en.red", "text": "My favourite colour is red!", "voice": "sonia" },
+    { "id": "hef.en.blue", "text": "My favourite colour is blue!", "voice": "sonia" },
+    { "id": "hef.en.green", "text": "My favourite colour is green!", "voice": "sonia" },
+    { "id": "hef.en.yellow", "text": "My favourite colour is yellow!", "voice": "sonia" },
+    { "id": "hef.en.age-1", "text": "I am one.", "voice": "sonia" },
+    { "id": "hef.en.age-2", "text": "I am two.", "voice": "sonia" },
+    { "id": "hef.en.age-3", "text": "I am three.", "voice": "sonia" },
+    { "id": "hef.en.age-4", "text": "I am four.", "voice": "sonia" },
+    { "id": "hef.en.age-5", "text": "I am five.", "voice": "sonia" },
+    { "id": "hef.en.age-6", "text": "I am six.", "voice": "sonia" },
+    {
+      "id": "hef.intro",
+      "text": "Bienvenue chez Hello Friends ! Ici, on écoute l'anglais et on tape la bonne image. Écoute bien la voix anglaise, puis touche l'image qui va avec. Choisis un jeu, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.consigne.greetings",
+      "text": "Écoute la formule en anglais, puis tape l'image qui va avec !",
+      "voice": "denise"
+    },
+    {
+      "id": "hef.consigne.feelings",
+      "text": "Écoute comment se sent le personnage, puis tape le bon visage !",
+      "voice": "denise"
+    },
+    {
+      "id": "hef.consigne.age",
+      "text": "Écoute l'âge en anglais, puis tape le bon chiffre !",
+      "voice": "denise"
+    },
+    {
+      "id": "hef.consigne.colour",
+      "text": "Écoute la couleur préférée en anglais, puis tape la bonne couleur !",
+      "voice": "denise"
+    },
+    {
+      "id": "hef.niveau.0",
+      "text": "Salutations : Hello, Goodbye. Écoute bien et tape la bonne image !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.niveau.1",
+      "text": "Politesse : Thank you, Please, et les salutations. Tape la bonne image !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.niveau.2",
+      "text": "Les émotions en anglais : happy, sad, tired, OK. Tape le bon visage !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.niveau.3",
+      "text": "Présente-toi : ton âge et ta couleur préférée en anglais. Tape la bonne réponse !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.bravo",
+      "text": "Well done!",
+      "voice": "sonia"
+    },
+    {
+      "id": "hef.thatone",
+      "text": "That one is...",
+      "voice": "sonia"
+    },
+    {
+      "id": "hef.essaie",
+      "text": "Presque ! Écoute encore et réessaie !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.indice",
+      "text": "Regarde, la bonne réponse brille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "hef.verrou.etoiles",
+      "text": "Gagne deux étoiles au jeu d'avant pour débloquer celui-ci !",
+      "voice": "eloise"
+    }
+  ]
+}

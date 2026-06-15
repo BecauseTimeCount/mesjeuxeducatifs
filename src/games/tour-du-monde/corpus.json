@@ -1,0 +1,105 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "tdm.intro",
+      "text": "Bienvenue dans le tour du monde ! Trouve les paysages, puis range les éléments de la Terre. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.consigne.find",
+      "text": "Écoute, puis trouve le bon paysage !",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.consigne.find.prefix",
+      "text": "Trouve",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.consigne.sort",
+      "text": "Range cet élément : est-ce de la terre, ou de l'eau ?",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.bravo",
+      "text": "Bravo ! Bien trouvé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.bien-range",
+      "text": "Super, bien rangé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.thatone",
+      "text": "Ça, c'est plutôt",
+      "voice": "henri"
+    },
+    {
+      "id": "tdm.essaie",
+      "text": "Presque ! Écoute encore et essaie !",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.pas-categorie",
+      "text": "Oups, regarde encore ! Écoute bien.",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.cat.terre",
+      "text": "C'est de la terre : un endroit solide où l'on peut marcher.",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.cat.eau",
+      "text": "C'est de l'eau : un endroit où l'eau coule ou s'étend.",
+      "voice": "denise"
+    },
+    {
+      "id": "tdm.indice.find",
+      "text": "Regarde ! La bonne carte brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.indice.sort",
+      "text": "Regarde ! Le bon bac brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.niveau.0",
+      "text": "Les paysages : trouve la bonne image parmi quatre !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.niveau.1",
+      "text": "Encore des paysages : à toi de trouver parmi six images !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.niveau.2",
+      "text": "La Terre vue de loin : range chaque élément dans la terre ou dans l'eau !",
+      "voice": "eloise"
+    },
+    {
+      "id": "tdm.niveau.3",
+      "text": "Le grand tri de la Terre : terre ou eau, à toi de jouer !",
+      "voice": "eloise"
+    },
+    { "id": "tdm.l.mer", "text": "la mer", "voice": "denise" },
+    { "id": "tdm.l.montagne", "text": "la montagne", "voice": "denise" },
+    { "id": "tdm.l.ville", "text": "la ville", "voice": "denise" },
+    { "id": "tdm.l.campagne", "text": "la campagne", "voice": "denise" },
+    { "id": "tdm.l.foret", "text": "la forêt", "voice": "denise" },
+    { "id": "tdm.l.desert", "text": "le désert", "voice": "denise" },
+    { "id": "tdm.e.montagne", "text": "la montagne", "voice": "denise" },
+    { "id": "tdm.e.ocean", "text": "l'océan", "voice": "denise" },
+    { "id": "tdm.e.foret", "text": "la forêt", "voice": "denise" },
+    { "id": "tdm.e.riviere", "text": "la rivière", "voice": "denise" },
+    { "id": "tdm.e.desert", "text": "le désert", "voice": "denise" },
+    { "id": "tdm.e.ile", "text": "l'île", "voice": "denise" },
+    { "id": "tdm.e.banquise", "text": "la banquise", "voice": "denise" },
+    { "id": "tdm.e.champ", "text": "le champ", "voice": "denise" },
+    { "id": "tdm.e.mer", "text": "la mer", "voice": "denise" }
+  ]
+}
