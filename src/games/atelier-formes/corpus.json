@@ -1,0 +1,123 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "afo.intro",
+      "text": "Bienvenue à l'atelier des formes ! On va reconnaître et ranger les figures et les solides. Choisis ton niveau, puis appuie sur Jouer !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.consigne.find",
+      "text": "Trouve…",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.consigne.sides",
+      "text": "Range cette figure. Combien a-t-elle de côtés ?",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.consigne.roll",
+      "text": "Regarde ce solide. Est-ce qu'il roule, ou est-ce qu'il ne roule pas ?",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.bravo",
+      "text": "Bravo ! C'est exactement ça !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.bien-range",
+      "text": "Super, bien rangé !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.essaie",
+      "text": "Presque ! Écoute encore et réessaie.",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.indice.find",
+      "text": "Regarde bien : la bonne forme brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.indice.sides",
+      "text": "Compte les côtés avec ton doigt : le bon bac brille pour t'aider.",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.indice.roll",
+      "text": "Seule la boule est toute ronde : c'est elle qui roule. Le bon bac brille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.niveau.0",
+      "text": "Les figures : trouve le carré, le rond, le triangle ou le rectangle !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.niveau.1",
+      "text": "Le tri des figures : range-les par nombre de côtés !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.niveau.2",
+      "text": "Les solides : trouve le cube, la boule, le pavé ou la pyramide !",
+      "voice": "eloise"
+    },
+    {
+      "id": "afo.niveau.3",
+      "text": "Ça roule ou pas : range les solides qui roulent et ceux qui ne roulent pas !",
+      "voice": "eloise"
+    },
+    { "id": "afo.s.carre", "text": "le carré", "voice": "denise" },
+    { "id": "afo.s.rectangle", "text": "le rectangle", "voice": "denise" },
+    { "id": "afo.s.triangle", "text": "le triangle", "voice": "denise" },
+    { "id": "afo.s.cercle", "text": "le cercle", "voice": "denise" },
+    {
+      "id": "afo.dit.carre",
+      "text": "Ça, c'est le carré : quatre côtés tous égaux.",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.dit.rectangle",
+      "text": "Ça, c'est le rectangle : quatre côtés, deux longs et deux courts.",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.dit.triangle",
+      "text": "Ça, c'est le triangle : il a trois côtés.",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.dit.cercle",
+      "text": "Ça, c'est le cercle : il est tout rond, sans aucun côté.",
+      "voice": "denise"
+    },
+    { "id": "afo.so.cube", "text": "le cube", "voice": "denise" },
+    { "id": "afo.so.boule", "text": "la boule", "voice": "denise" },
+    { "id": "afo.so.pave", "text": "le pavé", "voice": "denise" },
+    { "id": "afo.so.pyramide", "text": "la pyramide", "voice": "denise" },
+    {
+      "id": "afo.dit.cube",
+      "text": "Ça, c'est le cube : toutes ses faces sont des carrés.",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.dit.boule",
+      "text": "Ça, c'est la boule : elle est toute ronde, alors elle roule !",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.dit.pave",
+      "text": "Ça, c'est le pavé : comme une boîte, il ne roule pas.",
+      "voice": "denise"
+    },
+    {
+      "id": "afo.dit.pyramide",
+      "text": "Ça, c'est la pyramide : elle a une pointe, elle ne roule pas.",
+      "voice": "denise"
+    }
+  ]
+}
