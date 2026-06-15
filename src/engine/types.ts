@@ -4,7 +4,7 @@
 // ============================================================
 
 // ---------- Îles / monde ----------
-export type IslandId = 'sons' | 'nombres' | 'robots' | 'monde' | 'ailleurs'
+export type IslandId = 'sons' | 'nombres' | 'robots' | 'monde' | 'ailleurs' | 'sentiments'
 
 export interface IslandDef {
   id: IslandId
@@ -38,7 +38,7 @@ export interface GameMeta {
 
 // ---------- Compétences (skill-map) ----------
 export type SkillId = string
-export type Domain = 'francais' | 'maths' | 'logique' | 'monde' | 'anglais' | 'arts'
+export type Domain = 'francais' | 'maths' | 'logique' | 'monde' | 'anglais' | 'arts' | 'emc'
 export type LevelBand = 'gs' | 'cp' | 'ce1'
 
 export interface SkillDef {

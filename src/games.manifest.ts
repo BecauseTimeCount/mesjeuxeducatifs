@@ -43,6 +43,13 @@ export const ISLANDS: IslandDef[] = [
     tagline: 'English, musique et couleurs',
     accent: '#9b7ede',
   },
+  {
+    id: 'sentiments',
+    name: 'L’Île des Sentiments',
+    emoji: '💛',
+    tagline: 'Les émotions et les autres',
+    accent: '#ef6f9c',
+  },
 ]
 
 export const ISLANDS_BY_ID: ReadonlyMap<IslandId, IslandDef> = new Map(
@@ -78,6 +85,12 @@ export const V2_COMPONENTS: Record<string, LazyExoticComponent<ComponentType>> =
   'fluence-express': lazy(() => import('@/games/fluence-express')),
   'lettre-magique': lazy(() => import('@/games/lettre-magique')),
   'pizzeria-des-fractions': lazy(() => import('@/games/pizzeria-des-fractions')),
+  // ---- Phase 5 : remplacement des jeux classiques V1 ----
+  'cantine-foret': lazy(() => import('@/games/cantine-foret')),
+  'atelier-couleurs': lazy(() => import('@/games/atelier-couleurs')),
+  'carre-magique': lazy(() => import('@/games/carre-magique')),
+  'ecole-plume': lazy(() => import('@/games/ecole-plume')),
+  'jardin-emotions': lazy(() => import('@/games/jardin-emotions')),
 }
 
 export const GAMES: GameMeta[] = [
@@ -350,14 +363,63 @@ export const GAMES: GameMeta[] = [
     status: 'v2',
   },
 
+  // ============= JEUX V2 — PHASE 5 (remplacement des classiques V1) =============
+  {
+    id: 'cantine-foret',
+    title: 'La Cantine de la Forêt',
+    tagline: 'Sers le bon repas à chaque animal !',
+    icon: '🍽️',
+    island: 'monde',
+    accent: '#2e9e5b',
+    skills: ['mo.gs.vivant.regime', 'mo.cp.vivant.classer'],
+    status: 'v2',
+  },
+  {
+    id: 'atelier-couleurs',
+    title: 'L’Atelier des Couleurs',
+    tagline: 'Mélange les peintures et trouve la bonne couleur !',
+    icon: '🎨',
+    island: 'ailleurs',
+    accent: '#d81b60',
+    skills: ['ar.gs.couleurs.primaires', 'ar.gs.couleurs.melanges', 'ar.cp.couleurs.obtenir'],
+    status: 'v2',
+  },
+  {
+    id: 'carre-magique',
+    title: 'Le Carré Magique des Robots',
+    tagline: 'Un seul robot par ligne, par colonne et par carré !',
+    icon: '🧩',
+    island: 'robots',
+    accent: '#5c6bc0',
+    skills: ['lo.gs.quadrillage', 'lo.gs.deduction.contrainte'],
+    status: 'v2',
+  },
+  {
+    id: 'ecole-plume',
+    title: 'L’École de Plume',
+    tagline: 'Guide Plume dans toute l’école !',
+    icon: '🗺️',
+    island: 'monde',
+    accent: '#43a047',
+    skills: ['mo.gs.espace.reperer', 'mo.cp.espace.itineraire'],
+    status: 'v2',
+  },
+  {
+    id: 'jardin-emotions',
+    title: 'Le Jardin des Émotions',
+    tagline: 'Reconnais les émotions et fais fleurir le jardin !',
+    icon: '🌸',
+    island: 'sentiments',
+    accent: '#ef6f9c',
+    skills: ['emc.gs.emotions.nommer', 'emc.cp.emotions.reconnaitre', 'emc.cp.conflit.reguler'],
+    status: 'v2',
+  },
+
   // ==================== JEUX CLASSIQUES (V1) ====================
-  // Seuls restent les V1 sans refonte V2 équivalente. Les 24 copies
-  // remplacées ont été retirées en phase 3 (l'historique git les garde).
-  { id: 'v1-sudoku-des-petits', title: 'Sudoku des Petits', tagline: 'Complète les grilles', icon: '🧩', island: 'robots', accent: '#e91e63', skills: [], status: 'classique', href: 'v1/sudoku-des-petits.html' },
-  { id: 'v1-le-plan-de-lecole', title: 'Le Plan de l’École', tagline: 'Gauche, droite, repère-toi !', icon: '🗺️', island: 'monde', accent: '#43a047', skills: [], status: 'classique', href: 'v1/le-plan-de-lecole.html' },
-  { id: 'v1-le-restaurant-des-animaux', title: 'Le Restaurant des Animaux', tagline: 'Sers le bon repas', icon: '🍽️', island: 'monde', accent: '#e65100', skills: [], status: 'classique', href: 'v1/le-restaurant-des-animaux.html' },
-  { id: 'v1-le-jardin-des-emotions', title: 'Le Jardin des Émotions', tagline: 'Reconnais les émotions', icon: '🌸', island: 'monde', accent: '#558b2f', skills: [], status: 'classique', href: 'v1/le-jardin-des-emotions.html' },
-  { id: 'v1-latelier-des-couleurs', title: 'L’Atelier des Couleurs', tagline: 'Mélange les couleurs et peins', icon: '🖌️', island: 'ailleurs', accent: '#bf360c', skills: [], status: 'classique', href: 'v1/latelier-des-couleurs.html' },
+  // Phase 5 terminée : les 5 derniers jeux V1 ont été remplacés par des jeux
+  // V2 conformes (cantine-foret, atelier-couleurs, carre-magique, ecole-plume,
+  // jardin-emotions). Plus aucun jeu « classique » exposé dans le hub.
+  // Les pages public/v1/*.html restent dans le dépôt (historique), non liées.
 ]
 
 export const GAMES_BY_ID: ReadonlyMap<string, GameMeta> = new Map(GAMES.map((g) => [g.id, g]))

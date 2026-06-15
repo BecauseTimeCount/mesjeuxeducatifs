@@ -50,7 +50,7 @@ export const SKILL_MAP: SkillDef[] = [
   {
     id: 'fr.gs.lettres.valeur',
     label: 'Connaître le son des lettres',
-    official: 'Connaître la valeur sonore des lettres (hormis les occlusives)',
+    official: 'Connaître la valeur sonore des lettres (le son qu’elles produisent)',
     domain: 'francais',
     level: 'gs',
     prereqs: ['fr.gs.lettres.nom'],
@@ -207,7 +207,7 @@ export const SKILL_MAP: SkillDef[] = [
   {
     id: 'ma.gs.decompo10',
     label: 'Décomposer les nombres jusqu’à 10',
-    official: 'Compositions et décompositions des nombres de 2 à 10, doubles jusqu’à 5+5',
+    official: 'Compositions et décompositions des nombres de 2 à 10 (y compris 10 = 5+5)',
     domain: 'maths',
     level: 'gs',
     prereqs: ['ma.gs.decompo5'],
@@ -603,6 +603,24 @@ export const SKILL_MAP: SkillDef[] = [
     period: 5,
     prereqs: ['mo.gs.eau.etats'],
   },
+  // ---------------- DÉCOUVRIR LE MONDE — le vivant ----------------
+  {
+    id: 'mo.gs.vivant.regime',
+    label: 'Donner le bon repas à chaque animal',
+    official:
+      'Explorer le monde du vivant : associer un animal à son alimentation (ce qu’il mange dans la nature)',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.cp.vivant.classer',
+    label: 'Herbivore, carnivore ou omnivore ?',
+    official:
+      'Questionner le monde du vivant : classer les animaux selon leur régime alimentaire (herbivore, carnivore, omnivore)',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.gs.vivant.regime'],
+  },
 
   // ---------------- ANGLAIS — premiers mots (CP) ----------------
   {
@@ -651,6 +669,91 @@ export const SKILL_MAP: SkillDef[] = [
     level: 'gs',
     prereqs: ['ar.gs.rythme.reproduire'],
   },
+
+  // ---------------- ARTS PLASTIQUES — la couleur ----------------
+  {
+    id: 'ar.gs.couleurs.primaires',
+    label: 'Reconnaître les couleurs primaires',
+    official: 'Arts plastiques : identifier et nommer les couleurs primaires (rouge, bleu, jaune)',
+    domain: 'arts',
+    level: 'gs',
+  },
+  {
+    id: 'ar.gs.couleurs.melanges',
+    label: 'Mélanger les couleurs',
+    official:
+      'Arts plastiques : expérimenter le mélange des couleurs et découvrir les couleurs secondaires (orange, vert, violet)',
+    domain: 'arts',
+    level: 'gs',
+    prereqs: ['ar.gs.couleurs.primaires'],
+  },
+  {
+    id: 'ar.cp.couleurs.obtenir',
+    label: 'Obtenir une couleur par mélange',
+    official:
+      'Arts plastiques : anticiper et réaliser le mélange permettant d’obtenir une couleur donnée, jouer sur les nuances (clair, foncé)',
+    domain: 'arts',
+    level: 'cp',
+    prereqs: ['ar.gs.couleurs.melanges'],
+  },
+
+  // ---------------- LOGIQUE — raisonnement déductif ----------------
+  {
+    id: 'lo.gs.deduction.contrainte',
+    label: 'Compléter une grille sans répétition',
+    official:
+      'Raisonner : compléter une grille (carré 4×4) en respectant la règle de non-répétition sur les lignes, les colonnes et les régions',
+    domain: 'logique',
+    level: 'gs',
+    prereqs: ['lo.gs.quadrillage'],
+  },
+
+  // ---------------- DÉCOUVRIR LE MONDE — l’espace ----------------
+  {
+    id: 'mo.gs.espace.reperer',
+    label: 'Se repérer sur un plan',
+    official:
+      'Questionner le monde de l’espace : se repérer sur un plan simple et situer des lieux les uns par rapport aux autres (à gauche, à droite, au-dessus, en-dessous)',
+    domain: 'monde',
+    level: 'gs',
+  },
+  {
+    id: 'mo.cp.espace.itineraire',
+    label: 'Suivre et décrire un itinéraire',
+    official:
+      'Questionner le monde de l’espace : coder, décoder et suivre un déplacement sur un plan quadrillé pour aller d’un lieu à un autre',
+    domain: 'monde',
+    level: 'cp',
+    prereqs: ['mo.gs.espace.reperer'],
+  },
+
+  // ---------------- EMC — émotions et vivre-ensemble ----------------
+  {
+    id: 'emc.gs.emotions.nommer',
+    label: 'Identifier et nommer ses émotions',
+    official:
+      'EMC, la sensibilité : identifier, nommer et exprimer les émotions de base (joie, tristesse, colère, peur, surprise)',
+    domain: 'emc',
+    level: 'gs',
+  },
+  {
+    id: 'emc.cp.emotions.reconnaitre',
+    label: 'Reconnaître l’émotion d’autrui',
+    official:
+      'EMC, la sensibilité : identifier les émotions et sentiments d’autrui à partir d’une situation (empathie, décentration)',
+    domain: 'emc',
+    level: 'cp',
+    prereqs: ['emc.gs.emotions.nommer'],
+  },
+  {
+    id: 'emc.cp.conflit.reguler',
+    label: 'Réagir sans violence à une émotion forte',
+    official:
+      'EMC, le droit et la règle : gérer une émotion forte ou un désaccord de façon non violente, exprimer un besoin et écouter l’autre',
+    domain: 'emc',
+    level: 'cp',
+    prereqs: ['emc.cp.emotions.reconnaitre'],
+  },
 ]
 
 export const SKILLS_BY_ID: ReadonlyMap<string, SkillDef> = new Map(
@@ -663,7 +766,8 @@ export const DOMAIN_LABELS: Record<SkillDef['domain'], string> = {
   logique: 'Logique — se repérer et coder',
   monde: 'Découvrir le monde — temps et nature',
   anglais: 'Anglais — premiers mots',
-  arts: 'Musique — écouter et créer',
+  arts: 'Arts — musique et couleurs',
+  emc: 'Émotions et vivre-ensemble',
 }
 
 export const LEVEL_LABELS: Record<SkillDef['level'], string> = {
