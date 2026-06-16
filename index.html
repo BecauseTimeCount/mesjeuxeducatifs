@@ -14,6 +14,11 @@
 <meta property="og:image" content="https://jeux.becausetimecounts.fr/captures/v2-hub.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mes Jeux">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Mes Jeux Éducatifs — L'Archipel","applicationCategory":"EducationalApplication","operatingSystem":"Any, navigateur web","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"audience":{"@type":"EducationalAudience","educationalRole":["student","parent","teacher"]},"educationalLevel":"Grande Section, CP, CE1","description":"39 jeux éducatifs alignés sur les programmes officiels français de la Grande Section au CE1, à jour pour les Bulletins Officiels 2026.","url":"https://jeux.becausetimecounts.fr/"}
 </script>
@@ -55,6 +60,19 @@ em{font-style:italic}
 .btn-ghost{background:transparent;color:var(--ink);border-color:var(--rule-strong)}
 .btn-ghost:hover{border-color:var(--ink);background:rgba(22,50,61,.04)}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* ---------- bandeau d'installation PWA ---------- */
+.install-bar{display:none;align-items:center;justify-content:space-between;gap:1rem;background:var(--accent);color:#fff;padding:.7rem 1.25rem;font-size:.95rem;font-weight:500}
+.install-bar.show{display:flex}
+.install-bar .ib-txt{display:flex;align-items:center;gap:.6rem;min-width:0}
+.install-bar .ib-ic{font-size:1.2rem;flex:0 0 auto}
+.install-bar .ib-actions{display:flex;align-items:center;gap:.4rem;flex:0 0 auto}
+.install-bar .ib-go{background:#fff;color:var(--accent-ink);border:0;border-radius:10px;font-weight:700;padding:.5rem 1.1rem;cursor:pointer;font-family:var(--font-body);font-size:.9rem;transition:background-color .16s}
+.install-bar .ib-go:hover{background:#e9f4f5}
+.install-bar .ib-close{background:transparent;border:0;color:#fff;font-size:1rem;cursor:pointer;padding:.35rem .5rem;opacity:.85;line-height:1}
+.install-bar .ib-close:hover{opacity:1}
+.install-bar .ib-go:focus-visible,.install-bar .ib-close:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:560px){.install-bar{font-size:.85rem;padding:.6rem .85rem}.install-bar .ib-go{padding:.45rem .8rem;font-size:.82rem}}
 
 /* ---------- nav ---------- */
 .nav{position:sticky;top:0;z-index:50;background:rgba(253,246,236,.94);border-bottom:1px solid transparent;transition:border-color .2s ease}
@@ -195,6 +213,14 @@ footer{background:var(--surface);border-top:1px solid var(--rule);padding:3rem 0
 </style>
 </head>
 <body>
+
+<div class="install-bar" id="ib" role="region" aria-label="Installer l'application">
+  <span class="ib-txt"><span class="ib-ic" aria-hidden="true">📲</span><span id="ib-msg">Installez l'application : un accès direct sur l'écran d'accueil, même hors ligne.</span></span>
+  <span class="ib-actions">
+    <button type="button" class="ib-go" id="ib-go">Installer l'application</button>
+    <button type="button" class="ib-close" id="ib-x" aria-label="Fermer ce bandeau">✕</button>
+  </span>
+</div>
 
 <header class="nav" id="nav">
   <div class="nav-in">
@@ -497,6 +523,46 @@ footer{background:var(--surface);border-top:1px solid var(--rule);padding:3rem 0
     }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
     items.forEach(function (el) { io.observe(el); });
   }
+</script>
+
+<script>
+(function () {
+  // Enregistre le service worker depuis l'accueil : la page devient contrôlée,
+  // donc l'application est installable dès la landing (et l'accueil marche hors ligne).
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+  }
+
+  var bar = document.getElementById('ib');
+  var go = document.getElementById('ib-go');
+  var x = document.getElementById('ib-x');
+  var msg = document.getElementById('ib-msg');
+  var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  var dismissed = false; try { dismissed = localStorage.getItem('ib-dismissed') === '1'; } catch (e) {}
+  function show() { if (!standalone && !dismissed) bar.classList.add('show'); }
+  function hide() { bar.classList.remove('show'); }
+  x.addEventListener('click', function () { hide(); try { localStorage.setItem('ib-dismissed', '1'); } catch (e) {} });
+
+  // Android / Chrome / Edge : prompt d'installation natif
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; go.style.display = ''; show(); });
+  go.addEventListener('click', function () {
+    if (!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function () { deferred = null; hide(); });
+  });
+  window.addEventListener('appinstalled', function () { hide(); try { localStorage.setItem('ib-dismissed', '1'); } catch (e) {} });
+
+  // iOS Safari : pas de prompt natif possible -> mode d'emploi « Sur l'écran d'accueil »
+  var ua = navigator.userAgent || '';
+  var isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isSafari = /safari/i.test(ua) && !/chrome|crios|fxios|android/i.test(ua);
+  if (isIOS && isSafari) {
+    msg.innerHTML = "Installez l'app : appuyez sur <strong>Partager</strong>, puis « <strong>Sur l'écran d'accueil</strong> ».";
+    go.style.display = 'none';
+    show();
+  }
+})();
 </script>
 
 </body>
