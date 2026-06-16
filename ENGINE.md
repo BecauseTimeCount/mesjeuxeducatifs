@@ -8,7 +8,7 @@ de référence vivent dans `src/engine/types.ts`.
 
 Plateforme de jeux éducatifs 4-7 ans (GS/CP), 100 % client, offline-first,
 zéro compte, zéro tracking. Stack : Vite + React 19 + TypeScript strict +
-Tailwind 4 + vite-plugin-pwa. Déployée sous `/mesjeuxeducatifs/` (GitHub Pages).
+Tailwind 4 + vite-plugin-pwa. Déployée à la racine du domaine custom https://jeux.becausetimecounts.fr/ (GitHub Pages).
 Routing : HashRouter (`#/`, `#/jeu/:id`, `#/parents`).
 
 - Code en anglais, libellés UI en **français** (avec accents corrects).

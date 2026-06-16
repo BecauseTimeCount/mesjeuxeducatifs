@@ -4,10 +4,10 @@
 100 % gratuits, zéro pub, zéro compte, zéro tracking, hors ligne — et alignés sur les
 programmes officiels 2025 de l'Éducation nationale.**
 
-🎮 **Jouer : [becausetimecount.github.io/mesjeuxeducatifs](https://becausetimecount.github.io/mesjeuxeducatifs/)**
-· 🗺️ [Découvrir le projet](https://becausetimecount.github.io/mesjeuxeducatifs/decouvrir.html)
-· 📖 [Notre méthode](https://becausetimecount.github.io/mesjeuxeducatifs/methode.html)
-· 🩺 [Orthophonistes & enseignants](https://becausetimecount.github.io/mesjeuxeducatifs/orthophonistes.html)
+🎮 **Jouer : [jeux.becausetimecounts.fr](https://jeux.becausetimecounts.fr/)**
+· 🗺️ [Découvrir le projet](https://jeux.becausetimecounts.fr/decouvrir.html)
+· 📖 [Notre méthode](https://jeux.becausetimecounts.fr/methode.html)
+· 🩺 [Orthophonistes & enseignants](https://jeux.becausetimecounts.fr/orthophonistes.html)
 
 ![Le hub de l'Archipel](screenshots/v2-hub.png)
 
