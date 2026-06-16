@@ -15,7 +15,7 @@ Bible graphique (style, prompts IA, gabarits webp) : `art-direction.md` — à l
 - Persistance : IndexedDB via `idb-keyval`, clés `jayjay:<profileId>:<key>`
 - Audio : clips mp3 pré-générés (edge-tts) + fallback Web Speech ; SFX synthétisés Web Audio
 - Routing : HashRouter (`#/`, `#/jeu/:id`, `#/parents`) — robuste sur GitHub Pages
-- Déployé sous `/mesjeuxeducatifs/` (GitHub Pages, workflow Actions sur main)
+- Déployé sur https://jeux.becausetimecounts.fr/ (domaine custom GitHub Pages, workflow Actions sur main ; `public/CNAME`)
 - Package manager : **pnpm**
 
 ## Commandes

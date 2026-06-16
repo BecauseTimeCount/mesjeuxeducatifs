@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const PUB = resolve(ROOT, 'public')
-const SITE = 'https://becausetimecount.github.io/mesjeuxeducatifs/'
+const SITE = 'https://jeux.becausetimecounts.fr/'
 
 const { GAMES, ISLANDS_BY_ID } = await import('../src/games.manifest.ts')
 const { SKILL_MAP, SKILLS_BY_ID, DOMAIN_LABELS, LEVEL_LABELS } = await import(

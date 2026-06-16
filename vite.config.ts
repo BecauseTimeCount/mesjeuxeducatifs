@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'node:path'
 
-// Le site est servi sous https://becausetimecount.github.io/mesjeuxeducatifs/
-const BASE = '/mesjeuxeducatifs/'
+// Le site est servi à la racine du domaine custom https://jeux.becausetimecounts.fr/
+const BASE = '/'
 
 export default defineConfig({
   base: BASE,
