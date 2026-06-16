@@ -28,45 +28,132 @@ const esc = (s) =>
   s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
 
 const CSS = `
-:root{color-scheme:light}
-body{font-family:Nunito,system-ui,sans-serif;background:#faf6ec;color:#2b2620;margin:0;line-height:1.6}
-main{max-width:42rem;margin:0 auto;padding:1.5rem 1.25rem 3rem}
-a{color:#0f766e}
-h1{font-size:1.7rem;line-height:1.25}
-h2{font-size:1.2rem;margin-top:2rem}
-.card{background:#fff;border-radius:1rem;padding:1rem 1.25rem;margin:.75rem 0;box-shadow:0 2px 8px rgba(43,38,32,.08)}
-.cta{display:inline-block;background:#0f766e;color:#fff;font-weight:800;padding:.8rem 1.6rem;border-radius:1rem;text-decoration:none;margin:.75rem 0}
-.tag{display:inline-block;background:#efe7d3;border-radius:.5rem;padding:.1rem .5rem;font-size:.8rem;margin-right:.35rem}
-nav{font-size:.9rem;padding:1rem 1.25rem}
-footer{text-align:center;font-size:.85rem;color:#6f675c;padding:2rem 1rem}
+:root{
+  --paper:#fdf6ec;--surface:#fff;--ink:#16323d;--ink-mid:#3f5d6b;--ink-soft:#7c8f99;
+  --accent:#0e7490;--accent-ink:#0a4d57;--rule:rgba(22,50,61,.13);--rule-strong:rgba(22,50,61,.22);
+  --font-display:Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,"Times New Roman",serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink-mid);font-family:var(--font-body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+em{font-style:italic;color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-body);font-weight:700;font-size:.95rem;padding:.85rem 1.5rem;border-radius:13px;border:1px solid transparent;cursor:pointer;transition:background-color .16s,border-color .16s,color .16s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-ink);text-decoration:none}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.nav{position:sticky;top:0;z-index:50;background:rgba(253,246,236,.94);border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.scrolled{border-bottom-color:var(--rule)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:64px;max-width:1160px;margin:0 auto;padding:0 1.25rem}
+@media(min-width:640px){.nav-in{padding:0 2rem}}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-weight:600;font-size:1.05rem;color:var(--ink);white-space:nowrap}
+.brand:hover{text-decoration:none}
+.brand .mark{width:30px;height:30px;border-radius:9px;background:var(--accent);display:grid;place-items:center;font-size:1rem}
+.nav-links{display:none;align-items:center;gap:2rem}
+.nav-links a{font-size:.92rem;color:var(--ink-mid);font-weight:500}
+.nav-links a:hover{color:var(--ink);text-decoration:none}
+@media(min-width:860px){.nav-links{display:flex}}
+.nav-actions{display:flex;align-items:center;gap:.6rem}
+.nav .btn-primary{padding:.6rem 1.2rem;font-size:.9rem}
+.hamburger{display:inline-flex;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;flex:0 0 auto;border:1px solid var(--rule-strong);border-radius:11px;background:transparent;cursor:pointer;padding:0 10px}
+.hamburger span{display:block;height:2px;background:var(--ink);border-radius:2px;transition:transform .2s,opacity .2s}
+.hamburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.hamburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.hamburger:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(min-width:860px){.hamburger{display:none}}
+.mobile-menu{position:fixed;left:0;right:0;top:64px;z-index:49;background:var(--paper);border-bottom:1px solid var(--rule);box-shadow:0 22px 44px -26px rgba(22,50,61,.45);padding:.5rem 1.25rem 1.6rem;transform:translateY(-14px);opacity:0;visibility:hidden;transition:opacity .22s,transform .22s,visibility .22s}
+.mobile-menu.open{transform:none;opacity:1;visibility:visible}
+.mobile-menu a.mlink{display:block;padding:1rem .25rem;font-size:1.12rem;color:var(--ink);font-weight:500;border-bottom:1px solid var(--rule)}
+.mobile-menu a.mlink:hover{text-decoration:none}
+.mobile-menu .btn{margin-top:1.2rem;width:100%;justify-content:center}
+@media(min-width:860px){.mobile-menu{display:none}}
+main{max-width:48rem;margin:0 auto;padding:clamp(2.5rem,6vw,4.5rem) 1.25rem 4rem}
+@media(min-width:640px){main{padding-left:2rem;padding-right:2rem}}
+h1{font-family:var(--font-display);font-weight:600;color:var(--ink);font-size:clamp(1.9rem,4.5vw,2.8rem);line-height:1.12;letter-spacing:-.015em;margin:0 0 1rem}
+h2{font-family:var(--font-display);font-weight:600;color:var(--ink);font-size:clamp(1.3rem,2.6vw,1.7rem);line-height:1.2;margin:2.5rem 0 .5rem}
+p{margin:.9rem 0;color:var(--ink-mid)}
+strong{color:var(--ink)}
 ul{padding-left:1.2rem}
+li{margin:.5rem 0}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:1.2rem 1.35rem;margin:.9rem 0;box-shadow:0 10px 30px -24px rgba(22,50,61,.5)}
+.card strong{color:var(--ink)}
+.cta{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent);color:#fff;font-weight:700;padding:.85rem 1.6rem;border-radius:13px;text-decoration:none;margin:1rem 0;transition:background-color .16s}
+.cta:hover{background:var(--accent-ink);text-decoration:none}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:rgba(14,116,144,.09);border:1px solid rgba(14,116,144,.18);color:var(--accent-ink);border-radius:999px;padding:.2rem .55rem;margin:0 .35rem .35rem 0}
+small{color:var(--ink-soft)}
+footer{border-top:1px solid var(--rule);background:var(--surface);padding:2.5rem 1.25rem;color:var(--ink-soft);font-size:.9rem;text-align:center;margin-top:3rem}
+footer .fl{display:flex;flex-wrap:wrap;gap:.9rem 1.1rem;justify-content:center;margin-top:1rem}
+footer .fl a{color:var(--ink-mid)}
 `.trim()
 
-/** Gabarit commun : depth = profondeur du fichier sous public/ (0 ou 1). */
-function page({ depth, path, title, description, body, jsonLd }) {
-  const up = depth === 0 ? './' : '../'
+/** Gabarit premium commun : header + menu hamburger + footer, identité de la landing.
+ *  Liens de navigation en absolu racine -> fonctionnent depuis n'importe quelle profondeur. */
+function page({ path, title, description, body, jsonLd }) {
   const url = SITE + path
   const html = `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
+<meta name="theme-color" content="#0e7490">
 <link rel="canonical" href="${url}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${url}">
-<link rel="icon" href="${up}icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
 <style>${CSS}</style>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ''}
 </head>
 <body>
-<nav><a href="${up}">🏝️ Mes Jeux Éducatifs — L’Archipel</a></nav>
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true">🦜</span> L’Archipel</a>
+    <nav class="nav-links" aria-label="Navigation principale">
+      <a href="/methode.html">La méthode</a>
+      <a href="/orthophonistes.html">Professionnels</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="/jouer/">Les jeux</a>
+      <button class="hamburger" id="hb" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a class="mlink" href="/">Accueil</a>
+    <a class="mlink" href="/methode.html">La méthode</a>
+    <a class="mlink" href="/orthophonistes.html">Professionnels — orthophonistes &amp; enseignants</a>
+    <a class="mlink" href="/contact.html">Contact</a>
+    <a class="btn btn-primary" href="/jouer/">▶ Découvrir les jeux</a>
+  </div>
+</header>
 <main>${body}</main>
-<footer>100 % gratuit · zéro pub · zéro compte · zéro tracking · les données restent sur votre tablette.<br>
-<a href="${up}">Accueil</a> · <a href="${up}methode.html">Notre méthode</a> · <a href="${up}orthophonistes.html">Pour les orthophonistes</a> · <a href="${up}contact.html">Contact</a> · <a href="${up}jeux/">Tous les jeux</a> · <a href="${up}competences/">Les compétences</a></footer>
+<footer>
+  100 % gratuit · zéro pub · zéro compte · zéro tracking · vos données restent sur votre appareil.
+  <span class="fl">
+    <a href="/">Accueil</a><a href="/methode.html">Méthode</a><a href="/orthophonistes.html">Professionnels</a>
+    <a href="/contact.html">Contact</a><a href="/jeux/">Tous les jeux</a><a href="/competences/">Les compétences</a><a href="/jouer/">Jouer</a>
+  </span>
+</footer>
+<script>
+(function(){
+  var nav=document.getElementById('nav');
+  function s(){nav.classList.toggle('scrolled',window.scrollY>8)}s();window.addEventListener('scroll',s,{passive:true});
+  var hb=document.getElementById('hb'),mm=document.getElementById('mobile-menu');
+  function set(o){mm.classList.toggle('open',o);hb.setAttribute('aria-expanded',o?'true':'false');hb.setAttribute('aria-label',o?'Fermer le menu':'Ouvrir le menu')}
+  hb.addEventListener('click',function(){set(!mm.classList.contains('open'))});
+  mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){set(false)})});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
+  window.addEventListener('resize',function(){if(window.innerWidth>=860)set(false)});
+})();
+</script>
 </body>
 </html>`
   const out = resolve(PUB, path)
