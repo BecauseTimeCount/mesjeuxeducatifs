@@ -9,6 +9,15 @@ const BASE = '/'
 
 export default defineConfig({
   base: BASE,
+  build: {
+    rollupOptions: {
+      input: {
+        // Landing statique à la racine, application (SPA) sous /jouer/
+        main: path.resolve(__dirname, 'index.html'),
+        app: path.resolve(__dirname, 'jouer/index.html'),
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -19,7 +28,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,mp3,json,webmanifest}'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         cleanupOutdatedCaches: true,
-        navigateFallback: `${BASE}index.html`,
+        navigateFallback: '/jouer/index.html',
         // Les jeux V1 sont de vraies pages HTML précachées, pas des routes SPA
         navigateFallbackDenylist: [/\/v1\//],
       },
@@ -31,8 +40,8 @@ export default defineConfig({
         lang: 'fr',
         display: 'standalone',
         orientation: 'any',
-        start_url: BASE,
-        scope: BASE,
+        start_url: '/jouer/',
+        scope: '/',
         background_color: '#fdf6ec',
         theme_color: '#0e7490',
         icons: [
