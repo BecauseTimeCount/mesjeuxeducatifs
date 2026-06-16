@@ -66,7 +66,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
 <nav><a href="${up}">🏝️ Mes Jeux Éducatifs — L’Archipel</a></nav>
 <main>${body}</main>
 <footer>100 % gratuit · zéro pub · zéro compte · zéro tracking · les données restent sur votre tablette.<br>
-<a href="${up}decouvrir.html">Découvrir</a> · <a href="${up}methode.html">Notre méthode</a> · <a href="${up}orthophonistes.html">Pour les orthophonistes</a> · <a href="${up}jeux/">Tous les jeux</a> · <a href="${up}competences/">Les compétences</a></footer>
+<a href="${up}">Accueil</a> · <a href="${up}methode.html">Notre méthode</a> · <a href="${up}orthophonistes.html">Pour les orthophonistes</a> · <a href="${up}contact.html">Contact</a> · <a href="${up}jeux/">Tous les jeux</a> · <a href="${up}competences/">Les compétences</a></footer>
 </body>
 </html>`
   const out = resolve(PUB, path)
@@ -90,7 +90,7 @@ for (const g of V2) {
 L’enfant manipule directement — il construit, règle, trace ou tape sa réponse : jamais de simple
 choix multiple. Toutes les consignes sont lues à voix haute : un enfant qui ne sait pas encore
 lire est autonome de bout en bout.</p>
-<a class="cta" href="../#/jeu/${g.id}">▶ Jouer à ${esc(g.title)}</a>
+<a class="cta" href="/jouer/#/jeu/${g.id}">▶ Jouer à ${esc(g.title)}</a>
 <h2>Compétences officielles travaillées</h2>
 ${skills
   .map(
@@ -135,7 +135,7 @@ avec les libellés officiels des programmes.</p>`
 <p>${V2.length} jeux éducatifs gratuits, sans publicité et sans compte, pour les enfants de
 4 à 7 ans (Grande Section, CP, CE1). Chaque jeu travaille des compétences précises des
 programmes 2025 par la manipulation directe.</p>
-<a class="cta" href="../">▶ Entrer dans l’Archipel</a>
+<a class="cta" href="/jouer/">▶ Entrer dans l’Archipel</a>
 ${[...byIsland.entries()]
   .map(([islandId, games]) => {
     const island = ISLANDS_BY_ID.get(islandId)
@@ -184,7 +184,7 @@ ${
     ? games
         .map(
           (g) => `<div class="card">${g.icon} <a href="../jeux/${g.id}.html"><strong>${esc(g.title)}</strong></a> — ${esc(g.tagline)}<br>
-<a class="cta" href="../#/jeu/${g.id}">▶ Jouer</a></div>`,
+<a class="cta" href="/jouer/#/jeu/${g.id}">▶ Jouer</a></div>`,
         )
         .join('\n')
     : `<p>Cette compétence sera couverte par un prochain jeu de l’Archipel — la carte des
@@ -301,7 +301,7 @@ jeunes enfants. Le site n’a aucun intérêt à maximiser votre temps : il ne v
 <div class="card">Tout est stocké sur votre appareil (IndexedDB). Aucun serveur, aucun cookie,
 aucun traceur, aucun compte. Un export JSON permet de changer de tablette. Le code est ouvert
 et lisible par tous.</div>
-<a class="cta" href="./">▶ Entrer dans l’Archipel</a>`,
+<a class="cta" href="/jouer/">▶ Entrer dans l’Archipel</a>`,
   }),
 )
 
@@ -349,13 +349,13 @@ adaptativement les paires b/d, p/q, m/n dans les trois graphies, cursive compris
 </ul>
 <p>Une remarque, un besoin, une compétence à couvrir ? Le projet est ouvert aux contributions
 (corpus de mots, gabarits de problèmes) — voir le dépôt GitHub.</p>
-<a class="cta" href="./">▶ Découvrir l’Archipel</a>`,
+<a class="cta" href="/jouer/">▶ Découvrir l’Archipel</a>`,
   }),
 )
 
 // ---------- Sitemap ----------
 {
-  const all = [SITE, SITE + 'decouvrir.html', ...urls]
+  const all = [SITE, SITE + 'jouer/', SITE + 'contact.html', ...urls]
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${all.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}
