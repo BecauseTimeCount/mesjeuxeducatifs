@@ -397,7 +397,7 @@ export const GAMES: GameMeta[] = [
   },
   {
     id: 'carre-magique',
-    title: 'Le Carré Magique des Robots',
+    title: 'La Grille des Robots',
     tagline: 'Un seul robot par ligne, par colonne et par carré !',
     icon: '🧩',
     island: 'robots',

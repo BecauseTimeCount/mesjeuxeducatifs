@@ -120,10 +120,10 @@ function GhoStyles() {
 
 /** Positions des 4 moments sur l'arc du ciel (de gauche à droite). */
 const MOMENT_SLOTS: ReadonlyArray<{ moment: Moment; left: string; top: string; emoji: string }> = [
-  { moment: 'matin', left: '9%', top: '62%', emoji: '🌅' },
-  { moment: 'midi', left: '33%', top: '20%', emoji: '☀️' },
-  { moment: 'apres-midi', left: '67%', top: '20%', emoji: '🌤️' },
-  { moment: 'soir', left: '91%', top: '62%', emoji: '🌙' },
+  { moment: 'matin', left: '10%', top: '60%', emoji: '🌅' },
+  { moment: 'midi', left: '40%', top: '12%', emoji: '☀️' },
+  { moment: 'apres-midi', left: '66%', top: '30%', emoji: '🌤️' },
+  { moment: 'soir', left: '90%', top: '60%', emoji: '🌙' },
 ]
 
 const SEASON_EMOJI: Readonly<Record<Season, string>> = {
