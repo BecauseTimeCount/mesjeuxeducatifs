@@ -105,7 +105,10 @@ describe('génération d’items résolubles', () => {
             // taper la cible résout l'item, taper un autre échoue
             expect(tapShapeCorrect(item, item.targetId)).toBe(true)
             for (const id of item.optionIds) {
-              expect(tapShapeCorrect(item, id)).toBe(id === item.targetId)
+              // Inclusion : le carré est aussi un rectangle (accepté pour la cible « rectangle »).
+              const expected =
+                id === item.targetId || (item.targetId === 'rectangle' && id === 'carre')
+              expect(tapShapeCorrect(item, id)).toBe(expected)
             }
           } else if (item.kind === 'tap-solid') {
             expect(item.optionIds).toContain(item.targetId)
@@ -197,6 +200,22 @@ describe('validation', () => {
     }
     expect(tapSolidCorrect(item, 'cube')).toBe(true)
     expect(tapSolidCorrect(item, 'boule')).toBe(false)
+  })
+
+  it('inclusion carré ⊂ rectangle : le carré vaut pour « trouve le rectangle »', () => {
+    const rect: TapShapeItem = {
+      kind: 'tap-shape',
+      tier: 0,
+      targetId: 'rectangle',
+      optionIds: ['rectangle', 'carre', 'triangle'],
+    }
+    expect(tapShapeCorrect(rect, 'rectangle')).toBe(true)
+    expect(tapShapeCorrect(rect, 'carre')).toBe(true) // un carré est un rectangle
+    expect(tapShapeCorrect(rect, 'triangle')).toBe(false)
+    // L'inverse est faux : un rectangle allongé n'est pas un carré.
+    const carre: TapShapeItem = { ...rect, targetId: 'carre' }
+    expect(tapShapeCorrect(carre, 'carre')).toBe(true)
+    expect(tapShapeCorrect(carre, 'rectangle')).toBe(false)
   })
 })
 
