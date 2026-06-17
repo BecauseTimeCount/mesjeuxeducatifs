@@ -42,7 +42,7 @@ import {
 import type { CrmProgress, PuzzleItem, TierId } from './logic'
 
 // ============================================================
-// Le Carré Magique des Robots — sudoku 4x4 avec 4 pièces de robot.
+// La Grille des Robots — sudoku 4x4 avec 4 pièces de robot.
 // L'enfant PRODUIT la grille : tap-pièce (palette) puis tap-case vide.
 // Une pose interdite rebondit hors de la case et la ligne/colonne/carré
 // fautif clignote ; après 2 erreurs sur la même case, les pièces
@@ -53,7 +53,7 @@ const STORE_KEY = 'game:carre-magique'
 
 const META: GameMeta = GAMES_BY_ID.get('carre-magique') ?? {
   id: 'carre-magique',
-  title: 'Le Carré Magique des Robots',
+  title: 'La Grille des Robots',
   tagline: 'Un seul robot par ligne, par colonne et par carré !',
   icon: '🧩',
   island: 'robots',
@@ -382,7 +382,7 @@ export default function CarreMagique() {
       className="grid gap-1.5 rounded-card bg-white/70 p-2"
       style={{ gridTemplateColumns: `repeat(${SIZE}, minmax(0, 1fr))` }}
       role="group"
-      aria-label="Grille du carré magique"
+      aria-label="Grille des robots"
     >
       {grid.map((val, idx) => {
         const given = it.given[idx] !== EMPTY

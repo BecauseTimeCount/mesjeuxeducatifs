@@ -1,5 +1,5 @@
 // ============================================================
-// Le Carré Magique des Robots — logique PURE (aucun import React/DOM).
+// La Grille des Robots — logique PURE (aucun import React/DOM).
 //
 // Sudoku 4x4 : carré latin de symboles 0..3 sur 4 lignes, 4 colonnes
 // et 4 régions 2x2. L'enfant PRODUIT la grille en posant un symbole

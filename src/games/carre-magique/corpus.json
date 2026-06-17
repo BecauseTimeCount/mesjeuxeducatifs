@@ -63,12 +63,12 @@
     },
     {
       "id": "crm.niveau.2",
-      "text": "Le défi : la moitié de la grille à reconstruire.",
+      "text": "Le défi : cinq cases à reconstruire !",
       "voice": "eloise"
     },
     {
       "id": "crm.niveau.3",
-      "text": "Maître du carré magique : presque tout est à deviner !",
+      "text": "Maître de la grille : presque tout est à deviner !",
       "voice": "eloise"
     },
     { "id": "crm.piece.robot", "text": "le robot", "voice": "denise" },

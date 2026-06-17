@@ -333,10 +333,12 @@ export interface ServeOpts {
   written: boolean
 }
 
-function mkServe(target: Frac, totalParts: number, written: boolean): ServeItem {
+function mkServe(target: Frac, totalParts: number, written: boolean, support?: Support): ServeItem {
   return {
     kind: 'serve',
-    support: pick(SUPPORTS),
+    // Forcé pour les commandes dont le clip nomme « la pizza » (gag, équivalence) ;
+    // sinon support au hasard. Évite « la pizza coupée en quatre » sur un gâteau.
+    support: support ?? pick(SUPPORTS),
     totalParts,
     target,
     written,
@@ -352,12 +354,12 @@ export function generateServe(
   // Gag d'Henri (~1 fois sur 7) : « toute la pizza ! » — on sert tout.
   if (opts.allowGag && randInt(1, 7) === 1) {
     const den = pick(densForLevel(level))
-    const gag = mkServe({ num: den, den }, den, opts.written)
+    const gag = mkServe({ num: den, den }, den, opts.written, 'pizza')
     if (itemKey(gag) !== prevKey) return gag
   }
   // Équivalence forcée (~1 fois sur 4) : la moitié d'une pizza en 4 = 2 parts.
   if (opts.allowEquiv && randInt(1, 4) === 1) {
-    const equiv = mkServe({ num: 1, den: 2 }, 4, opts.written)
+    const equiv = mkServe({ num: 1, den: 2 }, 4, opts.written, 'pizza')
     if (itemKey(equiv) !== prevKey) return equiv
   }
   const targets = targetsForLevel(level)
