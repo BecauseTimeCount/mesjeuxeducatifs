@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Tuner } from '@/engine/adaptive'
 import { preloadClips, say, sfx } from '@/engine/audio'
 import { recordAttempt } from '@/engine/mastery'
+import { randInt } from '@/engine/rng'
 import { pget, pset } from '@/engine/storage'
 import type { CorpusEntry, GameMeta, LevelResult } from '@/engine/types'
 import { GAMES_BY_ID } from '@/games.manifest'
@@ -116,24 +117,89 @@ function teachClip(item: FormeItem): string {
 /**
  * Une vraie figure (carré, rectangle, triangle, cercle), pas un emoji.
  * Choix géométriques volontaires — ne pas « arrondir » :
- *  • polygones REMPLIS à angles VIFS : un carré (ou un rectangle, un
- *    triangle) aux coins arrondis n'en est plus un — donc ni `rx`, ni
- *    jointure arrondie ;
- *  • le cercle est la LIGNE ronde (anneau non rempli, sans intérieur) :
- *    un rond rempli serait un disque, pas un cercle.
+ *  • polygones REMPLIS à angles VIFS (ni `rx`, ni jointure arrondie) — un
+ *    carré aux coins arrondis n'en est plus un ;
+ *  • le cercle est la LIGNE ronde (anneau non rempli) — pas un disque.
+ *
+ * Avec `seed`, on tire un EXEMPLAIRE varié plutôt que le prototype figé :
+ * le carré n'est pas toujours posé à plat (parfois « en losange »), le
+ * rectangle pas toujours 2:1 horizontal, le triangle pas toujours
+ * équilatéral pointe en haut (isocèle / scalène / rectangle, pointé dans
+ * toutes les directions). On évite ainsi le « concept image » erroné où
+ * seul le prototype serait reconnu. La forme reste mathématiquement la
+ * même : seul l'exemplaire change. Sans `seed` (icônes de bacs), on rend
+ * la figure canonique, bien lisible.
  */
-function ShapeGlyph({ id, size = 96 }: { id: ShapeKind; size?: number }): ReactNode {
-  const poly = { fill: ACCENT, stroke: '#1e3a4c', strokeWidth: 4, strokeLinejoin: 'miter' as const }
-  let figure: ReactNode = null
-  if (id === 'carre') {
-    figure = <rect x={12} y={12} width={76} height={76} {...poly} />
-  } else if (id === 'rectangle') {
-    figure = <rect x={6} y={28} width={88} height={44} {...poly} />
-  } else if (id === 'triangle') {
-    figure = <polygon points="50,10 92,86 8,86" {...poly} />
-  } else {
-    figure = <circle cx={50} cy={50} r={40} fill="none" stroke={ACCENT} strokeWidth={12} />
+
+/** PRNG déterministe (mulberry32) : même seed → même exemplaire stable. */
+function seededRandom(seed: number): () => number {
+  let a = (seed >>> 0) || 1
+  return () => {
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
+}
+
+/** Gabarits de triangles (sommets centrés ~50,50, rayon ≤ 38) — types variés. */
+const TRIANGLE_TEMPLATES: readonly string[] = [
+  '50,14 81,68 19,68', // équilatéral
+  '24,24 24,76 76,76', // rectangle (angle droit)
+  '20,40 84,54 44,82', // scalène quelconque
+  '50,28 82,70 18,70', // isocèle large et plat
+  '50,14 68,82 32,82', // isocèle haut et étroit
+]
+/** Orientations : pointe en haut, en bas, sur le côté, oblique… */
+const TRIANGLE_ANGLES: readonly number[] = [0, 36, 90, 144, 180, 216, 270, 324]
+
+function ShapeGlyph({
+  id,
+  size = 96,
+  seed,
+}: {
+  id: ShapeKind
+  size?: number
+  seed?: number
+}): ReactNode {
+  const poly = { fill: ACCENT, stroke: '#1e3a4c', strokeWidth: 4, strokeLinejoin: 'miter' as const }
+  const rnd = seed === undefined ? null : seededRandom(seed)
+  let figure: ReactNode = null
+
+  if (id === 'cercle') {
+    // Invariant par rotation : un seul rendu (la ligne ronde).
+    figure = <circle cx={50} cy={50} r={40} fill="none" stroke={ACCENT} strokeWidth={12} />
+  } else if (id === 'carre') {
+    const angle = rnd ? Math.round(rnd() * 90) : 0
+    const s = 52 // demi-diagonale 36,8 → tient dans la viewBox même tourné à 45°
+    figure = (
+      <g transform={`rotate(${angle} 50 50)`}>
+        <rect x={50 - s / 2} y={50 - s / 2} width={s} height={s} {...poly} />
+      </g>
+    )
+  } else if (id === 'rectangle') {
+    const aspect = rnd ? 1.45 + rnd() * 1.15 : 2 // jamais ~1, sinon ce serait un carré
+    const diag = 74
+    const h = diag / Math.sqrt(aspect * aspect + 1)
+    const w = aspect * h
+    const angle = rnd ? Math.round(rnd() * 180) : 0
+    figure = (
+      <g transform={`rotate(${angle} 50 50)`}>
+        <rect x={50 - w / 2} y={50 - h / 2} width={w} height={h} {...poly} />
+      </g>
+    )
+  } else {
+    const points = rnd
+      ? TRIANGLE_TEMPLATES[Math.floor(rnd() * TRIANGLE_TEMPLATES.length)]
+      : TRIANGLE_TEMPLATES[0]
+    const angle = rnd ? TRIANGLE_ANGLES[Math.floor(rnd() * TRIANGLE_ANGLES.length)] : 0
+    figure = (
+      <g transform={`rotate(${angle} 50 50)`}>
+        <polygon points={points} {...poly} />
+      </g>
+    )
+  }
+
   return (
     <svg
       viewBox="0 0 100 100"
@@ -168,6 +234,8 @@ export default function AtelierFormes() {
   const [overlay, setOverlay] = useState<'success' | 'retry' | null>(null)
   const [mood, setMood] = useState<'idle' | 'happy' | 'shake'>('idle')
   const [animKey, setAnimKey] = useState(0)
+  /** Graine d'exemplaire : un nouvel item → de nouveaux exemplaires de figures. */
+  const [variantSeed, setVariantSeed] = useState(1)
   const [hint, setHint] = useState(false)
   /** Id de l'option/bac qui vient d'être tapé par erreur (feedback visuel). */
   const [wrongId, setWrongId] = useState<string | null>(null)
@@ -236,6 +304,7 @@ export default function AtelierFormes() {
     const first = generateItem(t, 0)
     setTier(t)
     setItem(first)
+    setVariantSeed(randInt(1, 1_000_000))
     setResolved(0)
     setFirstTryCorrect(0)
     setPhase('idle')
@@ -362,6 +431,7 @@ export default function AtelierFormes() {
     setWrongId(null)
     setFoundId(null)
     setItem(next)
+    setVariantSeed(randInt(1, 1_000_000))
     void speakConsigne(next)
   }
 
@@ -466,7 +536,7 @@ export default function AtelierFormes() {
     const cols = it.optionIds.length >= 4 ? 'grid-cols-2' : 'grid-cols-3'
     return (
       <div className={`game-surface grid w-full max-w-md gap-3 ${cols}`}>
-        {it.optionIds.map((id) => {
+        {it.optionIds.map((id, i) => {
           const shape = SHAPES_BY_ID.get(id)
           const glow = hint && id === it.targetId
           const isWrong = wrongId === id
@@ -481,7 +551,7 @@ export default function AtelierFormes() {
               className={`tap-target card flex flex-col items-center justify-center gap-1 py-4 transition-transform active:scale-90 ${glow ? 'animate-pulse-glow' : ''} ${isWrong ? 'animate-shake-soft' : ''} ${found ? 'animate-pop' : ''}`}
               style={glow ? { outline: `4px solid ${ACCENT}` } : undefined}
             >
-              <ShapeGlyph id={id} size={84} />
+              <ShapeGlyph id={id} size={84} seed={variantSeed * 131 + i} />
             </button>
           )
         })}
@@ -528,7 +598,7 @@ export default function AtelierFormes() {
     return (
       <div className="game-surface flex w-full max-w-md flex-col items-center gap-4">
         <div key={animKey} className={showAnim} aria-label={shape?.name}>
-          <ShapeGlyph id={it.shapeId} size={108} />
+          <ShapeGlyph id={it.shapeId} size={108} seed={variantSeed} />
         </div>
         <div className="grid w-full grid-cols-3 gap-2.5">
           {it.bins.map((bin) => {
@@ -546,7 +616,7 @@ export default function AtelierFormes() {
                 style={glow ? { outline: `4px solid ${ACCENT}` } : undefined}
               >
                 <span aria-hidden="true">
-                  <ShapeGlyph id={BIN_SHAPE[bin]} size={40} />
+                  <ShapeGlyph id={BIN_SHAPE[bin]} size={46} />
                 </span>
                 <span className="text-sm font-extrabold text-ink">{def?.label}</span>
               </button>
