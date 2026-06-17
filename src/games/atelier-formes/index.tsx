@@ -113,21 +113,26 @@ function teachClip(item: FormeItem): string {
 
 // ---------- Figures planes dessinées en SVG ----------
 
-/** Une vraie figure (carré, rectangle, triangle, cercle), pas un emoji. */
+/**
+ * Une vraie figure (carré, rectangle, triangle, cercle), pas un emoji.
+ * Choix géométriques volontaires — ne pas « arrondir » :
+ *  • polygones REMPLIS à angles VIFS : un carré (ou un rectangle, un
+ *    triangle) aux coins arrondis n'en est plus un — donc ni `rx`, ni
+ *    jointure arrondie ;
+ *  • le cercle est la LIGNE ronde (anneau non rempli, sans intérieur) :
+ *    un rond rempli serait un disque, pas un cercle.
+ */
 function ShapeGlyph({ id, size = 96 }: { id: ShapeKind; size?: number }): ReactNode {
-  const fill = ACCENT
-  const stroke = '#1e3a4c'
-  const sw = 4
-  const common = { fill, stroke, strokeWidth: sw, strokeLinejoin: 'round' as const }
+  const poly = { fill: ACCENT, stroke: '#1e3a4c', strokeWidth: 4, strokeLinejoin: 'miter' as const }
   let figure: ReactNode = null
   if (id === 'carre') {
-    figure = <rect x={12} y={12} width={76} height={76} rx={6} {...common} />
+    figure = <rect x={12} y={12} width={76} height={76} {...poly} />
   } else if (id === 'rectangle') {
-    figure = <rect x={6} y={28} width={88} height={44} rx={6} {...common} />
+    figure = <rect x={6} y={28} width={88} height={44} {...poly} />
   } else if (id === 'triangle') {
-    figure = <polygon points="50,10 92,86 8,86" {...common} />
+    figure = <polygon points="50,10 92,86 8,86" {...poly} />
   } else {
-    figure = <circle cx={50} cy={50} r={40} {...common} />
+    figure = <circle cx={50} cy={50} r={40} fill="none" stroke={ACCENT} strokeWidth={12} />
   }
   return (
     <svg
@@ -142,6 +147,10 @@ function ShapeGlyph({ id, size = 96 }: { id: ShapeKind; size?: number }): ReactN
     </svg>
   )
 }
+
+/** Icône d'un bac « nombre de côtés » = la figure SVG correspondante (angles
+ *  vifs / vrai anneau), jamais un emoji « carré » aux coins arrondis. */
+const BIN_SHAPE: Record<SideBin, ShapeKind> = { s3: 'triangle', s4: 'carre', s0: 'cercle' }
 
 type Screen = 'menu' | 'play' | 'end'
 type Phase = 'idle' | 'success' | 'error'
@@ -536,8 +545,8 @@ export default function AtelierFormes() {
                 className={`tap-target card flex flex-col items-center justify-center gap-1 py-4 transition-transform active:scale-95 ${glow ? 'animate-pulse-glow' : ''} ${isWrong ? 'animate-shake-soft' : ''}`}
                 style={glow ? { outline: `4px solid ${ACCENT}` } : undefined}
               >
-                <span className="text-3xl leading-none" aria-hidden="true">
-                  {def?.emoji}
+                <span aria-hidden="true">
+                  <ShapeGlyph id={BIN_SHAPE[bin]} size={40} />
                 </span>
                 <span className="text-sm font-extrabold text-ink">{def?.label}</span>
               </button>
