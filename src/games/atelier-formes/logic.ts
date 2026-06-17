@@ -297,9 +297,15 @@ export function itemEntity(item: FormeItem): string {
 // Validation
 // ------------------------------------------------------------
 
-/** Mode tap figure : la figure tapée est-elle la cible ? */
+/**
+ * Mode tap figure : la figure tapée est-elle une bonne réponse ?
+ * Inclusion assumée : un carré EST un rectangle (cas particulier à 4 côtés
+ * égaux), donc le carré est accepté quand on demande « le rectangle ».
+ * L'inverse est faux : un rectangle allongé n'est pas un carré.
+ */
 export function tapShapeCorrect(item: TapShapeItem, shapeId: ShapeKind): boolean {
-  return shapeId === item.targetId
+  if (shapeId === item.targetId) return true
+  return item.targetId === 'rectangle' && shapeId === 'carre'
 }
 
 /** Mode tap solide : le solide tapé est-il la cible ? */
