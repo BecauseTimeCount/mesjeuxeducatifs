@@ -53,7 +53,9 @@ for (;;) {
     console.error(JSON.stringify(j).slice(0, 1500)); process.exit(1)
   }
   if (/complet|succe|done|finish/.test(status) && urls.length) {
-    const url = urls[0]
+    // Préférer l'URL dont l'extension correspond au fichier de sortie (ex. .glb plutôt que l'aperçu .png).
+    const ext = (out.match(/\.(\w+)$/) || [])[1]
+    const url = urls.find((u) => ext && new RegExp(`\\.${ext}(\\?|$)`, 'i').test(u)) ?? urls[0]
     const res = await fetch(url)
     if (!res.ok) throw new Error(`download ${res.status}`)
     mkdirSync(dirname(out), { recursive: true })
