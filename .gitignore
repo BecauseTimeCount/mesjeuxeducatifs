@@ -21,3 +21,6 @@ public/competences/
 public/methode.html
 public/orthophonistes.html
 public/sitemap.xml
+
+# Sources brutes des assets IA (piste arcade) — seuls les derives optimises sont commites
+assets-src/
