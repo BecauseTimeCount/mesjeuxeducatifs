@@ -12,7 +12,8 @@
     "typecheck": "tsc -b --noEmit",
     "audio": "python scripts/generate-audio.py",
     "icons": "node scripts/make-icons.mjs",
-    "seo": "node scripts/generate-seo.mjs"
+    "seo": "node scripts/generate-seo.mjs",
+    "e2e:arcade": "node scripts/arcade/e2e.mjs"
   },
   "dependencies": {
     "@fontsource/nunito": "^5.2.5",
@@ -39,6 +40,7 @@
     "@types/three": "0.185.4",
     "@vitejs/plugin-react": "^4.5.0",
     "meshoptimizer": "^1.2.0",
+    "playwright": "^1.63.0",
     "sharp": "^0.34.0",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3",

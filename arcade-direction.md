@@ -91,6 +91,7 @@ watermark, blurry, cluttered`.
 
 - Chunk JS arcade (three + R3F + drei sélectif + jeu) : ≤ 300 Ko gzip, chargé uniquement pour le jeu.
 - Assets par jeu arcade : ≤ 6 Mo, ≤ 3 Mo par fichier (précache Workbox), GLB meshopt, textures webp ≤ 1024².
-- Rendu tablette : dpr ≤ 1.5, < 50 draw calls, < 150 k triangles, pas de post-processing, 60 fps iPad /
-  ≥ 30 fps Android milieu de gamme.
+- Rendu tablette : dpr ≤ 1.5, < 50 draw calls hors passe d'ombres (`gl.info.render.calls` compte aussi
+  cette passe : seuil e2e 70), < 150 k triangles, pas de post-processing, 60 fps iPad / ≥ 30 fps Android
+  milieu de gamme. Ombres projetées réservées aux gros volumes (corps, truck, brochettes).
 - Cibles tactiles ≥ 64 px à l'écran (hit-mesh invisible plus large que l'objet).

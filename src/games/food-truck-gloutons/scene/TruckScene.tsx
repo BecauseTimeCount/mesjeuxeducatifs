@@ -97,7 +97,7 @@ export function TruckScene() {
           <Instanced items={PARASOL_POLES} material={mat(PALETTE.woodDark)}>
             <cylinderGeometry args={[0.04, 0.04, 2.8, 8]} />
           </Instanced>
-          <Instanced items={PARASOL_TOPS} material={mat(PALETTE.coral)} castShadow>
+          <Instanced items={PARASOL_TOPS} material={mat(PALETTE.coral)}>
             <coneGeometry args={[1.5, 0.7, 10]} />
           </Instanced>
         </>

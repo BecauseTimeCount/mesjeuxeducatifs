@@ -143,7 +143,8 @@ export function HudLayer() {
             </BigButton>
           </>
         ) : (
-          <div className="w-full max-w-sm rounded-card bg-white/85 p-2 shadow-card" data-testid="ftg-numpad">
+          /* pavé compact, à droite en paysage pour laisser le plateau et les caisses visibles */
+          <div className="w-full max-w-[300px] self-center rounded-card bg-white/85 p-2 shadow-card sm:self-end" data-testid="ftg-numpad">
             <NumPad value={typed} onChange={setTyped} onValidate={serve} maxLen={5} />
           </div>
         )}

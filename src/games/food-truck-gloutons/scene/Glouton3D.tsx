@@ -85,7 +85,7 @@ export function Glouton3D({
         <mesh ref={mouth} position={[0, 0.6, 0.47]} scale={MOUTH_BASE} material={mat(PALETTE.inkDeep)}>
           <sphereGeometry args={[1, 16, 12]} />
         </mesh>
-        <Instanced items={ARMS} material={mat(color)} castShadow>
+        <Instanced items={ARMS} material={mat(color)}>
           <sphereGeometry args={[1, 12, 10]} />
         </Instanced>
         <Instanced items={FEET} material={mat(color)}>
@@ -93,10 +93,10 @@ export function Glouton3D({
         </Instanced>
         {chef && (
           <group position={[0.06, 1.2, 0.02]} rotation={[0, 0, -0.12]}>
-            <mesh position={[0, 0.06, 0]} material={mat(PALETTE.white, { roughness: 0.7 })} castShadow>
+            <mesh position={[0, 0.06, 0]} material={mat(PALETTE.white, { roughness: 0.7 })}>
               <cylinderGeometry args={[0.22, 0.25, 0.14, 20]} />
             </mesh>
-            <mesh position={[0, 0.24, 0]} scale={[0.3, 0.2, 0.3]} material={mat(PALETTE.white, { roughness: 0.7 })} castShadow>
+            <mesh position={[0, 0.24, 0]} scale={[0.3, 0.2, 0.3]} material={mat(PALETTE.white, { roughness: 0.7 })}>
               <sphereGeometry args={[1, 20, 14]} />
             </mesh>
           </group>

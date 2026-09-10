@@ -15,7 +15,7 @@ export function Truck3D() {
       <mesh position={[0, 1.25, 0]} material={mat(PALETTE.truck)} castShadow receiveShadow>
         <boxGeometry args={[6.4, 2.3, 2.6]} />
       </mesh>
-      <mesh position={[0, 2.5, 0]} material={mat(PALETTE.cream)} castShadow>
+      <mesh position={[0, 2.5, 0]} material={mat(PALETTE.cream)}>
         <boxGeometry args={[6.6, 0.3, 2.8]} />
       </mesh>
       {/* fenêtre de service (encre douce) */}
@@ -23,7 +23,7 @@ export function Truck3D() {
         <boxGeometry args={[3.6, 1.1, 0.04]} />
       </mesh>
       {/* cabine + pare-brise */}
-      <mesh position={[-3.5, 0.9, 0]} material={mat(PALETTE.truck)} castShadow>
+      <mesh position={[-3.5, 0.9, 0]} material={mat(PALETTE.truck)}>
         <boxGeometry args={[1.4, 1.6, 2.4]} />
       </mesh>
       <mesh position={[-3.5, 1.5, 0]} material={mat(PALETTE.sky, { roughness: 0.35 })}>
@@ -31,15 +31,15 @@ export function Truck3D() {
       </mesh>
       {/* auvent rayé lagon / crème, haut et court pour ne pas cacher Gloup vu d'en haut */}
       <group position={[0.4, 2.85, 2.0]} rotation={[0.22, 0, 0]}>
-        <Instanced items={STRIPES_TEAL} material={mat(PALETTE.lagoon)} castShadow>
+        <Instanced items={STRIPES_TEAL} material={mat(PALETTE.lagoon)}>
           <boxGeometry args={[0.5, 0.08, 1.3]} />
         </Instanced>
-        <Instanced items={STRIPES_CREAM} material={mat(PALETTE.cream)} castShadow>
+        <Instanced items={STRIPES_CREAM} material={mat(PALETTE.cream)}>
           <boxGeometry args={[0.5, 0.08, 1.3]} />
         </Instanced>
       </group>
       {/* roues */}
-      <Instanced items={WHEELS} material={mat(PALETTE.ink)} castShadow>
+      <Instanced items={WHEELS} material={mat(PALETTE.ink)}>
         <cylinderGeometry args={[0.42, 0.42, 0.3, 20]} />
       </Instanced>
       {/* comptoir en bois devant la fenêtre */}

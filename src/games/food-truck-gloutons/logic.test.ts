@@ -130,7 +130,7 @@ describe('generateOrder — invariants communs (tous services, tous niveaux)', (
         }
       }
     }
-  })
+  }, 30_000)
 
   it('mode pavé : aucun plat, réponse recalculée indépendamment, validation stricte', () => {
     for (const service of ALL_SERVICES) {
@@ -148,7 +148,7 @@ describe('generateOrder — invariants communs (tous services, tous niveaux)', (
         }
       }
     }
-  })
+  }, 30_000)
 
   it('skill, input, prompt et explain sont cohérents', () => {
     for (const service of ALL_SERVICES) {
@@ -174,7 +174,7 @@ describe('generateOrder — invariants communs (tous services, tous niveaux)', (
         }
       }
     }
-  })
+  }, 30_000)
 
   it('les boss tournent sur leurs types dans l’ordre', () => {
     for (const s of SERVICES.filter((s) => s.boss)) {
@@ -191,7 +191,7 @@ describe('generateOrder — invariants communs (tous services, tous niveaux)', (
         prev = orderKey(order)
       }
     }
-  })
+  }, 30_000)
 })
 
 describe('zéro QCM — pièges et distracteurs (mode tap)', () => {

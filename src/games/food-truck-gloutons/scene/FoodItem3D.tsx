@@ -32,7 +32,7 @@ function Balls({ count, material }: { count: number; material: ReturnType<typeof
     im.instanceMatrix.needsUpdate = true
   }, [count])
   return (
-    <instancedMesh ref={ref} args={[undefined, undefined, count]} material={material} castShadow>
+    <instancedMesh ref={ref} args={[undefined, undefined, count]} material={material}>
       <sphereGeometry args={[0.1, 14, 10]} />
     </instancedMesh>
   )
