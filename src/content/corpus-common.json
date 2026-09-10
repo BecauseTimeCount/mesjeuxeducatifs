@@ -464,6 +464,438 @@
     {
       "id": "nombre.100",
       "text": "cent"
+    },
+    {
+      "id": "nombre.110",
+      "text": "cent-dix"
+    },
+    {
+      "id": "nombre.120",
+      "text": "cent-vingt"
+    },
+    {
+      "id": "nombre.130",
+      "text": "cent-trente"
+    },
+    {
+      "id": "nombre.140",
+      "text": "cent-quarante"
+    },
+    {
+      "id": "nombre.150",
+      "text": "cent-cinquante"
+    },
+    {
+      "id": "nombre.160",
+      "text": "cent-soixante"
+    },
+    {
+      "id": "nombre.170",
+      "text": "cent-soixante-dix"
+    },
+    {
+      "id": "nombre.180",
+      "text": "cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.190",
+      "text": "cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.200",
+      "text": "deux-cents"
+    },
+    {
+      "id": "nombre.210",
+      "text": "deux-cent-dix"
+    },
+    {
+      "id": "nombre.220",
+      "text": "deux-cent-vingt"
+    },
+    {
+      "id": "nombre.230",
+      "text": "deux-cent-trente"
+    },
+    {
+      "id": "nombre.240",
+      "text": "deux-cent-quarante"
+    },
+    {
+      "id": "nombre.250",
+      "text": "deux-cent-cinquante"
+    },
+    {
+      "id": "nombre.260",
+      "text": "deux-cent-soixante"
+    },
+    {
+      "id": "nombre.270",
+      "text": "deux-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.280",
+      "text": "deux-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.290",
+      "text": "deux-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.300",
+      "text": "trois-cents"
+    },
+    {
+      "id": "nombre.310",
+      "text": "trois-cent-dix"
+    },
+    {
+      "id": "nombre.320",
+      "text": "trois-cent-vingt"
+    },
+    {
+      "id": "nombre.330",
+      "text": "trois-cent-trente"
+    },
+    {
+      "id": "nombre.340",
+      "text": "trois-cent-quarante"
+    },
+    {
+      "id": "nombre.350",
+      "text": "trois-cent-cinquante"
+    },
+    {
+      "id": "nombre.360",
+      "text": "trois-cent-soixante"
+    },
+    {
+      "id": "nombre.370",
+      "text": "trois-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.380",
+      "text": "trois-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.390",
+      "text": "trois-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.400",
+      "text": "quatre-cents"
+    },
+    {
+      "id": "nombre.410",
+      "text": "quatre-cent-dix"
+    },
+    {
+      "id": "nombre.420",
+      "text": "quatre-cent-vingt"
+    },
+    {
+      "id": "nombre.430",
+      "text": "quatre-cent-trente"
+    },
+    {
+      "id": "nombre.440",
+      "text": "quatre-cent-quarante"
+    },
+    {
+      "id": "nombre.450",
+      "text": "quatre-cent-cinquante"
+    },
+    {
+      "id": "nombre.460",
+      "text": "quatre-cent-soixante"
+    },
+    {
+      "id": "nombre.470",
+      "text": "quatre-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.480",
+      "text": "quatre-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.490",
+      "text": "quatre-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.500",
+      "text": "cinq-cents"
+    },
+    {
+      "id": "nombre.510",
+      "text": "cinq-cent-dix"
+    },
+    {
+      "id": "nombre.520",
+      "text": "cinq-cent-vingt"
+    },
+    {
+      "id": "nombre.530",
+      "text": "cinq-cent-trente"
+    },
+    {
+      "id": "nombre.540",
+      "text": "cinq-cent-quarante"
+    },
+    {
+      "id": "nombre.550",
+      "text": "cinq-cent-cinquante"
+    },
+    {
+      "id": "nombre.560",
+      "text": "cinq-cent-soixante"
+    },
+    {
+      "id": "nombre.570",
+      "text": "cinq-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.580",
+      "text": "cinq-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.590",
+      "text": "cinq-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.600",
+      "text": "six-cents"
+    },
+    {
+      "id": "nombre.610",
+      "text": "six-cent-dix"
+    },
+    {
+      "id": "nombre.620",
+      "text": "six-cent-vingt"
+    },
+    {
+      "id": "nombre.630",
+      "text": "six-cent-trente"
+    },
+    {
+      "id": "nombre.640",
+      "text": "six-cent-quarante"
+    },
+    {
+      "id": "nombre.650",
+      "text": "six-cent-cinquante"
+    },
+    {
+      "id": "nombre.660",
+      "text": "six-cent-soixante"
+    },
+    {
+      "id": "nombre.670",
+      "text": "six-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.680",
+      "text": "six-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.690",
+      "text": "six-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.700",
+      "text": "sept-cents"
+    },
+    {
+      "id": "nombre.710",
+      "text": "sept-cent-dix"
+    },
+    {
+      "id": "nombre.720",
+      "text": "sept-cent-vingt"
+    },
+    {
+      "id": "nombre.730",
+      "text": "sept-cent-trente"
+    },
+    {
+      "id": "nombre.740",
+      "text": "sept-cent-quarante"
+    },
+    {
+      "id": "nombre.750",
+      "text": "sept-cent-cinquante"
+    },
+    {
+      "id": "nombre.760",
+      "text": "sept-cent-soixante"
+    },
+    {
+      "id": "nombre.770",
+      "text": "sept-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.780",
+      "text": "sept-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.790",
+      "text": "sept-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.800",
+      "text": "huit-cents"
+    },
+    {
+      "id": "nombre.810",
+      "text": "huit-cent-dix"
+    },
+    {
+      "id": "nombre.820",
+      "text": "huit-cent-vingt"
+    },
+    {
+      "id": "nombre.830",
+      "text": "huit-cent-trente"
+    },
+    {
+      "id": "nombre.840",
+      "text": "huit-cent-quarante"
+    },
+    {
+      "id": "nombre.850",
+      "text": "huit-cent-cinquante"
+    },
+    {
+      "id": "nombre.860",
+      "text": "huit-cent-soixante"
+    },
+    {
+      "id": "nombre.870",
+      "text": "huit-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.880",
+      "text": "huit-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.890",
+      "text": "huit-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.900",
+      "text": "neuf-cents"
+    },
+    {
+      "id": "nombre.910",
+      "text": "neuf-cent-dix"
+    },
+    {
+      "id": "nombre.920",
+      "text": "neuf-cent-vingt"
+    },
+    {
+      "id": "nombre.930",
+      "text": "neuf-cent-trente"
+    },
+    {
+      "id": "nombre.940",
+      "text": "neuf-cent-quarante"
+    },
+    {
+      "id": "nombre.950",
+      "text": "neuf-cent-cinquante"
+    },
+    {
+      "id": "nombre.960",
+      "text": "neuf-cent-soixante"
+    },
+    {
+      "id": "nombre.970",
+      "text": "neuf-cent-soixante-dix"
+    },
+    {
+      "id": "nombre.980",
+      "text": "neuf-cent-quatre-vingts"
+    },
+    {
+      "id": "nombre.990",
+      "text": "neuf-cent-quatre-vingt-dix"
+    },
+    {
+      "id": "nombre.1000",
+      "text": "mille"
+    },
+    {
+      "id": "nombre.1500",
+      "text": "mille-cinq-cents"
+    },
+    {
+      "id": "nombre.2000",
+      "text": "deux-mille"
+    },
+    {
+      "id": "nombre.2500",
+      "text": "deux-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.3000",
+      "text": "trois-mille"
+    },
+    {
+      "id": "nombre.3500",
+      "text": "trois-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.4000",
+      "text": "quatre-mille"
+    },
+    {
+      "id": "nombre.4500",
+      "text": "quatre-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.5000",
+      "text": "cinq-mille"
+    },
+    {
+      "id": "nombre.5500",
+      "text": "cinq-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.6000",
+      "text": "six-mille"
+    },
+    {
+      "id": "nombre.6500",
+      "text": "six-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.7000",
+      "text": "sept-mille"
+    },
+    {
+      "id": "nombre.7500",
+      "text": "sept-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.8000",
+      "text": "huit-mille"
+    },
+    {
+      "id": "nombre.8500",
+      "text": "huit-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.9000",
+      "text": "neuf-mille"
+    },
+    {
+      "id": "nombre.9500",
+      "text": "neuf-mille-cinq-cents"
+    },
+    {
+      "id": "nombre.10000",
+      "text": "dix-mille"
     }
   ]
 }

@@ -1,0 +1,67 @@
+{
+  "voice-default": "denise",
+  "entries": [
+    {
+      "id": "ftg.intro",
+      "text": "Bienvenue au Food-Truck des Gloutons ! Moi c'est Gloup. Toi, tu es le chef ! Choisis un arrêt, puis appuie sur Jouer.",
+      "voice": "eloise"
+    },
+    { "id": "ftg.consigne.veut", "text": "Il veut...", "voice": "denise" },
+    { "id": "ftg.consigne.deja", "text": "Il a déjà...", "voice": "denise" },
+    { "id": "ftg.consigne.combien", "text": "Combien il en faut encore ?", "voice": "denise" },
+    {
+      "id": "ftg.consigne.jumeaux",
+      "text": "Ce sont des jumeaux : ce que tu sers, ils le mangent tous les deux ! À eux deux, ils veulent...",
+      "voice": "denise"
+    },
+    { "id": "ftg.consigne.paquets-de", "text": "paquets de...", "voice": "denise" },
+    { "id": "ftg.consigne.en-paquets-de", "text": "en paquets de...", "voice": "denise" },
+    { "id": "ftg.consigne.combien-paquets", "text": "Combien de paquets ?", "voice": "denise" },
+    { "id": "ftg.consigne.double", "text": "Il veut le double de...", "voice": "denise" },
+    { "id": "ftg.consigne.moitie", "text": "Il veut la moitié de...", "voice": "denise" },
+    { "id": "ftg.consigne.tape", "text": "Tape le nombre, puis appuie sur Servir.", "voice": "denise" },
+    { "id": "ftg.consigne.sers", "text": "Sers-le, puis appuie sur Servir.", "voice": "denise" },
+    { "id": "ftg.gloup", "text": "Gloup ! Parfait, chef !", "voice": "henri" },
+    { "id": "ftg.trop", "text": "Hic ! C'est trop !", "voice": "henri" },
+    { "id": "ftg.pas-assez", "text": "Encore faim...", "voice": "henri" },
+    { "id": "ftg.ca-fait", "text": "Ça fait...", "voice": "denise" },
+    { "id": "ftg.il-voulait", "text": "Il en voulait...", "voice": "denise" },
+    { "id": "ftg.plus", "text": "plus...", "voice": "denise" },
+    { "id": "ftg.egale", "text": "égale...", "voice": "denise" },
+    { "id": "ftg.indice", "text": "Regarde, les bons plats brillent !", "voice": "eloise" },
+    { "id": "ftg.indice-pave", "text": "Regarde, la réponse brille sur le pavé !", "voice": "eloise" },
+    {
+      "id": "ftg.acte.1",
+      "text": "Premier arrêt : la Plage des Dix. Ici, tout le monde veut dix !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ftg.acte.2",
+      "text": "Deuxième arrêt : le Marché des Dizaines. Une caisse, c'est dix brochettes d'un coup !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ftg.acte.3",
+      "text": "Troisième arrêt : le Port des Cent. Les dockers ont une faim de cent ! Tape ce qu'il manque, je prépare les caisses.",
+      "voice": "eloise"
+    },
+    {
+      "id": "ftg.acte.4",
+      "text": "Quatrième arrêt : la Fête des Paquets. Ici, on sert par paquets !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ftg.acte.5",
+      "text": "Dernier arrêt : le Volcan des Mille. Chut... le Glouton Ancestral dort. Pour le réveiller gentiment, il faut servir mille !",
+      "voice": "eloise"
+    },
+    {
+      "id": "ftg.boss",
+      "text": "Un Grand Gourmand arrive ! Il commande un menu : plusieurs plats d'affilée.",
+      "voice": "eloise"
+    },
+    { "id": "ftg.sticker", "text": "Un nouveau sticker pour le truck !", "voice": "eloise" },
+    { "id": "ftg.fin", "text": "Le tour de l'Archipel est terminé. Merci, chef !", "voice": "eloise" },
+    { "id": "ftg.niveau.verrouille", "text": "Cet arrêt est encore fermé. Termine l'arrêt précédent avec deux étoiles !", "voice": "eloise" }
+  ]
+}

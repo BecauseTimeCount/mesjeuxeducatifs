@@ -108,7 +108,7 @@ Services :
 
 Sticker : ancre.
 
-## Acte 4 — La Fête des Paquets (CE2, périodes 1-2)
+## Acte 4 — La Fête des Paquets (CE1, périodes 2-5, + un service CE2)
 
 Décor : fête foraine du village, guirlandes soleil, ciel du soir. Clients : familles de gloutons en
 chapeaux de fête. Équipement débloqué : **la machine à paquets** — les aliments sortent groupés
@@ -117,22 +117,23 @@ chapeaux de fête. Équipement débloqué : **la machine à paquets** — les al
 Gloup : « À la fête, on sert par paquets ! Cinq paquets de quatre, ça fait combien ? »
 
 Services :
-- **S9 · Tables de 2, 5, 10** — `ma.ce2.mult.tables-2-5-10` — pavé. « n paquets de k » avec n ∈ [2, 9] ;
+- **S9 · Tables de 2, 5, 10** — `ma.ce1.mult.tables-2-5-10` — pavé. « n paquets de k » avec n ∈ [2, 9] ;
   le plateau montre les paquets servis, Gloup les compte de k en k au recomptage.
-- **S10 · Tables de 3 et 4** — `ma.ce2.mult.tables-3-4` — pavé.
-- **S11 · Combien de paquets ?** — `ma.ce2.mult.tables-2-5-10` (sens inverse) — pavé. « Il veut 20, en
-  paquets de 4 » → 5.
-- **S12 · Doubles et moitiés** — `ma.ce2.calc.doubles-moities100` — pavé. « Le double de 35 », « la
+- **S10 · Tables de 3 et 4** — `ma.ce1.mult.tables-3-4` — pavé.
+- **S11 · Combien de paquets ?** — `ma.ce1.mult.tables-2-5-10` (sens inverse) — pavé. « Il veut 20, en
+  paquets de 5 » → 4.
+- **S12 · Doubles et moitiés** — `ma.ce1.calc.doubles-moities100` — pavé. « Le double de 35 », « la
   moitié de 48 ». Moitié de pair ≤ 40 / double ≤ 50 et moitié ≤ 100.
-- **Boss · Le Forain** — menu qui mêle ×5 et ×10 avec des paquets déjà servis (« il a déjà 2 paquets de 5,
-  il en veut 40 »).
+- **S13 · Paquets de 6 à 9** — `ma.ce2.mult.tables-6-9` — pavé. Service **CE2** : tables de 6, 7, 8, 9.
+- **Boss · Le Forain** — menu qui tourne sur tables 2-5-10, tables 3-4 et doubles/moitiés.
 
 Sticker : ballon.
 
-Note pédagogique : le niveau (CE1 ou CE2) des tables ×2 ×5 ×10 est à confirmer contre le BO 2025 cycle 2
-avant de figer les ids de compétences ; le scénario ne change pas, seul le libellé du skill bouge.
+Note pédagogique (BO n°41 du 31/10/2024, programme 2025) : les tables de 2, 3, 4, 5 et 10 sont au
+**CE1** ; le CE2 complète avec 6, 7, 8, 9 et 100. Les nombres vont jusqu'à 1000 au CE1 (période 2) et
+jusqu'à 10 000 au CE2. Les ids de compétences suivent cette répartition.
 
-## Acte 5 — Le Volcan des Mille (CE2, périodes 3-5)
+## Acte 5 — Le Volcan des Mille (CE1, période 3, + un service CE2)
 
 Décor : flanc du volcan de l'île du Monde, nuit raisin, lave corail douce (jamais menaçante), lucioles.
 Le Glouton Ancestral dort au sommet. Équipement débloqué : **la grande caisse de 100**.
@@ -140,39 +141,46 @@ Le Glouton Ancestral dort au sommet. Équipement débloqué : **la grande caisse
 Gloup : « Chut… le Glouton Ancestral dort. Pour le réveiller gentiment, il faut servir mille ! »
 
 Services (multiples de 10 uniquement, pour rester 100 % clips audio) :
-- **S13 · Compléments à 1000 en centaines** — `ma.ce2.calc.complements1000` — pavé. Déjà mangé multiple de 100.
-- **S14 · Jusqu'à la centaine** — `ma.ce2.calc.complements1000` — pavé. « Il veut 700, il a 640. »
-- **S15 · Commande directe** — `ma.ce2.calc.complements1000` — pavé. « Il veut 640. » Le plateau montre
+- **S14 · Compléments à 1000 en centaines** — `ma.ce1.num.complements1000` — pavé. Déjà mangé multiple de 100
+  (puis de 50).
+- **S15 · Jusqu'à la centaine** — `ma.ce1.num.complements1000` — pavé. « Il veut 700, il a 640. »
+- **S16 · Grande commande** — `ma.ce1.num.complements1000` — pavé. « Il veut 640. » Le plateau montre
   6 grandes caisses et 4 caisses.
-- **Boss final · Le Glouton Ancestral** — menu de 3 commandes à 1000 ; à la troisième, il se réveille, danse,
-  et le volcan crache des confettis.
+- **S17 · Dix mille en milliers** — `ma.ce2.num.complements10000` — pavé. Service **CE2** : « il veut
+  10 000, il a 3 000 » en caisses de 1000 (puis multiples de 500).
+- **Boss final · Le Glouton Ancestral** — menu qui tourne sur les compléments à 1000 ; au dernier plat,
+  il se réveille, danse, et le volcan crache des confettis.
 
 Sticker : couronne. Générique : le truck redescend vers le port, couvert de stickers, sous les étoiles.
 
 ## Tableau récapitulatif
 
+La source de vérité est `src/games/food-truck-gloutons/logic.ts` (`SERVICES`, `KIND_SKILL`, `KIND_INPUT`).
+
 ```
-Service  Acte  Type                        Compétence                          Saisie
-S1       1     complement10                ma.cp.complements10                 tap
-S2       1     double (jumeaux)            ma.cp.doubles                       tap
-B1       1     boss doubles                ma.cp.doubles                       tap
-S3       2     complement-dizaine          ma.ce1.calc.complement-dizaine      tap
-S4       2     passage-dizaine             ma.ce1.calc.passage-dizaine         tap
-S5       2     decompo100 (caisses)        ma.cp.num.decompo100                tap
-B2       2     boss marché                 mixte acte 2                        tap
-S6       3     complements100-dizaines     ma.ce1.calc.complements100          pavé
-S7       3     complements100              ma.ce1.calc.complements100          pavé
-S8       3     decompo100 (directe)        ma.cp.num.decompo100                pavé
-B3       3     boss capitaine              ma.ce1.calc.complements100          pavé
-S9       4     table 2 5 10                ma.ce2.mult.tables-2-5-10           pavé
-S10      4     table 3 4                   ma.ce2.mult.tables-3-4              pavé
-S11      4     paquets-inverse             ma.ce2.mult.tables-2-5-10           pavé
-S12      4     double-moitie               ma.ce2.calc.doubles-moities100      pavé
-B4       4     boss forain                 mixte acte 4                        pavé
-S13      5     complement1000-centaines    ma.ce2.calc.complements1000         pavé
-S14      5     complement-centaine         ma.ce2.calc.complements1000         pavé
-S15      5     decompo1000                 ma.ce2.calc.complements1000         pavé
-B5       5     boss ancestral              ma.ce2.calc.complements1000         pavé
+Service  Acte  Type                        Compétence                          Niveau  Saisie
+S1       1     complement10                ma.cp.complements10                 CP      tap
+S2       1     double (jumeaux)            ma.cp.doubles                       CP      tap
+B1       1     boss (double, complement10) —                                   CP      tap
+S3       2     complement-dizaine          ma.ce1.calc.complement-dizaine      CE1 P1  tap
+S4       2     passage-dizaine             ma.ce1.calc.passage-dizaine         CE1 P1  tap
+S5       2     decompo100-tap (caisses)    ma.cp.num.decompo100                CP      tap
+B2       2     boss marché                 —                                   CE1     tap
+S6       3     complements100-dizaines     ma.ce1.calc.complements100          CE1 P2  pavé
+S7       3     complements100              ma.ce1.calc.complements100          CE1 P2  pavé
+S8       3     decompo100 (directe)        ma.cp.num.decompo100                CP      pavé
+B3       3     boss capitaine              —                                   CE1     pavé
+S9       4     tables-2-5-10               ma.ce1.mult.tables-2-5-10           CE1 P2  pavé
+S10      4     tables-3-4                  ma.ce1.mult.tables-3-4              CE1 P4  pavé
+S11      4     paquets-inverse             ma.ce1.mult.tables-2-5-10           CE1     pavé
+S12      4     double-moitie               ma.ce1.calc.doubles-moities100      CE1 P3  pavé
+S13      4     tables-6-9                  ma.ce2.mult.tables-6-9              CE2 P2  pavé
+B4       4     boss forain                 —                                   CE1     pavé
+S14      5     complement1000-centaines    ma.ce1.num.complements1000          CE1 P3  pavé
+S15      5     complement-centaine         ma.ce1.num.complements1000          CE1 P3  pavé
+S16      5     decompo1000                 ma.ce1.num.complements1000          CE1 P3  pavé
+S17      5     complement10000-milliers    ma.ce2.num.complements10000         CE2 P2  pavé
+B5       5     boss ancestral              —                                   CE1     pavé
 ```
 
 ## Corpus audio provisoire (`ftg.*`)
