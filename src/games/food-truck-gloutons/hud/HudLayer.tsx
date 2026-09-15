@@ -48,8 +48,8 @@ function Ticket() {
         <span aria-hidden>🔊</span>
       </button>
       <div className="flex flex-col leading-tight">
-        <span className="text-xl font-extrabold text-ink sm:text-2xl">{line1}</span>
-        {line2 && <span className="text-base font-bold text-ink-soft sm:text-lg">{line2}</span>}
+        <span className="text-base font-extrabold text-ink sm:text-lg">{line1}</span>
+        {line2 && <span className="text-sm font-bold text-ink-soft sm:text-base">{line2}</span>}
         {hint && order.input === 'numpad' && (
           <span className="animate-pulse-glow text-2xl font-extrabold" style={{ color: ACCENT }} data-testid="ftg-hint">
             → {order.answer}
@@ -72,7 +72,7 @@ function BellyGauge() {
   const over = total > target
   return (
     <div className="flex w-full max-w-md flex-col gap-1" aria-live="polite">
-      <div className="flex items-baseline justify-between text-lg font-extrabold text-ink">
+      <div className="flex items-baseline justify-between text-2xl font-extrabold text-ink">
         <span>
           {given > 0 ? `${given} + ` : ''}
           {order.factor === 2 ? '2 × ' : ''}
@@ -82,7 +82,7 @@ function BellyGauge() {
           {total} / {target}
         </span>
       </div>
-      <div className="h-4 w-full overflow-hidden rounded-full bg-white/80 ring-1 ring-ink/10">
+      <div className="h-5 w-full overflow-hidden rounded-full bg-white/85 ring-2 ring-ink/10">
         <div
           className="h-full rounded-full transition-[width] duration-300"
           style={{ width: `${ratio * 100}%`, background: over ? '#ff7866' : ACCENT }}
@@ -132,7 +132,7 @@ export function HudLayer() {
             <BigButton
               variant="accent"
               accent={ACCENT}
-              className="w-full max-w-xs text-2xl"
+              className="w-full max-w-sm text-3xl"
               disabled={!canServe}
               onClick={() => {
                 void say(E('ftg.servir'), { interrupt: true })

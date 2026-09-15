@@ -1,7 +1,10 @@
 import { useLayoutEffect, useRef } from 'react'
+import { AssetBoundary } from '@/arcade/AssetBoundary'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { MathUtils, Object3D, type Group, type InstancedMesh } from 'three'
+import { ASSETS } from '../assets'
 import type { FoodItem } from '../logic'
+import { GlbProp } from './GlbProp'
 import { mat, PALETTE } from './materials'
 
 export interface FoodItem3DProps {
@@ -17,6 +20,24 @@ export interface FoodItem3DProps {
 }
 
 const dummy = new Object3D()
+/** GLB Tripo de la caisse : ~1 unité, centré → posé au sol à +0.5 ; largeur monde ≈ 0.9. */
+const CRATE_SCALE = 0.9
+const CRATE_LIFT = 0.26
+
+/** Caisse procédurale (repli, et caisse de 100 / 1000) : boîte bois + couvercle lagon. */
+function CrateBox({ kind, material }: { kind: FoodItem['kind']; material: ReturnType<typeof mat> }) {
+  const small = kind === 'caisse10'
+  return (
+    <group>
+      <mesh position={[0, 0.22, 0]} material={material} castShadow>
+        <boxGeometry args={[small ? 0.7 : 0.95, 0.44, small ? 0.5 : 0.7]} />
+      </mesh>
+      <mesh position={[0, 0.46, 0]} material={mat(small ? PALETTE.lagoon : PALETTE.lagoonDeep)}>
+        <boxGeometry args={[small ? 0.62 : 0.86, 0.06, small ? 0.42 : 0.62]} />
+      </mesh>
+    </group>
+  )
+}
 
 /** N boulettes empilées en UN draw call (InstancedMesh). */
 function Balls({ count, material }: { count: number; material: ReturnType<typeof mat> }) {
@@ -25,7 +46,7 @@ function Balls({ count, material }: { count: number; material: ReturnType<typeof
     const im = ref.current
     if (!im) return
     for (let i = 0; i < count; i++) {
-      dummy.position.set(0, 0.16 + i * 0.1, 0)
+      dummy.position.set(0, 0.22 + i * 0.13, 0)
       dummy.updateMatrix()
       im.setMatrixAt(i, dummy.matrix)
     }
@@ -33,7 +54,7 @@ function Balls({ count, material }: { count: number; material: ReturnType<typeof
   }, [count])
   return (
     <instancedMesh ref={ref} args={[undefined, undefined, count]} material={material}>
-      <sphereGeometry args={[0.1, 14, 10]} />
+      <sphereGeometry args={[0.135, 16, 12]} />
     </instancedMesh>
   )
 }
@@ -72,26 +93,28 @@ export function FoodItem3D({ item, home, tray, selected, glow, disabled, onTap }
   return (
     <group ref={group} position={[home[0], home[1], home[2]]}>
       {/* hit-mesh invisible : 1,4× la taille visible */}
-      <mesh position={[0, 0.5, 0]} visible={false} onPointerDown={handle}>
-        <boxGeometry args={[1.1, 1.3, 1.1]} />
+      <mesh position={[0, 0.7, 0]} visible={false} onPointerDown={handle}>
+        <boxGeometry args={[1.2, 1.7, 1.2]} />
       </mesh>
       {item.kind === 'brochette' ? (
         <group>
-          <mesh position={[0, 0.5, 0]} material={mat(PALETTE.woodDark)} castShadow>
-            <cylinderGeometry args={[0.03, 0.03, 1.05, 8]} />
+          <mesh position={[0, 0.72, 0]} material={mat(PALETTE.woodDark)} castShadow>
+            <cylinderGeometry args={[0.035, 0.035, 1.45, 8]} />
           </mesh>
           <Balls key={`${item.value}-${glow ? 'g' : 'n'}`} count={item.value} material={material} />
         </group>
+      ) : item.kind === 'caisse10' ? (
+        /* caisse de 10 brochettes : GLB Tripo (planche « aliments »), repli boîte pendant le chargement */
+        <AssetBoundary fallback={<CrateBox kind={item.kind} material={material} />}>
+          <GlbProp url={ASSETS.crate10} position={[0, CRATE_LIFT * CRATE_SCALE, 0]} scale={CRATE_SCALE} />
+          {glow && (
+            <mesh position={[0, 0.3, 0]} material={mat(PALETTE.sun, { emissive: PALETTE.sun })}>
+              <torusGeometry args={[0.55, 0.04, 8, 32]} />
+            </mesh>
+          )}
+        </AssetBoundary>
       ) : (
-        <group>
-          <mesh position={[0, 0.22, 0]} material={material} castShadow>
-            <boxGeometry args={[item.kind === 'caisse10' ? 0.7 : 0.95, 0.44, item.kind === 'caisse10' ? 0.5 : 0.7]} />
-          </mesh>
-          {/* couvercle lagon : une caisse = dix (ou cent) d'un coup */}
-          <mesh position={[0, 0.46, 0]} material={mat(item.kind === 'caisse10' ? PALETTE.lagoon : PALETTE.lagoonDeep)}>
-            <boxGeometry args={[item.kind === 'caisse10' ? 0.62 : 0.86, 0.06, item.kind === 'caisse10' ? 0.42 : 0.62]} />
-          </mesh>
-        </group>
+        <CrateBox kind={item.kind} material={material} />
       )}
     </group>
   )
