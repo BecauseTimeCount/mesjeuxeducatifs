@@ -12,7 +12,11 @@ const CARD_CLASS =
 function CardContent({ game }: GameCardProps) {
   return (
     <>
-      {game.status === 'v2' ? (
+      {game.tag === 'arcade' ? (
+        <span className="absolute -top-2.5 right-3 rounded-full bg-ink px-2.5 py-0.5 text-xs font-extrabold text-white shadow-sm">
+          3D
+        </span>
+      ) : game.status === 'v2' ? (
         <span className="absolute -top-2.5 right-3 rounded-full bg-sun px-2.5 py-0.5 text-xs font-extrabold text-ink shadow-sm">
           Nouveau&nbsp;!
         </span>

@@ -45,8 +45,32 @@ for (const [game, bytes] of [...byGame].sort()) {
   if (over) failed = true
 }
 
-// --- Budget précache global (approximation : art + audio + icons) ---
-const totalBytes = ['art', 'audio', 'icons']
+// --- Budget par jeu arcade (public/arcade/<jeu>/**, arcade-direction.md §7) ---
+// ≤ 6 Mo par jeu, ≤ 3 Mo par fichier : au-delà de 6 Mo Workbox exclut SILENCIEUSEMENT le fichier
+// du précache et le jeu casse hors-ligne sans erreur de build.
+const ARCADE_GAME_BUDGET_MO = 6
+const ARCADE_FILE_BUDGET_MO = 3
+const arcadeFiles = tryWalk(join(ROOT, 'public', 'arcade'))
+const byArcadeGame = new Map()
+for (const f of arcadeFiles) {
+  const rel = f.slice(join(ROOT, 'public', 'arcade').length + 1)
+  const game = rel.split(/[\\/]/)[0]
+  const size = statSync(f).size
+  byArcadeGame.set(game, (byArcadeGame.get(game) ?? 0) + size)
+  if (size / 1024 / 1024 > ARCADE_FILE_BUDGET_MO) {
+    console.log(`DÉPASSÉ  arcade/${rel} — ${(size / 1024 / 1024).toFixed(2)} Mo / ${ARCADE_FILE_BUDGET_MO} Mo par fichier`)
+    failed = true
+  }
+}
+for (const [game, bytes] of [...byArcadeGame].sort()) {
+  const mo = bytes / 1024 / 1024
+  const over = mo > ARCADE_GAME_BUDGET_MO
+  console.log(`${over ? 'DÉPASSÉ ' : 'ok      '} arcade/${game} — ${mo.toFixed(2)} Mo / ${ARCADE_GAME_BUDGET_MO} Mo`)
+  if (over) failed = true
+}
+
+// --- Budget précache global (approximation : art + audio + icons + arcade) ---
+const totalBytes = ['art', 'audio', 'icons', 'arcade']
   .flatMap((d) => tryWalk(join(ROOT, 'public', d)))
   .reduce((sum, f) => sum + statSync(f).size, 0)
 const totalMo = totalBytes / 1024 / 1024

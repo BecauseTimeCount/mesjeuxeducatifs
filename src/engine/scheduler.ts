@@ -38,7 +38,7 @@ export interface DailyPathInput {
 }
 
 /** Ordre de préférence des niveaux pour les nouvelles notions. */
-const LEVEL_RANK: Record<SkillDef['level'], number> = { gs: 0, cp: 1, ce1: 2 }
+const LEVEL_RANK: Record<SkillDef['level'], number> = { gs: 0, cp: 1, ce1: 2, ce2: 3 }
 
 /** Ratio de réussite sur la fenêtre glissante (fenêtre non vide). */
 function successRatio(p: SkillProgress): number {
