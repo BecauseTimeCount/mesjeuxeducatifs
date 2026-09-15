@@ -34,12 +34,14 @@ export interface GameMeta {
   status: GameStatus
   /** Jeux classiques : chemin relatif vers la page V1, ex: 'v1/calcul-aventure.html' */
   href?: string
+  /** Piste « arcade » : jeu 3D (React Three Fiber), bible dans arcade-direction.md */
+  tag?: 'arcade'
 }
 
 // ---------- Compétences (skill-map) ----------
 export type SkillId = string
 export type Domain = 'francais' | 'maths' | 'logique' | 'monde' | 'anglais' | 'arts' | 'emc'
-export type LevelBand = 'gs' | 'cp' | 'ce1'
+export type LevelBand = 'gs' | 'cp' | 'ce1' | 'ce2'
 
 export interface SkillDef {
   id: SkillId
